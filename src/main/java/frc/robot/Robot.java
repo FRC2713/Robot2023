@@ -64,4 +64,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
+
+  public String goFast() {
+    return "nyoooooooooom";
+  }
+
+  public String goSlow() {
+    return "...nyom...";
+  }
 }
