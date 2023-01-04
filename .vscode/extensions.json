@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "vscjava.vscode-lombok",
+        "richardwillis.vscode-spotless-gradle",
+        "vscode-icons-team.vscode-icons"
+    ]
+}
