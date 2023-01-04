@@ -27,5 +27,10 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "wpilib.skipSelectSimulateExtension": true,
-  "wpilib.selectDefaultSimulateExtension": true
+  "wpilib.selectDefaultSimulateExtension": true,
+  "[java]": {
+    "spotlessGradle.format.enable": true,
+    "spotlessGradle.diagnostics.enable": true
+  },
+  "editor.bracketPairColorization.enabled": true,
 }
