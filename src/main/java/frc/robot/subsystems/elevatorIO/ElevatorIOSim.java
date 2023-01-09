@@ -1,7 +1,6 @@
 package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -11,14 +10,13 @@ public class ElevatorIOSim implements ElevatorIO {
 
   private ElevatorSim sim =
       new ElevatorSim(
-          DCMotor.getNEO(1),
-          10.0,
-          Constants.CONE_MASS_KG,
-          Constants.ELEVATOR_DRUM_RADIUS_METERS,
-          Constants.ELEVATOR_MIN_HEIGHT_METERS,
-          Constants.ELEVATOR_MAX_HEIGHT_METERS,
-          true,
-          VecBuilder.fill(0.0));
+          DCMotor.getNEO(2),
+          1.0,
+          Constants.Elevator.CARRIAGE_MASS_KG,
+          Constants.Elevator.ELEVATOR_DRUM_RADIUS_METERS,
+          Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
+          Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
+          true);
 
   /**
    * Automatically updates given {@code ElevatorInputs} instance based on simulation
@@ -30,7 +28,7 @@ public class ElevatorIOSim implements ElevatorIO {
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
     inputs.heightInches = Units.metersToInches(sim.getPositionMeters());
-    inputs.velocityMetresPerSecond = sim.getVelocityMetersPerSecond();
+    inputs.velocityInchesPerSecond = Units.metersToInches(sim.getVelocityMetersPerSecond());
     inputs.tempCelcius = 0.0;
   }
 
