@@ -1,6 +1,6 @@
 package frc.robot.subsystems.SwerveIO.module;
 
-public enum SwerveModules {
+public enum SwerveModuleName {
   FRONT_LEFT("FrontLeft"),
   FRONT_RIGHT("FrontRight"),
   BACK_LEFT("BackLeft"),
@@ -8,7 +8,7 @@ public enum SwerveModules {
 
   private final String string;
 
-  SwerveModules(String name) {
+  SwerveModuleName(String name) {
     string = name;
   }
 

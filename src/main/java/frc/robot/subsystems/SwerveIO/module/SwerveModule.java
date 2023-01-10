@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModule extends SubsystemBase {
 
   SwerveModuleIO io;
-  SwerveModules name;
+  SwerveModuleName name;
   public final SwerveModuleInputsAutoLogged inputs = new SwerveModuleInputsAutoLogged();
 
   private final PIDFFController driveController;

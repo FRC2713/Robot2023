@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.SwerveIO.module.ModuleInfo;
-import frc.robot.subsystems.SwerveIO.module.SwerveModules;
+import frc.robot.subsystems.SwerveIO.module.SwerveModuleName;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
 
@@ -113,7 +113,7 @@ public final class Constants {
 
     public static final ModuleInfo frontLeft =
         ModuleInfo.builder()
-            .name(SwerveModules.FRONT_LEFT)
+            .name(SwerveModuleName.FRONT_LEFT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
             .driveCANId(Constants.RobotMap.frontLeftDrive)
@@ -125,7 +125,7 @@ public final class Constants {
 
     public static final ModuleInfo frontRight =
         ModuleInfo.builder()
-            .name(SwerveModules.FRONT_RIGHT)
+            .name(SwerveModuleName.FRONT_RIGHT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
             .driveCANId(Constants.RobotMap.frontRightDrive)
@@ -137,7 +137,7 @@ public final class Constants {
 
     public static final ModuleInfo backLeft =
         ModuleInfo.builder()
-            .name(SwerveModules.BACK_LEFT)
+            .name(SwerveModuleName.BACK_LEFT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
             .driveCANId(Constants.RobotMap.backLeftDrive)
@@ -149,7 +149,7 @@ public final class Constants {
 
     public static final ModuleInfo backRight =
         ModuleInfo.builder()
-            .name(SwerveModules.BACK_RIGHT)
+            .name(SwerveModuleName.BACK_RIGHT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
             .driveCANId(Constants.RobotMap.backRightDrive)

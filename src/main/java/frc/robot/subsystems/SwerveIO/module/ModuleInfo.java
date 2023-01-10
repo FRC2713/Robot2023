@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 public class ModuleInfo {
-  @Getter private SwerveModules name;
+  @Getter private SwerveModuleName name;
   @Getter private PIDFFGains driveGains;
   @Getter private PIDFFGains azimuthGains;
   @Getter private int driveCANId;
