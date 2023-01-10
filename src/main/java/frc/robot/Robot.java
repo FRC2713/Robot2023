@@ -16,7 +16,10 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.util.MotionHandler;
 import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -27,8 +30,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    Logger.getInstance().addDataReceiver(new NT4Publisher());
+    Logger.getInstance().start();
+
     Robot.swerveDrive =
-        Robot.isReal()
+        !Robot.isReal()
             ? new SwerveSubsystem(
                 new SwerveIOSim(),
                 new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
@@ -67,10 +73,18 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    ErrHandler.getInstance().log();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    if (m_autonomousCommand != null) {
+
+      m_autonomousCommand.cancel();
+    }
+
+    Robot.motionMode = MotionMode.LOCKDOWN;
+  }
 
   @Override
   public void disabledPeriodic() {}
