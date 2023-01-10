@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModule extends SubsystemBase {
 
   SwerveModuleIO io;
-  SwerveModuleName name;
   public final SwerveModuleInputsAutoLogged inputs = new SwerveModuleInputsAutoLogged();
 
   private final PIDFFController driveController;
@@ -32,7 +31,6 @@ public class SwerveModule extends SubsystemBase {
     this.azimuthController = new PIDFFController(this.information.getAzimuthGains());
 
     io = swerveModuleIO;
-    this.name = this.information.getName();
     io.updateInputs(inputs);
 
     state = new SwerveModuleState(0, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
@@ -95,19 +93,19 @@ public class SwerveModule extends SubsystemBase {
     update();
 
     io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Swerve/" + name, inputs);
+    Logger.getInstance().processInputs("Swerve/" + information.getName(), inputs);
     Logger.getInstance()
         .recordOutput(
-            "Swerve/" + name + "/Azimuth Error",
+            "Swerve/" + information.getName() + "/Azimuth Error",
             state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
     Logger.getInstance()
         .recordOutput(
-            "Swerve/" + name + "/Drive Error",
+            "Swerve/" + information.getName() + "/Drive Error",
             state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
 
     Logger.getInstance()
         .recordOutput(
-            "Swerve/" + name + "/Azimuth Encoder Delta",
+            "Swerve/" + information.getName() + "/Azimuth Encoder Delta",
             inputs.aziEncoderPositionDeg - inputs.aziAbsoluteEncoderAdjAngleDeg);
   }
 }
