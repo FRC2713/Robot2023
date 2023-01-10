@@ -4,12 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
+import frc.robot.util.MotionHandler;
+import frc.robot.util.MotionHandler.MotionMode;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
+  public static MotionMode motionMode = MotionMode.FULL_DRIVE;
+  public static final MotionHandler motionHandler = new MotionHandler();
+  public static SwerveSubsystem swerveDrive;
+  public static final XboxController driver = new XboxController(Constants.zero);
 
   @Override
   public void robotInit() {}
