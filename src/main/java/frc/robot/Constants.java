@@ -12,5 +12,4 @@ public class Constants {
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
   }
-
 }

@@ -9,7 +9,6 @@ public interface ElevatorIO {
     public double heightInches = 0.0;
     public double velocityInchesPerSecond = 0.0;
     public double tempCelcius = 0.0;
-
   }
 
   public void updateInputs(ElevatorInputs inputs);
