@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -16,6 +18,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+    Logger.getInstance()
+        .start(); // Start logging! No more data receivers, replay sources, or metadata values may
+    // be added.
     this.ele = new Elevator(new ElevatorIOSim());
   }
 
