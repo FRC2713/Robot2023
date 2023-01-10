@@ -8,6 +8,8 @@ import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
+  public ElevatorIOSim() {}
+
   private ElevatorSim sim =
       new ElevatorSim(
           DCMotor.getNEO(2),

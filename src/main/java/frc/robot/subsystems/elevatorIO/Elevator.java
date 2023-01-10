@@ -19,7 +19,6 @@ public class Elevator extends SubsystemBase {
 
   public void setTargetHeight(double targetHeight) {
     this.targetHeight = targetHeight;
-    // IO.setVoltage(elevatorController.calculate(inputs.outputVoltage));
   }
 
   public double getCurrentHeight() {
@@ -28,5 +27,6 @@ public class Elevator extends SubsystemBase {
 
   public void periodic() {
     IO.updateInputs(inputs);
+    IO.setVoltage(elevatorController.calculate(inputs.heightInches));
   }
 }

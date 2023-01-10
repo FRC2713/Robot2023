@@ -6,13 +6,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.elevatorIO.Elevator;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
+  private Elevator ele;
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    this.ele = new Elevator(new ElevatorIOSim());
+  }
 
   @Override
   public void robotPeriodic() {
@@ -33,6 +38,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    ele.setTargetHeight(5.0);
   }
 
   @Override
