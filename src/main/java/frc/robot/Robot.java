@@ -34,19 +34,19 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     Robot.swerveDrive =
-        !Robot.isReal()
+        Robot.isReal()
             ? new SwerveSubsystem(
-                new SwerveIOSim(),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.backRight))
-            : new SwerveSubsystem(
                 new SwerveIOPigeon2(),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight));
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
+            : new SwerveSubsystem(
+                new SwerveIOSim(),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
     new JoystickButton(driver, XboxController.Button.kY.value)
         .onTrue(
