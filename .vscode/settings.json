@@ -33,4 +33,5 @@
     "spotlessGradle.diagnostics.enable": true
   },
   "editor.bracketPairColorization.enabled": true,
+  "java.debug.settings.onBuildFailureProceed": true,
 }

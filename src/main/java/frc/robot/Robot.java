@@ -7,7 +7,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
+import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
+import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
+import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.util.MotionHandler;
 import frc.robot.util.MotionHandler.MotionMode;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -20,7 +26,43 @@ public class Robot extends LoggedRobot {
   public static final XboxController driver = new XboxController(Constants.zero);
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    Robot.swerveDrive =
+        Robot.isReal()
+            ? new SwerveSubsystem(
+                new SwerveIOSim(),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.backRight))
+            : new SwerveSubsystem(
+                new SwerveIOPigeon2(),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight));
+
+    new JoystickButton(driver, XboxController.Button.kY.value)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.LOCKDOWN;
+                }));
+
+    new JoystickButton(driver, XboxController.Button.kA.value)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
+                }));
+
+    new JoystickButton(driver, XboxController.Button.kB.value)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                }));
+  }
 
   @Override
   public void robotPeriodic() {
