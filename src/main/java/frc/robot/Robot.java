@@ -14,7 +14,6 @@ import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
-import frc.robot.util.MotionHandler;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -24,7 +23,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
-  public static final MotionHandler motionHandler = new MotionHandler();
   public static SwerveSubsystem swerveDrive;
   public static final XboxController driver = new XboxController(Constants.zero);
 

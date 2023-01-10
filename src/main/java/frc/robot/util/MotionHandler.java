@@ -24,7 +24,7 @@ public class MotionHandler {
    *
    * @return The desired array of desaturated swerveModuleStates.
    */
-  public SwerveModuleState[] driveHeadingController() {
+  public static SwerveModuleState[] driveHeadingController() {
     double xSpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
     double ySpeed =
@@ -55,7 +55,7 @@ public class MotionHandler {
    *
    * @return The desired array of desaturated swerveModuleStates.
    */
-  public SwerveModuleState[] driveFullControl() {
+  public static SwerveModuleState[] driveFullControl() {
     double xSpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
     double ySpeed =
@@ -81,7 +81,7 @@ public class MotionHandler {
    *
    * @return The desired array of desaturated swerveModuleStates.
    */
-  public SwerveModuleState[] driveTrajectory() {
+  public static SwerveModuleState[] driveTrajectory() {
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.kinematics.toSwerveModuleStates(TrajectoryController.getInstance().update());
 
@@ -95,7 +95,7 @@ public class MotionHandler {
    *
    * @return The lockdown array of swerveModuleStates.
    */
-  public SwerveModuleState[] lockdown() {
+  public static SwerveModuleState[] lockdown() {
     SwerveModuleState[] swerveModuleStates =
         new SwerveModuleState[] {
           new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45)),

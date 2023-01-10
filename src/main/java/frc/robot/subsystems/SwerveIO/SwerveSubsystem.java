@@ -13,6 +13,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.SwerveIO.module.SwerveModule;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIO;
+import frc.robot.util.MotionHandler;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -176,16 +177,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
     switch (Robot.motionMode) {
       case FULL_DRIVE:
-        setModuleStates(Robot.motionHandler.driveFullControl());
+        setModuleStates(MotionHandler.driveFullControl());
         break;
       case HEADING_CONTROLLER:
-        setModuleStates(Robot.motionHandler.driveHeadingController());
+        setModuleStates(MotionHandler.driveHeadingController());
         break;
       case LOCKDOWN:
-        setModuleStates(Robot.motionHandler.lockdown());
+        setModuleStates(MotionHandler.lockdown());
         break;
       case TRAJECTORY:
-        setModuleStates(Robot.motionHandler.driveTrajectory());
+        setModuleStates(MotionHandler.driveTrajectory());
         break;
       default:
         break;
