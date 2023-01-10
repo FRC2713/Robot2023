@@ -83,8 +83,7 @@ public class SwerveModule extends SubsystemBase {
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
     final double turnOutput =
         azimuthController.calculate(inputs.aziEncoderPositionDeg, state.angle.getDegrees());
-
-    applyVoltageForCharacterization(driveOutput);
+    io.setDriveVoltage(driveOutput);
     io.setAzimuthVoltage(turnOutput);
   }
 
