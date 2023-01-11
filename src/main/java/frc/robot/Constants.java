@@ -36,31 +36,6 @@ public final class Constants {
     }
 
     public static final int pigeonCANId = 20;
-
-    // MOTORS
-    // FrontLeft
-    public static final int frontLeftDrive = 1;
-    public static final int frontLeftAzi = 8;
-    public static final int frontLeftAzimuthEncoder = 0;
-    public static final double frontLeftOffset = 0.1124;
-
-    // FrontRight
-    public static final int frontRightDrive = 3;
-    public static final int frontRightAzi = 2;
-    public static final int frontRightAzimuthEncoder = 1;
-    public static final double frontRightOffset = 0.6028;
-
-    // BackLeft
-    public static final int backLeftDrive = 4;
-    public static final int backLeftAzi = 5;
-    public static final int backLeftAzimuthEncoder = 2;
-    public static final double backLeftOffset = 0.0626;
-
-    // BackRight
-    public static final int backRightDrive = 6;
-    public static final int backRightAzi = 7;
-    public static final int backRightAzimuthEncoder = 3;
-    public static final double backRightOffset = 0.775;
   }
 
   public static final class DriveConstants {
@@ -116,11 +91,11 @@ public final class Constants {
             .name(SwerveModuleName.FRONT_LEFT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
-            .driveCANId(Constants.RobotMap.frontLeftDrive)
-            .aziCANId(Constants.RobotMap.frontLeftAzi)
-            .aziEncoderCANId(Constants.RobotMap.frontLeftAzimuthEncoder)
-            .offset(Constants.RobotMap.frontLeftOffset)
-            .location(Constants.DriveConstants.frontLeftLocation)
+            .driveCANId(1)
+            .aziCANId(8)
+            .aziEncoderCANId(zero)
+            .offset(0.1124)
+            .location(frontLeftLocation)
             .build();
 
     public static final ModuleInfo frontRight =
@@ -128,11 +103,11 @@ public final class Constants {
             .name(SwerveModuleName.FRONT_RIGHT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
-            .driveCANId(Constants.RobotMap.frontRightDrive)
-            .aziCANId(Constants.RobotMap.frontRightAzi)
-            .aziEncoderCANId(Constants.RobotMap.frontRightAzimuthEncoder)
-            .offset(Constants.RobotMap.frontRightOffset)
-            .location(Constants.DriveConstants.frontRightLocation)
+            .driveCANId(3)
+            .aziCANId(2)
+            .aziEncoderCANId(1)
+            .offset(0.6028)
+            .location(frontRightLocation)
             .build();
 
     public static final ModuleInfo backLeft =
@@ -140,11 +115,11 @@ public final class Constants {
             .name(SwerveModuleName.BACK_LEFT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
-            .driveCANId(Constants.RobotMap.backLeftDrive)
-            .aziCANId(Constants.RobotMap.backLeftAzi)
-            .aziEncoderCANId(Constants.RobotMap.backLeftAzimuthEncoder)
-            .offset(Constants.RobotMap.backLeftOffset)
-            .location(Constants.DriveConstants.backLeftLocation)
+            .driveCANId(4)
+            .aziCANId(5)
+            .aziEncoderCANId(2)
+            .offset(0.0626)
+            .location(backLeftLocation)
             .build();
 
     public static final ModuleInfo backRight =
@@ -152,11 +127,11 @@ public final class Constants {
             .name(SwerveModuleName.BACK_RIGHT)
             .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
             .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
-            .driveCANId(Constants.RobotMap.backRightDrive)
-            .aziCANId(Constants.RobotMap.backRightAzi)
-            .aziEncoderCANId(Constants.RobotMap.backRightAzimuthEncoder)
-            .offset(Constants.RobotMap.backRightOffset)
-            .location(Constants.DriveConstants.backRightLocation)
+            .driveCANId(6)
+            .aziCANId(7)
+            .aziEncoderCANId(3)
+            .offset(0.775)
+            .location(backRightLocation)
             .build();
 
     @UtilityClass
