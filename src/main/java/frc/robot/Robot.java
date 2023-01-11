@@ -44,7 +44,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    ele.setTargetHeight(5.0);
+    ele.setTargetHeight(30.0);
   }
 
   @Override
