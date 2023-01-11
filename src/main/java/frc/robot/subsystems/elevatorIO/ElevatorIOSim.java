@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevatorIO;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
 
@@ -27,6 +28,9 @@ public class ElevatorIOSim implements ElevatorIO {
    */
   @Override
   public void updateInputs(ElevatorInputs inputs) {
+    if (DriverStation.isDisabled()) {
+      return;
+    }
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
     inputs.heightInches = Units.metersToInches(sim.getPositionMeters());
