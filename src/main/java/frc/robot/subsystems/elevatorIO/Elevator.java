@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -23,7 +24,7 @@ public class Elevator extends SubsystemBase {
     this.feedforward = new ElevatorFeedforward(0, 5.212, 0);
     // this.elevatorController = new ProfiledPIDController(0.15, 0, 0.1, new Constraints(160, 500));
     this.elevatorController = new ProfiledPIDController(0.6, 0, 0.2, new Constraints(160, 500));
-
+    SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
@@ -32,7 +33,11 @@ public class Elevator extends SubsystemBase {
   public void setTargetHeight(double targetHeightInches) {
     if (targetHeightInches > Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS)) {
       Logger.getInstance().recordOutput("Elevator/Errors", "targetHeight over max height");
-      this.targetHeight = MathUtil.clamp(targetHeightInches, 0, Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS));
+      this.targetHeight =
+          MathUtil.clamp(
+              targetHeightInches,
+              0,
+              Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS));
       return;
     }
     this.targetHeight = targetHeightInches;

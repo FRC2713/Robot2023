@@ -1,0 +1,20 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Elevator PID": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Mech2d": "Mechanism2d"
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "localhost"
+  }
+}

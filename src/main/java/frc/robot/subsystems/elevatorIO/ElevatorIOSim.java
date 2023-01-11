@@ -5,11 +5,28 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
+  private final Mechanism2d mech;
+  private final MechanismRoot2d root;
+  private final MechanismLigament2d m_elevator;
 
-  public ElevatorIOSim() {}
+  public ElevatorIOSim() {
+    // the main mechanism object
+
+    mech = new Mechanism2d(2, 50);
+
+    // the mechanism root node
+
+    root = mech.getRoot("climber", 2, 0);
+    m_elevator = root.append(new MechanismLigament2d("elevator", 0, 90));
+    SmartDashboard.putData("Mech2d", mech);
+  }
 
   private ElevatorSim sim =
       new ElevatorSim(
@@ -36,6 +53,8 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.heightInches = Units.metersToInches(sim.getPositionMeters());
     inputs.velocityInchesPerSecond = Units.metersToInches(sim.getVelocityMetersPerSecond());
     inputs.tempCelcius = 0.0;
+
+    m_elevator.setLength(0 + inputs.heightInches);
   }
 
   /**
