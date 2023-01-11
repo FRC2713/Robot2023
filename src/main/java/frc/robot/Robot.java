@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.StringTwoAutosTogether;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
@@ -18,18 +19,19 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
-import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Command autoCommand;
+  private Command autoCommand = new StringTwoAutosTogether();
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final XboxController driver = new XboxController(Constants.zero);
-  private PathPlannerTrajectory traj =
+  public static PathPlannerTrajectory traj1 =
       PathPlanner.loadPath("loopdeloop", PathPlanner.getConstraintsFromPath("loopdeloop"));
+  public static PathPlannerTrajectory traj2 =
+      PathPlanner.loadPath("two!", PathPlanner.getConstraintsFromPath("two!"));
 
   @Override
   public void robotInit() {
@@ -82,7 +84,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     if (autoCommand != null) {
-
       autoCommand.cancel();
     }
 
@@ -98,7 +99,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     if (autoCommand != null) {}
-    TrajectoryController.getInstance().changePath(traj);
+    autoCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
   }
 
