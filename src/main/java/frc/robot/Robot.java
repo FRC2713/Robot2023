@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,15 +18,18 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
+  private Command autoCommand;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final XboxController driver = new XboxController(Constants.zero);
+  private PathPlannerTrajectory traj =
+      PathPlanner.loadPath("loopdeloop", PathPlanner.getConstraintsFromPath("loopdeloop"));
 
   @Override
   public void robotInit() {
@@ -76,9 +81,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledInit() {
-    if (m_autonomousCommand != null) {
+    if (autoCommand != null) {
 
-      m_autonomousCommand.cancel();
+      autoCommand.cancel();
     }
 
     Robot.motionMode = MotionMode.LOCKDOWN;
@@ -92,9 +97,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    if (autoCommand != null) {}
+    TrajectoryController.getInstance().changePath(traj);
+    motionMode = MotionMode.TRAJECTORY;
   }
 
   @Override
@@ -105,8 +110,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autoCommand != null) {
+      autoCommand.cancel();
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
