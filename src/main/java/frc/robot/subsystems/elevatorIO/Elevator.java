@@ -5,6 +5,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -24,6 +26,9 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetHeight(double targetHeight) {
+    if(targetHeight > Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS) {
+      throw new IllegalArgumentException("targetHeight over max height");
+    }
     this.targetHeight = targetHeight;
   }
 
