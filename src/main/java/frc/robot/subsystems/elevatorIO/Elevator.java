@@ -6,7 +6,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -18,18 +17,20 @@ public class Elevator extends SubsystemBase {
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
+    // this.feedforward = new ElevatorFeedforward(0, 5.212, 0);
+    // this.elevatorController = new ProfiledPIDController(0.6, 0, 0.2, new Constraints(160, 500));
     this.feedforward = new ElevatorFeedforward(0, 5.212, 0);
-    this.elevatorController = new ProfiledPIDController(0.6, 0, 0.2, new Constraints(160, 500));
+    this.elevatorController = new ProfiledPIDController(0.15, 0, 0.1, new Constraints(160, 500));
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
   }
 
-  public void setTargetHeight(double targetHeight) {
-    if(targetHeight > Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS) {
+  public void setTargetHeight(double targetHeightMetres) {
+    if (targetHeightMetres > Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS) {
       throw new IllegalArgumentException("targetHeight over max height");
     }
-    this.targetHeight = targetHeight;
+    this.targetHeight = targetHeightMetres;
   }
 
   public double getCurrentHeight() {
@@ -39,7 +40,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     double effort = elevatorController.calculate(inputs.heightInches, targetHeight);
     double ffEffort = feedforward.calculate(elevatorController.getSetpoint().velocity);
-      effort += ffEffort;
+    effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
     IO.updateInputs(inputs);
