@@ -27,19 +27,30 @@ public class Robot extends LoggedRobot {
     // be added.
     this.ele = new Elevator(new ElevatorIOSim());
     m_autonomousCommand =
-    new SequentialCommandGroup
-    (
-      new InstantCommand(
-        () -> {
-          ele.setTargetHeight(30.0);
-        }),
-        new WaitCommand(5.0),
-        new InstantCommand(
-          () -> {
-            ele.setTargetHeight(15.0);
-          }),
-          new WaitCommand(5.0)
-    ).repeatedly();
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  ele.setTargetHeight(30.0);
+                }),
+            new WaitCommand(5.0),
+            new InstantCommand(
+                () -> {
+                  ele.setTargetHeight(15.0);
+                }));
+    // repeat :)
+    // new SequentialCommandGroup
+    // (
+    //   new InstantCommand(
+    //     () -> {
+    //       ele.setTargetHeight(30.0);
+    //     }),
+    //     new WaitCommand(5.0),
+    //     new InstantCommand(
+    //       () -> {
+    //         ele.setTargetHeight(15.0);
+    //       }),
+    //       new WaitCommand(5.0)
+    // ).repeatedly();
   }
 
   @Override
