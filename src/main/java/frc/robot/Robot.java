@@ -9,8 +9,6 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.StringMultipleAutosTogether;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
@@ -84,17 +82,6 @@ public class Robot extends LoggedRobot {
             new InstantCommand(
                 () -> {
                   ele.setTargetHeight(30);
-                }));
-    autoCommand =
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(30.0);
-                }),
-            new WaitCommand(5.0),
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(15.0);
                 }));
   }
 
