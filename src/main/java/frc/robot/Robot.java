@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -23,6 +26,20 @@ public class Robot extends LoggedRobot {
         .start(); // Start logging! No more data receivers, replay sources, or metadata values may
     // be added.
     this.ele = new Elevator(new ElevatorIOSim());
+    m_autonomousCommand =
+    new SequentialCommandGroup
+    (
+      new InstantCommand(
+        () -> {
+          ele.setTargetHeight(30.0);
+        }),
+        new WaitCommand(5.0),
+        new InstantCommand(
+          () -> {
+            ele.setTargetHeight(15.0);
+          }),
+          new WaitCommand(5.0)
+    ).repeatedly();
   }
 
   @Override
@@ -44,7 +61,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    ele.setTargetHeight(30.0);
   }
 
   @Override

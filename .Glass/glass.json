@@ -1,11 +1,13 @@
 {
   "NetworkTables": {
     "transitory": {
+      "AdvantageKit": {
+        "open": true
+      },
       "SmartDashboard": {
         "Elevator PID": {
           "open": true
-        },
-        "open": true
+        }
       }
     },
     "types": {
@@ -15,6 +17,6 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "localhost"
+    "serverTeam": "127.0.0.1"
   }
 }
