@@ -38,6 +38,12 @@ public final class Constants {
     public static final int pigeonCANId = 20;
   }
 
+  public static class Elevator {
+    public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
+    public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
+    public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
+    public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
+}
   public static final class DriveConstants {
     private DriveConstants() {
       throw new AssertionError();
