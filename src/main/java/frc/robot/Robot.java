@@ -18,6 +18,7 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -25,7 +26,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Elevator ele;
+  public static Elevator ele;
+  private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
@@ -39,6 +41,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
+    this.mechManager = new MechanismManager();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -89,6 +92,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
+    mechManager.periodic();
   }
 
   @Override

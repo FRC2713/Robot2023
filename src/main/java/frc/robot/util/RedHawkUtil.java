@@ -50,14 +50,16 @@ public final class RedHawkUtil {
     private List<String> errors = new ArrayList<>();
 
     /**
-     * Adds an error to the list of RevLib errors. Must be called on the singleton (see getInstance)
+     * Adds an error to the list of errors. Must be called on the singleton (see getInstance). Also
+     * logs.
      */
     public void addError(@NonNull String error) {
       this.errors.add(error);
+      this.log();
     }
 
     public void log() {
-      Logger.getInstance().recordOutput("RevLibErrors", String.join(" \\\\ ", errors));
+      Logger.getInstance().recordOutput("Errors", String.join(" \\\\ ", errors));
     }
   }
 }
