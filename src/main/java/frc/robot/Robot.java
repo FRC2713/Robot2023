@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.StringTwoAutosTogether;
+import frc.robot.commands.StringMultipleAutosTogether;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
@@ -28,14 +28,12 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
   private Elevator ele;
-  private Command autoCommand = new StringTwoAutosTogether();
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  public static PathPlannerTrajectory traj1 =
-      PathPlanner.loadPath("loopdeloop", PathPlanner.getConstraintsFromPath("loopdeloop"));
-  public static PathPlannerTrajectory traj2 =
-      PathPlanner.loadPath("two!", PathPlanner.getConstraintsFromPath("two!"));
+  public static PathPlannerTrajectory traj =
+      PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
+  private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
 
   @Override
   public void robotInit() {

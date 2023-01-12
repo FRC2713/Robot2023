@@ -70,10 +70,6 @@ public class TrajectoryController {
   }
 
   public ChassisSpeeds update() {
-
-    System.err.println("Trajectory/traj is null" + (traj == null));
-    System.err.println("Trajectory/timer is null" + (timer == null));
-
     if (timer.get() == 0) {
       timer.start();
     }
