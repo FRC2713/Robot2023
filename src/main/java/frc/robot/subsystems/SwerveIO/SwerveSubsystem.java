@@ -118,8 +118,6 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
-
-    Logger.getInstance().recordOutput("Module States", swerveModuleStates);
   }
 
   /**
@@ -128,10 +126,10 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return The average velocity at which all the swerve modules are moving.
    */
   public double getAverageVelocity() {
-    return (frontLeft.getState().speedMetersPerSecond
-            + frontRight.getState().speedMetersPerSecond
-            + backLeft.getState().speedMetersPerSecond
-            + backRight.getState().speedMetersPerSecond)
+    return (frontLeft.getMeasuredState().speedMetersPerSecond
+            + frontRight.getMeasuredState().speedMetersPerSecond
+            + backLeft.getMeasuredState().speedMetersPerSecond
+            + backRight.getMeasuredState().speedMetersPerSecond)
         / 4;
   }
 
@@ -160,7 +158,10 @@ public class SwerveSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
-            frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()
+            frontLeft.getMeasuredState(),
+            frontRight.getMeasuredState(),
+            backLeft.getMeasuredState(),
+            backRight.getMeasuredState()
           };
       ChassisSpeeds speeds = Constants.DriveConstants.kinematics.toChassisSpeeds(measuredStates);
       simOdometryPose =
@@ -193,6 +194,25 @@ public class SwerveSubsystem extends SubsystemBase {
       default:
         break;
     }
+
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Measured Module States",
+            new SwerveModuleState[] {
+              frontLeft.getMeasuredState(),
+              frontRight.getMeasuredState(),
+              backLeft.getMeasuredState(),
+              backRight.getMeasuredState()
+            });
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Desired Module States",
+            new SwerveModuleState[] {
+              frontLeft.getDesiredState(),
+              frontRight.getDesiredState(),
+              backLeft.getDesiredState(),
+              backRight.getDesiredState()
+            });
 
     Logger.getInstance().processInputs("Swerve/Chassis", inputs);
     Logger.getInstance()

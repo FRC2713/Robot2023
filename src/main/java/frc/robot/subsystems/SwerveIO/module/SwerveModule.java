@@ -42,10 +42,14 @@ public class SwerveModule extends SubsystemBase {
    *
    * @return The desired SwerveModuleState object.
    */
-  public SwerveModuleState getState() {
+  public SwerveModuleState getMeasuredState() {
     return new SwerveModuleState(
         inputs.driveEncoderVelocityMetresPerSecond,
         Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
+  }
+
+  public SwerveModuleState getDesiredState() {
+    return state;
   }
 
   public SwerveModulePosition getPosition() {

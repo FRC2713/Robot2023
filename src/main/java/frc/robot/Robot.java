@@ -9,8 +9,10 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.StringMultipleAutosTogether;
+import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
@@ -30,8 +32,16 @@ public class Robot extends LoggedRobot {
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   public static PathPlannerTrajectory traj =
-      PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
-  private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
+      PathPlanner.loadPath("load1stcargo", PathPlanner.getConstraintsFromPath("load1stcargo"));
+  public static PathPlannerTrajectory traj2 =
+      PathPlanner.loadPath("getonthebridge", PathPlanner.getConstraintsFromPath("getonthebridge"));
+
+  private Command autoCommand =
+      new SequentialCommandGroup(
+          CommandHelper.stringTrajectoriesTogether(traj),
+          new InstantCommand(() -> ele.setTargetHeight(30)),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          CommandHelper.stringTrajectoriesTogether(traj2));
 
   @Override
   public void robotInit() {
