@@ -59,29 +59,11 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
-    driver
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.LOCKDOWN;
-                }));
-
-    // new JoystickButton(driver, XboxController.Button.kA.value)
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               motionMode = MotionMode.FULL_DRIVE;
-    //             }));
-
-    // new JoystickButton(driver, XboxController.Button.kB.value)
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               motionMode = MotionMode.HEADING_CONTROLLER;
-    //             }));
-
-    autoCommand =
+    driver.y().onTrue(new InstantCommand(() -> {motionMode = MotionMode.LOCKDOWN;}));
+    driver.a().onTrue(new InstantCommand(() -> {motionMode = MotionMode.FULL_DRIVE;}));
+    driver.b().onTrue(new InstantCommand(() -> {motionMode = MotionMode.HEADING_CONTROLLER;}));
+    driver.x().onTrue(new InstantCommand(() -> {ele.setTargetHeight(30);}));
+        autoCommand =
         new SequentialCommandGroup(
             new InstantCommand(
                 () -> {
