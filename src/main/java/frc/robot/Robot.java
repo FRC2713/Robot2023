@@ -6,20 +6,32 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.StringTwoAutosTogether;
+import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
+import frc.robot.subsystems.SwerveIO.SwerveIOSim;
+import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
+import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
+import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.subsystems.elevatorIO.Elevator;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-private Elevator ele;
-private Command autoCommand = new StringTwoAutosTogether();
+  private Elevator ele;
+  private Command autoCommand = new StringTwoAutosTogether();
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
-  public static final XboxController driver = new XboxController(Constants.zero);
+  public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   public static PathPlannerTrajectory traj1 =
       PathPlanner.loadPath("loopdeloop", PathPlanner.getConstraintsFromPath("loopdeloop"));
   public static PathPlannerTrajectory traj2 =
@@ -30,33 +42,8 @@ private Command autoCommand = new StringTwoAutosTogether();
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().start();
 
-this.ele = new Elevator(new ElevatorIOSim());
-    m_autonomousCommand =
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(30.0);
-                }),
-            new WaitCommand(5.0),
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(15.0);
-                }));
-    // repeat :)
-    // new SequentialCommandGroup
-    // (
-    //   new InstantCommand(
-    //     () -> {
-    //       ele.setTargetHeight(30.0);
-    //     }),
-    //     new WaitCommand(5.0),
-    //     new InstantCommand(
-    //       () -> {
-    //         ele.setTargetHeight(15.0);
-    //       }),
-    //       new WaitCommand(5.0)
-    // ).repeatedly();
-    
+    this.ele = new Elevator(new ElevatorIOSim());
+
     Robot.swerveDrive =
         Robot.isReal()
             ? new SwerveSubsystem(
@@ -72,25 +59,38 @@ this.ele = new Elevator(new ElevatorIOSim());
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
-    new JoystickButton(driver, XboxController.Button.kY.value)
+    driver
+        .y()
         .onTrue(
             new InstantCommand(
                 () -> {
                   motionMode = MotionMode.LOCKDOWN;
                 }));
 
-    new JoystickButton(driver, XboxController.Button.kA.value)
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
+    // new JoystickButton(driver, XboxController.Button.kA.value)
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               motionMode = MotionMode.FULL_DRIVE;
+    //             }));
 
-    new JoystickButton(driver, XboxController.Button.kB.value)
-        .onTrue(
+    // new JoystickButton(driver, XboxController.Button.kB.value)
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               motionMode = MotionMode.HEADING_CONTROLLER;
+    //             }));
+
+    autoCommand =
+        new SequentialCommandGroup(
             new InstantCommand(
                 () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  ele.setTargetHeight(30.0);
+                }),
+            new WaitCommand(5.0),
+            new InstantCommand(
+                () -> {
+                  ele.setTargetHeight(15.0);
                 }));
   }
 
