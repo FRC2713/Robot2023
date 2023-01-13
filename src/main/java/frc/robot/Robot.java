@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,6 +18,7 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -31,17 +30,12 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  public static PathPlannerTrajectory traj =
-      PathPlanner.loadPath("load1stcargo", PathPlanner.getConstraintsFromPath("load1stcargo"));
-  public static PathPlannerTrajectory traj2 =
-      PathPlanner.loadPath("getonthebridge", PathPlanner.getConstraintsFromPath("getonthebridge"));
-
   private Command autoCommand =
       new SequentialCommandGroup(
-          CommandHelper.stringTrajectoriesTogether(traj),
+          CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
           new InstantCommand(() -> ele.setTargetHeight(30)),
           new WaitUntilCommand(() -> ele.atTargetHeight()),
-          CommandHelper.stringTrajectoriesTogether(traj2));
+          CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()));
 
   @Override
   public void robotInit() {
