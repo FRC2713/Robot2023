@@ -38,6 +38,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     Logger.getInstance().addDataReceiver(new NT4Publisher());
+    Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
+    Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
+    Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
+    Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
+    Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
