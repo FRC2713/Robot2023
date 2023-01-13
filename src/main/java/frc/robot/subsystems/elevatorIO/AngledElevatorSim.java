@@ -20,7 +20,7 @@ public class AngledElevatorSim extends ElevatorSim {
   // The max allowable height for the elevator.
   private final double m_maxHeight;
 
-  private Rotation2d m_angle;
+  private final Rotation2d m_angle;
 
   public AngledElevatorSim(
       DCMotor gearbox,
@@ -30,17 +30,16 @@ public class AngledElevatorSim extends ElevatorSim {
       double minHeightMeters,
       double maxHeightMeters,
       boolean simulateGravity) {
-    super(
+    this(
         gearbox,
         gearing,
         carriageMassKg,
         drumRadiusMeters,
         minHeightMeters,
         maxHeightMeters,
-        simulateGravity);
-    this.m_simulateGravity = simulateGravity;
-    this.m_maxHeight = maxHeightMeters;
-    this.m_minHeight = minHeightMeters;
+        simulateGravity,
+        null,
+        Rotation2d.fromDegrees(90.0));
   }
 
   public AngledElevatorSim(
@@ -52,7 +51,7 @@ public class AngledElevatorSim extends ElevatorSim {
       double maxHeightMeters,
       boolean simulateGravity,
       Matrix<N1, N1> measurementStdDevs) {
-    super(
+    this(
         gearbox,
         gearing,
         carriageMassKg,
@@ -60,10 +59,8 @@ public class AngledElevatorSim extends ElevatorSim {
         minHeightMeters,
         maxHeightMeters,
         simulateGravity,
-        measurementStdDevs);
-    this.m_simulateGravity = simulateGravity;
-    this.m_maxHeight = maxHeightMeters;
-    this.m_minHeight = minHeightMeters;
+        measurementStdDevs,
+        Rotation2d.fromDegrees(90.0));
   }
 
   public AngledElevatorSim(
@@ -99,17 +96,16 @@ public class AngledElevatorSim extends ElevatorSim {
       double minHeightMeters,
       double maxHeightMeters,
       boolean simulateGravity) {
-    super(
+    this(
         plant,
         gearbox,
         gearing,
         drumRadiusMeters,
         minHeightMeters,
         maxHeightMeters,
-        simulateGravity);
-    this.m_simulateGravity = simulateGravity;
-    this.m_maxHeight = maxHeightMeters;
-    this.m_minHeight = minHeightMeters;
+        simulateGravity,
+        null,
+        Rotation2d.fromDegrees(90.0));
   }
 
   public AngledElevatorSim(
@@ -121,6 +117,28 @@ public class AngledElevatorSim extends ElevatorSim {
       double maxHeightMeters,
       boolean simulateGravity,
       Matrix<N1, N1> measurementStdDevs) {
+    this(
+        plant,
+        gearbox,
+        gearing,
+        drumRadiusMeters,
+        minHeightMeters,
+        maxHeightMeters,
+        simulateGravity,
+        measurementStdDevs,
+        Rotation2d.fromDegrees(90.0));
+  }
+
+  public AngledElevatorSim(
+      LinearSystem<N2, N1, N1> plant,
+      DCMotor gearbox,
+      double gearing,
+      double drumRadiusMeters,
+      double minHeightMeters,
+      double maxHeightMeters,
+      boolean simulateGravity,
+      Matrix<N1, N1> measurementStdDevs,
+      Rotation2d angle) {
     super(
         plant,
         gearbox,
@@ -133,6 +151,7 @@ public class AngledElevatorSim extends ElevatorSim {
     this.m_simulateGravity = simulateGravity;
     this.m_maxHeight = maxHeightMeters;
     this.m_minHeight = minHeightMeters;
+    this.m_angle = angle;
   }
 
   @Override
@@ -143,10 +162,7 @@ public class AngledElevatorSim extends ElevatorSim {
             (x, _u) -> {
               Matrix<N2, N1> xdot = m_plant.getA().times(x).plus(m_plant.getB().times(_u));
               if (m_simulateGravity) {
-                xdot =
-                    xdot.plus(
-                        VecBuilder.fill(
-                            0, this.m_angle == null ? -9.8 : this.m_angle.getSin() * -9.8));
+                xdot = xdot.plus(VecBuilder.fill(0, this.m_angle.getSin() * -9.8));
               }
               return xdot;
             },
