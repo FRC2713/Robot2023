@@ -21,7 +21,7 @@ public class Telescope extends SubsystemBase {
   public Telescope(TelescopeIO IO) {
     this.feedforward = new SimpleMotorFeedforward(0, 0, 0);
     this.telescopeController =
-        new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(200, 600));
+        new ProfiledPIDController(0.05, 0, 0, new TrapezoidProfile.Constraints(200, 600));
     SmartDashboard.putData("Telescope PID", telescopeController);
     this.inputs = new TelescopeInputsAutoLogged();
     this.IO = IO;
@@ -41,7 +41,7 @@ public class Telescope extends SubsystemBase {
     return inputs.extendedInches;
   }
 
-  public void Periodic() {
+  public void periodic() {
     double effort = telescopeController.calculate(inputs.extendedInches, targetExtension);
     double ffEffort = feedforward.calculate(telescopeController.getSetpoint().velocity);
     effort += ffEffort;

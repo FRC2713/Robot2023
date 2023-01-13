@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.StringMultipleAutosTogether;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
@@ -18,6 +17,8 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.telescope.Telescope;
+import frc.robot.subsystems.telescope.TelescopeIOSim;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -26,12 +27,14 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
   private Elevator ele;
+  private Telescope tel;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   public static PathPlannerTrajectory traj =
       PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
-  private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
+  // private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
+  private Command autoCommand = new InstantCommand(() -> tel.setTargetExtensionInches(30));
 
   @Override
   public void robotInit() {
@@ -39,6 +42,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
+    this.tel = new Telescope(new TelescopeIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
