@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface TelescopeIO {
   @AutoLog
-  public static class ElevatorInputs {
+  public static class TelescopeInputs {
 
     public double outputVoltage = 0.0;
 
@@ -14,4 +14,8 @@ public interface TelescopeIO {
 
     public double tempCelsius = 0.0;
   }
+
+  public void updateInputs(TelescopeInputs inputs);
+
+  public void setVoltage(double volts);
 }
