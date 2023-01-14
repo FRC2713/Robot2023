@@ -1,4 +1,4 @@
-package frc.robot.subsystems.telescope;
+package frc.robot.subsystems.telescopeIO;
 
 import com.revrobotics.CANSparkMax;
 

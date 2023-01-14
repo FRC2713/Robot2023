@@ -1,4 +1,4 @@
-package frc.robot.subsystems.telescope;
+package frc.robot.subsystems.telescopeIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
