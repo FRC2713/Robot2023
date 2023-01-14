@@ -33,7 +33,11 @@ public class Robot extends LoggedRobot {
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   private Command autoCommand =
       new SequentialCommandGroup(
-          new InstantCommand(() -> ele.setTargetHeight(30)),
+          new InstantCommand(
+              () -> {
+                ele.setTargetHeight(30);
+                swerveDrive.resetOdometry(Autos.PART_1.getTrajectory().getInitialHolonomicPose());
+              }),
           new WaitUntilCommand(() -> ele.atTargetHeight()),
           new ParallelCommandGroup(
               CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
