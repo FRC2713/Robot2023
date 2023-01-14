@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -33,7 +34,8 @@ public class Robot extends LoggedRobot {
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   public static PathPlannerTrajectory traj =
       PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
-  // private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
+  // private Command autoCommand =
+  // StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
   private Command autoCommand = new InstantCommand(() -> tel.setTargetExtensionInches(30));
 
   @Override
@@ -59,29 +61,29 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
     /*
-       driver
-           .y()
-           .onTrue(
-               new InstantCommand(
-                   () -> {
-                     motionMode = MotionMode.LOCKDOWN;
-                   }));
-       driver
-           .a()
-           .onTrue(
-               new InstantCommand(
-                   () -> {
-                     motionMode = MotionMode.FULL_DRIVE;
-                   }));
-       driver
-           .b()
-           .onTrue(
-               new InstantCommand(
-                   () -> {
-                     motionMode = MotionMode.HEADING_CONTROLLER;
-                   }));
-
-    */
+     * driver
+     * .y()
+     * .onTrue(
+     * new InstantCommand(
+     * () -> {
+     * motionMode = MotionMode.LOCKDOWN;
+     * }));
+     * driver
+     * .a()
+     * .onTrue(
+     * new InstantCommand(
+     * () -> {
+     * motionMode = MotionMode.FULL_DRIVE;
+     * }));
+     * driver
+     * .b()
+     * .onTrue(
+     * new InstantCommand(
+     * () -> {
+     * motionMode = MotionMode.HEADING_CONTROLLER;
+     * }));
+     *
+     */
     driver
         .x()
         .onTrue(
@@ -98,12 +100,15 @@ public class Robot extends LoggedRobot {
                   switch (motionMode) {
                     case LOCKDOWN:
                       motionMode = MotionMode.FULL_DRIVE;
+                      SmartDashboard.putString("Motion Mode", "Full Drive");
                       break;
                     case FULL_DRIVE:
                       motionMode = MotionMode.HEADING_CONTROLLER;
+                      SmartDashboard.putString("Motion Mode", "Heading Controller");
                       break;
                     case HEADING_CONTROLLER:
                       motionMode = MotionMode.LOCKDOWN;
+                      SmartDashboard.putString("Motion Mode", "Lockdown");
                       break;
                     default:
                       motionMode = MotionMode.LOCKDOWN;
