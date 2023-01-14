@@ -32,6 +32,7 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
+
   public static PathPlannerTrajectory traj =
       PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
   // private Command autoCommand =
@@ -113,6 +114,30 @@ public class Robot extends LoggedRobot {
                     default:
                       motionMode = MotionMode.LOCKDOWN;
                   }
+                })));
+    driver
+        .povUp()
+        .onTrue(
+            (new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
+                  SmartDashboard.putString("Motion Mode", "Full Drive");
+                })));
+    driver
+        .povDown()
+        .onTrue(
+            (new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.LOCKDOWN;
+                  SmartDashboard.putString("Motion Mode", "Lockdown");
+                })));
+    driver
+        .povLeft()
+        .onTrue(
+            (new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SmartDashboard.putString("Motion Mode", "Heading Controller");
                 })));
   }
 
