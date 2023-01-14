@@ -62,7 +62,7 @@ public class TrajectoryController {
             });
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
-      return controller.calculate(Robot.swerveDrive.getPose(), targetState);
+      return controller.calculate(Robot.swerveDrive.getEstimatedPose(), targetState);
     } else return new ChassisSpeeds();
   }
 }

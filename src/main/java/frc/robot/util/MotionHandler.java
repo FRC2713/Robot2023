@@ -36,7 +36,7 @@ public class MotionHandler {
                 xSpeed * DriveConstants.maxSwerveVel,
                 ySpeed * DriveConstants.maxSwerveVel,
                 Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
-                Robot.swerveDrive.getPose().getRotation()));
+                Robot.swerveDrive.getEstimatedPose().getRotation()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
 
@@ -62,7 +62,7 @@ public class MotionHandler {
                 xSpeed * DriveConstants.maxSwerveVel,
                 ySpeed * DriveConstants.maxSwerveVel,
                 rSpeed * DriveConstants.maxRotationalSpeedRadPerSec,
-                Robot.swerveDrive.getPose().getRotation()));
+                Robot.swerveDrive.getEstimatedPose().getRotation()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
 
