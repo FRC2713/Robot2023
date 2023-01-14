@@ -90,7 +90,28 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
+                  ele.setTargetHeight(0);
+                }));
+    driver
+        .y()
+        .onTrue(
+            new InstantCommand(
+                () -> {
                   ele.setTargetHeight(30);
+                }));
+    driver
+        .a()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  tel.setTargetExtensionInches(0);
+                }));
+    driver
+        .b()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  tel.setTargetExtensionInches(30);
                 }));
 
     driver
