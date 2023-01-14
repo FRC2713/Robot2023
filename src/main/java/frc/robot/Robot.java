@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -90,14 +91,29 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  motionMode = MotionMode.SNAPPED_TO_GOAL;
                 }));
     driver
         .x()
         .onTrue(
             new InstantCommand(
                 () -> {
-                  ele.setTargetHeight(30);
+                  switch (motionMode) {
+                    case LOCKDOWN:
+                      motionMode = MotionMode.FULL_DRIVE;
+                      SmartDashboard.putString("Motion Mode", "Full Drive");
+                      break;
+                    case FULL_DRIVE:
+                      motionMode = MotionMode.SNAPPED_TO_GOAL;
+                      SmartDashboard.putString("Motion Mode", "Snapped to Goal");
+                      break;
+                    case SNAPPED_TO_GOAL:
+                      motionMode = MotionMode.LOCKDOWN;
+                      SmartDashboard.putString("Motion Mode", "Lockdown");
+                      break;
+                    default:
+                      motionMode = MotionMode.LOCKDOWN;
+                  }
                 }));
   }
 

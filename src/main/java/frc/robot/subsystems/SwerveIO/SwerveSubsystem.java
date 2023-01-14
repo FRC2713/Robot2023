@@ -182,8 +182,8 @@ public class SwerveSubsystem extends SubsystemBase {
       case FULL_DRIVE:
         setModuleStates(MotionHandler.driveFullControl());
         break;
-      case HEADING_CONTROLLER:
-        setModuleStates(MotionHandler.driveHeadingController());
+      case SNAPPED_TO_GOAL:
+        setModuleStates(MotionHandler.driveSnappedToGoal());
         break;
       case LOCKDOWN:
         setModuleStates(MotionHandler.lockdown());
