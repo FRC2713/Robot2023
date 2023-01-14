@@ -8,8 +8,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.SwerveIO.module.ModuleInfo;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleName;
+import frc.robot.subsystems.swerveIO.module.ModuleInfo;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
 
