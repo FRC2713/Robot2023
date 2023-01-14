@@ -1,5 +1,8 @@
 {
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "transitory": {
       "AdvantageKit": {
         "open": true
@@ -12,7 +15,8 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Mech2d": "Mechanism2d"
+      "/SmartDashboard/Mech2d": "Mechanism2d",
+      "/SmartDashboard/Telescope Mech2D": "Mechanism2d"
     }
   },
   "NetworkTables Settings": {

@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.elevatorIO.Elevator;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
-import frc.robot.subsystems.elevatorIO.Elevator;
-import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.telescopeIO.Telescope;
 import frc.robot.subsystems.telescopeIO.TelescopeIOSim;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -58,28 +58,30 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+    /*
+       driver
+           .y()
+           .onTrue(
+               new InstantCommand(
+                   () -> {
+                     motionMode = MotionMode.LOCKDOWN;
+                   }));
+       driver
+           .a()
+           .onTrue(
+               new InstantCommand(
+                   () -> {
+                     motionMode = MotionMode.FULL_DRIVE;
+                   }));
+       driver
+           .b()
+           .onTrue(
+               new InstantCommand(
+                   () -> {
+                     motionMode = MotionMode.HEADING_CONTROLLER;
+                   }));
 
-    driver
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.LOCKDOWN;
-                }));
-    driver
-        .a()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
-    driver
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                }));
+    */
     driver
         .x()
         .onTrue(
@@ -87,6 +89,26 @@ public class Robot extends LoggedRobot {
                 () -> {
                   ele.setTargetHeight(30);
                 }));
+
+    driver
+        .back()
+        .onTrue(
+            (new InstantCommand(
+                () -> {
+                  switch (motionMode) {
+                    case LOCKDOWN:
+                      motionMode = MotionMode.FULL_DRIVE;
+                      break;
+                    case FULL_DRIVE:
+                      motionMode = MotionMode.HEADING_CONTROLLER;
+                      break;
+                    case HEADING_CONTROLLER:
+                      motionMode = MotionMode.LOCKDOWN;
+                      break;
+                    default:
+                      motionMode = MotionMode.LOCKDOWN;
+                  }
+                })));
   }
 
   @Override

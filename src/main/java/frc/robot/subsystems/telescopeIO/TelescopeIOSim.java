@@ -17,7 +17,7 @@ public class TelescopeIOSim implements TelescopeIO {
   private final MechanismLigament2d m_telescope;
 
   public TelescopeIOSim() {
-    mech = new Mechanism2d(0, 0);
+    mech = new Mechanism2d(50, 2);
     root = mech.getRoot("climber", 0, 0);
     m_telescope = root.append(new MechanismLigament2d("telescope", 0, 0));
     SmartDashboard.putData("Telescope Mech2D", mech);
