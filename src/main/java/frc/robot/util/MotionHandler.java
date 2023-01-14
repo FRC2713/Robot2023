@@ -28,12 +28,13 @@ public class MotionHandler {
     double xSpeed = MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
     double ySpeed = MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
     SwerveHeadingController.getInstance().setSetpoint(new Rotation2d(Units.degreesToRadians(180)));
-    SwerveModuleState[] swerveModuleStates = DriveConstants.kinematics.toSwerveModuleStates(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed * DriveConstants.maxSwerveVel,
-            ySpeed * DriveConstants.maxSwerveVel,
-            Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
-            Robot.swerveDrive.getPose().getRotation()));
+    SwerveModuleState[] swerveModuleStates =
+        DriveConstants.kinematics.toSwerveModuleStates(
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeed * DriveConstants.maxSwerveVel,
+                ySpeed * DriveConstants.maxSwerveVel,
+                Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
+                Robot.swerveDrive.getEstimatedPose().getRotation()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
 
@@ -50,12 +51,13 @@ public class MotionHandler {
     double ySpeed = MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
     double rSpeed = MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone);
 
-    SwerveModuleState[] swerveModuleStates = DriveConstants.kinematics.toSwerveModuleStates(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed * DriveConstants.maxSwerveVel,
-            ySpeed * DriveConstants.maxSwerveVel,
-            rSpeed * DriveConstants.maxRotationalSpeedRadPerSec,
-            Robot.swerveDrive.getPose().getRotation()));
+    SwerveModuleState[] swerveModuleStates =
+        DriveConstants.kinematics.toSwerveModuleStates(
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeed * DriveConstants.maxSwerveVel,
+                ySpeed * DriveConstants.maxSwerveVel,
+                rSpeed * DriveConstants.maxRotationalSpeedRadPerSec,
+                Robot.swerveDrive.getEstimatedPose().getRotation()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
 

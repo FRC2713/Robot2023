@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerveIO;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -27,6 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule backRight;
 
   private final SwerveDriveOdometry odometry;
+  private final SwerveDrivePoseEstimator newOdometry;
   private Pose2d simOdometryPose;
 
   /**
@@ -64,6 +66,18 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backRight.getPosition()
             },
             new Pose2d());
+    newOdometry =
+        new SwerveDrivePoseEstimator(
+            DriveConstants.kinematics,
+            Rotation2d.fromDegrees(inputs.gyroYawPosition),
+            new SwerveModulePosition[] {
+              this.frontLeft.getPosition(),
+              this.frontRight.getPosition(),
+              this.backLeft.getPosition(),
+              this.backRight.getPosition()
+            },
+            new Pose2d());
+
     simOdometryPose = odometry.getPoseMeters();
   }
 
@@ -91,6 +105,16 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         },
         pose);
+
+    newOdometry.resetPosition(
+        pose.getRotation(),
+        new SwerveModulePosition[] {
+          this.frontLeft.getPosition(),
+          this.frontRight.getPosition(),
+          this.backLeft.getPosition(),
+          this.backRight.getPosition()
+        },
+        pose);
     simOdometryPose = pose;
   }
 
@@ -99,9 +123,17 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return The position of the robot on the field.
    */
-  public Pose2d getPose() {
+  public Pose2d getEstimatedPose() {
     if (Robot.isReal()) {
-      return odometry.getPoseMeters();
+      return newOdometry.getEstimatedPosition();
+    } else {
+      return simOdometryPose;
+    }
+  }
+
+  public Pose2d getRegularPose() {
+    if (Robot.isReal()) {
+      return newOdometry.getEstimatedPosition();
     } else {
       return simOdometryPose;
     }
@@ -147,6 +179,15 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void updateOdometry() {
     odometry.update(
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        new SwerveModulePosition[] {
+          frontLeft.getPosition(),
+          frontRight.getPosition(),
+          backLeft.getPosition(),
+          backRight.getPosition()
+        });
+
+    newOdometry.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -217,9 +258,19 @@ public class SwerveSubsystem extends SubsystemBase {
     Logger.getInstance().processInputs("Swerve/Chassis", inputs);
     Logger.getInstance()
         .recordOutput(
-            "Swerve/Odometry",
+            "Swerve/OldOdometry",
             new double[] {
-              getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()
+              getRegularPose().getX(),
+              getRegularPose().getY(),
+              getRegularPose().getRotation().getDegrees()
+            });
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/NewOdometry",
+            new double[] {
+              getEstimatedPose().getX(),
+              getEstimatedPose().getY(),
+              getEstimatedPose().getRotation().getDegrees()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
   }
