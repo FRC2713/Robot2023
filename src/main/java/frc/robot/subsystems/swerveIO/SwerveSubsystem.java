@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SwerveIO;
+package frc.robot.subsystems.swerveIO;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
-import frc.robot.subsystems.SwerveIO.module.SwerveModule;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleIO;
+import frc.robot.subsystems.swerveIO.module.SwerveModule;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
 import frc.robot.util.MotionHandler;
 import org.littletonrobotics.junction.Logger;
 

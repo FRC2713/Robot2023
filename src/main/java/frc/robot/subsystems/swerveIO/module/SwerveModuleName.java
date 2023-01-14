@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SwerveIO.module;
+package frc.robot.subsystems.swerveIO.module;
 
 public enum SwerveModuleName {
   FRONT_LEFT("FrontLeft"),

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SwerveIO.module;
+package frc.robot.subsystems.swerveIO.module;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
