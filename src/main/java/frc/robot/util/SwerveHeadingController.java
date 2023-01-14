@@ -16,7 +16,7 @@ public class SwerveHeadingController {
     controller = new PIDFFController(DriveConstants.kHeadingControllerGains);
     controller.setTolerance(DriveConstants.kHeadingControllerGains.tolerance.get());
     controller.enableContinuousInput(-180, 180);
-    setpoint = Robot.swerveDrive.getPose().getRotation();
+    setpoint = Robot.swerveDrive.getEstimatedPose().getRotation();
   }
 
   /**
@@ -72,7 +72,7 @@ public class SwerveHeadingController {
     Logger.getInstance().recordOutput("Heading Controller/setpoint", setpoint.getDegrees());
     double output = 0;
     if (!controller.atSetpoint()) {
-      Rotation2d currentHeading = Robot.swerveDrive.getPose().getRotation();
+      Rotation2d currentHeading = Robot.swerveDrive.getEstimatedPose().getRotation();
       output = controller.calculate(currentHeading.getDegrees(), setpoint.getDegrees());
       Logger.getInstance()
           .recordOutput(
