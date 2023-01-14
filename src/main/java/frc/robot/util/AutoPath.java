@@ -5,8 +5,9 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 public class AutoPath {
   public enum Autos {
-    PART_1("load1stcargo"),
-    PART_2("getonthebridge");
+    PART_1("goto1stcargo"),
+    PART_2("backtogrid"),
+    PART_3("getonthebridge");
 
     private String filename;
 

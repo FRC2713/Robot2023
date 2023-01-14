@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -32,10 +33,17 @@ public class Robot extends LoggedRobot {
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   private Command autoCommand =
       new SequentialCommandGroup(
-          CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
           new InstantCommand(() -> ele.setTargetHeight(30)),
           new WaitUntilCommand(() -> ele.atTargetHeight()),
-          CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()));
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(0))),
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(30))),
+          new InstantCommand(() -> ele.setTargetHeight(0)),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
 
   @Override
   public void robotInit() {
