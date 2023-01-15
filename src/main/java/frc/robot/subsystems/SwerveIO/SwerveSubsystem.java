@@ -28,7 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule backRight;
 
   private final SwerveDriveOdometry odometry;
-  private final SwerveDrivePoseEstimator newOdometry;
+  private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
 
   /**
@@ -66,7 +66,7 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backRight.getPosition()
             },
             new Pose2d());
-    newOdometry =
+    poseEstimator =
         new SwerveDrivePoseEstimator(
             DriveConstants.kinematics,
             Rotation2d.fromDegrees(inputs.gyroYawPosition),
@@ -106,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
         },
         pose);
 
-    newOdometry.resetPosition(
+    poseEstimator.resetPosition(
         pose.getRotation(),
         new SwerveModulePosition[] {
           this.frontLeft.getPosition(),
@@ -125,7 +125,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Pose2d getEstimatedPose() {
     if (Robot.isReal()) {
-      return newOdometry.getEstimatedPosition();
+      return poseEstimator.getEstimatedPosition();
     } else {
       return simOdometryPose;
     }
@@ -133,7 +133,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Pose2d getRegularPose() {
     if (Robot.isReal()) {
-      return newOdometry.getEstimatedPosition();
+      return poseEstimator.getEstimatedPosition();
     } else {
       return simOdometryPose;
     }
@@ -187,7 +187,7 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    newOdometry.update(
+    poseEstimator.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
