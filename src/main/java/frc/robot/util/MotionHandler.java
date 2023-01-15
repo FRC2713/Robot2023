@@ -25,8 +25,10 @@ public class MotionHandler {
    * @return The desired array of desaturated swerveModuleStates.
    */
   public static SwerveModuleState[] driveSnappedToGoal() {
-    double xSpeed = MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
-    double ySpeed = MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
+    double xSpeed =
+        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
+    double ySpeed =
+        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
     SwerveHeadingController.getInstance().setSetpoint(new Rotation2d(Units.degreesToRadians(180)));
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.kinematics.toSwerveModuleStates(
@@ -47,9 +49,12 @@ public class MotionHandler {
    * @return The desired array of desaturated swerveModuleStates.
    */
   public static SwerveModuleState[] driveFullControl() {
-    double xSpeed = MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
-    double ySpeed = MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
-    double rSpeed = MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone);
+    double xSpeed =
+        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
+    double ySpeed =
+        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
+    double rSpeed =
+        MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone);
 
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.kinematics.toSwerveModuleStates(
@@ -70,8 +75,8 @@ public class MotionHandler {
    * @return The desired array of desaturated swerveModuleStates.
    */
   public static SwerveModuleState[] driveTrajectory() {
-    SwerveModuleState[] swerveModuleStates = DriveConstants.kinematics
-        .toSwerveModuleStates(TrajectoryController.getInstance().update());
+    SwerveModuleState[] swerveModuleStates =
+        DriveConstants.kinematics.toSwerveModuleStates(TrajectoryController.getInstance().update());
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
 
@@ -79,18 +84,18 @@ public class MotionHandler {
   }
 
   /**
-   * Sets the robot to an unmoving lockdown configuration which is difficult to
-   * push.
+   * Sets the robot to an unmoving lockdown configuration which is difficult to push.
    *
    * @return The lockdown array of swerveModuleStates.
    */
   public static SwerveModuleState[] lockdown() {
-    SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
-        new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45)),
-        new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
-        new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
-        new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45))
-    };
+    SwerveModuleState[] swerveModuleStates =
+        new SwerveModuleState[] {
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45))
+        };
 
     return swerveModuleStates;
   }
