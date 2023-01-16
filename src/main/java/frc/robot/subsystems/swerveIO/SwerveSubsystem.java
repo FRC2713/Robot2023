@@ -258,7 +258,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Logger.getInstance().processInputs("Swerve/Chassis", inputs);
     Logger.getInstance()
         .recordOutput(
-            "Swerve/OldOdometry",
+            "Swerve/Odometry Pose",
             new double[] {
               getRegularPose().getX(),
               getRegularPose().getY(),
@@ -266,7 +266,7 @@ public class SwerveSubsystem extends SubsystemBase {
             });
     Logger.getInstance()
         .recordOutput(
-            "Swerve/NewOdometry",
+            "Swerve/PoseEstimator Pose",
             new double[] {
               getEstimatedPose().getX(),
               getEstimatedPose().getY(),
