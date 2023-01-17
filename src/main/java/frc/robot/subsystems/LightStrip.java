@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 
-/** Add your docs here. */
+/**
+ * wow. docs
+ * Add your docs here. */
 public class LightStrip extends SubsystemBase {
 
   private Spark blinkin;
