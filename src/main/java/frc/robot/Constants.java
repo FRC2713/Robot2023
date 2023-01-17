@@ -36,6 +36,8 @@ public final class Constants {
     }
 
     public static final int pigeonCANId = 20;
+
+    public static final int BLINKIN_PORT = 1000;
   }
 
   public static class Elevator {
