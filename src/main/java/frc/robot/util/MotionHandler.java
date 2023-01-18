@@ -14,7 +14,7 @@ public class MotionHandler {
 
   public enum MotionMode {
     FULL_DRIVE,
-    SNAPPED_TO_GOAL,
+    HEADING_CONTROLLER,
     TRAJECTORY,
     LOCKDOWN
   }
@@ -24,12 +24,18 @@ public class MotionHandler {
    *
    * @return The desired array of desaturated swerveModuleStates.
    */
-  public static SwerveModuleState[] driveSnappedToGoal() {
+  public static SwerveModuleState[] driveHeadingController() {
     double xSpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
     double ySpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
-    SwerveHeadingController.getInstance().setSetpoint(new Rotation2d(Units.degreesToRadians(180)));
+    Rotation2d rSetpoint =
+        new Rotation2d(
+            Units.degreesToRadians(
+                MathUtil.applyDeadband(
+                        -Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone)
+                    * DriveConstants.headingControllerDriverChangeRate));
+    SwerveHeadingController.getInstance().addToSetpoint(rSetpoint);
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
