@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SwerveIO;
+package frc.robot.subsystems.swerveIO;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
