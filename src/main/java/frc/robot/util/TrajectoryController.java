@@ -36,7 +36,7 @@ public class TrajectoryController {
   public void changePath(@NonNull PathPlannerTrajectory newTrajectory) {
     traj = newTrajectory;
 
-    System.err.println("Assigning a traj, is null? " + (newTrajectory == null));
+    Logger.getInstance().recordOutput("Trajectory/Trajectory Obj", newTrajectory);
     timer.reset();
     timer.stop();
   }
@@ -62,7 +62,7 @@ public class TrajectoryController {
             });
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
-      return controller.calculate(Robot.swerveDrive.getEstimatedPose(), targetState);
+      return controller.calculate(Robot.swerveDrive.getRegularPose(), targetState);
     } else return new ChassisSpeeds();
   }
 }
