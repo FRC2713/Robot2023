@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.util.MechanismManager;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -27,7 +28,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Elevator ele;
+  public static Elevator ele;
+  private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
@@ -65,9 +67,16 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     Logger.getInstance().addDataReceiver(new NT4Publisher());
+    Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
+    Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
+    Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
+    Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
+    Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
+    this.mechManager = new MechanismManager();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -118,6 +127,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
+    mechManager.periodic();
   }
 
   @Override
