@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,6 +24,7 @@ import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.SwerveHeadingController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -120,6 +122,41 @@ public class Robot extends LoggedRobot {
             new InstantCommand(
                 () -> {
                   ele.setTargetHeight(30);
+                }));
+    driver
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+                }));
+
+    driver
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+                }));
+
+    driver
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+                }));
+
+    driver
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
   }
 
