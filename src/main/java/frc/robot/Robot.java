@@ -165,6 +165,9 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
+    if (Math.abs(driver.getRightX()) > 0.25) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
   }
 
   @Override
