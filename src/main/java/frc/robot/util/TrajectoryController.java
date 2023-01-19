@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -17,9 +16,9 @@ public class TrajectoryController {
 
   private static TrajectoryController instance;
   Timer timer = new Timer();
-  PathPlannerTrajectory traj =
-      PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
+  PathPlannerTrajectory traj;
   HashMap<String, Command> eventMap = new HashMap<>();
+  PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
           new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(1.0, 0, 0));
@@ -46,11 +45,14 @@ public class TrajectoryController {
   }
 
   public ChassisSpeeds update() {
+    if (traj == null) {
+      return new ChassisSpeeds();
+    }
     if (timer.get() == 0) {
       timer.start();
     }
 
-    PathPlannerState targetState = (PathPlannerState) traj.sample(timer.get());
+    targetState = (PathPlannerState) traj.sample(timer.get());
 
     Logger.getInstance()
         .recordOutput(

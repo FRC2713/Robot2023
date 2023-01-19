@@ -14,13 +14,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
-import frc.robot.util.MechanismManager;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.util.AutoPath.Autos;
+import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -155,13 +155,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {}
     autoCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
-
-    /*
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.schedule();
-      motionMode = MotionMode.TRAJECTORY;
-    }*/
-
   }
 
   @Override

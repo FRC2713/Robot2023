@@ -1,13 +1,10 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 
-/**
- * wow. docs
- * Add your docs here. */
+/** wow. docs Add your docs here. */
 public class LightStrip extends SubsystemBase {
 
   private Spark blinkin;
