@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,7 +33,9 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  public static Elevator ele;
+  private Elevator ele;
+  public static double[] poseValue;
+  DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
@@ -66,6 +73,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -176,8 +185,19 @@ public class Robot extends LoggedRobot {
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
+
+//grab botpose from the network table, put it into swerve drive inputs, read botpose, and put that into the pose estimator
+//using the vision command
+
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {    
+    TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if(queue.length > 0){
+      TimestampedDoubleArray lastCameraReading = queue[queue.length-1];
+      swerveDrive.updateVisionPose(lastCameraReading); 
+    }   
+  }
 
   @Override
   public void teleopExit() {}
