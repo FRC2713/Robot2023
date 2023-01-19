@@ -77,8 +77,8 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    this.ele = new Elevator(new ElevatorIOSim());
-    this.mechManager = new MechanismManager();
+    ele = new Elevator(new ElevatorIOSim());
+    mechManager = new MechanismManager();
 
     Robot.swerveDrive =
         Robot.isReal()
