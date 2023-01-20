@@ -85,7 +85,7 @@ public final class Constants {
     public static final double fullRobotLength = bumperlessRobotLength + bumperThickness * 2;
 
     public static final PIDFFGains kHeadingControllerGains =
-        PIDFFGains.builder("Heading Controller").kP(40).kD(2).tolerance(0).build();
+        PIDFFGains.builder("Heading Controller").kP(20).kD(1).tolerance(0.5).build();
     public static final double headingControllerDriverChangeRate = 4;
 
     public static final ModuleInfo frontLeft =
