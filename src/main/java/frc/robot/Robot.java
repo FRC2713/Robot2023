@@ -43,7 +43,8 @@ public class Robot extends LoggedRobot {
       new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                four.setAngleDeg(63.75);
+                // four.setAngleDeg(63.75);
+                four.setAngleDeg(80);
               }),
           new WaitUntilCommand(() -> four.isAtTarget()),
           new WaitCommand(5),

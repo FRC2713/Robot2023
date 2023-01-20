@@ -17,8 +17,8 @@ public class FourBar extends SubsystemBase {
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = new ArmFeedforward(0.0, 0.45, 0.0);
-    this.controller = new ProfiledPIDController(50, 0, 0, new Constraints(160, 500));
+    this.ff = new ArmFeedforward(0.0, 6000, 0.0);
+    this.controller = new ProfiledPIDController(50000, 0, 0, new Constraints(1600, 5000));
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
