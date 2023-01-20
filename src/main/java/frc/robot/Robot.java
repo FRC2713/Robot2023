@@ -9,8 +9,10 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.StringMultipleAutosTogether;
 import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.SwerveIO.SwerveIOSim;
 import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
@@ -18,6 +20,9 @@ import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBar;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBarIOSim;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBarIOSparks;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -26,6 +31,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
+  public static FourBar four;
   public static Elevator ele;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
@@ -33,7 +39,18 @@ public class Robot extends LoggedRobot {
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   public static PathPlannerTrajectory traj =
       PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
-  private Command autoCommand = StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
+  private Command autoCommand =
+      new SequentialCommandGroup(
+          new InstantCommand(
+              () -> {
+                four.setAngleDeg(63.75);
+              }),
+          new WaitUntilCommand(() -> four.isAtTarget()),
+          new WaitCommand(5),
+          new InstantCommand(
+              () -> {
+                four.setAngleDeg(203.75);
+              }));
 
   @Override
   public void robotInit() {
@@ -46,8 +63,9 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    this.ele = new Elevator(new ElevatorIOSim());
+    this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
+    this.ele = new Elevator(new ElevatorIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -90,7 +108,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  ele.setTargetHeight(30);
+                  // ele.setTargetHeight(30);
                 }));
   }
 
@@ -99,6 +117,8 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
+    Robot.four.periodic();
+    Robot.ele.periodic();
   }
 
   @Override
@@ -118,6 +138,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    // four.setAngleDeg(20);
+    ele.setTargetHeight(30);
     if (autoCommand != null) {}
     autoCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;

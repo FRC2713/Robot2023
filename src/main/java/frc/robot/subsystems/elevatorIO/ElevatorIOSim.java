@@ -1,25 +1,31 @@
 package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
-  private AngledElevatorSim sim =
-      new AngledElevatorSim(
+  private static final double kArmEncoderDistPerPulse = 2.0 * Math.PI / 4096;
+
+  // Simulation classes help us simulate what's going on, including gravity.
+  private static final double m_armReduction = 600;
+  private static final double m_armMass = 5.0; // Kilograms
+  private static final double m_armLength = Units.inchesToMeters(30);
+  // This arm sim represents an arm that can travel from -75 degrees (rotated down front)
+  // to 255 degrees (rotated down in the back).
+  private final ElevatorSim sim =
+      new ElevatorSim(
           DCMotor.getNEO(2),
           1.0,
           Constants.Elevator.CARRIAGE_MASS_KG,
           Constants.Elevator.ELEVATOR_DRUM_RADIUS_METERS,
           Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
           Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
-          true,
-          null,
-          Rotation2d.fromDegrees(Constants.Elevator.ELEVATOR_ANGLE_DEGREES));
+          true);
 
   /**
    * Automatically updates given {@code ElevatorInputs} instance based on simulation
