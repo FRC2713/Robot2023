@@ -41,17 +41,19 @@ public class Robot extends LoggedRobot {
       PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
   private Command autoCommand =
       new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                // four.setAngleDeg(63.75);
-                four.setAngleDeg(80);
-              }),
-          new WaitUntilCommand(() -> four.isAtTarget()),
-          new WaitCommand(5),
-          new InstantCommand(
-              () -> {
-                four.setAngleDeg(203.75);
-              }));
+              new InstantCommand(
+                  () -> {
+                    four.setAngleDeg(-110);
+                  }),
+              new WaitUntilCommand(() -> four.isAtTarget()),
+              new WaitCommand(5),
+              new InstantCommand(
+                  () -> {
+                    four.setAngleDeg(20);
+                  }),
+              new WaitUntilCommand(() -> four.isAtTarget()),
+              new WaitCommand(5))
+          .repeatedly();
 
   @Override
   public void robotInit() {
@@ -119,7 +121,7 @@ public class Robot extends LoggedRobot {
     ErrHandler.getInstance().log();
     mechManager.periodic();
     Robot.four.periodic();
-    Robot.ele.periodic();
+    // Robot.ele.periodic();
   }
 
   @Override
@@ -141,8 +143,9 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // four.setAngleDeg(20);
     ele.setTargetHeight(30);
-    if (autoCommand != null) {}
-    autoCommand.schedule();
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
     motionMode = MotionMode.TRAJECTORY;
   }
 

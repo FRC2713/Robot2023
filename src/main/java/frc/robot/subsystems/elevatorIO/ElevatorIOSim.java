@@ -9,14 +9,6 @@ import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
-  private static final double kArmEncoderDistPerPulse = 2.0 * Math.PI / 4096;
-
-  // Simulation classes help us simulate what's going on, including gravity.
-  private static final double m_armReduction = 600;
-  private static final double m_armMass = 5.0; // Kilograms
-  private static final double m_armLength = Units.inchesToMeters(30);
-  // This arm sim represents an arm that can travel from -75 degrees (rotated down front)
-  // to 255 degrees (rotated down in the back).
   private final ElevatorSim sim =
       new ElevatorSim(
           DCMotor.getNEO(2),

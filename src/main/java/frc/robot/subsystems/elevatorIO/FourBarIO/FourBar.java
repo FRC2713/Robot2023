@@ -3,42 +3,28 @@ package frc.robot.subsystems.elevatorIO.FourBarIO;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
-public class FourBar extends SubsystemBase {
+public class FourBar {
 
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
-  private double targetRads = 0.0;
+  private double targetRads = Units.degreesToRadians(0);
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = new ArmFeedforward(0.0, 6000, 0.0);
-    this.controller = new ProfiledPIDController(50000, 0, 0, new Constraints(1600, 5000));
+    this.ff = Constants.FourBarConstants.FEED_FORWARD;
+    this.controller = Constants.FourBarConstants.PID_CONTROLLER;
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
   }
 
-  //   public void setTargetRads(double targetExtensionInches) {
-  //     if (targetExtensionInches > Units.metersToInches(Constants.FourBar.FOUR_BAR_MAX_EXTENSION))
-  // {
-  //       RedHawkUtil.ErrHandler.getInstance().addError("Target extension too far");
-  //       this.targetRads =
-  //           MathUtil.clamp(
-  //               targetExtensionInches,
-  //               0,
-  //               Units.metersToInches(Constants.FourBar.FOUR_BAR_MAX_EXTENSION));
-  //       return;
-  //     }
-  //     this.targetRads = targetExtensionInches;
-  //   }
   public void setAngleDeg(double targetDegs) {
-    this.targetRads = Units.degreesToRadians(-targetDegs);
+    this.targetRads = Units.degreesToRadians(targetDegs);
   }
 
   public boolean isAtTarget() {
