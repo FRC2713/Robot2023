@@ -139,8 +139,8 @@ public class SwerveSubsystem extends SubsystemBase {
       return simOdometryPose;
     }
   }
-  
-  public void updateVisionPose(TimestampedDoubleArray array){
+
+  public void updateVisionPose(TimestampedDoubleArray array) {
     double[] val = array.value;
     Pose2d pose = new Pose2d(val[0], val[1], new Rotation2d(val[5]));
     poseEstimator.addVisionMeasurement(pose, array.timestamp);

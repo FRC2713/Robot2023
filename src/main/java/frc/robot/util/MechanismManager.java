@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 public class MechanismManager {
   private final Mechanism2d mech;
@@ -30,6 +29,6 @@ public class MechanismManager {
   }
 
   public void periodic() {
-    m_elevator.setLength(Robot.ele.getCurrentHeight());
+    //  m_elevator.setLength(Robot.ele.getCurrentHeight());
   }
 }

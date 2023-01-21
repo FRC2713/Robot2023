@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -185,18 +184,18 @@ public class Robot extends LoggedRobot {
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
-
-//grab botpose from the network table, put it into swerve drive inputs, read botpose, and put that into the pose estimator
-//using the vision command
+  // grab botpose from the network table, put it into swerve drive inputs, read botpose, and put
+  // that into the pose estimator
+  // using the vision command
 
   @Override
-  public void teleopPeriodic() {    
+  public void teleopPeriodic() {
     TimestampedDoubleArray[] queue = visionPose.readQueue();
 
-    if(queue.length > 0){
-      TimestampedDoubleArray lastCameraReading = queue[queue.length-1];
-      swerveDrive.updateVisionPose(lastCameraReading); 
-    }   
+    if (queue.length > 0) {
+      TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
+      swerveDrive.updateVisionPose(lastCameraReading);
+    }
   }
 
   @Override
