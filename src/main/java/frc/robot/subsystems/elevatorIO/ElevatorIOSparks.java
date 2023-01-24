@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 
 public class ElevatorIOSparks implements ElevatorIO {
@@ -13,8 +12,10 @@ public class ElevatorIOSparks implements ElevatorIO {
   public ElevatorIOSparks() {
     left = new CANSparkMax(0, MotorType.kBrushless);
     right = new CANSparkMax(1, MotorType.kBrushless);
-    left.setSmartCurrentLimit(50);
-    right.setSmartCurrentLimit(50);
+    left.restoreFactoryDefaults();
+    right.restoreFactoryDefaults();
+    left.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
+    right.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()
         .setPositionConversionFactor(Constants.Elevator.ELEVATOR_POSITION_CONVERSION_FACTOR);
     right
@@ -29,9 +30,6 @@ public class ElevatorIOSparks implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorInputs inputs) {
-    if (DriverStation.isDisabled()) {
-      return;
-    }
     inputs.outputVoltage = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
     inputs.heightInches = Units.metersToInches(left.getEncoder().getPosition());
     inputs.velocityInchesPerSecond = Units.metersToInches(left.getEncoder().getVelocity());
@@ -40,7 +38,7 @@ public class ElevatorIOSparks implements ElevatorIO {
 
   @Override
   public void setVoltage(double volts) {
-    left.setVoltage(1);
-    right.setVoltage(1);
+    left.setVoltage(volts);
+    right.setVoltage(volts);
   }
 }

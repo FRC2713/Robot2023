@@ -43,10 +43,11 @@ public final class Constants {
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
-    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 5.0;
-    public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
-        5.0; // not the final value : );
+    public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
+    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = (5.0) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+    public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR = ELEVATOR_POSITION_CONVERSION_FACTOR/60; // not the final value : );
     public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
+    public static final int ELEVATOR_CURRENT_LIMIT = 50;
   }
 
   public static class Telescope {
@@ -65,6 +66,9 @@ public final class Constants {
     public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(27);
     public static final double GEARING = 200.0;
     public static final double MASS_KG = 0.5;
+    public static final double FOUR_BAR_RATIO = 5; //subject to change
+    public static final double FOUR_BAR_ANGLE_CONVERSION  = FOUR_BAR_RATIO * 360;
+    public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION/60;
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final ProfiledPIDController PID_CONTROLLER =
         new ProfiledPIDController(9, 0.5, 0.5, new Constraints(1600, 5000));
