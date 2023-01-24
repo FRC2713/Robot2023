@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,6 +31,7 @@ public final class Constants {
   public static final boolean tuningMode = false;
   public static final int zero = 0; // in case you need a zero :)
 
+  public static final double π = Math.PI;
   @UtilityClass
   public static final class RobotMap {
     public static final int pigeonCANId = 20;
