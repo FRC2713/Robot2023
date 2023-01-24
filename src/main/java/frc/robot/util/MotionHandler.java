@@ -29,13 +29,13 @@ public class MotionHandler {
         MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
     double ySpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
-    Rotation2d rSetpoint =
-        new Rotation2d(
-            Units.degreesToRadians(
-                MathUtil.applyDeadband(
-                        -Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone)
-                    * DriveConstants.headingControllerDriverChangeRate));
-    SwerveHeadingController.getInstance().addToSetpoint(rSetpoint);
+    // Rotation2d rSetpoint =
+    //     new Rotation2d(
+    //         Units.degreesToRadians(
+    //             MathUtil.applyDeadband(
+    //                     -Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone)
+    //                 * DriveConstants.headingControllerDriverChangeRate));
+    // SwerveHeadingController.getInstance().addToSetpoint(rSetpoint);
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
