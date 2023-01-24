@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevatorIO.FourBarIO;
+package frc.robot.subsystems.FourBarIO;
 
 import org.littletonrobotics.junction.AutoLog;
 

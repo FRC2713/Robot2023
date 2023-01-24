@@ -1,8 +1,9 @@
-package frc.robot.subsystems.elevatorIO.FourBarIO;
+package frc.robot.subsystems.FourBarIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -16,8 +17,12 @@ public class FourBar {
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = Constants.FourBarConstants.FEED_FORWARD;
-    this.controller = Constants.FourBarConstants.PID_CONTROLLER;
+    this.ff = Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createArmFeedforward();
+    this.controller =
+        Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createProfiledPIDController(
+            new Constraints(
+                Constants.FourBarConstants.MAX_VELOCITY,
+                Constants.FourBarConstants.MAX_ACCELERATION));
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;

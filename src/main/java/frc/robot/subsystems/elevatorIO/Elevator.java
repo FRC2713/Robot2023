@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevatorIO;
+package frc.robot.subsystems.ElevatorIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;

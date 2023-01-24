@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevatorIO;
+package frc.robot.subsystems.ElevatorIO;
 
 import org.littletonrobotics.junction.AutoLog;
 

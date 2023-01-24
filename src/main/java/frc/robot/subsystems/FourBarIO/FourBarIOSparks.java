@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevatorIO.FourBarIO;
+package frc.robot.subsystems.FourBarIO;
 
 import com.revrobotics.CANSparkMax;
 

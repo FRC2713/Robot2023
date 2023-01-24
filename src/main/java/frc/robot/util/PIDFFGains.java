@@ -1,10 +1,17 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.NonNull;
 
 public class PIDFFGains {
-  public TunableNumber kP, kI, kD, kS, kV, tolerance;
+  public TunableNumber kP, kI, kD, kS, kV, kG, tolerance;
+  public static Set<String> names = new HashSet<>();
 
   private PIDFFGains(PIDFFGainsBuilder builder) {
     String key = builder.name + "/";
@@ -13,6 +20,7 @@ public class PIDFFGains {
     kD = new TunableNumber(key + "kD", builder.kD);
     kS = new TunableNumber(key + "kS", builder.kS);
     kV = new TunableNumber(key + "kV", builder.kV);
+    kG = new TunableNumber(key + "kG", builder.kG);
     tolerance = new TunableNumber(key + "tolerance", builder.tolerance);
   }
 
@@ -22,6 +30,7 @@ public class PIDFFGains {
         || kD.hasChanged()
         || kS.hasChanged()
         || kV.hasChanged()
+        || kG.hasChanged()
         || tolerance.hasChanged();
   }
 
@@ -36,7 +45,15 @@ public class PIDFFGains {
     return kS.get() != feedforward.ks || kV.get() != feedforward.kv;
   }
 
+  public boolean hasChanged(ArmFeedforward feedforward) {
+    return kS.get() != feedforward.ks || kV.get() != feedforward.kv || kG.get() != feedforward.kg;
+  }
+
   public boolean hasChanged(PIDController controller, SimpleMotorFeedforward feedforward) {
+    return hasChanged(controller) || hasChanged(feedforward);
+  }
+
+  public boolean hasChanged(PIDController controller, ArmFeedforward feedforward) {
     return hasChanged(controller) || hasChanged(feedforward);
   }
 
@@ -48,13 +65,25 @@ public class PIDFFGains {
     return new SimpleMotorFeedforward(kS.get(), kV.get());
   }
 
-  public static PIDFFGainsBuilder builder(String name) {
+  public ArmFeedforward createArmFeedforward() {
+    return new ArmFeedforward(kS.get(), kG.get(), kV.get());
+  }
+
+  public ProfiledPIDController createProfiledPIDController(
+      TrapezoidProfile.Constraints constraints) {
+    return new ProfiledPIDController(kP.get(), kI.get(), kD.get(), constraints);
+  }
+
+  public static PIDFFGainsBuilder builder(@NonNull String name) throws IllegalArgumentException {
+    if (PIDFFGains.names.contains(name)) {
+      throw new IllegalArgumentException("PIDFFGains with name " + name + " already exists!");
+    }
     return new PIDFFGainsBuilder(name);
   }
 
   public static class PIDFFGainsBuilder {
     private String name;
-    private double kP = 0, kI = 0, kD = 0, kS = 0, kV = 0;
+    private double kP = 0, kI = 0, kD = 0, kS = 0, kV = 0, kG = 0;
 
     // we wind up overwriting wpilib's default tolerance, which is 0.05, so set the same default
     // here to keep the same functionality
@@ -86,6 +115,11 @@ public class PIDFFGains {
 
     public PIDFFGainsBuilder kV(double kV) {
       this.kV = kV;
+      return this;
+    }
+
+    public PIDFFGainsBuilder kG(double kG) {
+      this.kG = kG;
       return this;
     }
 

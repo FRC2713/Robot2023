@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevatorIO.FourBarIO;
+package frc.robot.subsystems.FourBarIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
