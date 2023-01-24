@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,6 +19,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.fourBarIO.FourBar;
+import frc.robot.subsystems.fourBarIO.FourBarIOSim;
+import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -27,14 +31,16 @@ import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.SwerveHeadingController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Elevator ele;
+  public static Elevator ele;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
+  public static FourBar four;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
@@ -83,8 +89,9 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    this.ele = new Elevator(new ElevatorIOSim());
+    this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
+    this.ele = new Elevator(new ElevatorIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -127,7 +134,42 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  ele.setTargetHeight(30);
+                  // ele.setTargetHeight(30);
+                }));
+    driver
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+                }));
+
+    driver
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+                }));
+
+    driver
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+                }));
+
+    driver
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
   }
 
@@ -136,6 +178,11 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
+    Robot.four.periodic();
+    // Robot.ele.periodic();
+    if (Math.abs(driver.getRightX()) > 0.25) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
   }
 
   @Override
@@ -159,9 +206,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-
-    if (autoCommand != null) {}
-    autoCommand.schedule();
+    // four.setAngleDeg(20);
+    ele.setTargetHeight(30);
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
     motionMode = MotionMode.TRAJECTORY;
   }
 
