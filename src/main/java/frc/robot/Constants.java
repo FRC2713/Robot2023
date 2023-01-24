@@ -21,30 +21,29 @@ import lombok.experimental.UtilityClass;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
+@UtilityClass
 public final class Constants {
-
-  private Constants() {
-    throw new AssertionError();
-  }
 
   public static final boolean tuningMode = false;
   public static final int zero = 0; // in case you need a zero :)
 
+  @UtilityClass
   public static final class RobotMap {
-    private RobotMap() {
-      throw new AssertionError();
-    }
-
     public static final int pigeonCANId = 20;
+
+    public static final int BLINKIN_PORT = 1000;
   }
 
+  @UtilityClass
   public static class Elevator {
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 5.0;
-    public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR = 5.0; // not the final value : )
+    public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
+        5.0; // not the final value : );
+    public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
   }
 
   public static class Telescope {
@@ -57,11 +56,8 @@ public final class Constants {
     public static final double TELESCOPE_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
   }
 
+  @UtilityClass
   public static final class DriveConstants {
-    private DriveConstants() {
-      throw new AssertionError();
-    }
-
     public static final double kJoystickTurnDeadzone = 0.04;
     public static final double wheelDiameter = 4;
     public static final double gearRatio = 6.12;

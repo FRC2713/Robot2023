@@ -4,13 +4,15 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
@@ -20,6 +22,8 @@ import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.telescopeIO.Telescope;
 import frc.robot.subsystems.telescopeIO.TelescopeIOSim;
+import frc.robot.util.AutoPath.Autos;
+import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -27,25 +31,57 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  private Elevator ele;
+  public static Elevator ele;
   private Telescope tel;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
+  private static MechanismManager mechManager;
+  private Command autoCommand =
+      new SequentialCommandGroup(
+          new InstantCommand(
+              () -> {
+                ele.setTargetHeight(30);
+                swerveDrive.resetOdometry(Autos.PART_1.getTrajectory().getInitialHolonomicPose());
+              }),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(0))),
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(30))),
+          new InstantCommand(() -> ele.setTargetHeight(0)),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
 
-  public static PathPlannerTrajectory traj =
-      PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
-  // private Command autoCommand =
-  // StringMultipleAutosTogether.stringTrajectoriesTogether(traj);
-  private Command autoCommand = new InstantCommand(() -> tel.setTargetExtensionInches(30));
+  private Command elevatorTestCommand =
+      new SequentialCommandGroup(
+          new InstantCommand(
+              () -> {
+                ele.setTargetHeight(23.5);
+              }),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          new WaitUntilCommand(2),
+          new InstantCommand(
+              () -> {
+                ele.setTargetHeight(35.5);
+              }));
 
   @Override
   public void robotInit() {
     Logger.getInstance().addDataReceiver(new NT4Publisher());
+    Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
+    Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
+    Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
+    Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
+    Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
     this.tel = new Telescope(new TelescopeIOSim());
+    this.mechManager = new MechanismManager();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -166,12 +202,17 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
+    mechManager.periodic();
   }
 
   @Override
   public void disabledInit() {
     if (autoCommand != null) {
       autoCommand.cancel();
+    }
+
+    if (elevatorTestCommand != null) {
+      elevatorTestCommand.cancel();
     }
 
     Robot.motionMode = MotionMode.LOCKDOWN;
@@ -185,9 +226,17 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+
     if (autoCommand != null) {}
     autoCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
+
+    /*
+    if (elevatorTestCommand != null) {
+      elevatorTestCommand.schedule();
+      motionMode = MotionMode.TRAJECTORY;
+    }*/
+
   }
 
   @Override
@@ -201,6 +250,11 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+
+    if (elevatorTestCommand != null) {
+      elevatorTestCommand.cancel();
+    }
+
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
