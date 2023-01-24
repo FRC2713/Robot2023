@@ -6,8 +6,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -62,5 +65,13 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
 
     Logger.getInstance().processInputs("Elevator", inputs);
+  }
+
+  public static class Commands {
+    public static Command setToHeight(double height){
+      return new InstantCommand(
+              () -> Robot.ele.setTargetHeight(height), Robot.ele
+      );
+    }
   }
 }
