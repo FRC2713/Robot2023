@@ -1,4 +1,4 @@
-package frc.robot.subsystems.ElevatorIO;
+package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -43,6 +43,10 @@ public class Elevator extends SubsystemBase {
 
   public double getCurrentHeight() {
     return inputs.heightInches;
+  }
+
+  public boolean atTargetHeight() {
+    return Math.abs(getCurrentHeight() - targetHeight) < 1;
   }
 
   public void periodic() {

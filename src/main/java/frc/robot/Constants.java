@@ -8,8 +8,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.SwerveIO.module.ModuleInfo;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleName;
+import frc.robot.subsystems.swerveIO.module.ModuleInfo;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
 
@@ -106,7 +106,7 @@ public final class Constants {
     public static final double fullRobotLength = bumperlessRobotLength + bumperThickness * 2;
 
     public static final PIDFFGains kHeadingControllerGains =
-        PIDFFGains.builder("Heading Controller").kP(5).kD(0.001000).tolerance(0).build();
+        PIDFFGains.builder("Heading Controller").kP(20).kD(1).tolerance(0.5).build();
     public static final double headingControllerDriverChangeRate = 4;
 
     public static final ModuleInfo frontLeft =

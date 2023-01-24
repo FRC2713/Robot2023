@@ -4,31 +4,33 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.ElevatorIO.Elevator;
-import frc.robot.subsystems.ElevatorIO.ElevatorIOSim;
-import frc.robot.subsystems.FourBarIO.FourBar;
-import frc.robot.subsystems.FourBarIO.FourBarIOSim;
-import frc.robot.subsystems.FourBarIO.FourBarIOSparks;
+import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.IntakeIO.Intake;
 import frc.robot.subsystems.IntakeIO.IntakeIOSim;
 import frc.robot.subsystems.IntakeIO.IntakeIOSparks;
-import frc.robot.subsystems.SwerveIO.SwerveIOPigeon2;
-import frc.robot.subsystems.SwerveIO.SwerveIOSim;
-import frc.robot.subsystems.SwerveIO.SwerveSubsystem;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSim;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.subsystems.elevatorIO.Elevator;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.fourBarIO.FourBar;
+import frc.robot.subsystems.fourBarIO.FourBarIOSim;
+import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
+import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
+import frc.robot.subsystems.swerveIO.SwerveIOSim;
+import frc.robot.subsystems.swerveIO.SwerveSubsystem;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.SwerveHeadingController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -41,40 +43,36 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  public static PathPlannerTrajectory traj =
-      PathPlanner.loadPath("load4thcargo", PathPlanner.getConstraintsFromPath("load4thcargo"));
   private Command autoCommand =
       new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                intake.setVelocityDegPerSec(10.0);
+                ele.setTargetHeight(30);
+                swerveDrive.resetOdometry(Autos.PART_1.getTrajectory().getInitialHolonomicPose());
               }),
-          new WaitUntilCommand(() -> intake.isAtTarget()),
-          new WaitCommand(0.5),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(0))),
+          new ParallelCommandGroup(
+              CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()),
+              new InstantCommand(() -> ele.setTargetHeight(30))),
+          new InstantCommand(() -> ele.setTargetHeight(0)),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
+
+  private Command elevatorTestCommand =
+      new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                intake.setVelocityDegPerSec(200.0);
+                ele.setTargetHeight(23.5);
               }),
-          new WaitUntilCommand(() -> intake.isAtTarget()),
-          new WaitCommand(0.5),
+          new WaitUntilCommand(() -> ele.atTargetHeight()),
+          new WaitUntilCommand(2),
           new InstantCommand(
               () -> {
-                intake.setVelocityDegPerSec(0.0);
-              }),
-          new WaitUntilCommand(() -> intake.isAtTarget()),
-          new WaitCommand(0.5),
-          new InstantCommand(
-              () -> {
-                four.setAngleDeg(-110);
-              }),
-          new WaitUntilCommand(() -> four.isAtTarget()),
-          new WaitCommand(5),
-          new InstantCommand(
-              () -> {
-                four.setAngleDeg(20);
-              }),
-          new WaitUntilCommand(() -> four.isAtTarget()),
-          new WaitCommand(5));
+                ele.setTargetHeight(35.5);
+              }));
 
   @Override
   public void robotInit() {
@@ -135,6 +133,41 @@ public class Robot extends LoggedRobot {
                 () -> {
                   // ele.setTargetHeight(30);
                 }));
+    driver
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+                }));
+
+    driver
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+                }));
+
+    driver
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+                }));
+
+    driver
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+                }));
   }
 
   @Override
@@ -145,12 +178,19 @@ public class Robot extends LoggedRobot {
     Robot.four.periodic();
     Robot.intake.periodic();
     // Robot.ele.periodic();
+    if (Math.abs(driver.getRightX()) > 0.25) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
   }
 
   @Override
   public void disabledInit() {
     if (autoCommand != null) {
       autoCommand.cancel();
+    }
+
+    if (elevatorTestCommand != null) {
+      elevatorTestCommand.cancel();
     }
 
     Robot.motionMode = MotionMode.LOCKDOWN;
@@ -183,6 +223,11 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+
+    if (elevatorTestCommand != null) {
+      elevatorTestCommand.cancel();
+    }
+
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.ElevatorIO;
+package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
