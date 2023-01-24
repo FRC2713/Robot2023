@@ -28,16 +28,16 @@ public class FourBar {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleRads - targetRads) < 0.05;
+    return Math.abs(inputs.angleDegrees - targetRads) < 0.05;
   }
 
   public double getCurrentRads() {
-    return inputs.angleRads;
+    return inputs.angleDegrees;
   }
 
   public void periodic() {
-    double effort = controller.calculate(inputs.angleRads, targetRads);
-    double ffEffort = ff.calculate(inputs.angleRads, inputs.velocityRadsPerSecond);
+    double effort = controller.calculate(inputs.angleDegrees, targetRads);
+    double ffEffort = ff.calculate(inputs.angleDegrees, inputs.velocityDegreesPerSecond);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
