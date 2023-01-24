@@ -43,6 +43,8 @@ public final class Constants {
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
+    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 5.0;
+    public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR = 5.0; // not the final value : )
   }
 
   public static class Telescope {
