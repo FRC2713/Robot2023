@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
@@ -41,6 +44,18 @@ public final class Constants {
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
     public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
+  }
+
+  @UtilityClass
+  public static class FourBarConstants {
+    public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(-113);
+    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(27);
+    public static final double GEARING = 200.0;
+    public static final double MASS_KG = 0.5;
+    public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
+    public static final ProfiledPIDController PID_CONTROLLER =
+        new ProfiledPIDController(9, 0.5, 0.5, new Constraints(1600, 5000));
+    public static final ArmFeedforward FEED_FORWARD = new ArmFeedforward(0.0, 0.4, 0.0);
   }
 
   @UtilityClass

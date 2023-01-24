@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBar;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBarIOSim;
+import frc.robot.subsystems.elevatorIO.FourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -30,6 +33,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
+  public static FourBar four;
   public static Elevator ele;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
@@ -77,8 +81,9 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    ele = new Elevator(new ElevatorIOSim());
-    mechManager = new MechanismManager();
+    this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    this.mechManager = new MechanismManager();
+    this.ele = new Elevator(new ElevatorIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -121,7 +126,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  ele.setTargetHeight(30);
+                  // ele.setTargetHeight(30);
                 }));
     driver
         .povUp()
@@ -165,6 +170,8 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
+    Robot.four.periodic();
+    // Robot.ele.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
@@ -191,9 +198,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-
-    if (autoCommand != null) {}
-    autoCommand.schedule();
+    // four.setAngleDeg(20);
+    ele.setTargetHeight(30);
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
     motionMode = MotionMode.TRAJECTORY;
   }
 
