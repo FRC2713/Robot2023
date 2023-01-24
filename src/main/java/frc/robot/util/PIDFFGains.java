@@ -78,6 +78,7 @@ public class PIDFFGains {
     if (PIDFFGains.names.contains(name)) {
       throw new IllegalArgumentException("PIDFFGains with name " + name + " already exists!");
     }
+    PIDFFGains.names.add(name);
     return new PIDFFGainsBuilder(name);
   }
 
