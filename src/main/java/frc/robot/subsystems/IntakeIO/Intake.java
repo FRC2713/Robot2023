@@ -32,7 +32,7 @@ public class Intake {
 
   public void periodic() {
     double effort = controller.calculate(inputs.velocityRadsPerSecond, targetRadsPerSec);
-    double ffEffort = ff.calculate(inputs.velocityRadsPerSecond);
+    double ffEffort = ff.calculate(targetRadsPerSec);
     effort += ffEffort;
 
     IO.updateInputs(inputs);

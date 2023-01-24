@@ -61,7 +61,7 @@ public final class Constants {
     public static final double GEARING = 10;
     public static final double MOI = 10;
     public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
-        PIDFFGains.builder("Intake Controller").kP(10).kS(0).build();
+        PIDFFGains.builder("Intake Controller").kP(11).kD(0).kS(0.01).build();
   }
 
   @UtilityClass

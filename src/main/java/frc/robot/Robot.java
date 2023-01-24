@@ -53,6 +53,12 @@ public class Robot extends LoggedRobot {
           new WaitCommand(0.5),
           new InstantCommand(
               () -> {
+                intake.setVelocityDegPerSec(200.0);
+              }),
+          new WaitUntilCommand(() -> intake.isAtTarget()),
+          new WaitCommand(0.5),
+          new InstantCommand(
+              () -> {
                 intake.setVelocityDegPerSec(0.0);
               }),
           new WaitUntilCommand(() -> intake.isAtTarget()),
