@@ -1,6 +1,7 @@
 <div align="center">
     <h1>FRC 2713 Red Hawk Robotics</h1>
     <h2>Robot Code 2023</h2>
+    <img src="https://github.com/Sid220/Robot2023/actions/workflows/gradle.yml/badge.svg" />
 </div>
 
 ---

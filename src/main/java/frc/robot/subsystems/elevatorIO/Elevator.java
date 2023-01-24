@@ -45,6 +45,10 @@ public class Elevator extends SubsystemBase {
     return inputs.heightInches;
   }
 
+  public boolean atTargetHeight() {
+    return Math.abs(getCurrentHeight() - targetHeight) < 1;
+  }
+
   public void periodic() {
     double effort = elevatorController.calculate(inputs.heightInches, targetHeight);
     double ffEffort = feedforward.calculate(elevatorController.getSetpoint().velocity);

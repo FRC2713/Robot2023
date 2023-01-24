@@ -1,4 +1,4 @@
-package frc.robot.subsystems.SwerveIO.module;
+package frc.robot.subsystems.swerveIO.module;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -42,10 +42,14 @@ public class SwerveModule extends SubsystemBase {
    *
    * @return The desired SwerveModuleState object.
    */
-  public SwerveModuleState getState() {
+  public SwerveModuleState getMeasuredState() {
     return new SwerveModuleState(
         inputs.driveEncoderVelocityMetresPerSecond,
         Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
+  }
+
+  public SwerveModuleState getDesiredState() {
+    return state;
   }
 
   public SwerveModulePosition getPosition() {

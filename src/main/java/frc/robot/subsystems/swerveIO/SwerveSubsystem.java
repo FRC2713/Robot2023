@@ -1,5 +1,6 @@
-package frc.robot.subsystems.SwerveIO;
+package frc.robot.subsystems.swerveIO;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -11,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
-import frc.robot.subsystems.SwerveIO.module.SwerveModule;
-import frc.robot.subsystems.SwerveIO.module.SwerveModuleIO;
+import frc.robot.subsystems.swerveIO.module.SwerveModule;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
 import frc.robot.util.MotionHandler;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,6 +28,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule backRight;
 
   private final SwerveDriveOdometry odometry;
+  private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
 
   /**
@@ -64,6 +66,18 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backRight.getPosition()
             },
             new Pose2d());
+    poseEstimator =
+        new SwerveDrivePoseEstimator(
+            DriveConstants.kinematics,
+            Rotation2d.fromDegrees(inputs.gyroYawPosition),
+            new SwerveModulePosition[] {
+              this.frontLeft.getPosition(),
+              this.frontRight.getPosition(),
+              this.backLeft.getPosition(),
+              this.backRight.getPosition()
+            },
+            new Pose2d());
+
     simOdometryPose = odometry.getPoseMeters();
   }
 
@@ -91,6 +105,16 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         },
         pose);
+
+    poseEstimator.resetPosition(
+        pose.getRotation(),
+        new SwerveModulePosition[] {
+          this.frontLeft.getPosition(),
+          this.frontRight.getPosition(),
+          this.backLeft.getPosition(),
+          this.backRight.getPosition()
+        },
+        pose);
     simOdometryPose = pose;
   }
 
@@ -99,9 +123,17 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return The position of the robot on the field.
    */
-  public Pose2d getPose() {
+  public Pose2d getEstimatedPose() {
     if (Robot.isReal()) {
-      return odometry.getPoseMeters();
+      return poseEstimator.getEstimatedPosition();
+    } else {
+      return simOdometryPose;
+    }
+  }
+
+  public Pose2d getRegularPose() {
+    if (Robot.isReal()) {
+      return poseEstimator.getEstimatedPosition();
     } else {
       return simOdometryPose;
     }
@@ -118,8 +150,6 @@ public class SwerveSubsystem extends SubsystemBase {
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
-
-    Logger.getInstance().recordOutput("Module States", swerveModuleStates);
   }
 
   /**
@@ -128,10 +158,10 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return The average velocity at which all the swerve modules are moving.
    */
   public double getAverageVelocity() {
-    return (frontLeft.getState().speedMetersPerSecond
-            + frontRight.getState().speedMetersPerSecond
-            + backLeft.getState().speedMetersPerSecond
-            + backRight.getState().speedMetersPerSecond)
+    return (frontLeft.getMeasuredState().speedMetersPerSecond
+            + frontRight.getMeasuredState().speedMetersPerSecond
+            + backLeft.getMeasuredState().speedMetersPerSecond
+            + backRight.getMeasuredState().speedMetersPerSecond)
         / 4;
   }
 
@@ -157,10 +187,22 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
+    poseEstimator.update(
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        new SwerveModulePosition[] {
+          frontLeft.getPosition(),
+          frontRight.getPosition(),
+          backLeft.getPosition(),
+          backRight.getPosition()
+        });
+
     if (Robot.isSimulation()) {
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
-            frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()
+            frontLeft.getMeasuredState(),
+            frontRight.getMeasuredState(),
+            backLeft.getMeasuredState(),
+            backRight.getMeasuredState()
           };
       ChassisSpeeds speeds = Constants.DriveConstants.kinematics.toChassisSpeeds(measuredStates);
       simOdometryPose =
@@ -194,12 +236,41 @@ public class SwerveSubsystem extends SubsystemBase {
         break;
     }
 
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Measured Module States",
+            new SwerveModuleState[] {
+              frontLeft.getMeasuredState(),
+              frontRight.getMeasuredState(),
+              backLeft.getMeasuredState(),
+              backRight.getMeasuredState()
+            });
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Desired Module States",
+            new SwerveModuleState[] {
+              frontLeft.getDesiredState(),
+              frontRight.getDesiredState(),
+              backLeft.getDesiredState(),
+              backRight.getDesiredState()
+            });
+
     Logger.getInstance().processInputs("Swerve/Chassis", inputs);
     Logger.getInstance()
         .recordOutput(
-            "Swerve/Odometry",
+            "Swerve/Odometry Pose",
             new double[] {
-              getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()
+              getRegularPose().getX(),
+              getRegularPose().getY(),
+              getRegularPose().getRotation().getDegrees()
+            });
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/PoseEstimator Pose",
+            new double[] {
+              getEstimatedPose().getX(),
+              getEstimatedPose().getY(),
+              getEstimatedPose().getRotation().getDegrees()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
   }

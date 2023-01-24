@@ -14,29 +14,6 @@ import lombok.NonNull;
 import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryController {
-  // public enum AutoPath {
-  //   PART_1("autopart1"),
-  //   PART_2("autopart2");
-
-  //   private String filename;
-
-  //   private AutoPath(String filename) {
-  //     this.filename = filename;
-  //   }
-
-  //   public PathPlannerTrajectory getTrajectory() {
-  //     try {
-  //       PathPlannerTrajectory trajectory =
-  //           PathPlanner.loadPath(filename, PathPlanner.getConstraintsFromPath(filename));
-  //       return trajectory;
-  //     } catch (NullPointerException exception) {
-  //       return PathPlanner.loadPath(
-  //           filename,
-  //           new PathConstraints(
-  //               Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel));
-  //     }
-  //   }
-  // }
 
   private static TrajectoryController instance;
   Timer timer = new Timer();
@@ -59,7 +36,7 @@ public class TrajectoryController {
   public void changePath(@NonNull PathPlannerTrajectory newTrajectory) {
     traj = newTrajectory;
 
-    System.err.println("Assigning a traj, is null? " + (newTrajectory == null));
+    Logger.getInstance().recordOutput("Trajectory/Trajectory Obj", newTrajectory);
     timer.reset();
     timer.stop();
   }
@@ -85,7 +62,7 @@ public class TrajectoryController {
             });
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
-      return controller.calculate(Robot.swerveDrive.getPose(), targetState);
+      return controller.calculate(Robot.swerveDrive.getRegularPose(), targetState);
     } else return new ChassisSpeeds();
   }
 }
