@@ -26,8 +26,6 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
-import frc.robot.subsystems.telescopeIO.Telescope;
-import frc.robot.subsystems.telescopeIO.TelescopeIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -39,7 +37,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
-  public static Telescope tel;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
@@ -75,7 +72,6 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
-    this.tel = new Telescope(new TelescopeIOSim());
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
 
@@ -130,20 +126,6 @@ public class Robot extends LoggedRobot {
             new InstantCommand(
                 () -> {
                   ele.setTargetHeight(30);
-                }));
-    driver
-        .a()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  tel.setTargetExtensionInches(0);
-                }));
-    driver
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  tel.setTargetExtensionInches(30);
                 }));
 
     driver
