@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerveIO;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,13 +10,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerveIO.module.SwerveModule;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
 import frc.robot.util.MotionHandler;
+import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -280,5 +285,26 @@ public class SwerveSubsystem extends SubsystemBase {
               getEstimatedPose().getRotation().getDegrees()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
+  }
+
+  public static class Commands {
+    public static SequentialCommandGroup followTAndWait(PathPlannerTrajectory T) {
+      return new SequentialCommandGroup(
+          new InstantCommand(() -> TrajectoryController.getInstance().changePath(T)),
+          new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()));
+    }
+
+    public static SequentialCommandGroup stringTrajectoriesTogether(
+        PathPlannerTrajectory... trajectories) {
+      SequentialCommandGroup masterTrajectory =
+          new SequentialCommandGroup(
+              new InstantCommand(
+                  () -> TrajectoryController.getInstance().changePath(trajectories[0])));
+
+      for (PathPlannerTrajectory t : trajectories) {
+        masterTrajectory.addCommands(followTAndWait(t));
+      }
+      return masterTrajectory;
+    }
   }
 }
