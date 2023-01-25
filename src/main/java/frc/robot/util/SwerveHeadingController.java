@@ -76,7 +76,7 @@ public class SwerveHeadingController {
       output = controller.calculate(currentHeading.getDegrees(), setpoint.getDegrees());
       Logger.getInstance()
           .recordOutput(
-              "Heading Controller/error", currentHeading.getDegrees() - setpoint.getDegrees());
+              "Heading Controller/error", setpoint.getDegrees() - currentHeading.getDegrees());
     }
 
     Logger.getInstance().recordOutput("Heading Controller/update", output);
