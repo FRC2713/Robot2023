@@ -14,8 +14,8 @@ public class ElevatorIOSparks implements ElevatorIO {
     right = new CANSparkMax(1, MotorType.kBrushless);
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
-    left.setInverted(true); // subject to change
-    right.setInverted(true); // subject to change
+    left.setInverted(true);
+    right.setInverted(false); // might be reversed, idk
     left.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
     right.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()
