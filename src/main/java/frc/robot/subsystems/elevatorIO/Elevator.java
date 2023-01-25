@@ -70,8 +70,7 @@ public class Elevator extends SubsystemBase {
   public static class Commands {
     public static Command setToHeight(double height){
       return new InstantCommand(
-              () -> Robot.ele.setTargetHeight(height), Robot.ele
-      );
+              () -> Robot.ele.setTargetHeight(height), Robot.ele);
     }
   }
 }
