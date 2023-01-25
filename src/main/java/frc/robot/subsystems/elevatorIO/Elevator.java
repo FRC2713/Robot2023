@@ -66,7 +66,6 @@ public class Elevator extends SubsystemBase {
 
     Logger.getInstance().processInputs("Elevator", inputs);
   }
-
   public static class Commands {
     public static Command setToHeight(double height){
       return new InstantCommand(

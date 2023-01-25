@@ -4,10 +4,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 
-public class FourBar {
+public class FourBar extends SubsystemBase {
 
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
@@ -49,5 +53,11 @@ public class FourBar {
     Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
 
     Logger.getInstance().processInputs("4Bar", inputs);
+  }
+  public static class Commands {
+    public static Command setToAngle(double angleDeg){
+      return new InstantCommand(
+              () -> Robot.four.setAngleDeg(angleDeg), Robot.four);
+    }
   }
 }
