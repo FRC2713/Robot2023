@@ -6,9 +6,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.ElevatorIO.ElevatorInputsAutoLogged;
+import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -40,6 +42,14 @@ public class Elevator extends SubsystemBase {
       return;
     }
     this.targetHeight = targetHeightInches;
+  }
+
+  public Command cmdSetTargetHeight(double targetHeightInches) {
+    return new InstantCommand(() -> Robot.ele.setTargetHeight(targetHeightInches));
+  }
+
+  public Command cmdSetTargetHeightAndWait(double targetHeightInches) {
+    return cmdSetTargetHeight(targetHeightInches).repeatedly().until(() -> atTargetHeight());
   }
 
   public double getCurrentHeight() {

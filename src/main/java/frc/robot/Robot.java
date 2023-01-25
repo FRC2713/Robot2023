@@ -8,13 +8,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.CommandHelper;
+import frc.robot.commands.fullRoutines.TwoGamePieceTopSideAndBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
@@ -26,7 +24,6 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -43,36 +40,7 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  private Command autoCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(30);
-                swerveDrive.resetOdometry(Autos.PART_1.getTrajectory().getInitialHolonomicPose());
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new ParallelCommandGroup(
-              CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
-              new InstantCommand(() -> ele.setTargetHeight(0))),
-          new ParallelCommandGroup(
-              CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()),
-              new InstantCommand(() -> ele.setTargetHeight(30))),
-          new InstantCommand(() -> ele.setTargetHeight(0)),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
-
-  private Command elevatorTestCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(23.5);
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new WaitUntilCommand(2),
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(35.5);
-              }));
+  private Command autoCommand;
 
   @Override
   public void robotInit() {
@@ -85,10 +53,11 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    Robot.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    Robot.mechManager = new MechanismManager();
-    Robot.ele = new Elevator(new ElevatorIOSim());
-    Robot.intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    mechManager = new MechanismManager();
+    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    autoCommand = new TwoGamePieceTopSideAndBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -175,8 +144,8 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
-    Robot.four.periodic();
-    Robot.intake.periodic();
+    // Robot.four.periodic();
+    // Robot.intake.periodic();
     // Robot.ele.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
@@ -187,10 +156,6 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {
     if (autoCommand != null) {
       autoCommand.cancel();
-    }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
     }
 
     Robot.motionMode = MotionMode.LOCKDOWN;
@@ -205,7 +170,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // four.setAngleDeg(20);
-    ele.setTargetHeight(30);
+    // ele.setTargetHeight(30);
     if (autoCommand != null) {
       autoCommand.schedule();
     }
@@ -222,10 +187,6 @@ public class Robot extends LoggedRobot {
   public void teleopInit() {
     if (autoCommand != null) {
       autoCommand.cancel();
-    }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
     }
 
     Robot.motionMode = MotionMode.FULL_DRIVE;

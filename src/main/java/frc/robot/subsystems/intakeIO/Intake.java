@@ -3,10 +3,13 @@ package frc.robot.subsystems.intakeIO;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake {
+public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private final PIDController controller;
@@ -28,6 +31,14 @@ public class Intake {
 
   public void setVelocityDegPerSec(double targetDegsPerSec) {
     this.targetRadsPerSec = Units.degreesToRadians(targetDegsPerSec);
+  }
+
+  public Command cmdSetVelocityDegPerSec(double targetDegsPerSec) {
+    return new InstantCommand(() -> setVelocityDegPerSec(targetDegsPerSec));
+  }
+
+  public Command cmdSetVelocityDegPerSecAndWait(double targetDegsPerSec) {
+    return cmdSetVelocityDegPerSec(targetDegsPerSec).repeatedly().until(() -> isAtTarget());
   }
 
   public void periodic() {

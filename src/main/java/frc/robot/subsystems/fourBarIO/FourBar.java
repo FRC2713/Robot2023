@@ -3,11 +3,16 @@ package frc.robot.subsystems.fourBarIO;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 
-public class FourBar {
+public class FourBar extends SubsystemBase {
 
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
@@ -16,8 +21,12 @@ public class FourBar {
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = Constants.FourBarConstants.FEED_FORWARD;
-    this.controller = Constants.FourBarConstants.PID_CONTROLLER;
+    this.ff = Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createArmFeedforward();
+    this.controller =
+        Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createProfiledPIDController(
+            new Constraints(
+                Constants.FourBarConstants.MAX_VELOCITY,
+                Constants.FourBarConstants.MAX_ACCELERATION));
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
@@ -25,6 +34,14 @@ public class FourBar {
 
   public void setAngleDeg(double targetDegs) {
     this.targetRads = Units.degreesToRadians(targetDegs);
+  }
+
+  public Command cmdSetAngleDeg(double targetDegs) {
+    return new InstantCommand(() -> Robot.four.setAngleDeg(targetDegs));
+  }
+
+  public Command cmdSetAngleDegAndWait(double targetDegs) {
+    return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> isAtTarget());
   }
 
   public boolean isAtTarget() {
