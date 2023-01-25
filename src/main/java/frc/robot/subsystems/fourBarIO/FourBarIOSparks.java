@@ -15,8 +15,8 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarTwo = new CANSparkMax(1, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
     fourBarTwo.restoreFactoryDefaults();
-    fourBarOne.setSmartCurrentLimit(50);
-    fourBarTwo.setSmartCurrentLimit(50);
+    fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
+    fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     fourBarOne.getEncoder().setPositionConversionFactor(Constants.FourBarConstants.FOUR_BAR_ANGLE_CONVERSION);
     fourBarTwo.getEncoder().setPositionConversionFactor(Constants.FourBarConstants.FOUR_BAR_ANGLE_CONVERSION);
     fourBarOne.getEncoder().setVelocityConversionFactor(Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);

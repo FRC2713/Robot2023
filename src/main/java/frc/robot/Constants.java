@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -74,6 +73,7 @@ public final class Constants {
     public static final double FOUR_BAR_RATIO = 5; //subject to change
     public static final double FOUR_BAR_ANGLE_CONVERSION  = FOUR_BAR_RATIO * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION/60;
+    public static final int FOUR_BAR_CURRENT_LIMIT = 50; //subject to change
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final ProfiledPIDController PID_CONTROLLER =
         new ProfiledPIDController(9, 0.5, 0.5, new Constraints(1600, 5000));
