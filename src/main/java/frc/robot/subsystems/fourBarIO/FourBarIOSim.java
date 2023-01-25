@@ -26,8 +26,11 @@ public class FourBarIOSim implements FourBarIO {
     }
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
-    inputs.angleDegrees = sim.getAngleRads() * (180 * Math.PI); //convert these to degrees (done I think)
-    inputs.velocityDegreesPerSecond = sim.getVelocityRadPerSec() * (180 * Math.PI); //convert these to degrees (done I think. Return here if not)
+    inputs.angleDegrees =
+        sim.getAngleRads() * (180 * Math.PI); // convert these to degrees (done I think)
+    inputs.velocityDegreesPerSecond =
+        sim.getVelocityRadPerSec()
+            * (180 * Math.PI); // convert these to degrees (done I think. Return here if not)
     inputs.tempCelcius = 0.0;
   }
 

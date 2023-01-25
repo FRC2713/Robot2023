@@ -54,10 +54,10 @@ public class FourBar extends SubsystemBase {
 
     Logger.getInstance().processInputs("4Bar", inputs);
   }
+
   public static class Commands {
-    public static Command setToAngle(double angleDeg){
-      return new InstantCommand(
-              () -> Robot.four.setAngleDeg(angleDeg), Robot.four);
+    public static Command setToAngle(double angleDeg) {
+      return new InstantCommand(() -> Robot.four.setAngleDeg(angleDeg), Robot.four);
     }
   }
 }
