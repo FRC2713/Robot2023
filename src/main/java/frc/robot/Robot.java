@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  private Command autoCommand = new OneToAToThreeToBridge();
+  private Command autoCommand;
 
   private Command elevatorTestCommand =
       new SequentialCommandGroup(
@@ -74,6 +74,7 @@ public class Robot extends LoggedRobot {
     this.ele = new Elevator(new ElevatorIOSim());
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
+    this.autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -89,30 +90,7 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
-    /*
-     * driver
-     * .y()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.LOCKDOWN;
-     * }));
-     * driver
-     * .a()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.FULL_DRIVE;
-     * }));
-     * driver
-     * .b()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.HEADING_CONTROLLER;
-     * }));
-     *
-     */
+
     driver
         .x()
         .onTrue(
