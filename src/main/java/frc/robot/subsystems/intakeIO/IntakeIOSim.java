@@ -9,7 +9,7 @@ import frc.robot.Constants;
 public class IntakeIOSim implements IntakeIO {
   private final DCMotorSim sim =
       new DCMotorSim(
-          DCMotor.getNEO(2), Constants.IntakeConstants.GEARING, Constants.IntakeConstants.MOI);
+          DCMotor.getNeo550(1), Constants.IntakeConstants.GEARING, Constants.IntakeConstants.MOI);
 
   @Override
   public void updateInputs(IntakeInputs inputs) {
@@ -19,7 +19,7 @@ public class IntakeIOSim implements IntakeIO {
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
     inputs.isOn = sim.getAngularVelocityRadPerSec() > 0.005;
-    inputs.velocityRadsPerSecond = sim.getAngularVelocityRadPerSec();
+    inputs.velocityRPM = sim.getAngularVelocityRPM();
     inputs.tempCelcius = 0.0;
     inputs.currentAmps = sim.getCurrentDrawAmps();
     inputs.positionRad = sim.getAngularPositionRad();

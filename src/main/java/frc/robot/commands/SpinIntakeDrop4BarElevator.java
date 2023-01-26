@@ -5,9 +5,9 @@ import frc.robot.Robot;
 
 public class SpinIntakeDrop4BarElevator extends ParallelCommandGroup {
   public SpinIntakeDrop4BarElevator(
-      double elevatorHeight, double fourBarAngle, double intakeVelocityDegPerSec) {
+      double elevatorHeight, double fourBarAngle, double intakeVelocityRPM) {
     addCommands(
-        Robot.intake.cmdSetVelocityDegPerSecAndWait(intakeVelocityDegPerSec),
+        Robot.intake.cmdSetVelocityRPM(intakeVelocityRPM),
         Robot.ele.cmdSetTargetHeightAndWait(elevatorHeight),
         Robot.four.cmdSetAngleDegAndWait(fourBarAngle));
   }

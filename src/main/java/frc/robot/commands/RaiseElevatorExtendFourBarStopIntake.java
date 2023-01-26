@@ -9,6 +9,6 @@ public class RaiseElevatorExtendFourBarStopIntake extends ParallelCommandGroup {
     addCommands(
         Robot.ele.cmdSetTargetHeightAndWait(Units.metersToInches(elevatorHeight)),
         Robot.four.cmdSetAngleDegAndWait(Units.radiansToDegrees(fourBarAngle)),
-        Robot.intake.cmdSetVelocityDegPerSecAndWait(0));
+        Robot.intake.cmdSetVelocityRPM(0));
   }
 }

@@ -11,37 +11,63 @@ import frc.robot.commands.SpinIntakeDrop4BarElevator;
 import frc.robot.util.AutoPath;
 
 public class TwoGamePieceTopSideAndBridge extends SequentialCommandGroup {
-  // private int i = 0;
   public TwoGamePieceTopSideAndBridge() {
     addCommands(
+        // // Go to first cargo
+        // new InstantCommand(
+        //     () -> {
+        //       Robot.swerveDrive.resetOdometry(
+        //           AutoPath.Autos.GO_TO_FIRST_CARGO.getTrajectory().getInitialHolonomicPose());
+        //     }),
+        // CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.GO_TO_FIRST_CARGO.getTrajectory()),
+        // // Get cargo
+        // new SpinIntakeDrop4BarElevator(
+        //     Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
+        //     Constants.FourBarConstants.MAX_ANGLE_RADIANS,
+        //     500),
+
+        // Go to grid
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
-                  AutoPath.Autos.PART_1.getTrajectory().getInitialHolonomicPose());
+                  AutoPath.Autos.GO_TO_GRID.getTrajectory().getInitialHolonomicPose());
             }),
-        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.PART_1.getTrajectory()),
-        new SpinIntakeDrop4BarElevator(
-            Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
-            Constants.FourBarConstants.MAX_ANGLE_RADIANS,
-            100),
-        new WaitCommand(5),
-        new InstantCommand(
-            () -> {
-              Robot.swerveDrive.resetOdometry(
-                  AutoPath.Autos.PART_2.getTrajectory().getInitialHolonomicPose());
-            }),
-        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.PART_2.getTrajectory()),
+        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.GO_TO_GRID.getTrajectory()),
+        // Score game peice
         new RaiseElevatorExtendFourBarStopIntake(
             Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
             Constants.FourBarConstants.MIN_ANGLE_RADIANS),
-        new WaitCommand(5),
+        new WaitCommand(0.5),
+        // Go to second cargo
+        new InstantCommand(
+            () -> {
+              Robot.swerveDrive.resetOdometry(
+                  AutoPath.Autos.GO_TO_FIRST_CARGO.getTrajectory().getInitialHolonomicPose());
+            }),
+        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.GO_TO_FIRST_CARGO.getTrajectory()),
+        // Pick up second cargo
         new SpinIntakeDrop4BarElevator(
             Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
             Constants.FourBarConstants.MAX_ANGLE_RADIANS,
-            100),
-        new WaitCommand(5),
+            500),
+        // Go to grid second time
+        new InstantCommand(
+            () -> {
+              Robot.swerveDrive.resetOdometry(
+                  AutoPath.Autos.GO_TO_GRID_TWO.getTrajectory().getInitialHolonomicPose());
+            }),
+        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.GO_TO_GRID_TWO.getTrajectory()),
+        // Score second cargo
         new RaiseElevatorExtendFourBarStopIntake(
             Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
-            Constants.FourBarConstants.MIN_ANGLE_RADIANS));
+            Constants.FourBarConstants.MIN_ANGLE_RADIANS),
+        new WaitCommand(0.5),
+        // Dock
+        new InstantCommand(
+            () -> {
+              Robot.swerveDrive.resetOdometry(
+                  AutoPath.Autos.DOCK.getTrajectory().getInitialHolonomicPose());
+            }),
+        CommandHelper.stringTrajectoriesTogether(AutoPath.Autos.DOCK.getTrajectory()));
   }
 }

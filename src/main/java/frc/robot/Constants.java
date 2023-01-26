@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
@@ -58,10 +59,11 @@ public final class Constants {
 
   @UtilityClass
   public static class IntakeConstants {
+    public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
     public static final double GEARING = 10;
-    public static final double MOI = 10;
-    public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
-        PIDFFGains.builder("Intake Controller").kP(11).kD(0).kS(0.01).build();
+    public static final double MAX_ROLLER_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
+    public static final double MOI = 0.1;
   }
 
   @UtilityClass

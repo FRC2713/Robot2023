@@ -1,57 +1,44 @@
 package frc.robot.subsystems.intakeIO;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
-  private final PIDController controller;
-  private final SimpleMotorFeedforward ff;
-  private double targetRadsPerSec = 0.0;
+  private double targetRPM = 0.0;
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
-    this.controller =
-        Constants.IntakeConstants.PID_CONTROLLER_FEED_FORWARD.createWpilibController();
-    this.ff = Constants.IntakeConstants.PID_CONTROLLER_FEED_FORWARD.createWpilibFeedforward();
     IO.updateInputs(inputs);
     this.IO = IO;
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.velocityRadsPerSecond - targetRadsPerSec) < 0.05;
+    return Math.abs(inputs.velocityRPM - targetRPM) < 0.5;
   }
 
-  public void setVelocityDegPerSec(double targetDegsPerSec) {
-    this.targetRadsPerSec = Units.degreesToRadians(targetDegsPerSec);
+  public void setRpm(double rpm) {
+    this.targetRPM = rpm;
+    IO.setVoltage(rpm / (IntakeConstants.MAX_ROLLER_RPM) * 12);
   }
 
-  public Command cmdSetVelocityDegPerSec(double targetDegsPerSec) {
-    return new InstantCommand(() -> setVelocityDegPerSec(targetDegsPerSec));
+  public Command cmdSetVelocityRPM(double targetRPM) {
+    return new InstantCommand(() -> setRpm(targetRPM));
   }
 
-  public Command cmdSetVelocityDegPerSecAndWait(double targetDegsPerSec) {
-    return cmdSetVelocityDegPerSec(targetDegsPerSec).repeatedly().until(() -> isAtTarget());
+  public Command cmdSetVelocityRPMAndWait(double targetRPM) {
+    return cmdSetVelocityRPM(targetRPM).repeatedly().until(() -> isAtTarget());
   }
 
   public void periodic() {
-    double effort = controller.calculate(inputs.velocityRadsPerSecond, targetRadsPerSec);
-    double ffEffort = ff.calculate(targetRadsPerSec);
-    effort += ffEffort;
 
     IO.updateInputs(inputs);
-    IO.setVoltage(effort);
 
-    Logger.getInstance().recordOutput("Intake/Target RadsPerSec", targetRadsPerSec);
-    Logger.getInstance().recordOutput("Intake/Control Effort", effort);
-    Logger.getInstance().recordOutput("Intake/FF Effort", ffEffort);
+    Logger.getInstance().recordOutput("Intake/Target RPM", targetRPM);
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
 
     Logger.getInstance().processInputs("Intake", inputs);
