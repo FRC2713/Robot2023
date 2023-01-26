@@ -12,8 +12,6 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -44,19 +42,6 @@ public class Robot extends LoggedRobot {
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   private Command autoCommand;
-
-  private Command elevatorTestCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(23.5);
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new WaitUntilCommand(2),
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(35.5);
-              }));
 
   @Override
   public void robotInit() {
@@ -167,11 +152,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.LOCKDOWN;
   }
 
@@ -202,11 +182,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
