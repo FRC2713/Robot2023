@@ -5,6 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +28,7 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -36,6 +41,9 @@ public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
   public static Intake intake;
+  public static Vision vis;
+  public static double[] poseValue;
+  DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
@@ -44,6 +52,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -75,28 +85,22 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
     driver
+        .x()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  ele.setTargetHeight(0);
+                }));
+    driver
         .y()
         .onTrue(
             new InstantCommand(
                 () -> {
-                  motionMode = MotionMode.LOCKDOWN;
+                  ele.setTargetHeight(30);
                 }));
+
     driver
-        .a()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
-    driver
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                }));
-    driver
-        .x()
+        .back()
         .onTrue(
             new InstantCommand(
                 () -> {
@@ -144,9 +148,6 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
-    // Robot.four.periodic();
-    // Robot.intake.periodic();
-    // Robot.ele.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
@@ -192,8 +193,19 @@ public class Robot extends LoggedRobot {
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
+  // grab botpose from the network table, put it into swerve drive inputs, read botpose, and put
+  // that into the pose estimator
+  // using the vision command
+
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if (queue.length > 0) {
+      TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
+      swerveDrive.updateVisionPose(lastCameraReading);
+    }
+  }
 
   @Override
   public void teleopExit() {}
