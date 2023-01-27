@@ -16,7 +16,7 @@ public class FourBar extends SubsystemBase {
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
-  private double targetRads = Units.degreesToRadians(0);
+  private double targetDegs = 0;
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
@@ -28,11 +28,11 @@ public class FourBar extends SubsystemBase {
   }
 
   public void setAngleDeg(double targetDegs) {
-    this.targetRads = Units.degreesToRadians(targetDegs);
+    this.targetDegs = Units.degreesToRadians(targetDegs);
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegrees - targetRads) < 0.05;
+    return Math.abs(inputs.angleDegrees - targetDegs) < 0.05;
   }
 
   public double getCurrentRads() {
@@ -40,7 +40,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public void periodic() {
-    double effort = controller.calculate(inputs.angleDegrees, targetRads);
+    double effort = controller.calculate(inputs.angleDegrees, targetDegs);
     double ffEffort = ff.calculate(inputs.angleDegrees, inputs.velocityDegreesPerSecond);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
@@ -48,7 +48,7 @@ public class FourBar extends SubsystemBase {
     IO.updateInputs(inputs);
     IO.setVoltage(effort);
 
-    Logger.getInstance().recordOutput("4Bar/Target Rads", targetRads);
+    Logger.getInstance().recordOutput("4Bar/Target Rads", targetDegs);
     Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
     Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
 
