@@ -29,6 +29,7 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -68,6 +69,7 @@ public class Robot extends LoggedRobot {
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     autoCommand = new TwoGamePieceTopSideAndBridge();
+    vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -189,7 +191,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 

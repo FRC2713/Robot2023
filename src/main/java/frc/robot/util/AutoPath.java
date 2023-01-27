@@ -31,7 +31,6 @@ public class AutoPath {
             ReflectedTransform.reflectiveTransformTrajectory(
                 PathPlanner.loadPath(filename, new PathConstraints(4, 3)));
       }
-      ;
     }
 
     public PathPlannerTrajectory getTrajectory() {

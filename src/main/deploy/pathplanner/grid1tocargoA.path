@@ -2,6 +2,7 @@
   "waypoints": [
     {
       "anchorPoint": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/grid1tocargoA.path
         "x": 1.75,
         "y": 4.95
       },
@@ -9,6 +10,15 @@
       "nextControl": {
         "x": 2.7499999999999996,
         "y": 4.95
+========
+        "x": 7.0,
+        "y": 4.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.665002672315762,
+        "y": 4.514781119427582
+>>>>>>>> main:src/main/deploy/pathplanner/cargoAtogrid3.path
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,12 +34,21 @@
     },
     {
       "anchorPoint": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/grid1tocargoA.path
         "x": 7.0,
         "y": 4.6
       },
       "prevControl": {
         "x": 5.7842106371668445,
         "y": 4.639768810933793
+========
+        "x": 1.75,
+        "y": 3.85
+      },
+      "prevControl": {
+        "x": 1.9715690894882858,
+        "y": 5.3858332521767815
+>>>>>>>> main:src/main/deploy/pathplanner/cargoAtogrid3.path
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
