@@ -17,10 +17,10 @@ public interface VisionIO {
     public double horizontalSideLength;
     public double verticalSideLength;
     public long pipelineIndex;
-    public Double[] camtran;
+    public double[] camtran;
     public long ID;
     public String jsonDump;
-    public Double[] botpose;
+    public double[] botpose;
     public long neuralDetectorID;
     public long ledMode;
     public long camMode;

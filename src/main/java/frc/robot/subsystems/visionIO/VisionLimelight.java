@@ -31,8 +31,8 @@ public class VisionLimelight implements VisionIO {
     return getEntry(entryName).getString("");
   }
 
-  private Double[] getValueDoubleArray(String entryName) {
-    return getEntry(entryName).getDoubleArray(new Double[] {});
+  private double[] getValueDoubleArray(String entryName) {
+    return getEntry(entryName).getDoubleArray(new double[] {});
   }
 
   @Override

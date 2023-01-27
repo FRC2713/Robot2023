@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Robot;
+import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 
 public class SpookyScarySkeletons extends SequentialCommandGroup {
@@ -32,8 +33,8 @@ public class SpookyScarySkeletons extends SequentialCommandGroup {
         new InstantCommand(
             () ->
                 Robot.swerveDrive.resetOdometry(
-                    Autos.PART_1.getTrajectory().getInitialHolonomicPose())),
-        CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()));
+                    Autos.A_TO_THREE.getTrajectory().getInitialHolonomicPose())),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_THREE.getTrajectory()));
   }
 }
 // Lovely!

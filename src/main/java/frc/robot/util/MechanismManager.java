@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -59,7 +60,7 @@ public class MechanismManager {
 
   public void periodic() {
     m_four.setAngle(
-        Units.radiansToDegrees(Robot.four.getCurrentRads())
+        Units.radiansToDegrees(Robot.four.getCurrentDegs())
             + ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
     m_elevator.setLength(Robot.ele.getCurrentHeight());

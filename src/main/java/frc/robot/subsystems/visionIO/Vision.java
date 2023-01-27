@@ -116,7 +116,7 @@ public class Vision extends SubsystemBase {
    * @return Results of a 3D position solution, 6 numbers: Translation (x,y,y)
    *     Rotation(pitch,yaw,roll)
    */
-  public Double[] getCamtran() {
+  public double[] getCamtran() {
     return inputs.camtran;
   }
 
@@ -128,7 +128,7 @@ public class Vision extends SubsystemBase {
     return inputs.jsonDump;
   }
 
-  public Double[] getBotPose() {
+  public double[] getBotPose() {
     return inputs.botpose;
   }
 
@@ -343,7 +343,7 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public void setCurrentSnapshotMode(SnapshotMode mode){
+  public void setCurrentSnapshotMode(SnapshotMode mode) {
     IO.setSnapshotMode(mode);
   }
 

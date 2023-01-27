@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.CommandHelper;
-import frc.robot.commands.SpookyScarySkeletons;
 import frc.robot.commands.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -61,12 +59,11 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    this.ele = new Elevator(new ElevatorIOSim());
-    this.vis = new Vision(new VisionIOSim());
-    this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    this.mechManager = new MechanismManager();
-    this.elevatorTestCommand = new SpookyScarySkeletons();
-    this.autoCommand = new OneToAToThreeToBridge();
+    ele = new Elevator(new ElevatorIOSim());
+    vis = new Vision(new VisionIOSim());
+    four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    mechManager = new MechanismManager();
+    autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -173,7 +170,6 @@ public class Robot extends LoggedRobot {
     // if (autoCommand != null) {
     //   autoCommand.schedule();
     // }
-    elevatorTestCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
   }
 
