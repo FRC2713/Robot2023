@@ -16,18 +16,22 @@ public class ElevatorIOSparks implements ElevatorIO {
     right.restoreFactoryDefaults();
     left.setInverted(true);
     right.setInverted(false); // might be reversed, idk
-    left.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
-    right.setSmartCurrentLimit(Constants.Elevator.ELEVATOR_CURRENT_LIMIT);
+    left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
+    right.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()
-        .setPositionConversionFactor(Constants.Elevator.ELEVATOR_POSITION_CONVERSION_FACTOR);
+        .setPositionConversionFactor(
+            Constants.ElevatorConstants.ELEVATOR_POSITION_CONVERSION_FACTOR);
     right
         .getEncoder()
-        .setPositionConversionFactor(Constants.Elevator.ELEVATOR_POSITION_CONVERSION_FACTOR);
+        .setPositionConversionFactor(
+            Constants.ElevatorConstants.ELEVATOR_POSITION_CONVERSION_FACTOR);
     left.getEncoder()
-        .setVelocityConversionFactor(Constants.Elevator.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
+        .setVelocityConversionFactor(
+            Constants.ElevatorConstants.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
     right
         .getEncoder()
-        .setVelocityConversionFactor(Constants.Elevator.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
+        .setVelocityConversionFactor(
+            Constants.ElevatorConstants.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
   }
 
   @Override

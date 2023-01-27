@@ -13,10 +13,10 @@ public class ElevatorIOSim implements ElevatorIO {
       new ElevatorSim(
           DCMotor.getNEO(2),
           1.0,
-          Constants.Elevator.CARRIAGE_MASS_KG,
-          Constants.Elevator.ELEVATOR_DRUM_RADIUS_METERS,
-          Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
-          Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
+          Constants.ElevatorConstants.CARRIAGE_MASS_KG,
+          Constants.ElevatorConstants.ELEVATOR_DRUM_RADIUS_METERS,
+          Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS,
+          Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS,
           true);
 
   /**

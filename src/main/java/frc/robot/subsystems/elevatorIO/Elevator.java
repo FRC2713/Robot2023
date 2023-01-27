@@ -32,13 +32,14 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetHeight(double targetHeightInches) {
-    if (targetHeightInches > Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS)) {
+    if (targetHeightInches
+        > Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)) {
       RedHawkUtil.ErrHandler.getInstance().addError("Target height too high");
       this.targetHeight =
           MathUtil.clamp(
               targetHeightInches,
               0,
-              Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS));
+              Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS));
       return;
     }
     this.targetHeight = targetHeightInches;

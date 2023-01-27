@@ -42,7 +42,7 @@ public final class Constants {
   public static final class FieldConstants {}
 
   @UtilityClass
-  public static class Elevator {
+  public static class ElevatorConstants {
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -54,16 +54,6 @@ public final class Constants {
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60; // not the final value : );
     public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
-  }
-
-  public static class Telescope {
-    public static final double TELESCOPE_MAX_EXTENSION = Units.inchesToMeters(40.0);
-
-    public static final double TELESCOPE_MIN_EXTENSION = Units.inchesToMeters(0.0);
-
-    public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
-
-    public static final double TELESCOPE_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
   }
 
   @UtilityClass
