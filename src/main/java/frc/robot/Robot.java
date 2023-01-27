@@ -5,15 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
 import frc.robot.commands.SpookyScarySkeletons;
+import frc.robot.commands.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.fourBarIO.FourBar;
@@ -24,7 +26,6 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -36,32 +37,18 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
+  public static double[] poseValue;
+  DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  private Command autoCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(30);
-                swerveDrive.resetOdometry(Autos.PART_1.getTrajectory().getInitialHolonomicPose());
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new ParallelCommandGroup(
-              CommandHelper.stringTrajectoriesTogether(Autos.PART_1.getTrajectory()),
-              new InstantCommand(() -> ele.setTargetHeight(0))),
-          new ParallelCommandGroup(
-              CommandHelper.stringTrajectoriesTogether(Autos.PART_2.getTrajectory()),
-              new InstantCommand(() -> ele.setTargetHeight(30))),
-          new InstantCommand(() -> ele.setTargetHeight(0)),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
-
-  private Command elevatorTestCommand;
+  private Command autoCommand;
 
   @Override
   public void robotInit() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -71,10 +58,11 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
+    this.ele = new Elevator(new ElevatorIOSim());
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
-    this.ele = new Elevator(new ElevatorIOSim());
     this.elevatorTestCommand = new SpookyScarySkeletons();
+    this.autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -92,28 +80,22 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
     driver
+        .x()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  ele.setTargetHeight(0);
+                }));
+    driver
         .y()
         .onTrue(
             new InstantCommand(
                 () -> {
-                  motionMode = MotionMode.LOCKDOWN;
+                  ele.setTargetHeight(30);
                 }));
+
     driver
-        .a()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
-    driver
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                }));
-    driver
-        .x()
+        .back()
         .onTrue(
             new InstantCommand(
                 () -> {
@@ -173,11 +155,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.LOCKDOWN;
   }
 
@@ -209,16 +186,22 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
+  // grab botpose from the network table, put it into swerve drive inputs, read botpose, and put
+  // that into the pose estimator
+  // using the vision command
+
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if (queue.length > 0) {
+      TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
+      swerveDrive.updateVisionPose(lastCameraReading);
+    }
+  }
 
   @Override
   public void teleopExit() {}
