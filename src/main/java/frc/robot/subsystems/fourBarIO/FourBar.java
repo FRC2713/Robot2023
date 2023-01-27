@@ -35,7 +35,7 @@ public class FourBar extends SubsystemBase {
     return Math.abs(inputs.angleDegrees - targetDegs) < 0.05;
   }
 
-  public double getCurrentRads() {
+  public double getCurrentDegs() {
     return inputs.angleDegrees;
   }
 
