@@ -13,12 +13,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.OneToAToThreeToBridge;
+import frc.robot.commands.fullRoutines.TwoGamePieceTopSideAndBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
+import frc.robot.subsystems.intakeIO.Intake;
+import frc.robot.subsystems.intakeIO.IntakeIOSim;
+import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -37,6 +41,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
+  public static Intake intake;
   public static Vision vis;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
@@ -59,11 +64,12 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    ele = new Elevator(new ElevatorIOSim());
-    vis = new Vision(new VisionIOSim());
     four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     mechManager = new MechanismManager();
-    autoCommand = new OneToAToThreeToBridge();
+    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    autoCommand = new TwoGamePieceTopSideAndBridge();
+    vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -154,6 +160,7 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
+
     Robot.motionMode = MotionMode.LOCKDOWN;
   }
 
@@ -167,9 +174,9 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // four.setAngleDeg(20);
     // ele.setTargetHeight(30);
-    // if (autoCommand != null) {
-    //   autoCommand.schedule();
-    // }
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
     motionMode = MotionMode.TRAJECTORY;
   }
 
