@@ -9,9 +9,9 @@ public class AutoPath {
   public static final double fieldWidth = Units.inchesToMeters(315.5);
 
   public enum Autos {
-    PART_1("goto1stcargo"),
-    PART_2("backtogrid"),
-    PART_3("getonthebridge");
+    ONE_TO_A("grid1tocargoA"),
+    A_TO_THREE("cargoAtogrid3"),
+    THREE_TO_BRIDGE("getonthebridge");
 
     private PathPlannerTrajectory trajectory;
 

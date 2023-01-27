@@ -15,7 +15,8 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Mech2d": "Mechanism2d"
+      "/SmartDashboard/Mech2d": "Mechanism2d",
+      "/SmartDashboard/Telescope Mech2D": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Mech2d": {
