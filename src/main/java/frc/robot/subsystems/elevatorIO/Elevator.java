@@ -23,8 +23,8 @@ public class Elevator extends SubsystemBase {
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
-    this.feedforward = new ElevatorFeedforward(0, 5.212, 0);
-    this.elevatorController = new ProfiledPIDController(0.6, 0, 0.1, new Constraints(160, 500));
+    this.feedforward = new ElevatorFeedforward(0, 0.545 + Math.PI, 0);
+    this.elevatorController = new ProfiledPIDController(0.01, 0, 0, new Constraints(160, 500));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
@@ -64,6 +64,7 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/Target Height", targetHeight);
     Logger.getInstance().recordOutput("Elevator/Control Effort", effort);
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
+    Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
 
     Logger.getInstance().processInputs("Elevator", inputs);
   }

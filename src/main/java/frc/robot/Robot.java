@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.CommandHelper;
+import frc.robot.commands.SpookyScarySkeletons;
 import frc.robot.commands.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -59,6 +61,7 @@ public class Robot extends LoggedRobot {
     this.ele = new Elevator(new ElevatorIOSim());
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
+    this.elevatorTestCommand = new SpookyScarySkeletons();
     this.autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
@@ -164,10 +167,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // four.setAngleDeg(20);
-    ele.setTargetHeight(30);
-    if (autoCommand != null) {
-      autoCommand.schedule();
-    }
+    // ele.setTargetHeight(30);
+    // if (autoCommand != null) {
+    //   autoCommand.schedule();
+    // }
+    elevatorTestCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
   }
 
