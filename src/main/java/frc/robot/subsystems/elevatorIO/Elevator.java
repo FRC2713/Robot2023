@@ -6,9 +6,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ElevatorIO.ElevatorInputsAutoLogged;
+import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -30,13 +33,14 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetHeight(double targetHeightInches) {
-    if (targetHeightInches > Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS)) {
+    if (targetHeightInches
+        > Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)) {
       RedHawkUtil.ErrHandler.getInstance().addError("Target height too high");
       this.targetHeight =
           MathUtil.clamp(
               targetHeightInches,
               0,
-              Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS));
+              Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS));
       return;
     }
     this.targetHeight = targetHeightInches;
@@ -63,5 +67,11 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
 
     Logger.getInstance().processInputs("Elevator", inputs);
+  }
+
+  public static class Commands {
+    public static Command setToHeight(double height) {
+      return new InstantCommand(() -> Robot.ele.setTargetHeight(height), Robot.ele);
+    }
   }
 }
