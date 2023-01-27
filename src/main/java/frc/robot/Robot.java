@@ -26,6 +26,8 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -37,6 +39,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
+  public static Vision vis;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
@@ -72,6 +75,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     this.ele = new Elevator(new ElevatorIOSim());
+    this.vis = new Vision(new VisionIOSim());
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
 
@@ -177,8 +181,6 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
     mechManager.periodic();
-    Robot.four.periodic();
-    // Robot.ele.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
