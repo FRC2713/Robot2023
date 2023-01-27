@@ -1,126 +1,139 @@
-package frc.robot.subsystems.limelightIO;
+package frc.robot.subsystems.visionIO;
 
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
-public class Limelight extends SubsystemBase {
+public class Vision extends SubsystemBase {
+  private boolean dashboardSignal = false;
   private double limelightHeightInches;
+  private final VisionIO IO;
+  private final VisionInputsAutoLogged inputs;
+
+  public Vision(VisionIO IO) {
+    this.inputs = new VisionInputsAutoLogged();
+    IO.updateInputs(inputs);
+    this.IO = IO;
+  }
 
   private NetworkTable getTable() {
     return NetworkTableInstance.getDefault().getTable("limelight");
   }
 
-  private DoubleSubscriber getSubscriber(String entryName) {
-    return getTable().getDoubleTopic(entryName).subscribe(0.0);
-  }
-
-  private DoubleArraySubscriber getSubscriberArray(String entryName) {
-    return getTable().getDoubleArrayTopic(entryName).subscribe(new double[] {});
-  }
-
-  private DoublePublisher getPublisher(String entryName) {
-    return getTable().getDoubleTopic(entryName).publish();
+  private NetworkTableEntry getEntry(String entryName) {
+    return getTable().getEntry(entryName);
   }
 
   private double getValue(String entryName) {
-    return getSubscriber(entryName).get(0);
+    return getEntry(entryName).getDouble(0);
   }
 
   private void setValue(String entryName, double value) {
-    getPublisher(entryName).set(0);
+    getEntry(entryName).setNumber(value);
   }
 
   /**
    * @return true if the Limelight has any valid targets
    */
   public boolean hasValidTargets() {
-    return getValue("tv") == 1;
-  }
-
-  public double getTargetValue() {
-    return getValue("tv");
+    return inputs.validTarget;
   }
 
   /**
    * @return horizontal offset from crosshair to target (-27 degrees to 27 degrees)
    */
   public double getHorizontalOffset() {
-    return getValue("tx");
+    return inputs.horizontalCrosshairOffset;
   }
 
   /**
    * @return vertical offset from crosshair to target (-20.5 degrees to 20.5 degrees)
    */
   public double getVerticalOffset() {
-    return getValue("ty");
+    return inputs.verticalCrosshairOffset;
   }
 
   /**
    * @return target area (0% of image to 100% of image)
    */
   public double getTargetArea() {
-    return getValue("ta");
+    return inputs.targetArea;
   }
 
   /**
    * @return skew or rotation (-90 degrees to 0 degrees)
    */
   public double getSkewOrRotation() {
-    return getValue("ts");
+    return inputs.skew;
   }
 
   /**
    * @return pipeline's latency contribution (ms); add 11ms for image capture
    */
   public double getLatency() {
-    return getValue("tl");
+    return inputs.pipelineLatency;
   }
 
   /**
    * @return sidelength of shortest side of the fitted bounding box (pixels)
    */
   public double getShortSideLength() {
-    return getValue("tshort");
+    return inputs.shortSidelength;
   }
 
   /**
    * @return sidelength of longest side of the fitted bounding box (pixels)
    */
   public double getLongSideLength() {
-    return getValue("tlong");
+    return inputs.longSideLength;
   }
 
   /**
    * @return Horizontal sidelength of the rough bounding box (0 - 320 pixels)
    */
   public double getHorizontalSidelength() {
-    return getValue("thor");
+    return inputs.horizontalSideLength;
   }
 
   /**
    * @return Vertical sidelength of the rough bounding box (0 - 320 pixels)
    */
   public double getVerticalSidelength() {
-    return getValue("tvert");
+    return inputs.verticalSideLength;
   }
 
   /**
    * @return True active pipeline index of the camera (0 .. 9)
    */
-  public double getPipeline() {
-    return getValue("getpipe");
+  public long getPipeline() {
+    return inputs.pipelineIndex;
   }
 
   /**
    * @return Results of a 3D position solution, 6 numbers: Translation (x,y,y)
    *     Rotation(pitch,yaw,roll)
    */
-  public double[] getCamtran() {
-    return getSubscriberArray("camtran").get(new double[] {});
+  public Double[] getCamtran() {
+    return inputs.camtran;
+  }
+
+  public long getID() {
+    return inputs.ID;
+  }
+
+  public String getJsonDump() {
+    return inputs.jsonDump;
+  }
+
+  public Double[] getBotPose() {
+    return inputs.botpose;
+  }
+
+  public long getNeuralDetectorId() {
+    return inputs.neuralDetectorID;
   }
 
   public enum LedMode {
@@ -241,7 +254,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public Pipeline getCurrentPipeline() {
-    double mode = getValue("pipeline");
+    long mode = inputs.pipeline;
     if (mode == 0) {
       return Pipeline.PIPELINE0;
     } else if (mode == 1) {
@@ -294,7 +307,7 @@ public class Limelight extends SubsystemBase {
    * @return The current LED mode set on the Limelight
    */
   public StreamMode getCurrentStreamMode() {
-    double mode = getValue("stream");
+    double mode = inputs.stream;
     if (mode == 0) {
       return StreamMode.STANDARD; // Side-by-side streams if a webcam is attached to Limelight
     } else if (mode == 1) {
@@ -330,14 +343,18 @@ public class Limelight extends SubsystemBase {
     }
   }
 
+  public void setCurrentSnapshotMode(SnapshotMode mode){
+    IO.setSnapshotMode(mode);
+  }
+
   /**
    * @return The current LED mode set on the Limelight
    */
   public SnapshotMode getCurrentSnapShotMode() {
-    double mode = getValue("snapshot");
-    if (mode == 0) {
+    boolean mode = inputs.snapshot;
+    if (mode == false) {
       return SnapshotMode.OFF;
-    } else if (mode == 1) {
+    } else if (mode == true) {
       return SnapshotMode.TWO_PER_SECOND;
     } else {
       System.out.println("[Limelight] UNKNOWN SnapshotMode -- " + mode);
@@ -345,14 +362,9 @@ public class Limelight extends SubsystemBase {
     }
   }
 
-  /**
-   * @param mode The LED Mode to set on the Limelight
-   */
-  public void setSnapshotMode(SnapshotMode mode) {
-    if (mode != SnapshotMode.UNKNOWN) {
-      setValue("snapshot", mode.value);
-    }
+  public void periodic() {
+    IO.updateInputs(inputs);
+    Logger.getInstance().processInputs("Vision", inputs);
+    SmartDashboard.putBoolean("Limelight State", hasValidTargets());
   }
-
-  public void periodic() {}
 }
