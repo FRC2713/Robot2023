@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CommandHelper;
+import frc.robot.commands.SpookyScarySkeletons;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.fourBarIO.FourBar;
@@ -57,18 +58,7 @@ public class Robot extends LoggedRobot {
           new WaitUntilCommand(() -> ele.atTargetHeight()),
           CommandHelper.stringTrajectoriesTogether(Autos.PART_3.getTrajectory()));
 
-  private Command elevatorTestCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(23.5);
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new WaitUntilCommand(2),
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(35.5);
-              }));
+  private Command elevatorTestCommand;
 
   @Override
   public void robotInit() {
@@ -84,6 +74,7 @@ public class Robot extends LoggedRobot {
     this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     this.mechManager = new MechanismManager();
     this.ele = new Elevator(new ElevatorIOSim());
+    this.elevatorTestCommand = new SpookyScarySkeletons();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -199,10 +190,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // four.setAngleDeg(20);
-    ele.setTargetHeight(30);
-    if (autoCommand != null) {
-      autoCommand.schedule();
-    }
+    // ele.setTargetHeight(30);
+    // if (autoCommand != null) {
+    //   autoCommand.schedule();
+    // }
+    elevatorTestCommand.schedule();
     motionMode = MotionMode.TRAJECTORY;
   }
 

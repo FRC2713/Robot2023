@@ -38,7 +38,7 @@ public final class Constants {
   }
 
   @UtilityClass
-  public static class Elevator {
+  public static class ElevatorConstants {
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);

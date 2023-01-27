@@ -20,8 +20,8 @@ public class Elevator extends SubsystemBase {
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
-    this.feedforward = new ElevatorFeedforward(0, 5.212, 0);
-    this.elevatorController = new ProfiledPIDController(0.6, 0, 0.1, new Constraints(160, 500));
+    this.feedforward = new ElevatorFeedforward(0, 0.545 + Math.PI, 0);
+    this.elevatorController = new ProfiledPIDController(0.01, 0, 0, new Constraints(160, 500));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
@@ -29,13 +29,14 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetHeight(double targetHeightInches) {
-    if (targetHeightInches > Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS)) {
+    if (targetHeightInches
+        > Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)) {
       RedHawkUtil.ErrHandler.getInstance().addError("Target height too high");
       this.targetHeight =
           MathUtil.clamp(
               targetHeightInches,
               0,
-              Units.metersToInches(Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS));
+              Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS));
       return;
     }
     this.targetHeight = targetHeightInches;
@@ -60,6 +61,7 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/Target Height", targetHeight);
     Logger.getInstance().recordOutput("Elevator/Control Effort", effort);
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
+    Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
 
     Logger.getInstance().processInputs("Elevator", inputs);
   }
