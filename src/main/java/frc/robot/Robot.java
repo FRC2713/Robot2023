@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.fullRoutines.TwoGamePieceTopSideAndBridge;
+import frc.robot.commands.GetOnBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -68,7 +68,7 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    autoCommand = new TwoGamePieceTopSideAndBridge();
+    autoCommand = new GetOnBridge();
     vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =

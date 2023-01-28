@@ -27,7 +27,7 @@ public final class Constants {
 
   public static final boolean tuningMode = false;
   public static final int zero = 0; // in case you need a zero :)
-
+  public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
 
   @UtilityClass

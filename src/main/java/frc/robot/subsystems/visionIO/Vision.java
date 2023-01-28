@@ -363,7 +363,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void periodic() {
-    IO.updateInputs(inputs);
+    // IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Vision", inputs);
     SmartDashboard.putBoolean("Limelight State", hasValidTargets());
   }
