@@ -343,7 +343,7 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public void setCurrentSnapshotMode(SnapshotMode mode){
+  public void setCurrentSnapshotMode(SnapshotMode mode) {
     IO.setSnapshotMode(mode);
   }
 
@@ -363,7 +363,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void periodic() {
-    IO.updateInputs(inputs);
+    // IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Vision", inputs);
     SmartDashboard.putBoolean("Limelight State", hasValidTargets());
   }
