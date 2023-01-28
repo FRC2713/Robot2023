@@ -175,9 +175,10 @@ public class Robot extends LoggedRobot {
     // four.setAngleDeg(20);
     // ele.setTargetHeight(30);
     if (autoCommand != null) {
-      autoCommand.schedule();
+      // autoCommand.schedule();
     }
-    motionMode = MotionMode.TRAJECTORY;
+    autoCommand.schedule();
+    // motionMode = MotionMode.TRAJECTORY;
   }
 
   @Override

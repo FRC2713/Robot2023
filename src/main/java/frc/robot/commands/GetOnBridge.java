@@ -15,10 +15,10 @@ public class GetOnBridge extends SequentialCommandGroup {
               Robot.motionMode = MotionMode.NULL;
               Robot.swerveDrive.setModuleStates(
                   new SwerveModuleState[] {
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(45)),
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-45)),
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-45)),
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(45))
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(0)),
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-0)),
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-0)),
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(0))
                   });
             }));
   }

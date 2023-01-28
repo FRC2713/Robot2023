@@ -16,7 +16,7 @@ public interface VisionIO {
     public double longSideLength;
     public double horizontalSideLength;
     public double verticalSideLength;
-    public long pipelineIndex;
+    public long pipelineIndex = 1;
     public double[] camtran;
     public long ID;
     public String jsonDump;
