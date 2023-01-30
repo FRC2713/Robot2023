@@ -12,15 +12,17 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.OneToAToThreeToBridge;
+import frc.robot.commands.fullRoutines.TwoGamePieceTopSideAndBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
+import frc.robot.subsystems.intakeIO.Intake;
+import frc.robot.subsystems.intakeIO.IntakeIOSim;
+import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -39,6 +41,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
+  public static Intake intake;
   public static Vision vis;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
@@ -46,20 +49,7 @@ public class Robot extends LoggedRobot {
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
   public static SwerveSubsystem swerveDrive;
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
-  private Command autoCommand = new OneToAToThreeToBridge();
-
-  private Command elevatorTestCommand =
-      new SequentialCommandGroup(
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(23.5);
-              }),
-          new WaitUntilCommand(() -> ele.atTargetHeight()),
-          new WaitUntilCommand(2),
-          new InstantCommand(
-              () -> {
-                ele.setTargetHeight(35.5);
-              }));
+  private Command autoCommand;
 
   @Override
   public void robotInit() {
@@ -74,10 +64,12 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    this.ele = new Elevator(new ElevatorIOSim());
-    this.vis = new Vision(new VisionIOSim());
-    this.four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    this.mechManager = new MechanismManager();
+    four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    mechManager = new MechanismManager();
+    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    autoCommand = new TwoGamePieceTopSideAndBridge();
+    vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -93,30 +85,7 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
-    /*
-     * driver
-     * .y()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.LOCKDOWN;
-     * }));
-     * driver
-     * .a()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.FULL_DRIVE;
-     * }));
-     * driver
-     * .b()
-     * .onTrue(
-     * new InstantCommand(
-     * () -> {
-     * motionMode = MotionMode.HEADING_CONTROLLER;
-     * }));
-     *
-     */
+
     driver
         .x()
         .onTrue(
@@ -192,10 +161,6 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
 
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.LOCKDOWN;
   }
 
@@ -208,7 +173,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // four.setAngleDeg(20);
-    ele.setTargetHeight(30);
+    // ele.setTargetHeight(30);
     if (autoCommand != null) {
       autoCommand.schedule();
     }
@@ -226,11 +191,6 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-
-    if (elevatorTestCommand != null) {
-      elevatorTestCommand.cancel();
-    }
-
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 

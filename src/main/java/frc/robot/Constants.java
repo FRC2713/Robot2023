@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
@@ -42,7 +40,7 @@ public final class Constants {
   public static final class FieldConstants {}
 
   @UtilityClass
-  public static class Elevator {
+  public static class ElevatorConstants {
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -56,20 +54,12 @@ public final class Constants {
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
   }
 
-  public static class Telescope {
-    public static final double TELESCOPE_MAX_EXTENSION = Units.inchesToMeters(40.0);
-
-    public static final double TELESCOPE_MIN_EXTENSION = Units.inchesToMeters(0.0);
-
-    public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
-
-    public static final double TELESCOPE_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
-  }
-
   @UtilityClass
   public static class FourBarConstants {
     public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(-113);
     public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(27);
+    public static final double MAX_VELOCITY = 1600;
+    public static final double MAX_ACCELERATION = 5000;
     public static final double GEARING = 200.0;
     public static final double MASS_KG = 0.5;
     public static final double FOUR_BAR_RATIO = 5; // subject to change
@@ -77,9 +67,17 @@ public final class Constants {
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 50; // subject to change
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
-    public static final ProfiledPIDController PID_CONTROLLER =
-        new ProfiledPIDController(9, 0.5, 0.5, new Constraints(1600, 5000));
-    public static final ArmFeedforward FEED_FORWARD = new ArmFeedforward(0.0, 0.4, 0.0);
+    public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
+        PIDFFGains.builder("4Bar Controller").kP(9.0).kI(0.5).kD(0.5).kG(0.4).build();
+  }
+
+  @UtilityClass
+  public static class IntakeConstants {
+    public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
+    public static final double GEARING = 10;
+    public static final double MAX_ROLLER_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
+    public static final double MOI = 0.1;
   }
 
   @UtilityClass

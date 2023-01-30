@@ -1,23 +1,25 @@
 package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
-  private final ElevatorSim sim =
-      new ElevatorSim(
+  private final AngledElevatorSim sim =
+      new AngledElevatorSim(
           DCMotor.getNEO(2),
           1.0,
-          Constants.Elevator.CARRIAGE_MASS_KG,
-          Constants.Elevator.ELEVATOR_DRUM_RADIUS_METERS,
-          Constants.Elevator.ELEVATOR_MIN_HEIGHT_METERS,
-          Constants.Elevator.ELEVATOR_MAX_HEIGHT_METERS,
-          true);
+          Constants.ElevatorConstants.CARRIAGE_MASS_KG,
+          Constants.ElevatorConstants.ELEVATOR_DRUM_RADIUS_METERS,
+          Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS,
+          Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS,
+          true,
+          null,
+          Rotation2d.fromDegrees(Constants.ElevatorConstants.ELEVATOR_ANGLE_DEGREES));
 
   /**
    * Automatically updates given {@code ElevatorInputs} instance based on simulation

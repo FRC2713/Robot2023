@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Robot;
 
 public class MechanismManager {
@@ -27,16 +29,18 @@ public class MechanismManager {
 
     // Elevator
     m_elevator =
-        root.append(new MechanismLigament2d("Elevator", 0, 90, 30, new Color8Bit(Color.kRed)));
+        root.append(
+            new MechanismLigament2d(
+                "Elevator",
+                0,
+                Constants.ElevatorConstants.ELEVATOR_ANGLE_DEGREES,
+                30,
+                new Color8Bit(Color.kGreen)));
 
     m_four =
         m_elevator.append(
             new MechanismLigament2d(
-                "Four",
-                12.657,
-                Units.radiansToDegrees(Robot.four.getCurrentRads()),
-                6,
-                new Color8Bit(Color.kYellow)));
+                "Four", 12.657, Robot.four.getCurrentDegs(), 6, new Color8Bit(Color.kYellow)));
 
     // m_four_two =
     // m_elevator.append(
@@ -55,9 +59,11 @@ public class MechanismManager {
   }
 
   public void periodic() {
-    m_four.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
+    m_four.setAngle(
+        Units.radiansToDegrees(Robot.four.getCurrentDegs())
+            + ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
     m_elevator.setLength(Robot.ele.getCurrentHeight());
-    m_front.setAngle(-90 - Units.radiansToDegrees(Robot.four.getCurrentRads()));
+    m_front.setAngle(-90 - Robot.four.getCurrentDegs());
   }
 }

@@ -116,7 +116,7 @@ public class Vision extends SubsystemBase {
    * @return Results of a 3D position solution, 6 numbers: Translation (x,y,y)
    *     Rotation(pitch,yaw,roll)
    */
-  public Double[] getCamtran() {
+  public double[] getCamtran() {
     return inputs.camtran;
   }
 
@@ -128,12 +128,8 @@ public class Vision extends SubsystemBase {
     return inputs.jsonDump;
   }
 
-  public Double[] getBotPose() {
+  public double[] getBotPose() {
     return inputs.botpose;
-  }
-
-  public long getNeuralDetectorId() {
-    return inputs.neuralDetectorID;
   }
 
   public enum LedMode {
@@ -363,7 +359,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void periodic() {
-    // IO.updateInputs(inputs);
+    IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Vision", inputs);
     SmartDashboard.putBoolean("Limelight State", hasValidTargets());
   }
