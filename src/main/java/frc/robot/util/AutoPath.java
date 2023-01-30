@@ -27,9 +27,15 @@ public class AutoPath {
             ReflectedTransform.reflectiveTransformTrajectory(
                 PathPlanner.loadPath(filename, PathPlanner.getConstraintsFromPath(filename)));
       } catch (NullPointerException ex) {
-        this.trajectory =
-            ReflectedTransform.reflectiveTransformTrajectory(
-                PathPlanner.loadPath(filename, new PathConstraints(4, 3)));
+        try {
+          this.trajectory =
+              ReflectedTransform.reflectiveTransformTrajectory(
+                  PathPlanner.loadPath(filename, new PathConstraints(4, 3)));
+        } catch (NullPointerException notAgain) {
+          System.out.println(filename + "is not found.");
+          RedHawkUtil.ErrHandler.getInstance()
+              .addError(filename + "Is Not Found. This is really bad guys this file is not found");
+        }
       }
     }
 
