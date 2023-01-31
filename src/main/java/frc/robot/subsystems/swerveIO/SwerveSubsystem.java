@@ -164,6 +164,10 @@ public class SwerveSubsystem extends SubsystemBase {
     backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public boolean gyroPitchHasChanged() {
+    return inputs.gyroPitchPosition == inputs.previousgyroPitchPosition;
+  }
+
   /**
    * Returns the average velocity of the swerve modules.
    *
