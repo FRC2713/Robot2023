@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -12,8 +13,10 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.fullRoutines.TwoGamePieceTopSideAndBridge;
+import frc.robot.commands.onTF.GoGridOne;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -32,7 +35,9 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.ReflectedTransform;
 import frc.robot.util.SwerveHeadingController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -68,7 +73,6 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    autoCommand = new TwoGamePieceTopSideAndBridge();
     vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =
@@ -85,6 +89,24 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+
+    autoCommand =
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  Robot.swerveDrive.resetOdometry(
+                      ReflectedTransform.reflectiveTransformTrajectory(
+                              PathPlanner.loadPath(
+                                  "goto1stcargo",
+                                  PathPlanner.getConstraintsFromPath("goto1stcargo")))
+                          .getInitialHolonomicPose());
+                }),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(
+                ReflectedTransform.reflectiveTransformTrajectory(
+                    PathPlanner.loadPath(
+                        "goto1stcargo", PathPlanner.getConstraintsFromPath("goto1stcargo")))),
+            new WaitCommand(10),
+            new GoGridOne());
 
     driver
         .x()
@@ -153,6 +175,17 @@ public class Robot extends LoggedRobot {
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
+    Logger.getInstance()
+        .recordOutput(
+            "SwerveValues",
+            new double[] {
+              RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getOdometry().getPoseMeters())
+                  .getX(),
+              RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getOdometry().getPoseMeters())
+                  .getY(),
+              Robot.swerveDrive.inputs.gyroYawPosition,
+              Robot.swerveDrive.getRegularPose().getRotation().getDegrees()
+            });
   }
 
   @Override

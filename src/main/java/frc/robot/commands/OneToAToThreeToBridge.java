@@ -19,11 +19,11 @@ public class OneToAToThreeToBridge extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
-                  Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
+                  Autos.GO_TO_GRID.getTrajectory().getInitialHolonomicPose());
             }),
         new WaitUntilCommand(() -> Robot.ele.atTargetHeight()),
         new ParallelCommandGroup(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.GO_TO_GRID.getTrajectory()),
             Elevator.Commands.setToHeight(Constants.zero),
             FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
         new ParallelCommandGroup(

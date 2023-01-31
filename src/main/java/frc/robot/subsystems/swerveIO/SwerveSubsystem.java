@@ -21,6 +21,7 @@ import frc.robot.subsystems.swerveIO.module.SwerveModule;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
 import frc.robot.util.MotionHandler;
 import frc.robot.util.TrajectoryController;
+import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -33,7 +34,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
 
-  private final SwerveDriveOdometry odometry;
+  @Getter private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
 

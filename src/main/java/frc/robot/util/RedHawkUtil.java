@@ -1,6 +1,8 @@
 package frc.robot.util;
 
 import com.revrobotics.REVLibError;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
@@ -28,6 +30,10 @@ public final class RedHawkUtil {
                   + ":"
                   + rawStackTrace[2].getLineNumber());
     }
+  }
+
+  public static Translation2d Pose2dToTranslation2d(Pose2d pose) {
+    return new Translation2d(pose.getX(), pose.getY());
   }
 
   public static class ErrHandler {
