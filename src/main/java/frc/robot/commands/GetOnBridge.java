@@ -16,8 +16,8 @@ public class GetOnBridge extends SequentialCommandGroup {
               Robot.swerveDrive.setModuleStates(
                   new SwerveModuleState[] {
                     new SwerveModuleState(0.2, Rotation2d.fromDegrees(0)),
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-0)),
-                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(-0)),
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(0)),
+                    new SwerveModuleState(0.2, Rotation2d.fromDegrees(0)),
                     new SwerveModuleState(0.2, Rotation2d.fromDegrees(0))
                   });
             }));

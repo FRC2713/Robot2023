@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.GetOnBridge;
+import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.fourBarIO.FourBar;
@@ -25,6 +25,8 @@ import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
+import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -37,7 +39,7 @@ public class Robot extends LoggedRobot {
   public static FourBar four;
   public static Elevator ele;
   public static Intake intake;
-  // public static Vision vis;
+  public static Vision vis;
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
@@ -63,8 +65,9 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     ele = new Elevator(new ElevatorIOSim());
     intake = new Intake(new IntakeIOSim());
-    autoCommand = new GetOnBridge();
-    // vis = new Vision(new VisionIOSim());
+    vis = new Vision(new VisionIOSim());
+
+    autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -146,12 +149,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    // four.setAngleDeg(20);
-    // ele.setTargetHeight(30);
+    motionMode = MotionMode.TRAJECTORY;
+
     if (autoCommand != null) {
       autoCommand.schedule();
     }
-    motionMode = MotionMode.TRAJECTORY;
   }
 
   @Override

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.fullRoutines;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -33,6 +33,6 @@ public class OneToAToThreeToBridge extends SequentialCommandGroup {
         Elevator.Commands.setToHeight(Constants.zero),
         FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS),
         new WaitUntilCommand(() -> Robot.ele.atTargetHeight()),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.THREE_TO_BRIDGE.getTrajectory()));
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.DOCK.getTrajectory()));
   }
 }
