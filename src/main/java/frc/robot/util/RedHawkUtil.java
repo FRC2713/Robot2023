@@ -3,7 +3,10 @@ package frc.robot.util;
 import com.revrobotics.REVLibError;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
+import frc.robot.Robot;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -67,5 +70,17 @@ public final class RedHawkUtil {
     public void log() {
       Logger.getInstance().recordOutput("Errors", String.join(" \\\\ ", errors));
     }
+  }
+
+  public static Translation2d getClosestGrid(double y) {
+    return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+        .sorted(
+            (a, b) ->
+                Double.compare(
+                    a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
+                    b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+        .findFirst()
+        .get()
+        .plus(new Translation2d(Constants.DriveConstants.gridOffset, 0));
   }
 }
