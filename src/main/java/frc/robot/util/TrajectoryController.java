@@ -14,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class TrajectoryController {
 
-  private static TrajectoryController instance;
+  private static TrajectoryController INSTANCE;
   Timer timer = new Timer();
   PathPlannerTrajectory traj;
   HashMap<String, Command> eventMap = new HashMap<>();
@@ -26,10 +26,10 @@ public class TrajectoryController {
   private TrajectoryController() {}
 
   public static TrajectoryController getInstance() {
-    if (instance == null) {
-      instance = new TrajectoryController();
+    if (INSTANCE == null) {
+      INSTANCE = new TrajectoryController();
     }
-    return instance;
+    return INSTANCE;
   }
 
   public void changePath(@NonNull PathPlannerTrajectory newTrajectory) {
