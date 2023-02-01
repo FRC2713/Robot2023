@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.OTF.Dynamic;
 import frc.robot.commands.OTF.GoClosestGrid;
@@ -178,17 +179,19 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.FULL_DRIVE;
                 },
                 swerveDrive));
-
+    GoClosestGrid go = new GoClosestGrid();
     driver
         .rightBumper()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.TRAJECTORY;
-                  TrajectoryController.getInstance()
-                      .changePath(new GoClosestGrid().getTrajectory());
-                },
-                swerveDrive))
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      motionMode = MotionMode.TRAJECTORY;
+                      TrajectoryController.getInstance()
+                          .changePath(go.regenerateTrajectory().getTrajectory());
+                      // TrajectoryController.getInstance().changePath(go.getTrajectory());
+                    },
+                    swerveDrive)))
         .onFalse(
             new InstantCommand(
                 () -> {

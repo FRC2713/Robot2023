@@ -9,9 +9,17 @@ import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 
 public class GoClosestGrid {
-  private final PathPlannerTrajectory traj;
+  private PathPlannerTrajectory traj;
 
   public GoClosestGrid() {
+    regenerateTrajectory();
+  }
+
+  public PathPlannerTrajectory getTrajectory() {
+    return traj;
+  }
+
+  public GoClosestGrid regenerateTrajectory() {
     traj =
         PathPlanner.generatePath(
             new PathConstraints(4, 3),
@@ -27,9 +35,6 @@ public class GoClosestGrid {
                 Rotation2d.fromDegrees(
                     -180)) // position, heading(direction of travel), holonomic rotation
             );
-  }
-
-  public PathPlannerTrajectory getTrajectory() {
-    return traj;
+    return this;
   }
 }
