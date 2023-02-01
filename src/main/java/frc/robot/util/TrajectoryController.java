@@ -24,7 +24,7 @@ public class TrajectoryController {
   PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
-          new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(1.0, 0, 0));
+          new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(2, 0, 0));
 
   private TrajectoryController() {}
 
@@ -55,7 +55,11 @@ public class TrajectoryController {
       timer.start();
     }
 
-    targetState = (PathPlannerState) traj.sample(timer.get());
+    if (isFinished()) {
+      targetState = traj.getEndState();
+    } else {
+      targetState = (PathPlannerState) traj.sample(timer.get());
+    }
 
     Logger.getInstance()
         .recordOutput(

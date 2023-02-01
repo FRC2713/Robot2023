@@ -12,8 +12,8 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.fourBarIO.FourBar;
@@ -27,6 +27,7 @@ import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.VisionIOSim;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -67,7 +68,13 @@ public class Robot extends LoggedRobot {
     intake = new Intake(new IntakeIOSim());
     vis = new Vision(new VisionIOSim());
 
-    autoCommand = new OneToAToThreeToBridge();
+    autoCommand =
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () ->
+                    swerveDrive.resetOdometry(
+                        Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose())),
+            SwerveSubsystem.Commands.followTAndWait(Autos.NINE_TO_D.getTrajectory()));
 
     Robot.swerveDrive =
         Robot.isReal()

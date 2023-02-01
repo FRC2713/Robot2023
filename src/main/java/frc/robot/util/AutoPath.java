@@ -11,11 +11,12 @@ public class AutoPath {
 
   public enum Autos {
     DOCK("dock"),
-    ONE_TO_A("grid1tocargoA"),
-    D_TO_SEVEN("cargoDtogrid7"),
     A_TO_FIVE("cargoAtogrid5"),
     A_TO_THREE("cargoAtogrid3"),
-    THREE_TO_B("grid3tocargoB");
+    D_TO_SEVEN("cargoDtogrid7"),
+    ONE_TO_A("grid1tocargoA"),
+    THREE_TO_B("grid3tocargoB"),
+    NINE_TO_D("grid9tocargoD");
 
     private PathPlannerTrajectory trajectory;
 
