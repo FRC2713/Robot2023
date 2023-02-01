@@ -46,8 +46,9 @@ public final class Constants {
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
+    public static final double ELEVATOR_GEAR_RATIO = 5.0;
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR =
-        (5.0) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+        (ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60; // not the final value : );
     public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
@@ -78,6 +79,12 @@ public final class Constants {
     public static final double MAX_ROLLER_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
     public static final double MOI = 0.1;
+    public static final int WHEELS_CURRENT_LIMIT = 50;
+    public static final int ROLLERS_CURRENT_LIMIT = 50;
+    public static final double WHEELS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double ROLLERS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double WHEELS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
   }
 
   @UtilityClass
