@@ -11,8 +11,8 @@ public class IntakeIOSparks implements IntakeIO {
   private CANSparkMax wheels, rollers;
 
   public IntakeIOSparks() {
-    wheels = new CANSparkMax(0, MotorType.kBrushless);
-    rollers = new CANSparkMax(1, MotorType.kBrushless);
+    wheels = new CANSparkMax(Constants.RobotMap.INTAKE_WHEELS_CANID, MotorType.kBrushless);
+    rollers = new CANSparkMax(Constants.RobotMap.INTAKE_ROLLERS_CANID, MotorType.kBrushless);
     wheels.restoreFactoryDefaults();
     rollers.restoreFactoryDefaults();
     wheels.setSmartCurrentLimit(Constants.IntakeConstants.WHEELS_CURRENT_LIMIT);

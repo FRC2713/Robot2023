@@ -33,6 +33,24 @@ public final class Constants {
   @UtilityClass
   public static final class RobotMap {
     public static final int pigeonCANId = 20;
+    public static final int SWERVE_CANID_1 = 1;
+    public static final int SWERVE_CANID_2 = 2;
+    public static final int SWERVE_CANID_3 = 3;
+    public static final int SWERVE_CANID_4 = 4;
+    public static final int SWERVE_CANID_5 = 5;
+    public static final int SWERVE_CANID_6 = 6;
+    public static final int SWERVE_CANID_7 = 7;
+    public static final int SWERVE_CANID_8 = 8;
+
+    public static final int ELEVATOR_LEFT_CANID = 9;
+    public static final int ELEVATOR_RIGHT_CANID = 10;
+
+    public static final int INTAKE_WHEELS_CANID = 11;
+    public static final int INTAKE_ROLLERS_CANID = 12;
+
+    public static final int FOURBAR_ONE_CANID = 13;
+    public static final int FOURBAR_TWO_CANID = 14;
+
 
     public static final int BLINKIN_PORT = 1000;
   }

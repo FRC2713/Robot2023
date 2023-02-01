@@ -10,8 +10,8 @@ public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
 
   public ElevatorIOSparks() {
-    left = new CANSparkMax(0, MotorType.kBrushless);
-    right = new CANSparkMax(1, MotorType.kBrushless);
+    left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
+    right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
     left.setInverted(true);
