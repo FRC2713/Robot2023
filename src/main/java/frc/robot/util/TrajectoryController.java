@@ -1,9 +1,10 @@
 package frc.robot.util;
 
+import static frc.robot.Constants.DriveConstants.Gains;
+
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +22,9 @@ public class TrajectoryController {
   PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
-          new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(1.0, 0, 0));
+          new PIDFFController(Gains.kTrajectoryControllerGainsX),
+          new PIDFFController(Gains.kTrajectoryControllerGainsY),
+          new PIDFFController(Gains.kTrajectoryControllerGainsRotation));
 
   private TrajectoryController() {}
 

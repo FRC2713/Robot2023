@@ -1,9 +1,6 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.*;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +64,10 @@ public class PIDFFGains {
 
   public ArmFeedforward createArmFeedforward() {
     return new ArmFeedforward(kS.get(), kG.get(), kV.get());
+  }
+
+  public ElevatorFeedforward createElevatorFeedforward() {
+    return new ElevatorFeedforward(kS.get(), kG.get(), kV.get());
   }
 
   public ProfiledPIDController createProfiledPIDController(

@@ -41,6 +41,8 @@ public final class Constants {
 
   @UtilityClass
   public static class ElevatorConstants {
+    public static final PIDFFGains kElevatorController =
+        PIDFFGains.builder("Elevator Controller").kP(0.01).kD(0.0).kG(0.545 + Math.PI).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -121,9 +123,9 @@ public final class Constants {
     public static final double fullRobotWidth = bumperlessRobotWidth + bumperThickness * 2;
     public static final double fullRobotLength = bumperlessRobotLength + bumperThickness * 2;
 
+    public static final double headingControllerDriverChangeRate = 4;
     public static final PIDFFGains kHeadingControllerGains =
         PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(0).build();
-    public static final double headingControllerDriverChangeRate = 4;
 
     public static final ModuleInfo frontLeft =
         ModuleInfo.builder()
@@ -179,6 +181,15 @@ public final class Constants {
           PIDFFGains.builder("BackRight/Default Azimuth").kP(0.05).tolerance(0).build();
       public static final PIDFFGains kDefaultDrivingGains =
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsX =
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(0.9).kD(0.0).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsY =
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(0.9).kD(0.0).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsRotation =
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.0).kD(0.0).build();
     }
 
     public static final PIDFFGains kFrontLeftAzimuthGains =
