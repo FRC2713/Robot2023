@@ -52,6 +52,21 @@ public final class Constants {
     public static final int FOURBAR_TWO_CANID = 14;
 
     public static final int BLINKIN_PORT = 1000;
+
+    public static final int frontLeftDriveCANId = 1;
+    public static final int frontLeftAziCANId = 8;
+    public static final int frontRightDriveCANId = 3;
+    public static final int frontRightAziCANId = 2;
+    public static final int backLeftDriveCANId = 4;
+    public static final int backLeftAziCANId = 5;
+    public static final int backRightDriveCANId = 6;
+    public static final int backRightAziCANId = 7;
+    public static final int eleMotor1 = 9;
+    public static final int eleMotor2 = 10;
+    public static final int intakeMotor1 = 11;
+    public static final int intakeMotor2 = 12;
+    public static final int fourBarMotor1 = 13;
+    public static final int fourBarMotor2 = 14;
   }
 
   public static final class FieldConstants {}
