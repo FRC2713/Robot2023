@@ -45,6 +45,21 @@ public class Elevator extends SubsystemBase {
     this.targetHeight = targetHeightInches;
   }
 
+  public void setHeightBottomScore(){
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_LOW_SCORE;
+  }
+  public void setHeightConeMidScore(){
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CONE_MID_SCORE;
+  }
+  public void setHeightCubeMidScore(){
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE;
+  }
+  public void setHeightConeHighScore(){
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE;
+  }
+  public void setHeightCubeHighScore(){
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE;
+  }
   public Command cmdSetTargetHeight(double targetHeightInches) {
     return new InstantCommand(() -> Robot.ele.setTargetHeight(targetHeightInches));
   }
