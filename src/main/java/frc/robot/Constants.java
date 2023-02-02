@@ -95,7 +95,7 @@ public final class Constants {
 
     public static final int currentLimit = 65;
 
-    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(12.375);
+    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(10.46);
 
     private static final Translation2d frontLeftLocation =
         new Translation2d(
@@ -114,8 +114,8 @@ public final class Constants {
         new SwerveDriveKinematics(
             frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
-    private static final double bumperlessRobotLength = Units.inchesToMeters(30);
-    private static final double bumperlessRobotWidth = Units.inchesToMeters(30);
+    private static final double bumperlessRobotLength = Units.inchesToMeters(27);
+    private static final double bumperlessRobotWidth = Units.inchesToMeters(27);
     private static final double bumperThickness = Units.inchesToMeters(3);
 
     public static final double fullRobotWidth = bumperlessRobotWidth + bumperThickness * 2;
