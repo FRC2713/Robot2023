@@ -59,35 +59,35 @@ public class FourBar extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegrees - targetDegs) < 0.1;
+    return Math.abs(inputs.angleDegreesOne - targetDegs) < 0.1;
   }
 
   public double getCurrentDegs() {
-    return inputs.angleDegrees;
+    return inputs.angleDegreesOne;
   }
 
   public void periodic() {
-    double effort = controller.calculate(inputs.angleDegrees, targetDegs);
-    double ffEffort = ff.calculate(inputs.angleDegrees, inputs.velocityDegreesPerSecond);
+    double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
+    double ffEffort = ff.calculate(inputs.angleDegreesOne, inputs.velocityDegreesPerSecondOne);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
-    if ((inputs.angleDegrees
+    if ((inputs.angleDegreesOne
         > Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS))) {
       effort =
           MathUtil.clamp(
               controller.calculate(
-                  inputs.angleDegrees,
+                  inputs.angleDegreesOne,
                   Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
               -0.5,
               0.5);
       RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MAX LIMITS!");
-    } else if (inputs.angleDegrees
+    } else if (inputs.angleDegreesOne
         < Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)) {
       effort =
           MathUtil.clamp(
               controller.calculate(
-                  inputs.angleDegrees,
+                  inputs.angleDegreesOne,
                   Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
               -0.5,
               0.5);
