@@ -8,7 +8,7 @@ public class SpinIntakeDrop4BarElevator extends ParallelCommandGroup {
       double elevatorHeight, double fourBarAngle, double intakeVelocityRPM) {
     addCommands(
         Robot.intake.cmdSetVelocityRPM(intakeVelocityRPM),
-        Robot.ele.cmdSetTargetHeightAndWait(elevatorHeight),
-        Robot.four.cmdSetAngleDegAndWait(fourBarAngle));
+        Robot.elevator.cmdSetTargetHeightAndWait(elevatorHeight),
+        Robot.fourBar.cmdSetAngleDegAndWait(fourBarAngle));
   }
 }

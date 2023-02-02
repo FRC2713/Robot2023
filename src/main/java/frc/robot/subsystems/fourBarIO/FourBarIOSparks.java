@@ -9,8 +9,8 @@ public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
 
   public FourBarIOSparks() {
-    fourBarOne = new CANSparkMax(0, MotorType.kBrushless);
-    fourBarTwo = new CANSparkMax(1, MotorType.kBrushless);
+    fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
+    fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
     fourBarTwo.restoreFactoryDefaults();
     fourBarOne.setInverted(true); // subject to change
@@ -39,6 +39,7 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.angleDegrees = fourBarOne.getEncoder().getPosition();
     inputs.velocityDegreesPerSecond = fourBarOne.getEncoder().getVelocity();
     inputs.tempCelcius = fourBarOne.getMotorTemperature();
+    inputs.currentDraw = fourBarOne.getOutputCurrent();
   }
 
   @Override
