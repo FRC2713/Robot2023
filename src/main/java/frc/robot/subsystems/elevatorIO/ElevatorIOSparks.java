@@ -12,6 +12,8 @@ public class ElevatorIOSparks implements ElevatorIO {
   public ElevatorIOSparks() {
     left = new CANSparkMax(0, MotorType.kBrushless);
     right = new CANSparkMax(1, MotorType.kBrushless);
+    left.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    right.setIdleMode(CANSparkMax.IdleMode.kBrake);
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
     left.setInverted(true);
