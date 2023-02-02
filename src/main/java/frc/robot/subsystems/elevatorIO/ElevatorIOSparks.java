@@ -32,6 +32,8 @@ public class ElevatorIOSparks implements ElevatorIO {
         .getEncoder()
         .setVelocityConversionFactor(
             Constants.ElevatorConstants.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
+
+
   }
 
   @Override
@@ -46,5 +48,6 @@ public class ElevatorIOSparks implements ElevatorIO {
   public void setVoltage(double volts) {
     left.setVoltage(volts);
     right.setVoltage(volts);
+
   }
 }

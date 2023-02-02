@@ -90,6 +90,15 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
 
     Logger.getInstance().processInputs("Elevator", inputs);
+    if (inputs.heightInches <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS) &&  inputs.velocityInchesPerSecond < 0) {
+      IO.setVoltage(0);
+      return;
+    }
+    if (inputs.heightInches >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS) && inputs.velocityInchesPerSecond > 0) {
+      IO.setVoltage(0);
+      return;
+    }
+
   }
 
   public static class Commands {
