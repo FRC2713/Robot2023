@@ -116,12 +116,12 @@ public class Vision extends SubsystemBase {
    * @return Results of a 3D position solution, 6 numbers: Translation (x,y,y)
    *     Rotation(pitch,yaw,roll)
    */
-  public double[] getCamtran() {
-    return inputs.camtran;
-  }
+  //  public double[] getCamtran() {
+  //    return inputs.camtran;
+  // }
 
-  public long getID() {
-    return inputs.ID;
+  public long getTid() {
+    return inputs.tid;
   }
 
   public String getJsonDump() {
@@ -130,6 +130,30 @@ public class Vision extends SubsystemBase {
 
   public double[] getBotPose() {
     return inputs.botpose;
+  }
+
+  public double[] getBotPose_wpiBlue() {
+    return inputs.botpose_wpiblue;
+  }
+
+  public double[] getBotPose_wpiRed() {
+    return inputs.botpose_wpired;
+  }
+
+  public double[] getCameraPose_targetSpace() {
+    return inputs.camerapose_targetspace;
+  }
+
+  public double[] getTargetPose_cameraSpace() {
+    return inputs.targetpose_cameraspace;
+  }
+
+  public double[] getTargetPose_robotSpace() {
+    return inputs.targetpose_robotspace;
+  }
+
+  public double[] getBotPose_targetSpace() {
+    return inputs.botpose_targetspace;
   }
 
   public long getNeuralDetectorId() {
@@ -360,6 +384,10 @@ public class Vision extends SubsystemBase {
       System.out.println("[Limelight] UNKNOWN SnapshotMode -- " + mode);
       return SnapshotMode.UNKNOWN;
     }
+  }
+
+  public double[] getCrop() {
+    return inputs.crop;
   }
 
   public void periodic() {
