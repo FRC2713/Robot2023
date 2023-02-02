@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -21,12 +22,10 @@ import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
-import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
-import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
-import frc.robot.subsystems.visionIO.VisionIOSim;
+import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -51,6 +50,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
@@ -66,7 +66,7 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     ele = new Elevator(new ElevatorIOSim());
     intake = new Intake(new IntakeIOSim());
-    vis = new Vision(new VisionIOSim());
+    vis = new Vision(new VisionLimelight());
 
     autoCommand =
         new SequentialCommandGroup(
@@ -77,19 +77,25 @@ public class Robot extends LoggedRobot {
             SwerveSubsystem.Commands.followTAndWait(Autos.NINE_TO_D.getTrajectory()));
 
     Robot.swerveDrive =
-        Robot.isReal()
-            ? new SwerveSubsystem(
-                new SwerveIOPigeon2(),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
-            : new SwerveSubsystem(
-                new SwerveIOSim(),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+        new SwerveSubsystem(
+            new SwerveIOPigeon2(),
+            new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+            new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+            new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+            new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+    // Robot.isReal()
+    // ? new SwerveSubsystem(
+    // new SwerveIOPigeon2(),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
+    // : new SwerveSubsystem(
+    // new SwerveIOSim(),
+    // new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+    // new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+    // new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+    // new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
     driver.y().onTrue(new InstantCommand(() -> {}));
     driver
