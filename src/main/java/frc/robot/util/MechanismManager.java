@@ -39,7 +39,7 @@ public class MechanismManager {
     m_four =
         m_elevator.append(
             new MechanismLigament2d(
-                "Four", 12.657, Robot.four.getCurrentDegs(), 6, new Color8Bit(Color.kYellow)));
+                "Four", 12.657, Robot.fourBar.getCurrentDegs(), 6, new Color8Bit(Color.kYellow)));
 
     // m_four_two =
     // m_elevator.append(
@@ -58,9 +58,9 @@ public class MechanismManager {
   }
 
   public void periodic() {
-    m_four.setAngle(Robot.four.getCurrentDegs() + ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
+    m_four.setAngle(Robot.fourBar.getCurrentDegs() + ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
-    m_elevator.setLength(Robot.ele.getCurrentHeight());
-    m_front.setAngle(-90 - Robot.four.getCurrentDegs());
+    m_elevator.setLength(Robot.elevator.getCurrentHeight());
+    m_front.setAngle(-90 - Robot.fourBar.getCurrentDegs());
   }
 }

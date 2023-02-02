@@ -22,7 +22,7 @@ public class OneToAToThreeToBridge extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
             }),
-        new WaitUntilCommand(() -> Robot.ele.atTargetHeight()),
+        new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
         new ParallelCommandGroup(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             Elevator.Commands.setToHeight(Constants.zero),
@@ -33,7 +33,7 @@ public class OneToAToThreeToBridge extends SequentialCommandGroup {
             FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
         Elevator.Commands.setToHeight(Constants.zero),
         FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS),
-        new WaitUntilCommand(() -> Robot.ele.atTargetHeight()),
+        new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
         new GetOnBridge());
   }
 }

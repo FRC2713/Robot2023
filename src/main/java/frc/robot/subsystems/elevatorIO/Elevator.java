@@ -66,7 +66,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command cmdSetTargetHeight(double targetHeightInches) {
-    return new InstantCommand(() -> Robot.ele.setTargetHeight(targetHeightInches));
+    return new InstantCommand(() -> Robot.elevator.setTargetHeight(targetHeightInches));
   }
 
   public Command cmdSetTargetHeightAndWait(double targetHeightInches) {
@@ -123,7 +123,7 @@ public class Elevator extends SubsystemBase {
 
   public static class Commands {
     public static Command setToHeight(double height) {
-      return new InstantCommand(() -> Robot.ele.setTargetHeight(height), Robot.ele);
+      return new InstantCommand(() -> Robot.elevator.setTargetHeight(height), Robot.elevator);
     }
   }
 }

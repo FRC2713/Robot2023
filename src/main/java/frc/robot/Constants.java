@@ -51,7 +51,7 @@ public final class Constants {
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
 
-    public static final int BLINKIN_PORT = 1000;
+    public static final int BLINKIN_PORT = 1;
   }
 
   public static final class FieldConstants {}
@@ -61,24 +61,20 @@ public final class Constants {
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
-    public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
+    public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR =
         (ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
-        ELEVATOR_POSITION_CONVERSION_FACTOR / 60; // not the final value : );
-    public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
+        ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
+    public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
 
     public static final double ELEVATOR_LOW_SCORE = 12;
-
     public static final double ELEVATOR_CONE_MID_SCORE = 42;
-
     public static final double ELEVATOR_CUBE_MID_SCORE = 30;
-
     public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
-
     public static final double ELEVATOR_CUBE_HIGH_SCORE = 40;
   }
 
@@ -90,10 +86,10 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 5000;
     public static final double GEARING = 200.0;
     public static final double MASS_KG = 0.5;
-    public static final double FOUR_BAR_RATIO = 5; // subject to change
+    public static final double FOUR_BAR_RATIO = 5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = FOUR_BAR_RATIO * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
-    public static final int FOUR_BAR_CURRENT_LIMIT = 50; // subject to change
+    public static final int FOUR_BAR_CURRENT_LIMIT = 50;
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
         PIDFFGains.builder("4Bar Controller").kP(0.4).kI(0.0).kD(0.0).kG(0.001).build();
@@ -129,7 +125,7 @@ public final class Constants {
 
     public static final int currentLimit = 65;
 
-    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(10.46);
+    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(20.75 / 2);
 
     private static final Translation2d frontLeftLocation =
         new Translation2d(
@@ -148,8 +144,8 @@ public final class Constants {
         new SwerveDriveKinematics(
             frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
-    private static final double bumperlessRobotLength = Units.inchesToMeters(27);
-    private static final double bumperlessRobotWidth = Units.inchesToMeters(27);
+    private static final double bumperlessRobotLength = Units.inchesToMeters(26.5);
+    private static final double bumperlessRobotWidth = Units.inchesToMeters(26.5);
     private static final double bumperThickness = Units.inchesToMeters(3);
 
     public static final double fullRobotWidth = bumperlessRobotWidth + bumperThickness * 2;

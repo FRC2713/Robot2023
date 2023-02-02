@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -24,31 +20,40 @@ import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
+import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
+import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
+import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.VisionIOSim;
+import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
-  public static FourBar four;
-  public static Elevator ele;
-  public static Intake intake;
-  public static Vision vis;
-  public static double[] poseValue;
-  DoubleArraySubscriber visionPose;
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
+  public static FourBar fourBar;
+  public static Elevator elevator;
+  public static Intake intake;
+  public static Vision vision;
   public static SwerveSubsystem swerveDrive;
-  public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
   private Command autoCommand;
+
+  public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
+
+  public static double[] poseValue;
+  DoubleArraySubscriber visionPose;
 
   @Override
   public void robotInit() {
@@ -64,34 +69,27 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    four = new FourBar(new FourBarIOSim());
-    mechManager = new MechanismManager();
-    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    vis = new Vision(new VisionIOSim());
+    vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    swerveDrive =
+        isSimulation()
+            ? new SwerveSubsystem(
+                new SwerveIOSim(),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+                new SwerveModuleIOSim(Constants.DriveConstants.backRight))
+            : new SwerveSubsystem(
+                new SwerveIOPigeon2(),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight));
 
+    mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
-
-    Robot.swerveDrive =
-        new SwerveSubsystem(
-            new SwerveIOPigeon2(),
-            new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-            new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-            new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-            new SwerveModuleIOSim(Constants.DriveConstants.backRight));
-    // Robot.isReal()
-    // ? new SwerveSubsystem(
-    // new SwerveIOPigeon2(),
-    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
-    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
-    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
-    // : new SwerveSubsystem(
-    // new SwerveIOSim(),
-    // new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-    // new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-    // new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-    // new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
     driver.y().onTrue(new InstantCommand(() -> {}));
     driver

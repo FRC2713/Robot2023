@@ -43,7 +43,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public Command cmdSetAngleDeg(double targetDegs) {
-    return new InstantCommand(() -> Robot.four.setAngleDeg(targetDegs));
+    return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
   }
 
   public Command cmdSetAngleDegAndWait(double targetDegs) {
@@ -107,7 +107,7 @@ public class FourBar extends SubsystemBase {
 
   public static class Commands {
     public static Command setToAngle(double angleDeg) {
-      return new InstantCommand(() -> Robot.four.setAngleDeg(angleDeg), Robot.four);
+      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), Robot.fourBar);
     }
   }
 }

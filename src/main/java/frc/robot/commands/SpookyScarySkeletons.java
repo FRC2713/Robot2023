@@ -15,21 +15,21 @@ public class SpookyScarySkeletons extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new InstantCommand(
                 () -> {
-                  Robot.ele.setTargetHeight(27);
+                  Robot.elevator.setTargetHeight(27);
                 }),
             new InstantCommand(
                 () -> {
-                  Robot.four.setAngleDeg(-0.0000002);
+                  Robot.fourBar.setAngleDeg(-0.0000002);
                 })),
-        new WaitUntilCommand(() -> Robot.four.isAtTarget()),
-        new WaitUntilCommand(() -> Robot.ele.atTargetHeight()),
+        new WaitUntilCommand(() -> Robot.fourBar.isAtTarget()),
+        new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
         new WaitCommand(2),
         new InstantCommand(
                 () -> {
-                  Robot.ele.setTargetHeight(0);
+                  Robot.elevator.setTargetHeight(0);
                 })
             .repeatedly()
-            .until(() -> Robot.ele.atTargetHeight()),
+            .until(() -> Robot.elevator.atTargetHeight()),
         new InstantCommand(
             () ->
                 Robot.swerveDrive.resetOdometry(
