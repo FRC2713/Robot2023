@@ -13,20 +13,23 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
+import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.AutoPath.Autos;
+import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -64,17 +67,11 @@ public class Robot extends LoggedRobot {
 
     four = new FourBar(new FourBarIOSim());
     mechManager = new MechanismManager();
-    ele = new Elevator(new ElevatorIOSim());
-    intake = new Intake(new IntakeIOSim());
-    vis = new Vision(new VisionLimelight());
+    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    vis = new Vision(new VisionIOSim());
 
-    autoCommand =
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () ->
-                    swerveDrive.resetOdometry(
-                        Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose())),
-            SwerveSubsystem.Commands.followTAndWait(Autos.NINE_TO_D.getTrajectory()));
+    autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         new SwerveSubsystem(
