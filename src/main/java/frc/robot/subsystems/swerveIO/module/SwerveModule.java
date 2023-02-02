@@ -87,6 +87,10 @@ public class SwerveModule extends SubsystemBase {
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
     final double turnOutput =
         azimuthController.calculate(inputs.aziEncoderPositionDeg, state.angle.getDegrees());
+
+    Logger.getInstance().recordOutput("Drive Output", driveOutput);
+    Logger.getInstance().recordOutput("Turn Output", turnOutput);
+
     io.setDriveVoltage(driveOutput);
     io.setAzimuthVoltage(turnOutput);
   }
@@ -105,6 +109,8 @@ public class SwerveModule extends SubsystemBase {
         .recordOutput(
             "Swerve/" + information.getName() + "/Drive Error",
             state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
+    Logger.getInstance().recordOutput("Swerve/" + information.getName() + "/Target Speed", state.speedMetersPerSecond);        
+    Logger.getInstance().recordOutput("Swerve/" + information.getName() + "/Angle Speed", state.angle.getDegrees());        
 
     Logger.getInstance()
         .recordOutput(
