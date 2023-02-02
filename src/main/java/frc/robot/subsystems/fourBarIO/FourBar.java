@@ -22,9 +22,9 @@ public class FourBar extends SubsystemBase {
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createArmFeedforward();
+    this.ff = Constants.FourBarConstants.FOUR_BAR_GAINS.createArmFeedforward();
     this.controller =
-        Constants.FourBarConstants.PID_CONTROLLER_FEED_FORWARD.createProfiledPIDController(
+        Constants.FourBarConstants.FOUR_BAR_GAINS.createProfiledPIDController(
             new Constraints(
                 Constants.FourBarConstants.MAX_VELOCITY,
                 Constants.FourBarConstants.MAX_ACCELERATION));

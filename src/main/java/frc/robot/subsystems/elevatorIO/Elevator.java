@@ -23,8 +23,10 @@ public class Elevator extends SubsystemBase {
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
-    this.feedforward = new ElevatorFeedforward(0, 0.545 + Math.PI, 0);
-    this.elevatorController = new ProfiledPIDController(0.01, 0, 0, new Constraints(160, 500));
+    this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
+    this.elevatorController =
+        Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
+            new Constraints(120, 500));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
