@@ -4,6 +4,9 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +24,7 @@ public class TrajectoryController {
   PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
-          new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(1.0, 0, 0));
+          new PIDController(0.9, 0, 0), new PIDController(0.9, 0, 0), new PIDController(2, 0, 0));
 
   private TrajectoryController() {}
 
@@ -52,7 +55,11 @@ public class TrajectoryController {
       timer.start();
     }
 
-    targetState = (PathPlannerState) traj.sample(timer.get());
+    if (isFinished()) {
+      targetState = traj.getEndState();
+    } else {
+      targetState = (PathPlannerState) traj.sample(timer.get());
+    }
 
     Logger.getInstance()
         .recordOutput(
@@ -64,7 +71,19 @@ public class TrajectoryController {
             });
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
-      return controller.calculate(Robot.swerveDrive.getRegularPose(), targetState);
+      final var loopTime = 0.02;
+      var speeds = controller.calculate(Robot.swerveDrive.getRegularPose(), targetState);
+
+      Pose2d robotPoseVel =
+          new Pose2d(
+              speeds.vxMetersPerSecond * loopTime,
+              speeds.vyMetersPerSecond * loopTime,
+              Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * loopTime));
+      Twist2d twistVel = RedHawkUtil.poseLog(robotPoseVel);
+      ChassisSpeeds updatedSpeeds =
+          new ChassisSpeeds(
+              twistVel.dx / loopTime, twistVel.dy / loopTime, twistVel.dtheta / loopTime);
+      return updatedSpeeds;
     } else return new ChassisSpeeds();
   }
 }

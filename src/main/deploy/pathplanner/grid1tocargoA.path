@@ -2,23 +2,38 @@
   "waypoints": [
     {
       "anchorPoint": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/grid1tocargoA.path
         "x": 1.75,
         "y": 4.95
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7499999999999996,
-        "y": 4.95
-========
-        "x": 7.0,
-        "y": 4.6
+        "x": 2.4583288854742142,
+        "y": 4.846113675218137
       },
-      "prevControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.8787420296314736,
+        "y": 4.65
+      },
+      "prevControl": {
+        "x": 2.8609967587475666,
+        "y": 4.6641962167071265
+      },
       "nextControl": {
-        "x": 4.665002672315762,
-        "y": 4.514781119427582
->>>>>>>> main:src/main/deploy/pathplanner/cargoAtogrid3.path
+        "x": 2.8964873005153806,
+        "y": 4.635803783292874
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -34,21 +49,12 @@
     },
     {
       "anchorPoint": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/grid1tocargoA.path
         "x": 7.0,
         "y": 4.6
       },
       "prevControl": {
-        "x": 5.7842106371668445,
-        "y": 4.639768810933793
-========
-        "x": 1.75,
-        "y": 3.85
-      },
-      "prevControl": {
-        "x": 1.9715690894882858,
-        "y": 5.3858332521767815
->>>>>>>> main:src/main/deploy/pathplanner/cargoAtogrid3.path
+        "x": 5.543252362195725,
+        "y": 4.76089479464572
       },
       "nextControl": null,
       "holonomicAngle": 0.0,
@@ -64,8 +70,5 @@
       }
     }
   ],
-  "maxVelocity": 4.0,
-  "maxAcceleration": 3.0,
-  "isReversed": null,
   "markers": []
 }

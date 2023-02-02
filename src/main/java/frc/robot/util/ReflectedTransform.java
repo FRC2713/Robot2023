@@ -31,7 +31,8 @@ public class ReflectedTransform {
   private static Field curveRadiusField;
   private static Constructor<PathPlannerTrajectory> constructor;
 
-  // Reflection is expensive. Create declared objects at startup instead of per state or per
+  // Reflection is expensive. Create declared objects at startup instead of per
+  // state or per
   // trajectory.
   static {
     try {
@@ -64,42 +65,39 @@ public class ReflectedTransform {
    */
   @SneakyThrows
   private static PathPlannerState reflectiveTransformState(PathPlannerState state) {
-    if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-      PathPlannerState transformedState = new PathPlannerState();
+    PathPlannerState transformedState = new PathPlannerState();
 
-      // Move it to the other side of the field, with an absolute origin on blue side
-      // Mirror the X, keep the Y the same.
-      Translation2d transformedTranslation =
-          new Translation2d(
-              FieldConstants.fieldLength - state.poseMeters.getX(), state.poseMeters.getY());
+    // Move it to the other side of the field, with an absolute origin on blue side
+    // Mirror the X, keep the Y the same.
+    Translation2d transformedTranslation =
+        new Translation2d(
+            FieldConstants.fieldLength - state.poseMeters.getX(), state.poseMeters.getY());
 
-      // The instantaneous heading of the trajectory needs to be negated
-      Rotation2d transformedHeading = state.poseMeters.getRotation().times(-1);
-      // The holonomic heading needs to be negated and rotated
-      Rotation2d transformedHolonomicRotation =
-          state.holonomicRotation.times(-1).plus(Rotation2d.fromDegrees(180));
+    // The instantaneous heading of the trajectory needs to be negated
+    Rotation2d transformedHeading = state.poseMeters.getRotation().times(-1);
+    // The holonomic heading needs to be negated and rotated
+    Rotation2d transformedHolonomicRotation =
+        state.holonomicRotation.times(-1).plus(Rotation2d.fromDegrees(180));
 
-      transformedState.timeSeconds = state.timeSeconds;
-      // Negate the velocity. If traveling from community to mid field on blue, the +X velocity is
-      // positive. If doing so on red, the +X velocity is negative.
-      transformedState.velocityMetersPerSecond = -state.velocityMetersPerSecond;
-      transformedState.accelerationMetersPerSecondSq = state.accelerationMetersPerSecondSq;
-      transformedState.poseMeters = new Pose2d(transformedTranslation, transformedHeading);
-      transformedState.angularVelocityRadPerSec = -state.angularVelocityRadPerSec;
-      transformedState.holonomicRotation = transformedHolonomicRotation;
-      transformedState.holonomicAngularVelocityRadPerSec = -state.holonomicAngularVelocityRadPerSec;
-      transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
+    transformedState.timeSeconds = state.timeSeconds;
+    // Negate the velocity. If traveling from community to mid field on blue, the +X
+    // velocity is
+    // positive. If doing so on red, the +X velocity is negative.
+    transformedState.velocityMetersPerSecond = -state.velocityMetersPerSecond;
+    transformedState.accelerationMetersPerSecondSq = state.accelerationMetersPerSecondSq;
+    transformedState.poseMeters = new Pose2d(transformedTranslation, transformedHeading);
+    transformedState.angularVelocityRadPerSec = -state.angularVelocityRadPerSec;
+    transformedState.holonomicRotation = transformedHolonomicRotation;
+    transformedState.holonomicAngularVelocityRadPerSec = -state.holonomicAngularVelocityRadPerSec;
+    transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
 
-      // transformedState.deltaPos = state.deltaPos;
-      deltaPosField.set(transformedState, deltaPosField.get(state));
+    // transformedState.deltaPos = state.deltaPos;
+    deltaPosField.set(transformedState, deltaPosField.get(state));
 
-      // transformedState.curveRadius = -state.curveRadius;
-      curveRadiusField.set(transformedState, (-1) * (Double) curveRadiusField.get(state));
+    // transformedState.curveRadius = -state.curveRadius;
+    curveRadiusField.set(transformedState, (-1) * (Double) curveRadiusField.get(state));
 
-      return transformedState;
-    }
-
-    return state;
+    return transformedState;
   }
 
   /**
@@ -113,37 +111,34 @@ public class ReflectedTransform {
   @SneakyThrows
   public static PathPlannerTrajectory reflectiveTransformTrajectory(
       PathPlannerTrajectory trajectory) {
-    if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-      List<Trajectory.State> transformedStates = new ArrayList<>();
+    List<Trajectory.State> transformedStates = new ArrayList<>();
 
-      try {
-        // Convert all the trajectory states to red-side
-        for (Trajectory.State s : trajectory.getStates()) {
-          PathPlannerState state = (PathPlannerState) s;
-          transformedStates.add(reflectiveTransformState(state));
-        }
-
-        // Call the now unhidden constructor
-        return constructor.newInstance(
-            transformedStates,
-            trajectory.getMarkers(),
-            trajectory.getStartStopEvent(),
-            trajectory.getEndStopEvent(),
-            trajectory.fromGUI);
-      } catch (IllegalArgumentException
-          | IllegalAccessException
-          | InstantiationException
-          | InvocationTargetException e) {
-        // If this fails on the real field, return an empty trajectory instead of crashing
-        if (DriverStation.isFMSAttached()) {
-          return new PathPlannerTrajectory();
-        } else {
-          // otherwise just crash
-          throw e;
-        }
+    try {
+      // Convert all the trajectory states to red-side
+      for (Trajectory.State s : trajectory.getStates()) {
+        PathPlannerState state = (PathPlannerState) s;
+        transformedStates.add(reflectiveTransformState(state));
       }
-    } else {
-      return trajectory;
+
+      // Call the now unhidden constructor
+      return constructor.newInstance(
+          transformedStates,
+          trajectory.getMarkers(),
+          trajectory.getStartStopEvent(),
+          trajectory.getEndStopEvent(),
+          trajectory.fromGUI);
+    } catch (IllegalArgumentException
+        | IllegalAccessException
+        | InstantiationException
+        | InvocationTargetException e) {
+      // If this fails on the real field, return an empty trajectory instead of
+      // crashing
+      if (DriverStation.isFMSAttached()) {
+        return new PathPlannerTrajectory();
+      } else {
+        // otherwise just crash
+        throw e;
+      }
     }
   }
 }
