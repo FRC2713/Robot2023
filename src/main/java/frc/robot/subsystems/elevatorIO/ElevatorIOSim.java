@@ -32,10 +32,14 @@ public class ElevatorIOSim implements ElevatorIO {
       // sim.setInputVoltage(0.0);
     }
     sim.update(0.02);
-    inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
-    inputs.heightInches = Units.metersToInches(sim.getPositionMeters());
-    inputs.velocityInchesPerSecond = Units.metersToInches(sim.getVelocityMetersPerSecond());
-    inputs.tempCelsius = 0.0;
+    inputs.outputVoltageLeft = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
+    inputs.heightInchesLeft = Units.metersToInches(sim.getPositionMeters());
+    inputs.velocityInchesPerSecondLeft = Units.metersToInches(sim.getVelocityMetersPerSecond());
+    inputs.tempCelsiusLeft = 0.0;
+    inputs.outputVoltageRight = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
+    inputs.heightInchesRight = Units.metersToInches(sim.getPositionMeters());
+    inputs.velocityInchesPerSecondRight = Units.metersToInches(sim.getVelocityMetersPerSecond());
+    inputs.tempCelsiusRight = 0.0;
   }
 
   /**

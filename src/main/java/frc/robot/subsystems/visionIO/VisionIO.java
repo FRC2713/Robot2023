@@ -17,17 +17,22 @@ public interface VisionIO {
     public double horizontalSideLength = 0;
     public double verticalSideLength = 0;
     public long pipelineIndex = 0;
-    public double[] camtran = new double[] {0, 0, 0};
-    public long ID = 0;
-    public String jsonDump = "";
-    public double[] botpose = new double[] {0, 0, 0};
+    public String jsonDump = " ";
+    public double[] botpose = new double[] {};
+    public double[] botpose_wpiblue = new double[] {};
+    public double[] botpose_wpired = new double[] {};
+    public double[] camerapose_targetspace = new double[] {};
+    public double[] targetpose_cameraspace = new double[] {};
+    public double[] targetpose_robotspace = new double[] {};
+    public double[] botpose_targetspace = new double[] {};
+    public long tid = 0;
     public long neuralDetectorID = 0;
     public long ledMode = 0;
     public long camMode = 0;
     public long pipeline = 0;
     public long stream = 0;
     public boolean snapshot = false; // IO layer
-    public long crop = 0;
+    public double[] crop = new double[] {};
   }
 
   public void updateInputs(VisionInputs inputs);

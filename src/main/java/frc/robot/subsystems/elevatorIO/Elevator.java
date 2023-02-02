@@ -45,6 +45,26 @@ public class Elevator extends SubsystemBase {
     this.targetHeight = targetHeightInches;
   }
 
+  public void setHeightBottomScore() {
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_LOW_SCORE;
+  }
+
+  public void setHeightConeMidScore() {
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CONE_MID_SCORE;
+  }
+
+  public void setHeightCubeMidScore() {
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE;
+  }
+
+  public void setHeightConeHighScore() {
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE;
+  }
+
+  public void setHeightCubeHighScore() {
+    this.targetHeight = Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE;
+  }
+
   public Command cmdSetTargetHeight(double targetHeightInches) {
     return new InstantCommand(() -> Robot.ele.setTargetHeight(targetHeightInches));
   }
@@ -54,7 +74,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getCurrentHeight() {
-    return inputs.heightInches;
+    return inputs.heightInchesLeft;
   }
 
   public boolean atTargetHeight() {
@@ -62,19 +82,43 @@ public class Elevator extends SubsystemBase {
   }
 
   public void periodic() {
-    double effort = elevatorController.calculate(inputs.heightInches, targetHeight);
+    double effortLeft = elevatorController.calculate(inputs.heightInchesLeft, targetHeight);
     double ffEffort = feedforward.calculate(elevatorController.getSetpoint().velocity);
-    effort += ffEffort;
-    effort = MathUtil.clamp(effort, -12, 12);
+    effortLeft += ffEffort;
+    effortLeft = MathUtil.clamp(effortLeft, -12, 12);
 
     IO.updateInputs(inputs);
-    IO.setVoltage(effort);
+    IO.setVoltage(effortLeft);
     Logger.getInstance().recordOutput("Elevator/Target Height", targetHeight);
-    Logger.getInstance().recordOutput("Elevator/Control Effort", effort);
+    Logger.getInstance().recordOutput("Elevator/Control Effort", effortLeft);
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
 
     Logger.getInstance().processInputs("Elevator", inputs);
+    if (inputs.heightInchesLeft
+            <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
+        && inputs.velocityInchesPerSecondLeft < 0) {
+      IO.setVoltage(0);
+      return;
+    }
+    if (inputs.heightInchesLeft
+            >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
+        && inputs.velocityInchesPerSecondLeft > 0) {
+      IO.setVoltage(0);
+      return;
+    }
+    if (inputs.heightInchesRight
+            <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
+        && inputs.velocityInchesPerSecondRight < 0) {
+      IO.setVoltage(0);
+      return;
+    }
+    if (inputs.heightInchesRight
+            >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
+        && inputs.velocityInchesPerSecondRight > 0) {
+      IO.setVoltage(0);
+      return;
+    }
   }
 
   public static class Commands {

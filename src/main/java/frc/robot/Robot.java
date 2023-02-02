@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,16 +21,15 @@ import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
-import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
-import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
-import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -54,6 +54,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
@@ -65,52 +66,36 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    four = new FourBar(new FourBarIOSim());
     mechManager = new MechanismManager();
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    autoCommand =
-        new SequentialCommandGroup(
-            four.cmdExtend(), new WaitUntilCommand(() -> four.isAtTarget()), four.cmdRetract());
     vis = new Vision(new VisionIOSim());
 
+    autoCommand = new OneToAToThreeToBridge();
+
     Robot.swerveDrive =
-        Robot.isReal()
-            ? new SwerveSubsystem(
-                new SwerveIOPigeon2(),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
-            : new SwerveSubsystem(
-                new SwerveIOSim(),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+        new SwerveSubsystem(
+            new SwerveIOPigeon2(),
+            new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+            new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+            new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+            new SwerveModuleIOSim(Constants.DriveConstants.backRight));
+    // Robot.isReal()
+    // ? new SwerveSubsystem(
+    // new SwerveIOPigeon2(),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
+    // new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight))
+    // : new SwerveSubsystem(
+    // new SwerveIOSim(),
+    // new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
+    // new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
+    // new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
+    // new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
-    driver
-        .x()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(0);
-                }));
-    driver
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(30);
-                }));
-
-    driver
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  // ele.setTargetHeight(30);
-                }));
+    driver.y().onTrue(new InstantCommand(() -> {}));
     driver
         .povUp()
         .onTrue(
@@ -175,12 +160,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    // four.setAngleDeg(20);
-    // ele.setTargetHeight(30);
+    motionMode = MotionMode.TRAJECTORY;
+
     if (autoCommand != null) {
       autoCommand.schedule();
     }
-    motionMode = MotionMode.TRAJECTORY;
   }
 
   @Override
