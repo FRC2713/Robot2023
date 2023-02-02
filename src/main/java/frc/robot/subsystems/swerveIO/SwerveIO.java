@@ -9,6 +9,7 @@ public interface SwerveIO {
   public static class SwerveInputs {
     public double gyroYawPosition = 0.0;
     public double gyroPitchPosition = 0.0;
+    public double previousgyroPitchPosition = 0.0;
     public double gyroRollPosition = 0.0;
     public double gyroCompassHeading = 0.0;
   }

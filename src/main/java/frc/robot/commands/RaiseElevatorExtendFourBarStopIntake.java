@@ -7,8 +7,8 @@ import frc.robot.Robot;
 public class RaiseElevatorExtendFourBarStopIntake extends ParallelCommandGroup {
   public RaiseElevatorExtendFourBarStopIntake(double elevatorHeight, double fourBarAngle) {
     addCommands(
-        Robot.ele.cmdSetTargetHeightAndWait(Units.metersToInches(elevatorHeight)),
-        Robot.four.cmdSetAngleDegAndWait(Units.radiansToDegrees(fourBarAngle)),
+        Robot.elevator.cmdSetTargetHeightAndWait(Units.metersToInches(elevatorHeight)),
+        Robot.fourBar.cmdSetAngleDegAndWait(Units.radiansToDegrees(fourBarAngle)),
         Robot.intake.cmdSetVelocityRPM(0));
   }
 }
