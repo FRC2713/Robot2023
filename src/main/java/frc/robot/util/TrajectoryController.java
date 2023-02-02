@@ -22,9 +22,9 @@ public class TrajectoryController {
   PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
-          new PIDFFController(Gains.kTrajectoryControllerGainsX),
-          new PIDFFController(Gains.kTrajectoryControllerGainsY),
-          new PIDFFController(Gains.kTrajectoryControllerGainsRotation));
+          Gains.kTrajectoryControllerGainsX.createWpilibController(),
+          Gains.kTrajectoryControllerGainsY.createWpilibController(),
+          Gains.kTrajectoryControllerGainsRotation.createWpilibController());
 
   private TrajectoryController() {}
 

@@ -41,7 +41,7 @@ public final class Constants {
 
   @UtilityClass
   public static class ElevatorConstants {
-    public static final PIDFFGains kElevatorController =
+    public static final PIDFFGains ELEVATOR_GAINS =
         PIDFFGains.builder("Elevator Controller").kP(0.01).kD(0.0).kG(0.545 + Math.PI).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
@@ -69,7 +69,7 @@ public final class Constants {
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 50; // subject to change
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
-    public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
+    public static final PIDFFGains FOUR_BAR_GAINS =
         PIDFFGains.builder("4Bar Controller").kP(9.0).kI(0.5).kD(0.5).kG(0.4).build();
   }
 
