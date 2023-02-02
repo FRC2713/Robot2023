@@ -9,6 +9,7 @@ public interface FourBarIO {
     public double angleDegrees = 0.0;
     public double velocityDegreesPerSecond = 0.0;
     public double tempCelcius = 0.0;
+    public double currentDrawAmps = 0.0;
   }
 
   public void updateInputs(FourBarInputs inputs);

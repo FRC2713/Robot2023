@@ -36,6 +36,7 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.heightInches = Units.metersToInches(sim.getPositionMeters());
     inputs.velocityInchesPerSecond = Units.metersToInches(sim.getVelocityMetersPerSecond());
     inputs.tempCelsius = 0.0;
+    inputs.currentDrawAmps = sim.getCurrentDrawAmps();
   }
 
   /**
