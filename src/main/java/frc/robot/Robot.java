@@ -12,8 +12,9 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -68,7 +69,9 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    autoCommand = new OneToAToThreeToBridge();
+    autoCommand =
+        new SequentialCommandGroup(
+            four.cmdExtend(), new WaitUntilCommand(() -> four.isAtTarget()), four.cmdRetract());
     vis = new Vision(new VisionIOSim());
 
     Robot.swerveDrive =
@@ -194,7 +197,8 @@ public class Robot extends LoggedRobot {
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
-  // grab botpose from the network table, put it into swerve drive inputs, read botpose, and put
+  // grab botpose from the network table, put it into swerve drive inputs, read
+  // botpose, and put
   // that into the pose estimator
   // using the vision command
 
