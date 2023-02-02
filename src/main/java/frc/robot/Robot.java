@@ -63,8 +63,8 @@ public class Robot extends LoggedRobot {
 
     four = new FourBar(new FourBarIOSim());
     mechManager = new MechanismManager();
-    ele = new Elevator(new ElevatorIOSim());
-    intake = new Intake(new IntakeIOSim());
+    ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vis = new Vision(new VisionIOSim());
 
     autoCommand = new OneToAToThreeToBridge();

@@ -6,28 +6,28 @@ import org.littletonrobotics.junction.AutoLog;
 public interface VisionIO {
   @AutoLog
   public static class VisionInputs {
-    public boolean validTarget;
-    public double horizontalCrosshairOffset;
-    public double verticalCrosshairOffset;
-    public double targetArea;
-    public double skew;
-    public double pipelineLatency;
-    public double shortSidelength;
-    public double longSideLength;
-    public double horizontalSideLength;
-    public double verticalSideLength;
-    public long pipelineIndex = 1;
-    public double[] camtran;
-    public long ID;
-    public String jsonDump;
-    public double[] botpose;
-    public long neuralDetectorID;
-    public long ledMode;
-    public long camMode;
-    public long pipeline;
-    public long stream;
-    public boolean snapshot; // IO layer
-    public long crop;
+    public boolean validTarget = false;
+    public double horizontalCrosshairOffset = 0;
+    public double verticalCrosshairOffset = 0;
+    public double targetArea = 0;
+    public double skew = 0;
+    public double pipelineLatency = 0;
+    public double shortSidelength = 0;
+    public double longSideLength = 0;
+    public double horizontalSideLength = 0;
+    public double verticalSideLength = 0;
+    public long pipelineIndex = 0;
+    public double[] camtran = new double[] {0, 0, 0};
+    public long ID = 0;
+    public String jsonDump = "";
+    public double[] botpose = new double[] {0, 0, 0};
+    public long neuralDetectorID = 0;
+    public long ledMode = 0;
+    public long camMode = 0;
+    public long pipeline = 0;
+    public long stream = 0;
+    public boolean snapshot = false; // IO layer
+    public long crop = 0;
   }
 
   public void updateInputs(VisionInputs inputs);

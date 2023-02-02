@@ -5,6 +5,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class AutoPath {
   public static final double fieldLength = Units.inchesToMeters(651.25);
@@ -39,7 +41,9 @@ public class AutoPath {
     }
 
     public PathPlannerTrajectory getTrajectory() {
-      return trajectory;
+      return DriverStation.getAlliance() == Alliance.Blue
+          ? this.blueTrajectory
+          : this.redTrajectory;
     }
   }
 }
