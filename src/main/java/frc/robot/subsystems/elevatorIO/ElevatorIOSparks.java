@@ -34,22 +34,24 @@ public class ElevatorIOSparks implements ElevatorIO {
         .getEncoder()
         .setVelocityConversionFactor(
             Constants.ElevatorConstants.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
-
-
   }
 
   @Override
   public void updateInputs(ElevatorInputs inputs) {
-    inputs.outputVoltage = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
-    inputs.heightInches = Units.metersToInches(left.getEncoder().getPosition());
-    inputs.velocityInchesPerSecond = Units.metersToInches(left.getEncoder().getVelocity());
-    inputs.tempCelsius = left.getMotorTemperature();
+    inputs.outputVoltageLeft = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
+    inputs.heightInchesLeft = Units.metersToInches(left.getEncoder().getPosition());
+    inputs.velocityInchesPerSecondLeft = Units.metersToInches(left.getEncoder().getVelocity());
+    inputs.tempCelsiusLeft = left.getMotorTemperature();
+
+    inputs.outputVoltageRight = MathUtil.clamp(right.getOutputCurrent(), -12.0, 12.0);
+    inputs.heightInchesRight = Units.metersToInches(right.getEncoder().getPosition());
+    inputs.velocityInchesPerSecondRight = Units.metersToInches(right.getEncoder().getVelocity());
+    inputs.tempCelsiusRight = right.getMotorTemperature();
   }
 
   @Override
   public void setVoltage(double volts) {
     left.setVoltage(volts);
     right.setVoltage(volts);
-
   }
 }
