@@ -71,6 +71,16 @@ public final class Constants {
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60; // not the final value : );
     public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
+
+    public static final double ELEVATOR_LOW_SCORE = 12;
+
+    public static final double ELEVATOR_CONE_MID_SCORE = 42;
+
+    public static final double ELEVATOR_CUBE_MID_SCORE = 30;
+
+    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
+
+    public static final double ELEVATOR_CUBE_HIGH_SCORE = 40;
   }
 
   @UtilityClass
