@@ -19,7 +19,6 @@ import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
-import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
@@ -64,12 +63,13 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    four = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    four = new FourBar(new FourBarIOSim());
     mechManager = new MechanismManager();
     ele = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    autoCommand = new OneToAToThreeToBridge();
     vis = new Vision(new VisionIOSim());
+
+    autoCommand = new OneToAToThreeToBridge();
 
     Robot.swerveDrive =
         Robot.isReal()
@@ -86,28 +86,7 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
                 new SwerveModuleIOSim(Constants.DriveConstants.backRight));
 
-    driver
-        .x()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(0);
-                }));
-    driver
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  ele.setTargetHeight(30);
-                }));
-
-    driver
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  // ele.setTargetHeight(30);
-                }));
+    driver.y().onTrue(new InstantCommand(() -> {}));
     driver
         .povUp()
         .onTrue(
@@ -172,12 +151,11 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    // four.setAngleDeg(20);
-    // ele.setTargetHeight(30);
+    motionMode = MotionMode.TRAJECTORY;
+
     if (autoCommand != null) {
       autoCommand.schedule();
     }
-    motionMode = MotionMode.TRAJECTORY;
   }
 
   @Override
@@ -194,7 +172,8 @@ public class Robot extends LoggedRobot {
     Robot.motionMode = MotionMode.FULL_DRIVE;
   }
 
-  // grab botpose from the network table, put it into swerve drive inputs, read botpose, and put
+  // grab botpose from the network table, put it into swerve drive inputs, read
+  // botpose, and put
   // that into the pose estimator
   // using the vision command
 

@@ -18,7 +18,8 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.velocityRPM - targetRPM) < 0.5;
+    return Math.abs(inputs.rollersVelocityRPM - targetRPM)
+        < 0.5; // might be wheel rpm ¯\_(ツ)_/¯ we shall see
   }
 
   public void setRpm(double rpm) {
