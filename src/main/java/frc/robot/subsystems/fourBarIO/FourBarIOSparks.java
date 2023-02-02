@@ -39,6 +39,7 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.angleDegrees = fourBarOne.getEncoder().getPosition();
     inputs.velocityDegreesPerSecond = fourBarOne.getEncoder().getVelocity();
     inputs.tempCelcius = fourBarOne.getMotorTemperature();
+    inputs.currentDraw = fourBarOne.getOutputCurrent();
   }
 
   @Override

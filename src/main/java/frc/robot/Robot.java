@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -27,16 +31,11 @@ import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.visionIO.Vision;
-import frc.robot.subsystems.visionIO.VisionLimelight;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
   public static FourBar four;

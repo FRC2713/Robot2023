@@ -96,7 +96,7 @@ public final class Constants {
     public static final int FOUR_BAR_CURRENT_LIMIT = 50; // subject to change
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
-        PIDFFGains.builder("4Bar Controller").kP(9.0).kI(0.5).kD(0.5).kG(0.4).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.4).kI(0.0).kD(0.0).kG(0.001).build();
   }
 
   @UtilityClass
