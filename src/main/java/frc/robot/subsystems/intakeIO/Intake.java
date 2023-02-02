@@ -1,11 +1,10 @@
 package frc.robot.subsystems.intakeIO;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
@@ -19,7 +18,8 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.rollersVelocityRPM - targetRPM) < 0.5; //might be wheel rpm ¯\_(ツ)_/¯ we shall see
+    return Math.abs(inputs.rollersVelocityRPM - targetRPM)
+        < 0.5; // might be wheel rpm ¯\_(ツ)_/¯ we shall see
   }
 
   public void setRpm(double rpm) {

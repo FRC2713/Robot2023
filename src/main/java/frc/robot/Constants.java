@@ -51,7 +51,6 @@ public final class Constants {
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
 
-
     public static final int BLINKIN_PORT = 1000;
   }
 

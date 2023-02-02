@@ -109,8 +109,11 @@ public class SwerveModule extends SubsystemBase {
         .recordOutput(
             "Swerve/" + information.getName() + "/Drive Error",
             state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
-    Logger.getInstance().recordOutput("Swerve/" + information.getName() + "/Target Speed", state.speedMetersPerSecond);        
-    Logger.getInstance().recordOutput("Swerve/" + information.getName() + "/Angle Speed", state.angle.getDegrees());        
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/" + information.getName() + "/Target Speed", state.speedMetersPerSecond);
+    Logger.getInstance()
+        .recordOutput("Swerve/" + information.getName() + "/Angle Speed", state.angle.getDegrees());
 
     Logger.getInstance()
         .recordOutput(
