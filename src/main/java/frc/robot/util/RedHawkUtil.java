@@ -5,7 +5,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import frc.robot.Constants;
+import frc.robot.Robot;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -32,6 +35,35 @@ public final class RedHawkUtil {
                   + ":"
                   + rawStackTrace[2].getLineNumber());
     }
+  }
+
+  public static Translation2d Pose2dToTranslation2d(Pose2d pose) {
+    return new Translation2d(pose.getX(), pose.getY());
+  }
+
+  public static Translation2d getClosestGrid(double y) {
+    return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+        .sorted(
+            (a, b) ->
+                Double.compare(
+                    a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
+                    b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+        .findFirst()
+        .get()
+        .plus(new Translation2d(Constants.DriveConstants.gridOffset, 0));
+  }
+
+  public static int getClosestGridNumber(double y) {
+    return Arrays.asList(FieldConstants.Grids.complexLowTranslations)
+        .indexOf(
+            Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+                .sorted(
+                    (a, b) ->
+                        Double.compare(
+                            a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
+                            b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+                .findFirst()
+                .get());
   }
 
   public static class ErrHandler {

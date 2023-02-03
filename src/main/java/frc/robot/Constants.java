@@ -114,6 +114,8 @@ public final class Constants {
 
   @UtilityClass
   public static final class DriveConstants {
+    public static final double gridOffset = 0.7;
+
     public static final double kJoystickTurnDeadzone = 0.04;
     public static final double wheelDiameter = 4;
     public static final double gearRatio = 6.12;

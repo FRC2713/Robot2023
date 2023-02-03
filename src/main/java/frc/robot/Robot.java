@@ -13,7 +13,9 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -36,6 +38,7 @@ import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
+import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -127,6 +130,30 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.HEADING_CONTROLLER;
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
+
+    GoClosestGrid goClosestGrid = new GoClosestGrid();
+    driver
+        .rightBumper()
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      motionMode = MotionMode.TRAJECTORY;
+                      // if ((goClosestGrid.count % 2) == 0) {
+                      //   TrajectoryController.getInstance()
+                      //       .changePath(goClosestGrid.regenerateTrajectory().getTrajectory());
+                      // } else {
+                      TrajectoryController.getInstance()
+                          .changePath(new GoClosestGrid().getTrajectory());
+                      // }
+                    },
+                    swerveDrive)))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
+                },
+                swerveDrive));
   }
 
   @Override
