@@ -91,6 +91,8 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
 
+    driver.a().onTrue(Elevator.Commands.elevatorConeFloorUpIntake());
+
     driver.y().onTrue(new InstantCommand(() -> {}));
     driver
         .povUp()

@@ -59,7 +59,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(0.01).kD(0.0).kG(0.545 + Math.PI).build();
+        PIDFFGains.builder("Elevator Controller").kP(0).kD(0.0).kG(4.26878).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -73,11 +73,17 @@ public final class Constants {
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
 
-    public static final double ELEVATOR_LOW_SCORE = 12;
-    public static final double ELEVATOR_CONE_MID_SCORE = 42;
-    public static final double ELEVATOR_CUBE_MID_SCORE = 30;
-    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
-    public static final double ELEVATOR_CUBE_HIGH_SCORE = 40;
+    public static final double ELEVATOR_LOW_SCORE = Units.inchesToMeters(12);
+    public static final double ELEVATOR_CONE_MID_SCORE = Units.inchesToMeters(42);
+    public static final double ELEVATOR_CUBE_MID_SCORE = Units.inchesToMeters(30);
+    public static final double ELEVATOR_CONE_HIGH_SCORE = Units.inchesToMeters(50);
+    public static final double ELEVATOR_CUBE_HIGH_SCORE = Units.inchesToMeters(40);
+
+    public static final double ELEVATOR_CUBE_FLOOR_INTAKE = Units.inchesToMeters(8);
+
+    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = Units.inchesToMeters(0);
+
+    public static final double ELEVATOR_CONE_FLOOR_UP_INTAKE = Units.inchesToMeters(12);
   }
 
   @UtilityClass

@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
     this.elevatorController =
         Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
-            new Constraints(120, 500));
+            new Constraints(2, 10));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
@@ -75,6 +75,8 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/Control Effort", effortLeft);
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
+    Logger.getInstance().recordOutput("Elevator/heightInchesLeft", inputs.heightInchesLeft);
+    Logger.getInstance().recordOutput("Elevator/heightInchesRight", inputs.heightInchesRight);
 
     Logger.getInstance().processInputs("Elevator", inputs);
     if (inputs.heightInchesLeft
@@ -99,6 +101,7 @@ public class Elevator extends SubsystemBase {
             >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
         && inputs.velocityInchesPerSecondRight > 0) {
       IO.setVoltage(0);
+
       return;
     }
   }
@@ -137,6 +140,30 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE),
+          Robot.elevator);
+    }
+
+    public static Command elevatorCubeFloorIntake() {
+      return new InstantCommand(
+          () ->
+              Robot.elevator.setTargetHeight(
+                  Constants.ElevatorConstants.ELEVATOR_CUBE_FLOOR_INTAKE),
+          Robot.elevator);
+    }
+
+    public static Command elevatorConeFloorTippedIntake() {
+      return new InstantCommand(
+          () ->
+              Robot.elevator.setTargetHeight(
+                  Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_TIPPED_INTAKE),
+          Robot.elevator);
+    }
+
+    public static Command elevatorConeFloorUpIntake() {
+      return new InstantCommand(
+          () ->
+              Robot.elevator.setTargetHeight(
+                  Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE),
           Robot.elevator);
     }
   }
