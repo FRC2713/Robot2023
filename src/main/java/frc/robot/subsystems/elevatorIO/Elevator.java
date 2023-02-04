@@ -101,7 +101,6 @@ public class Elevator extends SubsystemBase {
             >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
         && inputs.velocityInchesPerSecondRight > 0) {
       IO.setVoltage(0);
-
       return;
     }
   }
@@ -111,10 +110,16 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand(() -> Robot.elevator.setTargetHeight(height), Robot.elevator);
     }
 
-    public static Command elevatorLowScore() {
+    public static Command elevatorConeLowScore() {
       return new InstantCommand(
-          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_LOW_SCORE),
+          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CONE_LOW_SCORE),
           Robot.elevator);
+    }
+
+    public static Command elevatorCubeLowScore() {
+      return new InstantCommand(
+              () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE),
+              Robot.elevator);
     }
 
     public static Command elevatorConeMidScore() {

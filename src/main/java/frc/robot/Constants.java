@@ -76,7 +76,8 @@ public final class Constants {
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
 
-    public static final double ELEVATOR_LOW_SCORE = Units.inchesToMeters(12);
+    public static final double ELEVATOR_CONE_LOW_SCORE = Units.inchesToMeters(12);
+    public static final double ELEVATOR_CUBE_LOW_SCORE = Units.inchesToMeters(12);
     public static final double ELEVATOR_CONE_MID_SCORE = Units.inchesToMeters(42);
     public static final double ELEVATOR_CUBE_MID_SCORE = Units.inchesToMeters(30);
     public static final double ELEVATOR_CONE_HIGH_SCORE = Units.inchesToMeters(50);

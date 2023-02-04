@@ -13,6 +13,8 @@ import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Robot.fourBar;
+
 public class FourBar extends SubsystemBase {
 
   private final ProfiledPIDController controller;
@@ -40,22 +42,6 @@ public class FourBar extends SubsystemBase {
       RedHawkUtil.ErrHandler.getInstance().addError("4Bar: Set to degress out of limits range!");
     }
     this.targetDegs = targetDegs;
-  }
-
-  public Command cmdSetAngleDeg(double targetDegs) {
-    return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
-  }
-
-  public Command cmdSetAngleDegAndWait(double targetDegs) {
-    return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> isAtTarget());
-  }
-
-  public Command cmdRetract() {
-    return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
-  }
-
-  public Command cmdExtend() {
-    return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
   }
 
   public boolean isAtTarget() {
@@ -107,7 +93,19 @@ public class FourBar extends SubsystemBase {
 
   public static class Commands {
     public static Command setToAngle(double angleDeg) {
-      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), Robot.fourBar);
+      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
+    }
+    public static Command cmdSetAngleDeg(double targetDegs) {
+      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
+    }
+    public static Command cmdSetAngleDegAndWait(double targetDegs) {
+      return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
+    }
+    public static Command cmdRetract() {
+      return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
+    }
+    public static Command cmdExtend() {
+      return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
     }
   }
 }

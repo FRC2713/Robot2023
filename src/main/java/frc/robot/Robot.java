@@ -130,6 +130,12 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.HEADING_CONTROLLER;
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
+
+    //Operator Buttons
+    awp.leftBumper().and(awp.y()).onTrue( new InstantCommand(() ->{
+            Elevator.Commands.elevatorConeHighScore();
+            FourBar.Commands.cmdExtend();
+    }));
   }
 
   @Override
