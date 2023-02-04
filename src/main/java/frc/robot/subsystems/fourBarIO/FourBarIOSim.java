@@ -10,7 +10,7 @@ import frc.robot.Constants;
 public class FourBarIOSim implements FourBarIO {
   private final SingleJointedArmSim sim =
       new SingleJointedArmSim(
-          DCMotor.getNEO(1),
+          DCMotor.getNEO(2),
           Constants.FourBarConstants.GEARING,
           SingleJointedArmSim.estimateMOI(
               Constants.FourBarConstants.LENGTH_METRES, Constants.FourBarConstants.MASS_KG),
@@ -27,10 +27,20 @@ public class FourBarIOSim implements FourBarIO {
     }
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
-    inputs.angleDegrees = Units.radiansToDegrees(sim.getAngleRads());
-    inputs.velocityDegreesPerSecond = Units.radiansToDegrees(sim.getVelocityRadPerSec());
-    inputs.tempCelcius = 0.0;
-    inputs.currentDraw = sim.getCurrentDrawAmps();
+
+    inputs.angleDegreesOne = Units.radiansToDegrees(sim.getAngleRads());
+    inputs.angleDegreesTwo = Units.radiansToDegrees(sim.getAngleRads());
+    inputs.angleDegreesRange = 0.0;
+
+    inputs.velocityDegreesPerSecondOne = Units.radiansToDegrees(sim.getVelocityRadPerSec());
+    inputs.velocityDegreesPerSecondTwo = Units.radiansToDegrees(sim.getVelocityRadPerSec());
+    inputs.velocityDegreesPerSecondRange = 0.0;
+
+    inputs.tempCelciusOne = 0.0;
+    inputs.tempCelciusTwo = 0.0;
+
+    inputs.currentDrawOne = sim.getCurrentDrawAmps();
+    inputs.currentDrawTwo = sim.getCurrentDrawAmps();
   }
 
   @Override
