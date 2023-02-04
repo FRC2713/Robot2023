@@ -132,9 +132,13 @@ public class Robot extends LoggedRobot {
                 }));
 
     //Operator Buttons
-    awp.leftBumper().and(awp.y()).onTrue( new InstantCommand(() ->{
+    awp.leftBumper().and(awp.y()).onTrue(new InstantCommand(() ->{
             Elevator.Commands.elevatorConeHighScore();
             FourBar.Commands.cmdExtend();
+    }));
+    awp.leftBumper().and(awp.b()).onTrue(new InstantCommand(()->{
+      Elevator.Commands.elevatorConeMidScore();
+      FourBar.Commands.cmdExtend();
     }));
   }
 
