@@ -10,9 +10,7 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.LightStrip;
@@ -98,70 +96,59 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
 
-    driver.a().onTrue(Elevator.Commands.elevatorConeFloorUpIntake());
+    //Driver Controls
+   driver.povUp().onTrue(new InstantCommand(() -> {
+      motionMode = MotionMode.HEADING_CONTROLLER;
+      SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+    }));
 
-    driver.y().onTrue(new InstantCommand(() -> {}));
-    driver
-        .povUp()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
-                }));
+    driver.povLeft().onTrue(new InstantCommand(() -> {
+      motionMode = MotionMode.HEADING_CONTROLLER;
+      SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+    }));
 
-    driver
-        .povLeft()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
-                }));
+    driver.povDown().onTrue(new InstantCommand(() -> {
+      motionMode = MotionMode.HEADING_CONTROLLER;
+      SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+    }));
 
-    driver
-        .povDown()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
-                }));
+    driver.povRight().onTrue(new InstantCommand(() -> {
+      motionMode = MotionMode.HEADING_CONTROLLER;
+      SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+    }));
 
-    driver
-        .povRight()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
-                }));
+    driver.leftBumper().whileTrue(new ParallelCommandGroup(
+        Elevator.Commands.elevatorCubeFloorIntake(),
+        //Intake.Commands.intakeRollersOn();
+        //Intake.Commands.intakeWheelsOn();
+        FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
+    ));
 
     //Operator Buttons
-    awp.leftBumper().and(awp.y()).onTrue(new InstantCommand(() ->{
-            Elevator.Commands.elevatorConeHighScore();
-            FourBar.Commands.cmdExtend();
-    }));
-    awp.leftBumper().and(awp.b()).onTrue(new InstantCommand(()->{
-      Elevator.Commands.elevatorConeMidScore();
-      FourBar.Commands.cmdExtend();
-    }));
-    awp.leftBumper().and(awp.a()).onTrue(new InstantCommand(()->{
-      Elevator.Commands.elevatorConeLowScore();
-      FourBar.Commands.cmdExtend();
-    }));
-    awp.rightBumper().and(awp.y()).onTrue(new InstantCommand(() ->{
-      Elevator.Commands.elevatorCubeHighScore();
-      FourBar.Commands.cmdExtend();
-    }));
-    awp.rightBumper().and(awp.b()).onTrue(new InstantCommand(()->{
-      Elevator.Commands.elevatorCubeMidScore();
-      FourBar.Commands.cmdExtend();
-    }));
-    awp.rightBumper().and(awp.a()).onTrue(new InstantCommand(()->{
-      Elevator.Commands.elevatorCubeLowScore();
-      FourBar.Commands.cmdExtend();
-    }));
+    awp.leftBumper().and(awp.y()).onTrue(new ParallelCommandGroup(
+        Elevator.Commands.elevatorConeHighScore(),
+        FourBar.Commands.cmdExtend()
+    ));
+    awp.leftBumper().and(awp.b()).onTrue(new ParallelCommandGroup(
+      Elevator.Commands.elevatorConeMidScore(),
+      FourBar.Commands.cmdExtend()
+    ));
+    awp.leftBumper().and(awp.a()).onTrue(new ParallelCommandGroup(
+      Elevator.Commands.elevatorConeLowScore(),
+      FourBar.Commands.cmdExtend()
+    ));
+    awp.rightBumper().and(awp.y()).onTrue(new ParallelCommandGroup(
+      Elevator.Commands.elevatorCubeHighScore(),
+      FourBar.Commands.cmdExtend()
+    ));
+    awp.rightBumper().and(awp.b()).onTrue(new ParallelCommandGroup(
+      Elevator.Commands.elevatorCubeMidScore(),
+      FourBar.Commands.cmdExtend()
+    ));
+    awp.rightBumper().and(awp.a()).onTrue(new ParallelCommandGroup(
+      Elevator.Commands.elevatorCubeLowScore(),
+      FourBar.Commands.cmdExtend()
+    ));
     awp.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     awp.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
   }
