@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
+import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -40,6 +41,9 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
+import static frc.robot.subsystems.LightStrip.Pattern.Purple;
+import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
+
 public class Robot extends LoggedRobot {
   private static MechanismManager mechManager;
   public static MotionMode motionMode = MotionMode.FULL_DRIVE;
@@ -48,6 +52,7 @@ public class Robot extends LoggedRobot {
   public static Intake intake;
   public static Vision vision;
   public static SwerveSubsystem swerveDrive;
+  public static LightStrip lights;
   private Command autoCommand;
 
   public static final CommandXboxController driver = new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -74,6 +79,7 @@ public class Robot extends LoggedRobot {
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    lights = new LightStrip();
     swerveDrive =
         isSimulation()
             ? new SwerveSubsystem(
@@ -156,7 +162,8 @@ public class Robot extends LoggedRobot {
       Elevator.Commands.elevatorCubeLowScore();
       FourBar.Commands.cmdExtend();
     }));
-
+    awp.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    awp.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
   }
 
   @Override
