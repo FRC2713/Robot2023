@@ -50,7 +50,8 @@ public class Robot extends LoggedRobot {
   public static SwerveSubsystem swerveDrive;
   private Command autoCommand;
 
-  public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
+  public static final CommandXboxController driver = new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
+  public static final CommandXboxController awp = new CommandXboxController(Constants.RobotMap.AWP_PORT);
 
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
