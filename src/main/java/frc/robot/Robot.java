@@ -140,6 +140,23 @@ public class Robot extends LoggedRobot {
       Elevator.Commands.elevatorConeMidScore();
       FourBar.Commands.cmdExtend();
     }));
+    awp.leftBumper().and(awp.a()).onTrue(new InstantCommand(()->{
+      Elevator.Commands.elevatorConeLowScore();
+      FourBar.Commands.cmdExtend();
+    }));
+    awp.rightBumper().and(awp.y()).onTrue(new InstantCommand(() ->{
+      Elevator.Commands.elevatorCubeHighScore();
+      FourBar.Commands.cmdExtend();
+    }));
+    awp.rightBumper().and(awp.b()).onTrue(new InstantCommand(()->{
+      Elevator.Commands.elevatorCubeMidScore();
+      FourBar.Commands.cmdExtend();
+    }));
+    awp.rightBumper().and(awp.a()).onTrue(new InstantCommand(()->{
+      Elevator.Commands.elevatorCubeLowScore();
+      FourBar.Commands.cmdExtend();
+    }));
+
   }
 
   @Override
