@@ -67,14 +67,18 @@ public class GoClosestGrid {
               new PathPoint(
                   RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
                   Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition),
-                  Robot.swerveDrive.getRegularPose().getRotation()),
-              // position, heading(direction of travel), holonomic rotation
+                  Robot.swerveDrive.getRegularPose().getRotation(),
+                  Robot.swerveDrive.getAverageVelocity()),
+              //   PathPoint.fromCurrentHolonomicState(
+              //       Robot.swerveDrive.getRegularPose(),
+              // TrajectoryController.getInstance().update()),
+              // position, heading(direction of travel), holonomic rotation, velocity
 
               new PathPoint(
                   RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY()),
                   Rotation2d.fromDegrees(0),
-                  Rotation2d.fromDegrees(
-                      -180)) // position, heading(direction of travel), holonomic rotation
+                  Rotation2d.fromDegrees(-180),
+                  2) // position, heading(direction of travel), holonomic rotation
               );
     }
     count++;
@@ -82,6 +86,7 @@ public class GoClosestGrid {
         .recordOutput(
             "ClosestGrid Numero",
             RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY()));
+    Logger.getInstance().recordOutput("Count Number", count);
     return this;
   }
 }

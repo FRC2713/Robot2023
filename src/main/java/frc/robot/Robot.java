@@ -134,20 +134,36 @@ public class Robot extends LoggedRobot {
     GoClosestGrid goClosestGrid = new GoClosestGrid();
     driver
         .rightBumper()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  goClosestGrid.regenerateTrajectory();
+                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+                }))
         .whileTrue(
             new RepeatCommand(
                 new InstantCommand(
                     () -> {
                       motionMode = MotionMode.TRAJECTORY;
-                      // if ((goClosestGrid.count % 2) == 0) {
-                      //   TrajectoryController.getInstance()
-                      //       .changePath(goClosestGrid.regenerateTrajectory().getTrajectory());
-                      // } else {
-                      TrajectoryController.getInstance()
-                          .changePath(new GoClosestGrid().getTrajectory());
+                      if ((goClosestGrid.count % 200) == 0) {
+                        goClosestGrid.regenerateTrajectory();
+                        TrajectoryController.getInstance()
+                            .changePath(goClosestGrid.getTrajectory());
+                      }
+                      goClosestGrid.count++;
+                      // if (goClosestGrid.count == 1) {
+                      //   goClosestGrid.regenerateTrajectory();
                       // }
+                      // TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
                     },
                     swerveDrive)))
+        // .onTrue(
+        //     new InstantCommand(
+        //         () -> {
+        //           motionMode = MotionMode.TRAJECTORY;
+        //           TrajectoryController.getInstance()
+        //               .changePath(new GoClosestGrid().getTrajectory());
+        //         }))
         .onFalse(
             new InstantCommand(
                 () -> {
