@@ -1,5 +1,7 @@
 package frc.robot.subsystems.fourBarIO;
 
+import static frc.robot.Robot.fourBar;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -12,8 +14,6 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Robot.fourBar;
 
 public class FourBar extends SubsystemBase {
 
@@ -95,15 +95,19 @@ public class FourBar extends SubsystemBase {
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }
+
     public static Command cmdSetAngleDeg(double targetDegs) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
     }
+
     public static Command cmdSetAngleDegAndWait(double targetDegs) {
       return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
     }
+
     public static Command cmdRetract() {
       return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
     }
+
     public static Command cmdExtend() {
       return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
     }

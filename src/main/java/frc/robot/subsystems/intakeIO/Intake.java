@@ -44,7 +44,6 @@ public class Intake extends SubsystemBase {
 
     Logger.getInstance().processInputs("Intake", inputs);
   }
-  public static class Commands{
 
-  }
+  public static class Commands {}
 }

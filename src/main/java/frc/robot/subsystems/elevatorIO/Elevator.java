@@ -20,7 +20,6 @@ public class Elevator extends SubsystemBase {
   private final ElevatorInputsAutoLogged inputs;
   private final ElevatorIO IO;
   private double targetHeight = 0.0;
-  private static double currentHeight = 0.0;
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
@@ -79,7 +78,6 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
     Logger.getInstance().recordOutput("Elevator/heightInchesLeft", inputs.heightInchesLeft);
     Logger.getInstance().recordOutput("Elevator/heightInchesRight", inputs.heightInchesRight);
-    currentHeight = inputs.heightInchesLeft;
 
     Logger.getInstance().processInputs("Elevator", inputs);
     if (inputs.heightInchesLeft
@@ -121,8 +119,8 @@ public class Elevator extends SubsystemBase {
 
     public static Command elevatorCubeLowScore() {
       return new InstantCommand(
-              () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE),
-              Robot.elevator);
+          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE),
+          Robot.elevator);
     }
 
     public static Command elevatorConeMidScore() {
@@ -174,9 +172,10 @@ public class Elevator extends SubsystemBase {
                   Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE),
           Robot.elevator);
     }
-    public static Command elevatorCurrentHeight(){
+
+    public static Command elevatorCurrentHeight() {
       return new InstantCommand(
-              () -> Robot.elevator.setTargetHeight(currentHeight), Robot.elevator);
+          () -> Robot.elevator.setTargetHeight(Robot.elevator.getCurrentHeight()), Robot.elevator);
     }
   }
 }

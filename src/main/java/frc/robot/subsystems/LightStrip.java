@@ -149,9 +149,10 @@ public class LightStrip extends SubsystemBase {
       return this.value;
     }
   }
+
   public static class Commands {
-    public static Command setColorPattern(Pattern pattern){
-      return new InstantCommand(()-> Robot.lights.setColorPattern(pattern));
+    public static Command setColorPattern(Pattern pattern) {
+      return new InstantCommand(() -> Robot.lights.setColorPattern(pattern));
     }
     /*
     public static Command setAllianceColor(){
