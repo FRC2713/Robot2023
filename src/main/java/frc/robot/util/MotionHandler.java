@@ -16,7 +16,8 @@ public class MotionHandler {
     FULL_DRIVE,
     HEADING_CONTROLLER,
     TRAJECTORY,
-    LOCKDOWN
+    LOCKDOWN,
+    NULL
   }
 
   /**

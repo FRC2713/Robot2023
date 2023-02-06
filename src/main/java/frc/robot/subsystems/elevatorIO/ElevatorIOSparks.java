@@ -10,8 +10,10 @@ public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
 
   public ElevatorIOSparks() {
-    left = new CANSparkMax(0, MotorType.kBrushless);
-    right = new CANSparkMax(1, MotorType.kBrushless);
+    left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
+    right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
+    left.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    right.setIdleMode(CANSparkMax.IdleMode.kBrake);
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
     left.setInverted(true);
@@ -36,10 +38,15 @@ public class ElevatorIOSparks implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorInputs inputs) {
-    inputs.outputVoltage = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
-    inputs.heightInches = Units.metersToInches(left.getEncoder().getPosition());
-    inputs.velocityInchesPerSecond = Units.metersToInches(left.getEncoder().getVelocity());
-    inputs.tempCelsius = left.getMotorTemperature();
+    inputs.outputVoltageLeft = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
+    inputs.heightInchesLeft = Units.metersToInches(left.getEncoder().getPosition());
+    inputs.velocityInchesPerSecondLeft = Units.metersToInches(left.getEncoder().getVelocity());
+    inputs.tempCelsiusLeft = left.getMotorTemperature();
+
+    inputs.outputVoltageRight = MathUtil.clamp(right.getOutputCurrent(), -12.0, 12.0);
+    inputs.heightInchesRight = Units.metersToInches(right.getEncoder().getPosition());
+    inputs.velocityInchesPerSecondRight = Units.metersToInches(right.getEncoder().getVelocity());
+    inputs.tempCelsiusRight = right.getMotorTemperature();
   }
 
   @Override

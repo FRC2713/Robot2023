@@ -27,31 +27,57 @@ public final class Constants {
 
   public static final boolean tuningMode = false;
   public static final int zero = 0; // in case you need a zero :)
-
+  public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
 
   @UtilityClass
   public static final class RobotMap {
     public static final int pigeonCANId = 20;
+    public static final int SWERVE_CANID_1 = 1;
+    public static final int SWERVE_CANID_2 = 2;
+    public static final int SWERVE_CANID_3 = 3;
+    public static final int SWERVE_CANID_4 = 4;
+    public static final int SWERVE_CANID_5 = 5;
+    public static final int SWERVE_CANID_6 = 6;
+    public static final int SWERVE_CANID_7 = 7;
+    public static final int SWERVE_CANID_8 = 8;
 
-    public static final int BLINKIN_PORT = 1000;
+    public static final int ELEVATOR_LEFT_CANID = 9;
+    public static final int ELEVATOR_RIGHT_CANID = 10;
+
+    public static final int INTAKE_WHEELS_CANID = 11;
+    public static final int INTAKE_ROLLERS_CANID = 12;
+
+    public static final int FOURBAR_ONE_CANID = 13;
+    public static final int FOURBAR_TWO_CANID = 14;
+
+    public static final int BLINKIN_PORT = 1;
   }
 
   public static final class FieldConstants {}
 
   @UtilityClass
   public static class ElevatorConstants {
+    public static final PIDFFGains ELEVATOR_GAINS =
+        PIDFFGains.builder("Elevator Controller").kP(0.01).kD(0.0).kG(0.545 + Math.PI).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
-    public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(40.0);
+    public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
+    public static final double ELEVATOR_GEAR_RATIO = 5.0;
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR =
-        (5.0) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+        (ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
-        ELEVATOR_POSITION_CONVERSION_FACTOR / 60; // not the final value : );
-    public static final double ELEVATOR_ANGLE_DEGREES = 45.0;
+        ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
+    public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 50;
+
+    public static final double ELEVATOR_LOW_SCORE = 12;
+    public static final double ELEVATOR_CONE_MID_SCORE = 42;
+    public static final double ELEVATOR_CUBE_MID_SCORE = 30;
+    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
+    public static final double ELEVATOR_CUBE_HIGH_SCORE = 40;
   }
 
   @UtilityClass
@@ -62,13 +88,13 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 5000;
     public static final double GEARING = 200.0;
     public static final double MASS_KG = 0.5;
-    public static final double FOUR_BAR_RATIO = 5; // subject to change
+    public static final double FOUR_BAR_RATIO = 5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = FOUR_BAR_RATIO * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
-    public static final int FOUR_BAR_CURRENT_LIMIT = 50; // subject to change
+    public static final int FOUR_BAR_CURRENT_LIMIT = 50;
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
-    public static final PIDFFGains PID_CONTROLLER_FEED_FORWARD =
-        PIDFFGains.builder("4Bar Controller").kP(9.0).kI(0.5).kD(0.5).kG(0.4).build();
+    public static final PIDFFGains FOUR_BAR_GAINS =
+        PIDFFGains.builder("4Bar Controller").kP(0.4).kI(0.0).kD(0.0).kG(0.001).build();
   }
 
   @UtilityClass
@@ -78,6 +104,12 @@ public final class Constants {
     public static final double MAX_ROLLER_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
     public static final double MOI = 0.1;
+    public static final int WHEELS_CURRENT_LIMIT = 50;
+    public static final int ROLLERS_CURRENT_LIMIT = 50;
+    public static final double WHEELS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double ROLLERS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double WHEELS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+    public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
   }
 
   @UtilityClass
@@ -95,7 +127,7 @@ public final class Constants {
 
     public static final int currentLimit = 65;
 
-    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(12.375);
+    public static final double kModuleDistanceFromCenter = Units.inchesToMeters(20.75 / 2);
 
     private static final Translation2d frontLeftLocation =
         new Translation2d(
@@ -114,16 +146,16 @@ public final class Constants {
         new SwerveDriveKinematics(
             frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
 
-    private static final double bumperlessRobotLength = Units.inchesToMeters(30);
-    private static final double bumperlessRobotWidth = Units.inchesToMeters(30);
+    private static final double bumperlessRobotLength = Units.inchesToMeters(26.5);
+    private static final double bumperlessRobotWidth = Units.inchesToMeters(26.5);
     private static final double bumperThickness = Units.inchesToMeters(3);
 
     public static final double fullRobotWidth = bumperlessRobotWidth + bumperThickness * 2;
     public static final double fullRobotLength = bumperlessRobotLength + bumperThickness * 2;
 
-    public static final PIDFFGains kHeadingControllerGains =
-        PIDFFGains.builder("Heading Controller").kP(50).kD(5).tolerance(0).build();
     public static final double headingControllerDriverChangeRate = 4;
+    public static final PIDFFGains kHeadingControllerGains =
+        PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(0).build();
 
     public static final ModuleInfo frontLeft =
         ModuleInfo.builder()
@@ -176,9 +208,18 @@ public final class Constants {
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains kDefaultAzimuthGains =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.65).tolerance(0).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.05).tolerance(0).build();
       public static final PIDFFGains kDefaultDrivingGains =
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsX =
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(0.9).kD(0.0).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsY =
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(0.9).kD(0.0).build();
+
+      public static final PIDFFGains kTrajectoryControllerGainsRotation =
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.0).kD(0.0).build();
     }
 
     public static final PIDFFGains kFrontLeftAzimuthGains =

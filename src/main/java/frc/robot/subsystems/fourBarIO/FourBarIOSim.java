@@ -2,6 +2,7 @@ package frc.robot.subsystems.fourBarIO;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
@@ -26,11 +27,8 @@ public class FourBarIOSim implements FourBarIO {
     }
     sim.update(0.02);
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
-    inputs.angleDegrees =
-        sim.getAngleRads() * (180 * Math.PI); // convert these to degrees (done I think)
-    inputs.velocityDegreesPerSecond =
-        sim.getVelocityRadPerSec()
-            * (180 * Math.PI); // convert these to degrees (done I think. Return here if not)
+    inputs.angleDegrees = Units.radiansToDegrees(sim.getAngleRads());
+    inputs.velocityDegreesPerSecond = Units.radiansToDegrees(sim.getVelocityRadPerSec());
     inputs.tempCelcius = 0.0;
     inputs.currentDrawAmps = sim.getCurrentDrawAmps();
   }
