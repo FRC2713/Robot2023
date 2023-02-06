@@ -129,6 +129,17 @@ public class Robot extends LoggedRobot {
         FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
     ));
 
+    driver.rightBumper().onTrue(new ParallelCommandGroup(
+            Elevator.Commands.elevatorConeFloorTippedIntake(),
+            //Intake.Commands.intakeRollersOn();
+            //Intake.Commands.intakeWheelsOn();
+            FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
+    )).onFalse(new ParallelCommandGroup(
+            Elevator.Commands.elevatorCurrentHeight(),
+            //Intake.Commands.intakeRollersOff();
+            //Intake.Commands.intakeWheelsOff();
+            FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
+      ));
 
     //Operator Buttons
     awp.leftBumper().and(awp.y()).onTrue(new ParallelCommandGroup(
