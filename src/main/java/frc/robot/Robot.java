@@ -55,8 +55,8 @@ public class Robot extends LoggedRobot {
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
-  public static final CommandXboxController awp =
-      new CommandXboxController(Constants.RobotMap.AWP_PORT);
+  public static final CommandXboxController operator =
+      new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
 
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
@@ -138,81 +138,84 @@ public class Robot extends LoggedRobot {
     driver
         .leftBumper()
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeFloorIntake(),
+                new ParallelCommandGroup(
                 // Intake.Commands.intakeRollersOn();
                 // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)))
+                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)));
+                  FourBar.Commands.cmdRetract()));
 
     driver
         .rightTrigger(0.25)
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorTippedIntake(),
+                new ParallelCommandGroup(
                 // Intake.Commands.intakeRollersOn();
                 // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)))
+                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)));
+                    FourBar.Commands.cmdRetract()));
 
     driver
         .rightBumper()
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorUpIntake(),
+                new ParallelCommandGroup(
                 // Intake.Commands.intakeRollersOn();
                 // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)))
+                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)));
+                    FourBar.Commands.cmdRetract()));
 
     // Operator Buttons
-    awp.leftBumper()
-        .and(awp.y())
+    operator.leftBumper()
+        .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeHighScore(), FourBar.Commands.cmdExtend()));
-    awp.leftBumper()
-        .and(awp.b())
+    operator.leftBumper()
+        .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScore(), FourBar.Commands.cmdExtend()));
-    awp.leftBumper()
-        .and(awp.a())
+    operator.leftBumper()
+        .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeLowScore(), FourBar.Commands.cmdExtend()));
-    awp.rightBumper()
-        .and(awp.y())
+    operator.rightBumper()
+        .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeHighScore(), FourBar.Commands.cmdExtend()));
-    awp.rightBumper()
-        .and(awp.b())
+    operator.rightBumper()
+        .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeMidScore(), FourBar.Commands.cmdExtend()));
-    awp.rightBumper()
-        .and(awp.a())
+    operator.rightBumper()
+        .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeLowScore(), FourBar.Commands.cmdExtend()));
-    awp.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    awp.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
   }
 
   @Override
