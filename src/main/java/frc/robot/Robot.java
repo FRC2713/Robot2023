@@ -146,8 +146,8 @@ public class Robot extends LoggedRobot {
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(
-            ele.getCurrentDraw()
-                + four.getCurrentDraw()
+            elevator.getCurrentDraw()
+                + fourBar.getCurrentDraw()
                 + intake.getCurrentDraw()
                 + swerveDrive.getTotalCurrentDraw()));
   }

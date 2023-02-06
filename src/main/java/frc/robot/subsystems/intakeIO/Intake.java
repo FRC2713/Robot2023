@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
   }
 
   public double getCurrentDraw() {
-    return inputs.currentAmps;
+    return inputs.wheelsCurrentAmps + inputs.rollersCurrentAmps;
   }
 
   public Command cmdSetVelocityRPM(double targetRPM) {
