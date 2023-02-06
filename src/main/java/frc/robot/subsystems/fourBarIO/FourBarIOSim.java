@@ -30,7 +30,7 @@ public class FourBarIOSim implements FourBarIO {
     inputs.angleDegrees = Units.radiansToDegrees(sim.getAngleRads());
     inputs.velocityDegreesPerSecond = Units.radiansToDegrees(sim.getVelocityRadPerSec());
     inputs.tempCelcius = 0.0;
-    inputs.currentDraw = sim.getCurrentDrawAmps();
+    inputs.currentDrawAmps = sim.getCurrentDrawAmps();
   }
 
   @Override

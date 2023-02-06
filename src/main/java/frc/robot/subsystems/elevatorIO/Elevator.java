@@ -47,6 +47,10 @@ public class Elevator extends SubsystemBase {
     this.targetHeight = targetHeightInches;
   }
 
+  public double getCurrentDraw() {
+    return inputs.currentDrawAmpsLeft + inputs.currentDrawAmpsRight;
+  }
+
   public void setHeightBottomScore() {
     this.targetHeight = Constants.ElevatorConstants.ELEVATOR_LOW_SCORE;
   }

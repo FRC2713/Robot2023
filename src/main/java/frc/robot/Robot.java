@@ -10,6 +10,9 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -127,6 +130,9 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.HEADING_CONTROLLER;
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
+    if (!Robot.isReal()) {
+      DriverStation.silenceJoystickConnectionWarning(true);
+    }
   }
 
   @Override
@@ -137,6 +143,13 @@ public class Robot extends LoggedRobot {
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
+
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(
+            elevator.getCurrentDraw()
+                + fourBar.getCurrentDraw()
+                + intake.getCurrentDraw()
+                + swerveDrive.getTotalCurrentDraw()));
   }
 
   @Override

@@ -27,6 +27,10 @@ public class Intake extends SubsystemBase {
     IO.setVoltage(rpm / (IntakeConstants.MAX_ROLLER_RPM) * 12);
   }
 
+  public double getCurrentDraw() {
+    return inputs.wheelsCurrentAmps + inputs.rollersCurrentAmps;
+  }
+
   public Command cmdSetVelocityRPM(double targetRPM) {
     return new InstantCommand(() -> setRpm(targetRPM));
   }

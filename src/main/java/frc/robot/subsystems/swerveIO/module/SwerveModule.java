@@ -61,6 +61,18 @@ public class SwerveModule extends SubsystemBase {
     return inputs.driveOutputVolts;
   }
 
+  public double getAziCurrentDraw() {
+    return inputs.aziCurrentDrawAmps;
+  }
+
+  public double getDriveCurrentDraw() {
+    return inputs.driveCurrentDrawAmps;
+  }
+
+  public double getTotalCurrentDraw() {
+    return inputs.driveCurrentDrawAmps + inputs.aziCurrentDrawAmps;
+  }
+
   // Only used to characterize the drive
   public void applyVoltageForCharacterization(double voltage) {
     io.setDriveVoltage(voltage);
