@@ -117,12 +117,18 @@ public class Robot extends LoggedRobot {
       SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
     }));
 
-    driver.leftBumper().whileTrue(new ParallelCommandGroup(
+    driver.leftBumper().onTrue(new ParallelCommandGroup(
         Elevator.Commands.elevatorCubeFloorIntake(),
         //Intake.Commands.intakeRollersOn();
         //Intake.Commands.intakeWheelsOn();
         FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
+    )).onFalse(new ParallelCommandGroup(
+        Elevator.Commands.elevatorCurrentHeight(),
+      //Intake.Commands.intakeRollersOff();
+      //Intake.Commands.intakeWheelsOff();
+        FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER)
     ));
+
 
     //Operator Buttons
     awp.leftBumper().and(awp.y()).onTrue(new ParallelCommandGroup(

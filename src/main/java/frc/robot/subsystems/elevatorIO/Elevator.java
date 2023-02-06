@@ -20,6 +20,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorInputsAutoLogged inputs;
   private final ElevatorIO IO;
   private double targetHeight = 0.0;
+  private static double currentHeight = 0.0;
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
@@ -56,6 +57,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getCurrentHeight() {
+
     return inputs.heightInchesLeft;
   }
 
@@ -77,6 +79,7 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
     Logger.getInstance().recordOutput("Elevator/heightInchesLeft", inputs.heightInchesLeft);
     Logger.getInstance().recordOutput("Elevator/heightInchesRight", inputs.heightInchesRight);
+    currentHeight = inputs.heightInchesLeft;
 
     Logger.getInstance().processInputs("Elevator", inputs);
     if (inputs.heightInchesLeft
@@ -170,6 +173,10 @@ public class Elevator extends SubsystemBase {
               Robot.elevator.setTargetHeight(
                   Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE),
           Robot.elevator);
+    }
+    public static Command elevatorCurrentHeight(){
+      return new InstantCommand(
+              () -> Robot.elevator.setTargetHeight(currentHeight), Robot.elevator);
     }
   }
 }
