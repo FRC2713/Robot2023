@@ -172,9 +172,10 @@ public class Elevator extends SubsystemBase {
           () -> Robot.elevator.setTargetHeight(Robot.elevator.getCurrentHeight()), Robot.elevator);
     }
 
-
     public static Command setTargetHeightAndWait(double targetHeightInches) {
-      return setToHeight(targetHeightInches).repeatedly().until(() -> Robot.elevator.atTargetHeight());
+      return setToHeight(targetHeightInches)
+          .repeatedly()
+          .until(() -> Robot.elevator.atTargetHeight());
     }
   }
 }
