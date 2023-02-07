@@ -19,6 +19,7 @@ public class LightStrip extends SubsystemBase {
   public void setColorPattern(Pattern pattern) {
     blinkin.set(pattern.getValue());
   }
+
   /*
   public void setAllianceColor(LightStrip strip) {
       DriverStation.Alliance alliance = DriverStation.getAlliance();

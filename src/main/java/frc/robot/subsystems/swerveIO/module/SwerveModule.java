@@ -56,6 +56,7 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModulePosition(
         inputs.driveEncoderPositionMetres, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
   }
+
   // Only used to characterize the drive
   public double getVoltageAppliedForCharacterization() {
     return inputs.driveOutputVolts;
