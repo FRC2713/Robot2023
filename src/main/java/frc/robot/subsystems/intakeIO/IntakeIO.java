@@ -22,5 +22,7 @@ public interface IntakeIO {
 
   public void updateInputs(IntakeInputs inputs);
 
-  public void setVoltage(double volts);
+  public void setVoltageWheels(double volts);
+
+  public void setVoltageRollers(double volts);
 }
