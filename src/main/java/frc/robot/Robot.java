@@ -182,8 +182,16 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setWheelVelocityRPM(0),
                 Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
-    driver.b().onTrue(FourBar.Commands.extend());
-
+    driver.y().onTrue(FourBar.Commands.extend());
+    driver
+        .b()
+        .onTrue(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(100),
+                Intake.Commands.setWheelVelocityRPM(100)))
+        .onFalse(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(0), Intake.Commands.setWheelVelocityRPM(0)));
 
     // Operator Buttons
     operator
