@@ -47,13 +47,7 @@ public class Elevator extends SubsystemBase {
     this.targetHeight = targetHeightInches;
   }
 
-  public Command cmdSetTargetHeight(double targetHeightInches) {
-    return new InstantCommand(() -> Robot.elevator.setTargetHeight(targetHeightInches));
-  }
 
-  public Command cmdSetTargetHeightAndWait(double targetHeightInches) {
-    return cmdSetTargetHeight(targetHeightInches).repeatedly().until(() -> atTargetHeight());
-  }
 
   public double getCurrentHeight() {
 
@@ -176,6 +170,11 @@ public class Elevator extends SubsystemBase {
     public static Command elevatorCurrentHeight() {
       return new InstantCommand(
           () -> Robot.elevator.setTargetHeight(Robot.elevator.getCurrentHeight()), Robot.elevator);
+    }
+
+
+    public static Command setTargetHeightAndWait(double targetHeightInches) {
+      return setToHeight(targetHeightInches).repeatedly().until(() -> Robot.elevator.atTargetHeight());
     }
   }
 }

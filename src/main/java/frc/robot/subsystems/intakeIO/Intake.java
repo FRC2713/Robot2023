@@ -45,20 +45,20 @@ public class Intake extends SubsystemBase {
 
   public static class Commands {
 
-    public static Command cmdSetWheelVelocityRPM(double targetRPM) {
+    public static Command setWheelVelocityRPM(double targetRPM) {
       return new InstantCommand(() -> Robot.intake.setWheelRpm(targetRPM));
     }
 
-    public static Command cmdSetRollerVelocityRPM(double targetRPM) {
+    public static Command setRollerVelocityRPM(double targetRPM) {
       return new InstantCommand(() -> Robot.intake.setRollerRPM(targetRPM));
     }
 
-    public static Command cmdSetWheelVelocityRPMAndWait(double targetRPM) {
-      return cmdSetWheelVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    public static Command setWheelVelocityRPMAndWait(double targetRPM) {
+      return setWheelVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
     }
 
-    public static Command cmdSetRollerVelocityRPMAndWait(double targetRPM) {
-      return cmdSetRollerVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    public static Command setRollerVelocityRPMAndWait(double targetRPM) {
+      return setRollerVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
     }
   }
 }

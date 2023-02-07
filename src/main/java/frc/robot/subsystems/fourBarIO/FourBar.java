@@ -96,20 +96,16 @@ public class FourBar extends SubsystemBase {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }
 
-    public static Command cmdSetAngleDeg(double targetDegs) {
-      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
+    public static Command setAngleDegAndWait(double targetDegs) {
+      return setToAngle(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
     }
 
-    public static Command cmdSetAngleDegAndWait(double targetDegs) {
-      return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
+    public static Command retract() {
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
     }
 
-    public static Command cmdRetract() {
-      return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
-    }
-
-    public static Command cmdExtend() {
-      return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
+    public static Command extend() {
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
     }
   }
 }
