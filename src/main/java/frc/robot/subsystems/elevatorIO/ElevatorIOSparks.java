@@ -3,7 +3,6 @@ package frc.robot.subsystems.elevatorIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class ElevatorIOSparks implements ElevatorIO {
@@ -39,13 +38,13 @@ public class ElevatorIOSparks implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorInputs inputs) {
     inputs.outputVoltageLeft = MathUtil.clamp(left.getOutputCurrent(), -12.0, 12.0);
-    inputs.heightInchesLeft = Units.metersToInches(left.getEncoder().getPosition());
-    inputs.velocityInchesPerSecondLeft = Units.metersToInches(left.getEncoder().getVelocity());
+    inputs.heightInchesLeft = left.getEncoder().getPosition();
+    inputs.velocityInchesPerSecondLeft = left.getEncoder().getVelocity();
     inputs.tempCelsiusLeft = left.getMotorTemperature();
 
     inputs.outputVoltageRight = MathUtil.clamp(right.getOutputCurrent(), -12.0, 12.0);
-    inputs.heightInchesRight = Units.metersToInches(right.getEncoder().getPosition());
-    inputs.velocityInchesPerSecondRight = Units.metersToInches(right.getEncoder().getVelocity());
+    inputs.heightInchesRight = right.getEncoder().getPosition();
+    inputs.velocityInchesPerSecondRight = right.getEncoder().getVelocity();
     inputs.tempCelsiusRight = right.getMotorTemperature();
   }
 

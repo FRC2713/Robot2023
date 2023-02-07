@@ -141,15 +141,15 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeFloorIntake(),
                 new ParallelCommandGroup(
-                // Intake.Commands.intakeRollersOn();
-                // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
+                    // Intake.Commands.intakeRollersOn();
+                    // Intake.Commands.intakeWheelsOn();
+                    FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                  FourBar.Commands.cmdRetract()));
+                FourBar.Commands.cmdRetract()));
 
     driver
         .rightTrigger(0.25)
@@ -157,15 +157,15 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorTippedIntake(),
                 new ParallelCommandGroup(
-                // Intake.Commands.intakeRollersOn();
-                // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
+                    // Intake.Commands.intakeRollersOn();
+                    // Intake.Commands.intakeWheelsOn();
+                    FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                    FourBar.Commands.cmdRetract()));
+                FourBar.Commands.cmdRetract()));
 
     driver
         .rightBumper()
@@ -173,43 +173,49 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorUpIntake(),
                 new ParallelCommandGroup(
-                // Intake.Commands.intakeRollersOn();
-                // Intake.Commands.intakeWheelsOn();
-                FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
+                    // Intake.Commands.intakeRollersOn();
+                    // Intake.Commands.intakeWheelsOn();
+                    FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 // Intake.Commands.intakeRollersOff();
                 // Intake.Commands.intakeWheelsOff();
-                    FourBar.Commands.cmdRetract()));
+                FourBar.Commands.cmdRetract()));
 
     // Operator Buttons
-    operator.leftBumper()
+    operator
+        .leftBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeHighScore(), FourBar.Commands.cmdExtend()));
-    operator.leftBumper()
+    operator
+        .leftBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScore(), FourBar.Commands.cmdExtend()));
-    operator.leftBumper()
+    operator
+        .leftBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeLowScore(), FourBar.Commands.cmdExtend()));
-    operator.rightBumper()
+    operator
+        .rightBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeHighScore(), FourBar.Commands.cmdExtend()));
-    operator.rightBumper()
+    operator
+        .rightBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeMidScore(), FourBar.Commands.cmdExtend()));
-    operator.rightBumper()
+    operator
+        .rightBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
