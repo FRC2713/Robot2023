@@ -51,6 +51,7 @@ public class Robot extends LoggedRobot {
   public static Intake intake;
   public static Vision vision;
   public static SwerveSubsystem swerveDrive;
+  public GoClosestGrid goClosestGrid;
   private Command autoCommand;
 
   public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
@@ -94,6 +95,8 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
 
+    goClosestGrid = new GoClosestGrid();
+
     driver.y().onTrue(new InstantCommand(() -> {}));
     driver
         .povUp()
@@ -131,12 +134,12 @@ public class Robot extends LoggedRobot {
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
 
-    GoClosestGrid goClosestGrid = new GoClosestGrid();
     driver
         .rightBumper()
         .onTrue(
             new InstantCommand(
                 () -> {
+                  motionMode = MotionMode.TRAJECTORY;
                   goClosestGrid.regenerateTrajectory();
                   TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
                 }))
@@ -144,26 +147,12 @@ public class Robot extends LoggedRobot {
             new RepeatCommand(
                 new InstantCommand(
                     () -> {
-                      motionMode = MotionMode.TRAJECTORY;
-                      if ((goClosestGrid.count % 200) == 0) {
-                        goClosestGrid.regenerateTrajectory();
+                      if (goClosestGrid.hasElapsed()) {
                         TrajectoryController.getInstance()
                             .changePath(goClosestGrid.getTrajectory());
                       }
-                      goClosestGrid.count++;
-                      // if (goClosestGrid.count == 1) {
-                      //   goClosestGrid.regenerateTrajectory();
-                      // }
-                      // TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
                     },
                     swerveDrive)))
-        // .onTrue(
-        //     new InstantCommand(
-        //         () -> {
-        //           motionMode = MotionMode.TRAJECTORY;
-        //           TrajectoryController.getInstance()
-        //               .changePath(new GoClosestGrid().getTrajectory());
-        //         }))
         .onFalse(
             new InstantCommand(
                 () -> {
