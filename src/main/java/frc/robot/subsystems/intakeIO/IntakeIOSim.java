@@ -37,8 +37,12 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
+  public void setVoltageWheels(double volts) {
     simWheels.setInputVoltage(volts);
+  }
+
+  @Override
+  public void setVoltageRollers(double volts) {
     simRollers.setInputVoltage(volts);
   }
 }

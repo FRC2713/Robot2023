@@ -141,14 +141,14 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeFloorIntake(),
                 new ParallelCommandGroup(
-                    // Intake.Commands.intakeRollersOn();
-                    // Intake.Commands.intakeWheelsOn();
-                    FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
+                    Intake.Commands.cmdSetWheelVelocityRPM(100),
+                    Intake.Commands.cmdSetRollerVelocityRPM(100),
+                    FourBar.Commands.cmdExtend())))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                // Intake.Commands.intakeRollersOff();
-                // Intake.Commands.intakeWheelsOff();
+                Intake.Commands.cmdSetWheelVelocityRPM(0),
+                Intake.Commands.cmdSetRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
                 FourBar.Commands.cmdRetract()));
 
     driver
@@ -157,14 +157,14 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorTippedIntake(),
                 new ParallelCommandGroup(
-                    // Intake.Commands.intakeRollersOn();
-                    // Intake.Commands.intakeWheelsOn();
+                    Intake.Commands.cmdSetWheelVelocityRPM(100),
+                    Intake.Commands.cmdSetRollerVelocityRPM(100),
                     FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                // Intake.Commands.intakeRollersOff();
-                // Intake.Commands.intakeWheelsOff();
+                Intake.Commands.cmdSetWheelVelocityRPM(0),
+                Intake.Commands.cmdSetRollerVelocityRPM(0),
                 FourBar.Commands.cmdRetract()));
 
     driver
@@ -173,14 +173,14 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorUpIntake(),
                 new ParallelCommandGroup(
-                    // Intake.Commands.intakeRollersOn();
-                    // Intake.Commands.intakeWheelsOn();
+                    Intake.Commands.cmdSetWheelVelocityRPM(100),
+                    Intake.Commands.cmdSetRollerVelocityRPM(100),
                     FourBar.Commands.cmdSetAngleDeg(Constants.DOUBLE_PLACEHOLDER))))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                // Intake.Commands.intakeRollersOff();
-                // Intake.Commands.intakeWheelsOff();
+                Intake.Commands.cmdSetWheelVelocityRPM(0),
+                Intake.Commands.cmdSetRollerVelocityRPM(0),
                 FourBar.Commands.cmdRetract()));
 
     // Operator Buttons
