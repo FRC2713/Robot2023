@@ -54,8 +54,6 @@ public final class Constants {
     public static final int BLINKIN_PORT = 1;
   }
 
-  public static final class FieldConstants {}
-
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
@@ -114,7 +112,18 @@ public final class Constants {
 
   @UtilityClass
   public static final class DriveConstants {
-    public static final double gridOffset = 0.7;
+    @UtilityClass
+    public static class FieldTunables {
+      // OTF Trajctory Generation (go over or under Charge Station)
+      public static final double MIN_GO_TOP = 4;
+      public static final double MAX_GO_TOP = 6;
+      public static final double MAX_GO_BOTTOM = MIN_GO_TOP - 1;
+      public static final double MIN_GO_BOTTOM = 2;
+
+      public static final double CHARGE_STATION_OFFSET = 0.5;
+
+      public static final double GRID_OFFSET = 0.7;
+    }
 
     public static final double kJoystickTurnDeadzone = 0.04;
     public static final double wheelDiameter = 4;

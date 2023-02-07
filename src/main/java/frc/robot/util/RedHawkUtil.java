@@ -50,7 +50,7 @@ public final class RedHawkUtil {
                     b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
         .findFirst()
         .get()
-        .plus(new Translation2d(Constants.DriveConstants.gridOffset, 0));
+        .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
   }
 
   public static int getClosestGridNumber(double y) {
