@@ -47,8 +47,6 @@ public class Elevator extends SubsystemBase {
     this.targetHeight = targetHeightInches;
   }
 
-
-
   public double getCurrentHeight() {
 
     return inputs.heightInchesLeft;
