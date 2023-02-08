@@ -4,6 +4,9 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,18 +14,34 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.RedHawkUtil;
-import org.littletonrobotics.junction.Logger;
+import java.util.ArrayList;
 
 public class GoClosestGrid {
   private PathPlannerTrajectory traj;
   private final Timer timer;
+  private PathPoint targetGrid;
+  public boolean hasSetTargetGrid = false;
+  private ArrayList<PathPoint> points = new ArrayList<>();
+
+  private ArrayList<Pair<Double, PathPoint>> breakPointsUpper = new ArrayList<>();
 
   private final Rotation2d heading = Rotation2d.fromDegrees(180);
-  private final PathConstraints constraints =
-      new PathConstraints(
-          Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
+  private final PathConstraints constraints = new PathConstraints(
+      Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
 
   public GoClosestGrid() {
+    breakPointsUpper.add(new Pair<>(FieldConstants.Community.chargingStationOuterX, new PathPoint(
+        FieldConstants.Community.chargingStationCorners[3].plus(
+            new Translation2d(
+                0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+        Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+        Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
+    breakPointsUpper.add(new Pair<>(FieldConstants.Community.chargingStationInnerX, new PathPoint(
+      FieldConstants.Community.chargingStationCorners[1].plus(
+          new Translation2d(
+              0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+      Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+      Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
     timer = new Timer();
     timer.start();
     regenerateTrajectory();
@@ -33,99 +52,150 @@ public class GoClosestGrid {
   }
 
   public GoClosestGrid regenerateTrajectory() {
-    // Outside community
-    if (Robot.swerveDrive.getRegularPose().getX()
-        > FieldConstants.Community.chargingStationOuterX) {
-      // Top of charge station
-      if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
-              <= Constants.DriveConstants.FieldTunables.MAX_GO_TOP
-          && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
-              >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
-        traj =
-            PathPlanner.generatePath(
-                constraints,
-                new PathPoint(
-                    RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
-                    // Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition),
-                    heading,
-                    Robot.swerveDrive.getRegularPose().getRotation()),
-                // Top Right
-                new PathPoint(
-                    FieldConstants.Community.chargingStationCorners[3].plus(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                    // Rotation2d.fromDegrees(0),
-                    heading,
-                    Rotation2d.fromDegrees(-180)),
-                // Top Left
-                new PathPoint(
-                    FieldConstants.Community.chargingStationCorners[1].plus(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                    // Rotation2d.fromDegrees(0),
-                    heading,
-                    Rotation2d.fromDegrees(-180)),
+    points = new ArrayList<>();
 
-                // Closest Grid to Top Left
-                new PathPoint(
-                    RedHawkUtil.getClosestGrid(
-                        FieldConstants.Community.chargingStationCorners[1]
-                            .plus(
-                                new Translation2d(
-                                    0,
-                                    Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))
-                            .getY()),
-                    // Rotation2d.fromDegrees(0),
-                    heading,
-                    Rotation2d.fromDegrees(-180)));
+    /*
+     *
+     * ArrayList<PathPoint> points = new ArrayList<>();
+     * 
+     * final breakpointsUper = [
+     * (topRightCornerBridge, new Pose(a, b)),
+     * (topLeftCornerBridge, new Pose(c, d)),
+     * (someOtherPoint, new Pose(e, f))
+     * ]
+     * final breakpointsLower = [ ... ]
+     * 
+     * breakpointsToUse = shouldGoUp() ? breakpointsUpper : breakpointsLower;
+     * points.add(currentPose())
+     * for each breakpoint in breakpoints {
+     * if robot to the right of breakpoint.getFirst() {
+     * points.add(breakpoint.getSecond())
+     * }
+     * }
+     * points.add(finishingPose)
+     * 
+     * traj = ...
+     * 
+     * 
+     *
+     *
+     */
+
+    // Outside community
+    if (Robot.swerveDrive.getRegularPose().getX() > FieldConstants.Community.chargingStationOuterX) {
+      // Top of charge station
+      if (RedHawkUtil.getClosestGridNumber(
+          Robot.swerveDrive.getRegularPose().getY()) <= Constants.DriveConstants.FieldTunables.MAX_GO_TOP
+          && RedHawkUtil.getClosestGridNumber(
+              Robot.swerveDrive.getRegularPose().getY()) >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
+        // Current Position
+        points.add(currentPosition());
+
+        // Top Right
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[3].plus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+        // Top Left
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[1].plus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+
+        // Closest Grid
+        points.add(closestGrid());
       }
       // Bottom of charge station
-      else if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
-              <= Constants.DriveConstants.FieldTunables.MAX_GO_BOTTOM
-          && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
-              >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
-        traj =
-            PathPlanner.generatePath(
-                constraints,
-                new PathPoint(
-                    RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
-                    Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition),
-                    Robot.swerveDrive.getRegularPose().getRotation()),
-                // Bottom Right
-                new PathPoint(
-                    FieldConstants.Community.chargingStationCorners[2].minus(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                    Rotation2d.fromDegrees(0),
-                    Rotation2d.fromDegrees(-180)),
-                // Bottom Left
-                new PathPoint(
-                    FieldConstants.Community.chargingStationCorners[0].minus(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                    Rotation2d.fromDegrees(0),
-                    Rotation2d.fromDegrees(-180)),
-                new PathPoint(
-                    RedHawkUtil.getClosestGrid(
-                        FieldConstants.Community.chargingStationCorners[0]
-                            .minus(
-                                new Translation2d(
-                                    0,
-                                    Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))
-                            .getY()),
-                    Rotation2d.fromDegrees(0),
-                    Rotation2d.fromDegrees(-180)));
-      } else {
-        setDefaultTraj();
+      else if (RedHawkUtil.getClosestGridNumber(
+          Robot.swerveDrive.getRegularPose().getY()) <= Constants.DriveConstants.FieldTunables.MAX_GO_BOTTOM
+          && RedHawkUtil.getClosestGridNumber(
+              Robot.swerveDrive.getRegularPose().getY()) >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
+        // Current Position
+        points.add(currentPosition());
+        // Bottom Right
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[2].minus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+        // Bottom Left
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[0].minus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+
+        // Closest Grid
+        points.add(closestGrid());
+      }
+      // Not in front of Charge Station
+      else {
+        // Current Position
+        points.add(currentPosition());
+
+        // Closest Grid
+        points.add(closestGrid());
+      }
+    }
+    // Inside community but before begininning of charge station
+    else if (Robot.swerveDrive.getRegularPose().getX() > FieldConstants.Community.chargingStationInnerX) {
+      // Top of charge station
+      if (RedHawkUtil.getClosestGridNumber(
+          Robot.swerveDrive.getRegularPose().getY()) <= Constants.DriveConstants.FieldTunables.MAX_GO_TOP
+          && RedHawkUtil.getClosestGridNumber(
+              Robot.swerveDrive.getRegularPose().getY()) >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
+        // Current Position
+        points.add(currentPosition());
+        // Top Left
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[1].plus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+
+        // Closest Grid
+        points.add(closestGrid());
+      }
+      // Bottom of charge station
+      else if (RedHawkUtil.getClosestGridNumber(
+          Robot.swerveDrive.getRegularPose().getY()) <= Constants.DriveConstants.FieldTunables.MAX_GO_BOTTOM
+          && RedHawkUtil.getClosestGridNumber(
+              Robot.swerveDrive.getRegularPose().getY()) >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
+        // Current Position
+        points.add(currentPosition());
+        // Bottom Left
+        points.add(
+            new PathPoint(
+                FieldConstants.Community.chargingStationCorners[0].minus(
+                    new Translation2d(
+                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING));
+
+        // Closest Grid
+        points.add(closestGrid());
       }
     } else {
-      setDefaultTraj();
+      // Current Position
+      points.add(currentPosition());
+
+      // Closest Grid
+      points.add(closestGrid());
     }
 
-    Logger.getInstance()
-        .recordOutput(
-            "ClosestGrid Numero",
-            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY()));
+    traj = PathPlanner.generatePath(constraints, points);
     return this;
   }
 
@@ -139,30 +209,25 @@ public class GoClosestGrid {
     return false;
   }
 
-  private void setDefaultTraj() {
-    traj =
-        PathPlanner.generatePath(
-            constraints,
-            new PathPoint(
-                RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
-                // Rotation2d.fromDegrees(180),
-                // Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition),
-                heading,
-                Robot.swerveDrive.getRegularPose().getRotation(),
-                Robot.swerveDrive.getAverageVelocity()),
-            // PathPoint.fromCurrentHolonomicState(
-            // Robot.swerveDrive.getRegularPose(),
-            // TrajectoryController.getInstance().update()),
-            // position, heading(direction of travel), holonomic rotation, velocity
+  private PathPoint closestGrid() {
+    if (!hasSetTargetGrid) {
+      PathPoint closest = new PathPoint(
+          RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY()),
+          Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+          Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+          2);
+      targetGrid = closest;
+      return closest;
+    } else {
+      return targetGrid;
+    }
+  }
 
-            new PathPoint(
-                RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY()),
-                // Rotation2d.fromDegrees(0),
-                heading,
-                heading,
-                // Rotation2d.fromDegrees(-180),
-                2) // position, heading(direction of travel), holonomic
-            // rotation
-            );
+  private PathPoint currentPosition() {
+    return new PathPoint(
+        RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
+        heading,
+        Robot.swerveDrive.getRegularPose().getRotation(),
+        Robot.swerveDrive.getAverageVelocity());
   }
 }

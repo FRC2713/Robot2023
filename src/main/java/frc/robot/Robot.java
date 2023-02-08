@@ -140,7 +140,9 @@ public class Robot extends LoggedRobot {
             new InstantCommand(
                 () -> {
                   motionMode = MotionMode.TRAJECTORY;
+                  goClosestGrid.hasSetTargetGrid = false;
                   goClosestGrid.regenerateTrajectory();
+                  goClosestGrid.hasSetTargetGrid = true;
                   TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
                 }))
         .whileTrue(

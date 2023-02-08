@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPoint;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
 
@@ -123,6 +126,37 @@ public final class Constants {
       public static final double CHARGE_STATION_OFFSET = 0.5;
 
       public static final double GRID_OFFSET = 0.7;
+
+      public static final Rotation2d CLOSEST_GRID_HEADING = Rotation2d.fromDegrees(180);
+
+      public static final PathPoint GRID_CORNERS_FOR_SWERVE[] = {
+        // Top Left
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[1].plus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+        // Top Right
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[3].plus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+
+        // Bottom Left
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[0].minus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+
+        // Bottom Right
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[2].minus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+      };
     }
 
     public static final double kJoystickTurnDeadzone = 0.04;
