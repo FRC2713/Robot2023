@@ -27,9 +27,9 @@ public class MotionHandler {
      */
     public static SwerveModuleState[] driveHeadingController() {
         double xSpeed =
-                MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
+                MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
         double ySpeed =
-                MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
+                MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
         // Rotation2d rSetpoint =
         //     new Rotation2d(
         //         Units.degreesToRadians(
@@ -38,17 +38,17 @@ public class MotionHandler {
         //                 * DriveConstants.headingControllerDriverChangeRate));
         // SwerveHeadingController.getInstance().addToSetpoint(rSetpoint);
         SwerveModuleState[] swerveModuleStates =
-                DriveConstants.kinematics.toSwerveModuleStates(
+                DriveConstants.KINEMATICS.toSwerveModuleStates(
                         ChassisSpeeds.fromFieldRelativeSpeeds(
-                                xSpeed * DriveConstants.maxSwerveVel,
-                                ySpeed * DriveConstants.maxSwerveVel,
+                                xSpeed * DriveConstants.MAX_SWERVE_VEL,
+                                ySpeed * DriveConstants.MAX_SWERVE_VEL,
                                 MathUtil.clamp(
                                         Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
-                                        -Constants.DriveConstants.maxRotationalSpeedRadPerSec,
-                                        Constants.DriveConstants.maxRotationalSpeedRadPerSec),
+                                        -Constants.DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
+                                        Constants.DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC),
                                 Robot.swerveDrive.getEstimatedPose().getRotation()));
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);
 
         return swerveModuleStates;
     }
@@ -60,21 +60,21 @@ public class MotionHandler {
      */
     public static SwerveModuleState[] driveFullControl() {
         double xSpeed =
-                MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.kJoystickTurnDeadzone);
+                MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
         double ySpeed =
-                MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.kJoystickTurnDeadzone);
+                MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
         double rSpeed =
-                MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone);
+                MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
 
         SwerveModuleState[] swerveModuleStates =
-                DriveConstants.kinematics.toSwerveModuleStates(
+                DriveConstants.KINEMATICS.toSwerveModuleStates(
                         ChassisSpeeds.fromFieldRelativeSpeeds(
-                                xSpeed * DriveConstants.maxSwerveVel,
-                                ySpeed * DriveConstants.maxSwerveVel,
-                                rSpeed * DriveConstants.maxRotationalSpeedRadPerSec,
+                                xSpeed * DriveConstants.MAX_SWERVE_VEL,
+                                ySpeed * DriveConstants.MAX_SWERVE_VEL,
+                                rSpeed * DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
                                 Robot.swerveDrive.getEstimatedPose().getRotation()));
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);
 
         return swerveModuleStates;
     }
@@ -86,9 +86,9 @@ public class MotionHandler {
      */
     public static SwerveModuleState[] driveTrajectory() {
         SwerveModuleState[] swerveModuleStates =
-                DriveConstants.kinematics.toSwerveModuleStates(TrajectoryController.getInstance().update());
+                DriveConstants.KINEMATICS.toSwerveModuleStates(TrajectoryController.getInstance().update());
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.maxSwerveVel);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);
 
         return swerveModuleStates;
     }

@@ -141,121 +141,121 @@ public final class Constants {
 
     @UtilityClass
     public static final class DriveConstants {
-        public static final double kJoystickTurnDeadzone = 0.04;
-        public static final double wheelDiameter = 4;
-        public static final double gearRatio = 6.12;
-        public static final double distPerPulse =
-                (1.0 / gearRatio) * Units.inchesToMeters(wheelDiameter) * Math.PI;
+        public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
+        public static final double WHEEL_DIAMETER = 4;
+        public static final double GEAR_RATIO = 6.12;
+        public static final double DIST_PER_PULSE =
+                (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
 
-        public static final double maxSwerveVel = Units.feetToMeters(16.0 * 0.75);
-        public static final double maxSwerveAzi = Math.PI;
-        public static final double maxSwerveAccel = Units.feetToMeters(0.5);
-        public static final double maxRotationalSpeedRadPerSec = Units.degreesToRadians(180);
+        public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.75);
+        public static final double MAX_SWERVE_AZI = Math.PI;
+        public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(0.5);
+        public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
-        public static final int currentLimit = 65;
+        public static final int CURRENT_LIMIT = 65;
 
-        public static final double kModuleDistanceFromCenter = Units.inchesToMeters(20.75 / 2);
+        public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
 
-        private static final Translation2d frontLeftLocation =
+        private static final Translation2d FRONT_LEFT_LOCATION =
                 new Translation2d(
-                        DriveConstants.kModuleDistanceFromCenter, DriveConstants.kModuleDistanceFromCenter);
-        private static final Translation2d frontRightLocation =
+                        DriveConstants.K_MODULE_DISTANCE_FROM_CENTER, DriveConstants.K_MODULE_DISTANCE_FROM_CENTER);
+        private static final Translation2d FRONT_RIGHT_LOCATION =
                 new Translation2d(
-                        DriveConstants.kModuleDistanceFromCenter, -DriveConstants.kModuleDistanceFromCenter);
-        private static final Translation2d backLeftLocation =
+                        DriveConstants.K_MODULE_DISTANCE_FROM_CENTER, -DriveConstants.K_MODULE_DISTANCE_FROM_CENTER);
+        private static final Translation2d BACK_LEFT_LOCATION =
                 new Translation2d(
-                        -DriveConstants.kModuleDistanceFromCenter, DriveConstants.kModuleDistanceFromCenter);
-        private static final Translation2d backRightLocation =
+                        -DriveConstants.K_MODULE_DISTANCE_FROM_CENTER, DriveConstants.K_MODULE_DISTANCE_FROM_CENTER);
+        private static final Translation2d BACK_RIGHT_LOCATION =
                 new Translation2d(
-                        -DriveConstants.kModuleDistanceFromCenter, -DriveConstants.kModuleDistanceFromCenter);
+                        -DriveConstants.K_MODULE_DISTANCE_FROM_CENTER, -DriveConstants.K_MODULE_DISTANCE_FROM_CENTER);
 
-        public static final SwerveDriveKinematics kinematics =
+        public static final SwerveDriveKinematics KINEMATICS =
                 new SwerveDriveKinematics(
-                        frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
+                        FRONT_LEFT_LOCATION, FRONT_RIGHT_LOCATION, BACK_LEFT_LOCATION, BACK_RIGHT_LOCATION);
 
-        private static final double bumperlessRobotLength = Units.inchesToMeters(26.5);
-        private static final double bumperlessRobotWidth = Units.inchesToMeters(26.5);
-        private static final double bumperThickness = Units.inchesToMeters(3);
+        private static final double BUMPERLESS_ROBOT_LENGTH = Units.inchesToMeters(26.5);
+        private static final double BUMPERLESS_ROBOT_WIDTH = Units.inchesToMeters(26.5);
+        private static final double BUMPER_THICKNESS = Units.inchesToMeters(3);
 
-        public static final double fullRobotWidth = bumperlessRobotWidth + bumperThickness * 2;
-        public static final double fullRobotLength = bumperlessRobotLength + bumperThickness * 2;
+        public static final double FULL_ROBOT_WIDTH = BUMPERLESS_ROBOT_WIDTH + BUMPER_THICKNESS * 2;
+        public static final double FULL_ROBOT_LENGTH = BUMPERLESS_ROBOT_LENGTH + BUMPER_THICKNESS * 2;
 
-        public static final double headingControllerDriverChangeRate = 4;
-        public static final PIDFFGains kHeadingControllerGains =
+        public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
+        public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
                 PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(0).build();
 
-        public static final ModuleInfo frontLeft =
+        public static final ModuleInfo FRONT_LEFT =
                 ModuleInfo.builder()
                         .name(SwerveModuleName.FRONT_LEFT)
-                        .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
-                        .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
+                        .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
+                        .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
                         .driveCANId(1)
                         .aziCANId(8)
                         .aziEncoderCANId(ZERO)
                         .offset(0.1124)
-                        .location(frontLeftLocation)
+                        .location(FRONT_LEFT_LOCATION)
                         .build();
 
-        public static final ModuleInfo frontRight =
+        public static final ModuleInfo FRONT_RIGHT =
                 ModuleInfo.builder()
                         .name(SwerveModuleName.FRONT_RIGHT)
-                        .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
-                        .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
+                        .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
+                        .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
                         .driveCANId(3)
                         .aziCANId(2)
                         .aziEncoderCANId(1)
                         .offset(0.6028)
-                        .location(frontRightLocation)
+                        .location(FRONT_RIGHT_LOCATION)
                         .build();
 
-        public static final ModuleInfo backLeft =
+        public static final ModuleInfo BACK_LEFT =
                 ModuleInfo.builder()
                         .name(SwerveModuleName.BACK_LEFT)
-                        .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
-                        .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
+                        .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
+                        .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
                         .driveCANId(4)
                         .aziCANId(5)
                         .aziEncoderCANId(2)
                         .offset(0.0626)
-                        .location(backLeftLocation)
+                        .location(BACK_LEFT_LOCATION)
                         .build();
 
-        public static final ModuleInfo backRight =
+        public static final ModuleInfo BACK_RIGHT =
                 ModuleInfo.builder()
                         .name(SwerveModuleName.BACK_RIGHT)
-                        .driveGains(Constants.DriveConstants.Gains.kDefaultDrivingGains)
-                        .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
+                        .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
+                        .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
                         .driveCANId(6)
                         .aziCANId(7)
                         .aziEncoderCANId(3)
                         .offset(0.775)
-                        .location(backRightLocation)
+                        .location(BACK_RIGHT_LOCATION)
                         .build();
 
         @UtilityClass
         public static final class Gains {
-            public static final PIDFFGains kDefaultAzimuthGains =
+            public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
                     PIDFFGains.builder("BackRight/Default Azimuth").kP(0.05).tolerance(0).build();
-            public static final PIDFFGains kDefaultDrivingGains =
+            public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
                     PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 
-            public static final PIDFFGains kTrajectoryControllerGainsX =
+            public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
                     PIDFFGains.builder("Trajectory Controller X-Axis").kP(0.9).kD(0.0).build();
 
-            public static final PIDFFGains kTrajectoryControllerGainsY =
+            public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_Y =
                     PIDFFGains.builder("Trajectory Controller Y-Axis").kP(0.9).kD(0.0).build();
 
-            public static final PIDFFGains kTrajectoryControllerGainsRotation =
+            public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
                     PIDFFGains.builder("Trajectory Controller Rotation").kP(1.0).kD(0.0).build();
         }
 
-        public static final PIDFFGains kFrontLeftAzimuthGains =
+        public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =
                 PIDFFGains.builder("Front Left").kP(0.1).kS(0.12).tolerance(1.0).build();
-        public static final PIDFFGains kFrontRightAzimuthGains =
+        public static final PIDFFGains K_FRONT_RIGHT_AZIMUTH_GAINS =
                 PIDFFGains.builder("Front Right").kP(0.1).kS(.12).tolerance(1.0).build();
-        public static final PIDFFGains kBackLeftAzimuthGains =
+        public static final PIDFFGains K_BACK_LEFT_AZIMUTH_GAINS =
                 PIDFFGains.builder("Back Left").kP(0.1).kS(.15).tolerance(1.0).build();
-        public static final PIDFFGains kBackRightAzimuthGains =
+        public static final PIDFFGains K_BACK_RIGHT_AZIMUTH_GAINS =
                 PIDFFGains.builder("Back Right").kP(0.1).kS(.13).tolerance(1.0).build();
     }
 }

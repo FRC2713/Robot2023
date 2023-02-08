@@ -83,16 +83,16 @@ public class Robot extends LoggedRobot {
                 isSimulation()
                         ? new SwerveSubsystem(
                         new SwerveIOSim(),
-                        new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-                        new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-                        new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-                        new SwerveModuleIOSim(Constants.DriveConstants.backRight))
+                        new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
+                        new SwerveModuleIOSim(Constants.DriveConstants.FRONT_RIGHT),
+                        new SwerveModuleIOSim(Constants.DriveConstants.BACK_LEFT),
+                        new SwerveModuleIOSim(Constants.DriveConstants.BACK_RIGHT))
                         : new SwerveSubsystem(
                         new SwerveIOPigeon2(),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight));
+                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_LEFT),
+                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
+                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
+                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
         mechManager = new MechanismManager();
         autoCommand = new OneToAToThreeToBridge();
