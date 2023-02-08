@@ -29,7 +29,7 @@ public class ElevatorIOSim implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorInputs inputs) {
     if (DriverStation.isDisabled()) {
-      // sim.setInputVoltage(0.0);
+      sim.setInputVoltage(0.0);
     }
     sim.update(0.02);
     inputs.outputVoltageLeft = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);

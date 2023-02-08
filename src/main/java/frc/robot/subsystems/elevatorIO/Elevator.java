@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
     this.elevatorController =
         Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
-            new Constraints(2, 10));
+            new Constraints(60, 100));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
