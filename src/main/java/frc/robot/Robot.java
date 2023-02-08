@@ -194,46 +194,37 @@ public class Robot extends LoggedRobot {
                                 Intake.Commands.setRollerVelocityRPM(0), Intake.Commands.setWheelVelocityRPM(0),
                                 LightStrip.Commands.setColorPattern(DarkGreen)));
 
-    // Operator Buttons
-    operator
-        .leftBumper()
-        .and(operator.y())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
-    operator
-        .leftBumper()
-        .and(operator.b())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
-    operator
-        .leftBumper()
-        .and(operator.a())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
-    operator
-        .rightBumper()
-        .and(operator.y())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
-    operator
-        .rightBumper()
-        .and(operator.b())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
-    operator
-        .rightBumper()
-        .and(operator.a())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
-  }
+        // Operator Buttons
+        operator
+                .leftBumper()
+                .and(operator.y())  
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+        operator
+                .leftBumper()
+                .and(operator.b())
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+        operator
+                .leftBumper()
+                .and(operator.a())
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+        operator
+                .rightBumper()
+                .and(operator.y())
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+        operator
+                .rightBumper()
+                .and(operator.b())
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+        operator
+                .rightBumper()
+                .and(operator.a())
+                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+        operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+        operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+        
+       operator.x()
+                .onTrue(new ParallelCommandGroup(FourBar.Commands.retract()));
+    }
 
     @Override
     public void robotPeriodic() {
