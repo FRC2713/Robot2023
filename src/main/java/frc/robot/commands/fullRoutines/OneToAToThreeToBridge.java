@@ -13,27 +13,27 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 
 public class OneToAToThreeToBridge extends SequentialCommandGroup {
-  public OneToAToThreeToBridge() {
-    addCommands(
-        Elevator.Commands.setToHeight(30),
-        FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS),
-        new InstantCommand(
-            () -> {
-              Robot.swerveDrive.resetOdometry(
-                  Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
-            }),
-        new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
-        new ParallelCommandGroup(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
-            Elevator.Commands.setToHeight(Constants.zero),
-            FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
-        new ParallelCommandGroup(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_FIVE.getTrajectory()),
-            Elevator.Commands.setToHeight(30),
-            FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
-        Elevator.Commands.setToHeight(Constants.zero),
-        FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS),
-        new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
-        new GetOnBridge());
-  }
+    public OneToAToThreeToBridge() {
+        addCommands(
+                Elevator.Commands.setToHeight(30),
+                FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS),
+                new InstantCommand(
+                        () -> {
+                            Robot.swerveDrive.resetOdometry(
+                                    Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
+                        }),
+                new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
+                new ParallelCommandGroup(
+                        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
+                        Elevator.Commands.setToHeight(Constants.ZERO),
+                        FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
+                new ParallelCommandGroup(
+                        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_FIVE.getTrajectory()),
+                        Elevator.Commands.setToHeight(30),
+                        FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
+                Elevator.Commands.setToHeight(Constants.ZERO),
+                FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS),
+                new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
+                new GetOnBridge());
+    }
 }

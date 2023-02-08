@@ -25,8 +25,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class Constants {
 
-    public static final boolean tuningMode = false;
-    public static final int zero = 0; // in case you need a zero :)
+    public static final boolean TUNING_MODE = false;
+    public static final int ZERO = 0; // in case you need a zero :)
     public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
     public static final double π = Math.PI;
     public static final double DOUBLE_PLACEHOLDER = 0;
@@ -34,7 +34,7 @@ public final class Constants {
 
     @UtilityClass
     public static final class RobotMap {
-        public static final int pigeonCANId = 20;
+        public static final int PIGEON_CAN_ID = 20;
         public static final int SWERVE_CANID_1 = 1;
         public static final int SWERVE_CANID_2 = 2;
         public static final int SWERVE_CANID_3 = 3;
@@ -191,7 +191,7 @@ public final class Constants {
                         .azimuthGains(Constants.DriveConstants.Gains.kDefaultAzimuthGains)
                         .driveCANId(1)
                         .aziCANId(8)
-                        .aziEncoderCANId(zero)
+                        .aziEncoderCANId(ZERO)
                         .offset(0.1124)
                         .location(frontLeftLocation)
                         .build();
