@@ -155,7 +155,7 @@ public class Robot extends LoggedRobot {
         .rightTrigger(0.25)
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait()
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
                     .until(() -> elevator.atTargetHeight()),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
@@ -172,7 +172,7 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
+                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
