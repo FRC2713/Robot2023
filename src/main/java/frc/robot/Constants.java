@@ -113,11 +113,13 @@ public final class Constants {
     @UtilityClass
     public static class IntakeConstants {
         public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
-        public static final double GEARING = 10;
+        public static final double ROLLER_GEARING = 10;
+        public static final double WHEELS_GEARING = 10;
+
         public static final double MAX_ROLLER_RPM =
-                Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
+                Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / ROLLER_GEARING;
         public static final double MAX_WHEEL_RPM =
-                Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
+                Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / WHEELS_GEARING;
         public static final double MOI = 0.1;
         public static final int WHEELS_CURRENT_LIMIT = 50;
         public static final int ROLLERS_CURRENT_LIMIT = 50;
@@ -125,6 +127,16 @@ public final class Constants {
         public static final double ROLLERS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
         public static final double WHEELS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
         public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
+        public static final double ROLLERS_CONE_TIPPED_INTAKE_RPM = 100;
+        public static final double ROLLERS_CONE_UPRIGHT_INTAKE_RPM = 100;
+        public static final double ROLLERS_CUBE_INTAKE_RPM = 100;
+        public static final double ROLLERS_CONE_SCORE_RPM = -100;
+        public static final double ROLLERS_CUBE_SCORE_RPM = -100;
+        public static final double WHEELS_CONE_TIPPED_INTAKE_RPM = 100;
+        public static final double WHEELS_CONE_UPRIGHT_INTAKE_RPM = 100;
+        public static final double WHEELS_CUBE_INTAKE_RPM = 100;
+        public static final double WHEELS_CONE_SCORE_RPM = -100;
+        public static final double WHEELS_CUBE_SCORE_RPM = -100;
     }
 
     @UtilityClass
