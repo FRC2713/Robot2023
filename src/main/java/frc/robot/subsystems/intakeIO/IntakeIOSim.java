@@ -27,6 +27,7 @@ public class IntakeIOSim implements IntakeIO {
     inputs.wheelsIsOn = simWheels.getAngularVelocityRadPerSec() > 0.005;
     inputs.rollersIsOn = simRollers.getAngularVelocityRadPerSec() > 0.005;
     inputs.wheelsVelocityRPM = simWheels.getAngularVelocityRPM();
+
     inputs.rollersVelocityRPM = simRollers.getAngularVelocityRPM();
     inputs.wheelsTempCelcius = 0.0;
     inputs.rollersTempCelcius = 0.0;

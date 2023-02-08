@@ -99,6 +99,13 @@ public class Elevator extends SubsystemBase {
   }
 
   public static class Commands {
+
+    public static Command setTargetHeightAndWait(double targetHeightInches) {
+      return setToHeight(targetHeightInches)
+          .repeatedly()
+          .until(() -> Robot.elevator.atTargetHeight());
+    }
+
     public static Command setToHeight(double height) {
       return new InstantCommand(() -> Robot.elevator.setTargetHeight(height), Robot.elevator);
     }
@@ -109,10 +116,18 @@ public class Elevator extends SubsystemBase {
           Robot.elevator);
     }
 
+    public static Command elevatorConeLowScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_LOW_SCORE);
+    }
+
     public static Command elevatorCubeLowScore() {
       return new InstantCommand(
           () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE),
           Robot.elevator);
+    }
+
+    public static Command elevatorCubeLowScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE);
     }
 
     public static Command elevatorConeMidScore() {
@@ -121,10 +136,18 @@ public class Elevator extends SubsystemBase {
           Robot.elevator);
     }
 
+    public static Command elevatorConeMidScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_MID_SCORE);
+    }
+
     public static Command elevatorCubeMidScore() {
       return new InstantCommand(
           () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE),
           Robot.elevator);
+    }
+
+    public static Command elevatorCubeMidScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE);
     }
 
     public static Command elevatorConeHighScore() {
@@ -134,11 +157,19 @@ public class Elevator extends SubsystemBase {
           Robot.elevator);
     }
 
+    public static Command elevatorConeHighScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE);
+    }
+
     public static Command elevatorCubeHighScore() {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE),
           Robot.elevator);
+    }
+
+    public static Command elevatorCubeHighScoreAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE);
     }
 
     public static Command elevatorCubeFloorIntake() {
@@ -149,12 +180,20 @@ public class Elevator extends SubsystemBase {
           Robot.elevator);
     }
 
+    public static Command elevatorCubeFloorIntakeAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_FLOOR_INTAKE);
+    }
+
     public static Command elevatorConeFloorTippedIntake() {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(
                   Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_TIPPED_INTAKE),
           Robot.elevator);
+    }
+
+    public static Command elevatorConeFloorTippedIntakeAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_TIPPED_INTAKE);
     }
 
     public static Command elevatorConeFloorUpIntake() {
@@ -165,15 +204,13 @@ public class Elevator extends SubsystemBase {
           Robot.elevator);
     }
 
+    public static Command elevatorConeFloorUpIntakeAndWait() {
+      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE);
+    }
+
     public static Command elevatorCurrentHeight() {
       return new InstantCommand(
           () -> Robot.elevator.setTargetHeight(Robot.elevator.getCurrentHeight()), Robot.elevator);
-    }
-
-    public static Command setTargetHeightAndWait(double targetHeightInches) {
-      return setToHeight(targetHeightInches)
-          .repeatedly()
-          .until(() -> Robot.elevator.atTargetHeight());
     }
   }
 }

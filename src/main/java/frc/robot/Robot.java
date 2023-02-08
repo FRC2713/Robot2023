@@ -139,7 +139,7 @@ public class Robot extends LoggedRobot {
         .leftBumper()
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeFloorIntake(),
+                Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
@@ -155,11 +155,12 @@ public class Robot extends LoggedRobot {
         .rightTrigger(0.25)
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorTippedIntake(),
+                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait()
+                    .until(() -> elevator.atTargetHeight()),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
-                    FourBar.Commands.setToAngle(Constants.DOUBLE_PLACEHOLDER))))
+                    FourBar.Commands.extend())))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -171,11 +172,11 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorUpIntake(),
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
-                    FourBar.Commands.setToAngle(Constants.DOUBLE_PLACEHOLDER))))
+                    FourBar.Commands.extend())))
         .onFalse(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -197,39 +198,29 @@ public class Robot extends LoggedRobot {
     operator
         .leftBumper()
         .and(operator.y())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorConeHighScore(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeHighScoreAndWait()));
     operator
         .leftBumper()
         .and(operator.b())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorConeMidScore(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeMidScoreAndWait()));
     operator
         .leftBumper()
         .and(operator.a())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorConeLowScore(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeLowScoreAndWait()));
     operator
         .rightBumper()
         .and(operator.y())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorCubeHighScore(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeHighScoreAndWait()));
     operator
         .rightBumper()
         .and(operator.b())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorCubeMidScore(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeMidScoreAndWait()));
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.elevatorCubeLowScore(), FourBar.Commands.extend()));
+                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
   }

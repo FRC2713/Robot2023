@@ -65,7 +65,7 @@ public final class Constants {
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
         PIDFFGains.builder("Elevator Controller").kP(0.665).kD(0.066).kG(4.26878).build();
-    public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(20.0);
+    public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
@@ -114,6 +114,8 @@ public final class Constants {
     public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
     public static final double GEARING = 10;
     public static final double MAX_ROLLER_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
+    public static final double MAX_WHEEL_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / GEARING;
     public static final double MOI = 0.1;
     public static final int WHEELS_CURRENT_LIMIT = 50;
