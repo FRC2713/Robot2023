@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.LightStrip.Pattern.*;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -39,279 +41,283 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
-import static frc.robot.subsystems.LightStrip.Pattern.*;
-
 public class Robot extends LoggedRobot {
-    private static MechanismManager mechManager;
-    public static MotionMode motionMode = MotionMode.FULL_DRIVE;
-    public static FourBar fourBar;
-    public static Elevator elevator;
-    public static Intake intake;
-    public static Vision vision;
-    public static SwerveSubsystem swerveDrive;
-    public static LightStrip lights;
-    private Command autoCommand;
+  private static MechanismManager mechManager;
+  public static MotionMode motionMode = MotionMode.FULL_DRIVE;
+  public static FourBar fourBar;
+  public static Elevator elevator;
+  public static Intake intake;
+  public static Vision vision;
+  public static SwerveSubsystem swerveDrive;
+  public static LightStrip lights;
+  private Command autoCommand;
 
-    public static final CommandXboxController driver =
-            new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
-    public static final CommandXboxController operator =
-            new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
+  public static final CommandXboxController driver =
+      new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
+  public static final CommandXboxController operator =
+      new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
 
-    public static double[] poseValue;
-    DoubleArraySubscriber visionPose;
+  public static double[] poseValue;
+  DoubleArraySubscriber visionPose;
 
-    @Override
-    public void robotInit() {
-        CameraServer.startAutomaticCapture();
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[]{});
-        Logger.getInstance().addDataReceiver(new NT4Publisher());
-        Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
-        Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
-        Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
-        Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
-        Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+  @Override
+  public void robotInit() {
+    CameraServer.startAutomaticCapture();
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    Logger.getInstance().addDataReceiver(new NT4Publisher());
+    Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
+    Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
+    Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
+    Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
+    Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
 
-        Logger.getInstance().start();
+    Logger.getInstance().start();
 
-        fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-        elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
-        intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-        vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
-        lights = new LightStrip();
-        swerveDrive =
-                isSimulation()
-                        ? new SwerveSubsystem(
-                        new SwerveIOSim(),
-                        new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
-                        new SwerveModuleIOSim(Constants.DriveConstants.FRONT_RIGHT),
-                        new SwerveModuleIOSim(Constants.DriveConstants.BACK_LEFT),
-                        new SwerveModuleIOSim(Constants.DriveConstants.BACK_RIGHT))
-                        : new SwerveSubsystem(
-                        new SwerveIOPigeon2(),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_LEFT),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
-                        new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
+    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    lights = new LightStrip();
+    swerveDrive =
+        isSimulation()
+            ? new SwerveSubsystem(
+                new SwerveIOSim(),
+                new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
+                new SwerveModuleIOSim(Constants.DriveConstants.FRONT_RIGHT),
+                new SwerveModuleIOSim(Constants.DriveConstants.BACK_LEFT),
+                new SwerveModuleIOSim(Constants.DriveConstants.BACK_RIGHT))
+            : new SwerveSubsystem(
+                new SwerveIOPigeon2(),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_LEFT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
-        mechManager = new MechanismManager();
-        autoCommand = new OneToAToThreeToBridge();
+    mechManager = new MechanismManager();
+    autoCommand = new OneToAToThreeToBridge();
 
-        // Driver Controls
-        driver
-                .povUp()
-                .onTrue(
-                        new InstantCommand(
-                                () -> {
-                                    motionMode = MotionMode.HEADING_CONTROLLER;
-                                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
-                                }));
+    // Driver Controls
+    driver
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+                }));
 
-        driver
-                .povLeft()
-                .onTrue(
-                        new InstantCommand(
-                                () -> {
-                                    motionMode = MotionMode.HEADING_CONTROLLER;
-                                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
-                                }));
+    driver
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+                }));
 
-        driver
-                .povDown()
-                .onTrue(
-                        new InstantCommand(
-                                () -> {
-                                    motionMode = MotionMode.HEADING_CONTROLLER;
-                                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
-                                }));
+    driver
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+                }));
 
-        driver
-                .povRight()
-                .onTrue(
-                        new InstantCommand(
-                                () -> {
-                                    motionMode = MotionMode.HEADING_CONTROLLER;
-                                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
-                                }));
+    driver
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.HEADING_CONTROLLER;
+                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+                }));
 
-        driver
-                .leftBumper()
-                .onTrue(
-                        new SequentialCommandGroup(
-                                Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
-                                new ParallelCommandGroup(
-                                        Intake.Commands.setWheelVelocityRPM(100),
-                                        Intake.Commands.setRollerVelocityRPM(100),
-                                        FourBar.Commands.extend())))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                Elevator.Commands.elevatorCurrentHeight(),
-                                Intake.Commands.setWheelVelocityRPM(0),
-                                Intake.Commands.setRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
-                                FourBar.Commands.retract()));
+    driver
+        .leftBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
+                FourBar.Commands.retract()));
 
-        driver
-                .rightTrigger(0.25)
-                .onTrue(
-                        new SequentialCommandGroup(
-                                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
-                                        .until(() -> elevator.atTargetHeight()),
-                                new ParallelCommandGroup(
-                                        Intake.Commands.setWheelVelocityRPM(100),
-                                        Intake.Commands.setRollerVelocityRPM(100),
-                                        FourBar.Commands.extend())))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                Elevator.Commands.elevatorCurrentHeight(),
-                                Intake.Commands.setWheelVelocityRPM(0),
-                                Intake.Commands.setRollerVelocityRPM(0),
-                                FourBar.Commands.retract()));
+    driver
+        .rightTrigger(0.25)
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
+                    .until(() -> elevator.atTargetHeight()),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0),
+                FourBar.Commands.retract()));
 
-        driver
-                .rightBumper()
-                .onTrue(
-                        new SequentialCommandGroup(
-                                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
-                                new ParallelCommandGroup(
-                                        Intake.Commands.setWheelVelocityRPM(100),
-                                        Intake.Commands.setRollerVelocityRPM(100),
-                                        FourBar.Commands.extend())))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                Elevator.Commands.elevatorCurrentHeight(),
-                                Intake.Commands.setWheelVelocityRPM(0),
-                                Intake.Commands.setRollerVelocityRPM(0),
-                                FourBar.Commands.retract()));
-        driver.y().onTrue(FourBar.Commands.extend());
-        driver
-                .b()
-                .onTrue(
-                        new ParallelCommandGroup(
-                                Intake.Commands.setRollerVelocityRPM(100),
-                                Intake.Commands.setWheelVelocityRPM(100)))
-                .onFalse(
-                        new ParallelCommandGroup(
-                                Intake.Commands.setRollerVelocityRPM(0), Intake.Commands.setWheelVelocityRPM(0),
-                                LightStrip.Commands.setColorPattern(DarkGreen)));
+    driver
+        .rightBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0),
+                FourBar.Commands.retract()));
+    driver.y().onTrue(FourBar.Commands.extend());
+    driver
+        .b()
+        .onTrue(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(100),
+                Intake.Commands.setWheelVelocityRPM(100)))
+        .onFalse(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(0),
+                Intake.Commands.setWheelVelocityRPM(0),
+                LightStrip.Commands.setColorPattern(DarkGreen)));
 
-        // Operator Buttons
-        operator
-                .leftBumper()
-                .and(operator.y())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
-        operator
-                .leftBumper()
-                .and(operator.b())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
-        operator
-                .leftBumper()
-                .and(operator.a())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
-        operator
-                .rightBumper()
-                .and(operator.y())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
-        operator
-                .rightBumper()
-                .and(operator.b())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
-        operator
-                .rightBumper()
-                .and(operator.a())
-                .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
-        operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-        operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    // Operator Buttons
+    operator
+        .leftBumper()
+        .and(operator.y())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+    operator
+        .leftBumper()
+        .and(operator.b())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+    operator
+        .leftBumper()
+        .and(operator.a())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+    operator
+        .rightBumper()
+        .and(operator.y())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+    operator
+        .rightBumper()
+        .and(operator.b())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+    operator
+        .rightBumper()
+        .and(operator.a())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+  }
+
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+    ErrHandler.getInstance().log();
+    mechManager.periodic();
+    if (Math.abs(driver.getRightX()) > 0.25) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
+  }
+
+  @Override
+  public void disabledInit() {
+    if (autoCommand != null) {
+      autoCommand.cancel();
     }
 
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-        ErrHandler.getInstance().log();
-        mechManager.periodic();
-        if (Math.abs(driver.getRightX()) > 0.25) {
-            motionMode = MotionMode.FULL_DRIVE;
-        }
+    Robot.motionMode = MotionMode.LOCKDOWN;
+  }
+
+  @Override
+  public void disabledPeriodic() {}
+
+  @Override
+  public void disabledExit() {}
+
+  @Override
+  public void autonomousInit() {
+    motionMode = MotionMode.TRAJECTORY;
+
+    if (autoCommand != null) {
+      autoCommand.schedule();
     }
+  }
 
-    @Override
-    public void disabledInit() {
-        if (autoCommand != null) {
-            autoCommand.cancel();
-        }
+  @Override
+  public void autonomousPeriodic() {}
 
-        Robot.motionMode = MotionMode.LOCKDOWN;
+  @Override
+  public void autonomousExit() {}
+
+  @Override
+  public void teleopInit() {
+    if (autoCommand != null) {
+      autoCommand.cancel();
     }
+    Robot.motionMode = MotionMode.FULL_DRIVE;
+  }
 
-    @Override
-    public void disabledPeriodic() {
+  // grab botpose from the network table, put it into swerve drive inputs, read
+  // botpose, and put
+  // that into the pose estimator
+  // using the vision command
+
+  @Override
+  public void teleopPeriodic() {
+    TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if (queue.length > 0) {
+      TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
+      swerveDrive.updateVisionPose(lastCameraReading);
     }
+  }
 
-    @Override
-    public void disabledExit() {
-    }
+  @Override
+  public void teleopExit() {}
 
-    @Override
-    public void autonomousInit() {
-        motionMode = MotionMode.TRAJECTORY;
+  @Override
+  public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-        if (autoCommand != null) {
-            autoCommand.schedule();
-        }
-    }
+  @Override
+  public void testPeriodic() {}
 
-    @Override
-    public void autonomousPeriodic() {
-    }
+  @Override
+  public void testExit() {}
 
-    @Override
-    public void autonomousExit() {
-    }
+  public String goFast() {
+    return "nyoooooooooom";
+  }
 
-    @Override
-    public void teleopInit() {
-        if (autoCommand != null) {
-            autoCommand.cancel();
-        }
-        Robot.motionMode = MotionMode.FULL_DRIVE;
-    }
-
-    // grab botpose from the network table, put it into swerve drive inputs, read
-    // botpose, and put
-    // that into the pose estimator
-    // using the vision command
-
-    @Override
-    public void teleopPeriodic() {
-        TimestampedDoubleArray[] queue = visionPose.readQueue();
-
-        if (queue.length > 0) {
-            TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
-            swerveDrive.updateVisionPose(lastCameraReading);
-        }
-    }
-
-    @Override
-    public void teleopExit() {
-    }
-
-    @Override
-    public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
-
-    @Override
-    public void testPeriodic() {
-    }
-
-    @Override
-    public void testExit() {
-    }
-
-    public String goFast() {
-        return "nyoooooooooom";
-    }
-
-    public String goSlow() {
-        return "...nyom...";
-    }
+  public String goSlow() {
+    return "...nyom...";
+  }
 }
