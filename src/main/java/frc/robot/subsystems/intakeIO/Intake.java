@@ -31,6 +31,10 @@ public class Intake extends SubsystemBase {
   public void setRollerRPM(double rpm) {
     this.targetRPM = rpm;
     IO.setVoltageWheels(rpm / (IntakeConstants.MAX_ROLLER_RPM) * 12); // PLACEHOLDER VALUE
+}
+
+public double getCurrentDraw() {
+    return inputs.wheelsCurrentAmps + inputs.rollersCurrentAmps;
   }
 
   public void periodic() {

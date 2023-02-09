@@ -17,7 +17,6 @@ public class FourBarIOSim implements FourBarIO {
           Constants.FourBarConstants.LENGTH_METRES,
           Constants.FourBarConstants.MIN_ANGLE_RADIANS,
           Constants.FourBarConstants.MAX_ANGLE_RADIANS,
-          Constants.FourBarConstants.MASS_KG,
           true);
 
   @Override
@@ -26,6 +25,7 @@ public class FourBarIOSim implements FourBarIO {
       sim.setInputVoltage(0.0);
     }
     sim.update(0.02);
+    
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
 
     inputs.angleDegreesOne = Units.radiansToDegrees(sim.getAngleRads());

@@ -52,6 +52,10 @@ public class FourBar extends SubsystemBase {
     return inputs.angleDegreesOne;
   }
 
+  public double getCurrentDraw() {
+    return inputs.currentDrawAmps;
+  }
+
   public void periodic() {
     double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
     double ffEffort = ff.calculate(inputs.angleDegreesOne, inputs.velocityDegreesPerSecondOne);

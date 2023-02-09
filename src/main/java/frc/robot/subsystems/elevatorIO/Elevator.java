@@ -48,8 +48,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getCurrentHeight() {
-
     return inputs.heightInchesLeft;
+  }
+
+  public double getCurrentDraw() {
+    return inputs.currentDrawAmpsLeft + inputs.currentDrawAmpsRight;
   }
 
   public double getTargetHeight() {

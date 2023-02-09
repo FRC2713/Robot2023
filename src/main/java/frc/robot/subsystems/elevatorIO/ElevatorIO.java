@@ -9,11 +9,12 @@ public interface ElevatorIO {
     public double heightInchesLeft = 0.0;
     public double velocityInchesPerSecondLeft = 0.0;
     public double tempCelsiusLeft = 0.0;
-
+    public double currentDrawAmpsLeft = 0.0;
     public double outputVoltageRight = 0.0;
     public double heightInchesRight = 0.0;
     public double velocityInchesPerSecondRight = 0.0;
     public double tempCelsiusRight = 0.0;
+    public double currentDrawAmpsRight = 0.0;
   }
 
   public void updateInputs(ElevatorInputs inputs);
