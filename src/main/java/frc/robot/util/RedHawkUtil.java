@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import java.util.ArrayList;
@@ -42,15 +44,18 @@ public final class RedHawkUtil {
   }
 
   public static Translation2d getClosestGrid(double y) {
-    return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
-        .sorted(
-            (a, b) ->
-                Double.compare(
-                    a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
-                    b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
-        .findFirst()
-        .get()
-        .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
+    Translation2d closest =
+        Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+            .sorted(
+                (a, b) ->
+                    Double.compare(
+                        a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
+                        b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+            .findFirst()
+            .get()
+            .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
+
+    return RedHawkUtil.Reflections.reflectIfRed(closest);
   }
 
   public static int getClosestGridNumber(double y) {
@@ -117,5 +122,21 @@ public final class RedHawkUtil {
             .getTranslation()
             .rotateBy(new Rotation2d(halftheta_by_tan_of_halfdtheta, -half_dtheta));
     return new Twist2d(translation_part.getX(), translation_part.getY(), dtheta);
+  }
+
+  public static class Reflections {
+    public static Translation2d reflectIfRed(Translation2d old) {
+      if (DriverStation.getAlliance() == Alliance.Red) {
+        new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
+      }
+      return old;
+    }
+
+    public static Rotation2d reflectIfRed(Rotation2d old) {
+      if (DriverStation.getAlliance() == Alliance.Red) {
+        return Rotation2d.fromDegrees(-1 * old.getDegrees());
+      }
+      return old;
+    }
   }
 }

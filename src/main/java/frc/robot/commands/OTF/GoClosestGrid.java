@@ -24,7 +24,8 @@ public class GoClosestGrid {
   private ArrayList<Pair<Double, PathPoint>> breakPointsTop = new ArrayList<>();
   private ArrayList<Pair<Double, PathPoint>> breakPointsBottom = new ArrayList<>();
 
-  private final Rotation2d heading = Rotation2d.fromDegrees(180);
+  private final Rotation2d heading =
+      RedHawkUtil.Reflections.reflectIfRed(Rotation2d.fromDegrees(180));
   private final PathConstraints constraints =
       new PathConstraints(
           Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
@@ -35,8 +36,9 @@ public class GoClosestGrid {
             FieldConstants.Community.chargingStationOuterX,
             new PathPoint(
                 FieldConstants.Community.chargingStationCorners[3].plus(
-                    new Translation2d(
-                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                    RedHawkUtil.Reflections.reflectIfRed(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
                 Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
                 Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
     breakPointsTop.add(
@@ -44,8 +46,9 @@ public class GoClosestGrid {
             FieldConstants.Community.chargingStationInnerX,
             new PathPoint(
                 FieldConstants.Community.chargingStationCorners[1].plus(
-                    new Translation2d(
-                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+                    RedHawkUtil.Reflections.reflectIfRed(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
                 Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
                 Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
 
@@ -151,7 +154,8 @@ public class GoClosestGrid {
     if (!hasSetTargetGrid) {
       PathPoint closest =
           new PathPoint(
-              RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY()),
+              RedHawkUtil.Reflections.reflectIfRed(
+                  RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY())),
               Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
               Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
               2);
