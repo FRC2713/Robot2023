@@ -210,46 +210,47 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Intake.Commands.setRollerVelocityRPM(0),
                 Intake.Commands.setWheelVelocityRPM(0),
+                FourBar.Commands.retract(),
                 LightStrip.Commands.setColorPattern(DarkGreen)));
 
     // Operator Buttons
     operator
-        .leftBumper()
+        .rightBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
-        .leftBumper()
+        .rightBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
-        .leftBumper()
+        .rightBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
 
     operator
-        .rightBumper()
+        .leftBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
-        .rightBumper()
+        .leftBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
-        .rightBumper()
+        .leftBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
