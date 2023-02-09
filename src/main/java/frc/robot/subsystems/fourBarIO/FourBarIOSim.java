@@ -17,7 +17,6 @@ public class FourBarIOSim implements FourBarIO {
           Constants.FourBarConstants.LENGTH_METRES,
           Constants.FourBarConstants.MIN_ANGLE_RADIANS,
           Constants.FourBarConstants.MAX_ANGLE_RADIANS,
-          Constants.FourBarConstants.MASS_KG,
           true);
 
   @Override
