@@ -13,10 +13,10 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -115,7 +115,7 @@ public class Robot extends LoggedRobot {
                         50)),
             elevator));
 
-    //lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
+    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
@@ -236,7 +236,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
 
-        operator
+    operator
         .rightBumper()
         .and(operator.a())
         .onTrue(

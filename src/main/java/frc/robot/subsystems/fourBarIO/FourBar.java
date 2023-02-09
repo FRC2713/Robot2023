@@ -53,7 +53,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public double getCurrentDraw() {
-    return inputs.currentDrawAmps;
+    return inputs.currentDrawOne;
   }
 
   public void periodic() {
