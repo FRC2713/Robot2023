@@ -108,6 +108,7 @@ public class Robot extends LoggedRobot {
                         0,
                         50)),
             elevator));
+    lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
@@ -228,7 +229,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
 
-    operator
+        operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
