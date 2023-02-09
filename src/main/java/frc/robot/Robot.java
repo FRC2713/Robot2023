@@ -109,7 +109,7 @@ public class Robot extends LoggedRobot {
                         50)),
             elevator));
 
-    lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
+    //lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
