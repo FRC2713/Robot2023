@@ -52,6 +52,10 @@ public class Elevator extends SubsystemBase {
     return inputs.heightInchesLeft;
   }
 
+  public double getTargetHeight() {
+    return targetHeight;
+  }
+
   public boolean atTargetHeight() {
     return Math.abs(getCurrentHeight() - targetHeight) < 1;
   }

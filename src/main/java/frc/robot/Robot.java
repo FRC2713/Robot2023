@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.subsystems.LightStrip.Pattern.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -93,6 +95,19 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
+
+    elevator.setDefaultCommand(
+        new InstantCommand(
+            () ->
+                elevator.setTargetHeight(
+                    MathUtil.clamp(
+                        elevator.getTargetHeight()
+                            + (MathUtil.applyDeadband(
+                                    -operator.getRightY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+                                / 10),
+                        0,
+                        50)),
+            elevator));
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
@@ -182,9 +197,11 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setWheelVelocityRPM(0),
                 Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
-    driver.y().onTrue(FourBar.Commands.extend());
+
+    driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
+
     driver
-        .b()
+        .y()
         .onTrue(
             new ParallelCommandGroup(
                 Intake.Commands.setRollerVelocityRPM(100),
@@ -202,36 +219,42 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+
     operator
         .leftBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+
     operator
         .leftBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+
     operator
         .rightBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+
     operator
         .rightBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
   }
