@@ -108,6 +108,7 @@ public class Robot extends LoggedRobot {
                         0,
                         50)),
             elevator));
+
     lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
