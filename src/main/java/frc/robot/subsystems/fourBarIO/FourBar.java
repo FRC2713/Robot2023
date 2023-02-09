@@ -1,5 +1,7 @@
 package frc.robot.subsystems.fourBarIO;
 
+import static frc.robot.Robot.fourBar;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -42,56 +44,40 @@ public class FourBar extends SubsystemBase {
     this.targetDegs = targetDegs;
   }
 
-  public Command cmdSetAngleDeg(double targetDegs) {
-    return new InstantCommand(() -> Robot.fourBar.setAngleDeg(targetDegs));
-  }
-
-  public Command cmdSetAngleDegAndWait(double targetDegs) {
-    return cmdSetAngleDeg(targetDegs).repeatedly().until(() -> isAtTarget());
-  }
-
-  public Command cmdRetract() {
-    return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
-  }
-
-  public Command cmdExtend() {
-    return cmdSetAngleDeg(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
-  }
-
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegrees - targetDegs) < 0.1;
+    return Math.abs(inputs.angleDegreesOne - targetDegs) < 0.1;
   }
 
   public double getCurrentDegs() {
-    return inputs.angleDegrees;
+    return inputs.angleDegreesOne;
   }
 
   public double getCurrentDraw() {
-    return inputs.currentDrawAmps;
+    return inputs.currentDrawOne;
   }
 
   public void periodic() {
-    double effort = controller.calculate(inputs.angleDegrees, targetDegs);
-    double ffEffort = ff.calculate(inputs.angleDegrees, inputs.velocityDegreesPerSecond);
+    double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
+    double ffEffort = ff.calculate(inputs.angleDegreesOne, inputs.velocityDegreesPerSecondOne);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
-    if ((inputs.angleDegrees
+    if ((inputs.angleDegreesOne
         > Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS))) {
       effort =
           MathUtil.clamp(
               controller.calculate(
-                  inputs.angleDegrees,
+                  inputs.angleDegreesOne,
                   Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
               -0.5,
               0.5);
       RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MAX LIMITS!");
-    } else if (inputs.angleDegrees
+    } else if (inputs.angleDegreesOne
         < Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)) {
       effort =
           MathUtil.clamp(
               controller.calculate(
-                  inputs.angleDegrees,
+                  inputs.angleDegreesOne,
                   Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
               -0.5,
               0.5);
@@ -111,7 +97,19 @@ public class FourBar extends SubsystemBase {
 
   public static class Commands {
     public static Command setToAngle(double angleDeg) {
-      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), Robot.fourBar);
+      return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
+    }
+
+    public static Command setAngleDegAndWait(double targetDegs) {
+      return setToAngle(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
+    }
+
+    public static Command retract() {
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
+    }
+
+    public static Command extend() {
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
     }
   }
 }

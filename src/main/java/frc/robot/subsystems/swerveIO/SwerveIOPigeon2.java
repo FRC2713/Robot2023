@@ -9,7 +9,7 @@ public class SwerveIOPigeon2 implements SwerveIO {
   private final Pigeon2 gyro;
 
   public SwerveIOPigeon2() {
-    gyro = new Pigeon2(RobotMap.pigeonCANId);
+    gyro = new Pigeon2(RobotMap.PIGEON_CAN_ID);
     gyro.zeroGyroBiasNow();
     gyro.setYaw(0);
   }

@@ -25,9 +25,9 @@ public class TrajectoryController {
   PathPlannerState targetState;
   PPHolonomicDriveController controller =
       new PPHolonomicDriveController(
-          Gains.kTrajectoryControllerGainsX.createWpilibController(),
-          Gains.kTrajectoryControllerGainsY.createWpilibController(),
-          Gains.kTrajectoryControllerGainsRotation.createWpilibController());
+          Gains.K_TRAJECTORY_CONTROLLER_GAINS_X.createWpilibController(),
+          Gains.K_TRAJECTORY_CONTROLLER_GAINS_Y.createWpilibController(),
+          Gains.K_TRAJECTORY_CONTROLLER_GAINS_ROTATION.createWpilibController());
 
   private TrajectoryController() {}
 
@@ -75,7 +75,7 @@ public class TrajectoryController {
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
       final var loopTime = 0.02;
-      var speeds = controller.calculate(Robot.swerveDrive.getRegularPose(), targetState);
+      var speeds = controller.calculate(Robot.swerveDrive.getUsablePose(), targetState);
 
       Pose2d robotPoseVel =
           new Pose2d(

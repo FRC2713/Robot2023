@@ -9,10 +9,14 @@ import frc.robot.Constants;
 public class IntakeIOSim implements IntakeIO {
   private final DCMotorSim simWheels =
       new DCMotorSim(
-          DCMotor.getNeo550(1), Constants.IntakeConstants.GEARING, Constants.IntakeConstants.MOI);
+          DCMotor.getNeo550(1),
+          Constants.IntakeConstants.WHEELS_GEARING,
+          Constants.IntakeConstants.MOI);
   private final DCMotorSim simRollers =
       new DCMotorSim(
-          DCMotor.getNeo550(1), Constants.IntakeConstants.GEARING, Constants.IntakeConstants.MOI);
+          DCMotor.getNeo550(1),
+          Constants.IntakeConstants.ROLLER_GEARING,
+          Constants.IntakeConstants.MOI);
 
   @Override
   public void updateInputs(IntakeInputs inputs) {
@@ -27,6 +31,7 @@ public class IntakeIOSim implements IntakeIO {
     inputs.wheelsIsOn = simWheels.getAngularVelocityRadPerSec() > 0.005;
     inputs.rollersIsOn = simRollers.getAngularVelocityRadPerSec() > 0.005;
     inputs.wheelsVelocityRPM = simWheels.getAngularVelocityRPM();
+
     inputs.rollersVelocityRPM = simRollers.getAngularVelocityRPM();
     inputs.wheelsTempCelcius = 0.0;
     inputs.rollersTempCelcius = 0.0;
@@ -37,8 +42,12 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
+  public void setVoltageWheels(double volts) {
     simWheels.setInputVoltage(volts);
+  }
+
+  @Override
+  public void setVoltageRollers(double volts) {
     simRollers.setInputVoltage(volts);
   }
 }

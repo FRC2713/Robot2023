@@ -12,7 +12,7 @@ public class ElevatorIOSim implements ElevatorIO {
   private final AngledElevatorSim sim =
       new AngledElevatorSim(
           DCMotor.getNEO(2),
-          1.0,
+          Constants.ElevatorConstants.ELEVATOR_GEAR_RATIO,
           Constants.ElevatorConstants.CARRIAGE_MASS_KG,
           Constants.ElevatorConstants.ELEVATOR_DRUM_RADIUS_METERS,
           Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS,
@@ -29,7 +29,7 @@ public class ElevatorIOSim implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorInputs inputs) {
     if (DriverStation.isDisabled()) {
-      // sim.setInputVoltage(0.0);
+      sim.setInputVoltage(0.0);
     }
     sim.update(0.02);
     inputs.outputVoltageLeft = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);

@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.LightStrip.Pattern.*;
+
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -13,11 +16,14 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
+import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -51,9 +57,13 @@ public class Robot extends LoggedRobot {
   public static Intake intake;
   public static Vision vision;
   public static SwerveSubsystem swerveDrive;
+  public static LightStrip lights;
   private Command autoCommand;
 
-  public static final CommandXboxController driver = new CommandXboxController(Constants.zero);
+  public static final CommandXboxController driver =
+      new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
+  public static final CommandXboxController operator =
+      new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
 
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
@@ -76,25 +86,41 @@ public class Robot extends LoggedRobot {
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    lights = new LightStrip();
     swerveDrive =
         isSimulation()
             ? new SwerveSubsystem(
                 new SwerveIOSim(),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSim(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSim(Constants.DriveConstants.backRight))
+                new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
+                new SwerveModuleIOSim(Constants.DriveConstants.FRONT_RIGHT),
+                new SwerveModuleIOSim(Constants.DriveConstants.BACK_LEFT),
+                new SwerveModuleIOSim(Constants.DriveConstants.BACK_RIGHT))
             : new SwerveSubsystem(
                 new SwerveIOPigeon2(),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.frontRight),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backLeft),
-                new SwerveModuleIOSparkMAX(Constants.DriveConstants.backRight));
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_LEFT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
+                new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
+
+    elevator.setDefaultCommand(
+        new InstantCommand(
+            () ->
+                elevator.setTargetHeight(
+                    MathUtil.clamp(
+                        elevator.getTargetHeight()
+                            + (MathUtil.applyDeadband(
+                                    -operator.getRightY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+                                / 10),
+                        0,
+                        50)),
+            elevator));
+
+    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
 
-    driver.y().onTrue(new InstantCommand(() -> {}));
+    // Driver Controls
     driver
         .povUp()
         .onTrue(
@@ -130,6 +156,117 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.HEADING_CONTROLLER;
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
                 }));
+
+    driver
+        .leftBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
+                FourBar.Commands.retract()));
+
+    driver
+        .rightTrigger(0.25)
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
+                    .until(() -> elevator.atTargetHeight()),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0),
+                FourBar.Commands.retract()));
+
+    driver
+        .rightBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(0),
+                FourBar.Commands.retract()));
+
+    driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
+
+    driver
+        .y()
+        .onTrue(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(100),
+                Intake.Commands.setWheelVelocityRPM(100)))
+        .onFalse(
+            new ParallelCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(0),
+                Intake.Commands.setWheelVelocityRPM(0),
+                FourBar.Commands.retract(),
+                LightStrip.Commands.setColorPattern(DarkGreen)));
+
+    // Operator Buttons
+    operator
+        .rightBumper()
+        .and(operator.y())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .rightBumper()
+        .and(operator.b())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .rightBumper()
+        .and(operator.a())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .leftBumper()
+        .and(operator.y())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .leftBumper()
+        .and(operator.b())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .leftBumper()
+        .and(operator.a())
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }

@@ -25,13 +25,13 @@ public class OneToAToThreeToBridge extends SequentialCommandGroup {
         new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
         new ParallelCommandGroup(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
-            Elevator.Commands.setToHeight(Constants.zero),
+            Elevator.Commands.setToHeight(Constants.ZERO),
             FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
         new ParallelCommandGroup(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_FIVE.getTrajectory()),
             Elevator.Commands.setToHeight(30),
             FourBar.Commands.setToAngle(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
-        Elevator.Commands.setToHeight(Constants.zero),
+        Elevator.Commands.setToHeight(Constants.ZERO),
         FourBar.Commands.setToAngle(Constants.FourBarConstants.MIN_ANGLE_RADIANS),
         new WaitUntilCommand(() -> Robot.elevator.atTargetHeight()),
         new GetOnBridge());

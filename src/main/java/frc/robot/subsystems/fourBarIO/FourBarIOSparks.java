@@ -36,10 +36,22 @@ public class FourBarIOSparks implements FourBarIO {
   @Override
   public void updateInputs(FourBarInputs inputs) {
     inputs.outputVoltage = MathUtil.clamp(fourBarOne.getOutputCurrent(), -12, 12);
-    inputs.angleDegrees = fourBarOne.getEncoder().getPosition();
-    inputs.velocityDegreesPerSecond = fourBarOne.getEncoder().getVelocity();
-    inputs.tempCelcius = fourBarOne.getMotorTemperature();
-    inputs.currentDrawAmps = fourBarOne.getOutputCurrent();
+
+    inputs.angleDegreesOne = fourBarOne.getEncoder().getPosition();
+    inputs.angleDegreesTwo = fourBarTwo.getEncoder().getPosition();
+    inputs.angleDegreesRange =
+        fourBarOne.getEncoder().getPosition() - fourBarTwo.getEncoder().getPosition();
+
+    inputs.velocityDegreesPerSecondOne = fourBarOne.getEncoder().getVelocity();
+    inputs.velocityDegreesPerSecondTwo = fourBarTwo.getEncoder().getVelocity();
+    inputs.velocityDegreesPerSecondRange =
+        fourBarOne.getEncoder().getVelocity() - fourBarTwo.getEncoder().getVelocity();
+
+    inputs.tempCelciusOne = fourBarOne.getMotorTemperature();
+    inputs.tempCelciusTwo = fourBarTwo.getMotorTemperature();
+
+    inputs.currentDrawOne = fourBarOne.getOutputCurrent();
+    inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
   }
 
   @Override
