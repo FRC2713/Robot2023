@@ -177,8 +177,7 @@ public class Robot extends LoggedRobot {
         .rightTrigger(0.25)
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
-                    .until(() -> elevator.atTargetHeight()),
+                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
@@ -194,7 +193,7 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(100),
                     Intake.Commands.setRollerVelocityRPM(100),
@@ -226,46 +225,46 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .and(operator.y())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .rightBumper()
         .and(operator.b())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.y())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.b())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.a())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
 
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
