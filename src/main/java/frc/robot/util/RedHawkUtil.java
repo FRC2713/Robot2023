@@ -44,18 +44,15 @@ public final class RedHawkUtil {
   }
 
   public static Translation2d getClosestGrid(double y) {
-    Translation2d closest =
-        Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
-            .sorted(
-                (a, b) ->
-                    Double.compare(
-                        a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
-                        b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
-            .findFirst()
-            .get()
-            .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
-
-    return RedHawkUtil.Reflections.reflectIfRed(closest);
+    return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+        .sorted(
+            (a, b) ->
+                Double.compare(
+                    a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
+                    b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+        .findFirst()
+        .get()
+        .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
   }
 
   public static int getClosestGridNumber(double y) {
@@ -69,6 +66,20 @@ public final class RedHawkUtil {
                             b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
                 .findFirst()
                 .get());
+  }
+
+  public static boolean isOnChargeStation(Translation2d location) {
+    // TODO: Get working on red alliance
+    double x = location.getX();
+    double y = location.getY();
+    return (x < FieldConstants.Community.chargingStationOuterX
+        && x > FieldConstants.Community.chargingStationInnerX
+        && y < FieldConstants.Community.chargingStationLeftY
+        && y > FieldConstants.Community.chargingStationRightY);
+  }
+
+  public static boolean isOnChargeStation(Pose2d location) {
+    return isOnChargeStation(Pose2dToTranslation2d(location));
   }
 
   public static class ErrHandler {
@@ -91,8 +102,8 @@ public final class RedHawkUtil {
     private List<String> errors = new ArrayList<>();
 
     /**
-     * Adds an error to the list of errors. Must be called on the singleton (see getInstance). Also
-     * logs.
+     * Adds an error to the list of errors. Must be called on the singleton (see {@code
+     * getInstance}). Also logs.
      */
     public void addError(@NonNull String error) {
       this.errors.add(error);
@@ -127,14 +138,18 @@ public final class RedHawkUtil {
   public static class Reflections {
     public static Translation2d reflectIfRed(Translation2d old) {
       if (DriverStation.getAlliance() == Alliance.Red) {
-        new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
+        return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
       }
       return old;
     }
 
+    public static double reflectIfRed(double x) {
+      return reflectIfRed(new Translation2d(x, 0)).getX();
+    }
+
     public static Rotation2d reflectIfRed(Rotation2d old) {
       if (DriverStation.getAlliance() == Alliance.Red) {
-        return Rotation2d.fromDegrees(-1 * old.getDegrees());
+        return old.minus(Rotation2d.fromDegrees(180));
       }
       return old;
     }

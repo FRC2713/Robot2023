@@ -4,7 +4,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -12,6 +11,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.RedHawkUtil;
+import frc.robot.util.Triple;
 import java.util.ArrayList;
 
 public class GoClosestGrid {
@@ -21,55 +21,15 @@ public class GoClosestGrid {
   public boolean hasSetTargetGrid = false;
   private ArrayList<PathPoint> points = new ArrayList<>();
 
-  private ArrayList<Pair<Double, PathPoint>> breakPointsTop = new ArrayList<>();
-  private ArrayList<Pair<Double, PathPoint>> breakPointsBottom = new ArrayList<>();
+  private ArrayList<Triple<Double, Double, PathPoint>> breakPointsTop = new ArrayList<>();
+  private ArrayList<Triple<Double, Double, PathPoint>> breakPointsBottom = new ArrayList<>();
 
-  private final Rotation2d heading =
-      RedHawkUtil.Reflections.reflectIfRed(Rotation2d.fromDegrees(180));
+  private Rotation2d heading = RedHawkUtil.Reflections.reflectIfRed(Rotation2d.fromDegrees(180));
   private final PathConstraints constraints =
       new PathConstraints(
           Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
 
   public GoClosestGrid() {
-    breakPointsTop.add(
-        new Pair<>(
-            FieldConstants.Community.chargingStationOuterX,
-            new PathPoint(
-                FieldConstants.Community.chargingStationCorners[3].plus(
-                    RedHawkUtil.Reflections.reflectIfRed(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
-    breakPointsTop.add(
-        new Pair<>(
-            FieldConstants.Community.chargingStationInnerX,
-            new PathPoint(
-                FieldConstants.Community.chargingStationCorners[1].plus(
-                    RedHawkUtil.Reflections.reflectIfRed(
-                        new Translation2d(
-                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
-
-    breakPointsBottom.add(
-        new Pair<>(
-            FieldConstants.Community.chargingStationOuterX,
-            new PathPoint(
-                FieldConstants.Community.chargingStationCorners[2].minus(
-                    new Translation2d(
-                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
-    breakPointsBottom.add(
-        new Pair<>(
-            FieldConstants.Community.chargingStationInnerX,
-            new PathPoint(
-                FieldConstants.Community.chargingStationCorners[0].minus(
-                    new Translation2d(
-                        0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
-                Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING)));
     timer = new Timer();
     timer.start();
     regenerateTrajectory();
@@ -80,7 +40,71 @@ public class GoClosestGrid {
   }
 
   public GoClosestGrid regenerateTrajectory() {
+    heading =
+        RedHawkUtil.Reflections.reflectIfRed(
+            Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING);
     points = new ArrayList<>();
+
+    breakPointsTop = new ArrayList<>();
+    breakPointsBottom = new ArrayList<>();
+
+    breakPointsTop.add(
+        new Triple<>(
+            FieldConstants.Community.chargingStationOuterX,
+            -1.0,
+            new PathPoint(
+                RedHawkUtil.Reflections.reflectIfRed(
+                    FieldConstants.Community.chargingStationCorners[3].plus(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
+                heading,
+                heading)));
+    breakPointsTop.add(
+        new Triple<>(
+            FieldConstants.Community.chargingStationInnerX,
+            -1.0,
+            new PathPoint(
+                RedHawkUtil.Reflections.reflectIfRed(
+                    FieldConstants.Community.chargingStationCorners[1].plus(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
+                heading,
+                heading)));
+    // TODO: Avoid ridge and foreign starting zone
+    // breakPointsTop.add(
+    // new Triple<>(
+    // -1.0,
+    // FieldConstants.Community.leftY,
+    // new PathPoint(
+    // RedHawkUtil.Reflections.reflectIfRed(
+    // FieldConstants.Community.chargingStationCorners[1].plus(
+    // new Translation2d(3, 3))),
+    // heading,
+    // heading)));
+
+    breakPointsBottom.add(
+        new Triple<>(
+            FieldConstants.Community.chargingStationOuterX,
+            -1.0,
+            new PathPoint(
+                RedHawkUtil.Reflections.reflectIfRed(
+                    FieldConstants.Community.chargingStationCorners[2].minus(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
+                heading,
+                heading)));
+
+    breakPointsBottom.add(
+        new Triple<>(
+            FieldConstants.Community.chargingStationInnerX,
+            0.0,
+            new PathPoint(
+                RedHawkUtil.Reflections.reflectIfRed(
+                    FieldConstants.Community.chargingStationCorners[0].minus(
+                        new Translation2d(
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
+                heading,
+                heading)));
 
     points.add(currentPosition());
 
@@ -90,10 +114,19 @@ public class GoClosestGrid {
         && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
       for (int i = 0; i < breakPointsTop.size(); i++) {
-        if (Robot.swerveDrive.getRegularPose().getX() > breakPointsTop.get(i).getFirst()) {
-          points.add(breakPointsTop.get(i).getSecond());
+        if ((Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst())
+            && (Robot.swerveDrive.getRegularPose().getY() > breakPointsBottom.get(i).getSecond())) {
+          points.add(breakPointsTop.get(i).getThird());
         }
       }
+      // Iterator<Triple<Double, Double, PathPoint>> iter = breakPointsTop.iterator();
+      // while (iter.hasNext()) {
+      // Triple<Double, Double, PathPoint> next = iter.next();
+      // if ((Robot.swerveDrive.getRegularPose().getX() > next.getFirst())
+      // && (Robot.swerveDrive.getRegularPose().getY() > next.getSecond())) {
+      // points.add(next.getThird());
+      // }
+      // }
     }
 
     // Bottom
@@ -103,7 +136,7 @@ public class GoClosestGrid {
             >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
       for (int i = 0; i < breakPointsBottom.size(); i++) {
         if (Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst()) {
-          points.add(breakPointsBottom.get(i).getSecond());
+          points.add(breakPointsBottom.get(i).getThird());
         }
       }
     }
@@ -156,8 +189,8 @@ public class GoClosestGrid {
           new PathPoint(
               RedHawkUtil.Reflections.reflectIfRed(
                   RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY())),
-              Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
-              Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING,
+              heading,
+              heading,
               2);
       targetGrid = closest;
       return closest;
