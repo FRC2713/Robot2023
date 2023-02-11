@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.SecretCode;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -56,6 +57,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
+  public static SecretCode code;
   public static SwerveSubsystem swerveDrive;
   public static LightStrip lights;
   private Command autoCommand;
@@ -86,6 +88,8 @@ public class Robot extends LoggedRobot {
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    code = new SecretCode();
+
     lights = new LightStrip();
     swerveDrive =
         isSimulation()
@@ -206,7 +210,7 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
 
-    driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
+    // driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
 
     driver
         .y()
@@ -263,6 +267,50 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+
+    driver
+        .povUp()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.upPress(), SecretCode.Commands.execute()));
+    driver
+        .povDown()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.downPress(), SecretCode.Commands.execute()));
+    driver
+        .povLeft()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.leftPress(), SecretCode.Commands.execute()));
+    driver
+        .povRight()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.rightPress(), SecretCode.Commands.execute()));
+    driver
+        .b()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.bPress(), SecretCode.Commands.execute()));
+    driver
+        .a()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.aPress(), SecretCode.Commands.execute()));
+
+    driver
+        .start()
+        .onTrue(
+            new SequentialCommandGroup(
+                SecretCode.Commands.enterPress(), SecretCode.Commands.execute()));
+
+    driver.y().onTrue(SecretCode.Commands.reset());
+    driver.x().onTrue(SecretCode.Commands.reset());
+    driver.leftBumper().onTrue(SecretCode.Commands.reset());
+    driver.leftTrigger().onTrue(SecretCode.Commands.reset());
+    driver.rightTrigger().onTrue(SecretCode.Commands.reset());
+    driver.rightBumper().onTrue(SecretCode.Commands.reset());
 
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));

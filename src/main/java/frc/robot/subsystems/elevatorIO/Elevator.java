@@ -21,6 +21,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorIO IO;
   private double targetHeight = 0.0;
   private final ElevatorFeedforward feedforward;
+  private int steps = 0;
 
   public Elevator(ElevatorIO IO) {
     this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
