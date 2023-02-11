@@ -13,6 +13,7 @@ import frc.robot.util.FieldConstants;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.Triple;
 import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class GoClosestGrid {
   private PathPlannerTrajectory traj;
@@ -114,8 +115,7 @@ public class GoClosestGrid {
         && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
       for (int i = 0; i < breakPointsTop.size(); i++) {
-        if ((Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst())
-            && (Robot.swerveDrive.getRegularPose().getY() > breakPointsBottom.get(i).getSecond())) {
+        if (inBounds(breakPointsBottom.get(i))) {
           points.add(breakPointsTop.get(i).getThird());
         }
       }
@@ -135,7 +135,7 @@ public class GoClosestGrid {
         && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
       for (int i = 0; i < breakPointsBottom.size(); i++) {
-        if (Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst()) {
+        if (inBounds(breakPointsBottom.get(i))) {
           points.add(breakPointsBottom.get(i).getThird());
         }
       }
@@ -174,6 +174,18 @@ public class GoClosestGrid {
   }
 
   public boolean hasElapsed() {
+    Logger.getInstance().recordOutput("OTF/Timer", timer.get());
+    Logger.getInstance()
+        .recordOutput(
+            "OTF/Closest Grid",
+            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY()));
+    Logger.getInstance()
+        .recordOutput(
+            "OTF/Is above charge station",
+            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+                    <= Constants.DriveConstants.FieldTunables.MAX_GO_TOP
+                && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+                    >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP);
     if (timer.hasElapsed(3)) {
       regenerateTrajectory();
       timer.reset();
@@ -205,5 +217,11 @@ public class GoClosestGrid {
         heading,
         Robot.swerveDrive.getRegularPose().getRotation(),
         Robot.swerveDrive.getAverageVelocity());
+  }
+
+  private boolean inBounds(Triple<Double, Double, PathPoint> triple) {
+    return RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getRegularPose().getX())
+            > triple.getFirst()
+        && (Robot.swerveDrive.getRegularPose().getY() > triple.getSecond());
   }
 }
