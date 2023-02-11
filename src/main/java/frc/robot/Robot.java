@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -15,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.OTF.AvoidBoudingBoxes;
 import frc.robot.commands.OTF.GoClosestGrid;
+import frc.robot.commands.OTF.boundingBoxes.RectangleBoudingBox;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -172,6 +176,16 @@ public class Robot extends LoggedRobot {
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
+
+    //
+    Logger.getInstance()
+        .recordOutput(
+            "IN BOUNDING BOX",
+            new AvoidBoudingBoxes(
+                    new RectangleBoudingBox(
+                        new Pose2d(0.88, 6.03, Rotation2d.fromDegrees(0)),
+                        new Pose2d(3.55, 5.07, Rotation2d.fromDegrees(0))))
+                .insideBoxWithPadding(swerveDrive.getRegularPose(), new Translation2d(1, 1)));
   }
 
   @Override
