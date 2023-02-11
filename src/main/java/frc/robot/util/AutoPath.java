@@ -35,7 +35,9 @@ public class AutoPath {
 
     private Autos(String filename) {
       this(
-          filename, Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
+          filename,
+          Constants.DriveConstants.MAX_SWERVE_VEL,
+          Constants.DriveConstants.MAX_SWERVE_ACCEL);
     }
 
     public PathPlannerTrajectory getTrajectory() {

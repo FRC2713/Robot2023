@@ -52,8 +52,12 @@ public class IntakeIOSparks implements IntakeIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
+  public void setVoltageWheels(double volts) {
     wheels.setVoltage(volts);
+  }
+
+  @Override
+  public void setVoltageRollers(double volts) {
     rollers.setVoltage(volts);
   }
 }

@@ -119,7 +119,6 @@ public class Vision extends SubsystemBase {
   //  public double[] getCamtran() {
   //    return inputs.camtran;
   // }
-
   public long getTid() {
     return inputs.tid;
   }

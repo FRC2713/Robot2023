@@ -13,10 +13,10 @@ public class SwerveHeadingController {
   private PIDFFController controller;
 
   private SwerveHeadingController() {
-    controller = new PIDFFController(DriveConstants.kHeadingControllerGains);
-    controller.setTolerance(DriveConstants.kHeadingControllerGains.tolerance.get());
+    controller = new PIDFFController(DriveConstants.K_HEADING_CONTROLLER_GAINS);
+    controller.setTolerance(DriveConstants.K_HEADING_CONTROLLER_GAINS.tolerance.get());
     controller.enableContinuousInput(0, 360);
-    setpoint = Robot.swerveDrive.getEstimatedPose().getRotation();
+    setpoint = Robot.swerveDrive.getUsablePose().getRotation();
   }
 
   /**
@@ -56,7 +56,7 @@ public class SwerveHeadingController {
    * @return The speed, in degrees per second, of rotation.
    */
   public double update() {
-    if (Constants.tuningMode) {
+    if (Constants.TUNING_MODE) {
       setSetpoint(
           Rotation2d.fromDegrees(
               SmartDashboard.getNumber(
@@ -72,7 +72,7 @@ public class SwerveHeadingController {
     Logger.getInstance().recordOutput("Heading Controller/setpoint", setpoint.getDegrees());
     double output = 0;
     if (!controller.atSetpoint()) {
-      Rotation2d currentHeading = Robot.swerveDrive.getEstimatedPose().getRotation();
+      Rotation2d currentHeading = Robot.swerveDrive.getUsablePose().getRotation();
       output = controller.calculate(currentHeading.getDegrees(), setpoint.getDegrees());
       Logger.getInstance()
           .recordOutput(

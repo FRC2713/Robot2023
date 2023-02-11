@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 
 /** wow. docs Add your docs here. */
 public class LightStrip extends SubsystemBase {
@@ -13,9 +16,10 @@ public class LightStrip extends SubsystemBase {
     blinkin = new Spark(RobotMap.BLINKIN_PORT);
   }
 
-  public void setColor(Pattern pattern) {
+  public void setColorPattern(Pattern pattern) {
     blinkin.set(pattern.getValue());
   }
+
   /*
   public void setAllianceColor(LightStrip strip) {
       DriverStation.Alliance alliance = DriverStation.getAlliance();
@@ -127,7 +131,9 @@ public class LightStrip extends SubsystemBase {
     SkyBlue(0.83),
     DarkBlue(0.85),
     Blue(0.87),
-    BlueViolet(0.89),
+    BluePurple(.89),
+    BlueViolet(.89),
+    Purple(0.91),
     Violet(0.91),
     White(0.93),
     Gray(0.95),
@@ -142,6 +148,20 @@ public class LightStrip extends SubsystemBase {
 
     public double getValue() {
       return this.value;
+    }
+  }
+
+  public static class Commands {
+    public static Command setColorPattern(Pattern pattern) {
+      return new InstantCommand(() -> Robot.lights.setColorPattern(pattern));
+    }
+    /*
+    public static Command setAllianceColor(){
+      return new InstantCommand(()-> )
+    }
+    */
+    public static Command defaultColorPattern() {
+      return new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.RainbowLava));
     }
   }
 }

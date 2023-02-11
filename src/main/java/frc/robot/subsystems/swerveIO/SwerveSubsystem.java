@@ -54,16 +54,16 @@ public class SwerveSubsystem extends SubsystemBase {
       SwerveModuleIO frontRight,
       SwerveModuleIO backLeft,
       SwerveModuleIO backRight) {
-    this.frontLeft = new SwerveModule(frontLeft, Constants.DriveConstants.frontLeft);
-    this.frontRight = new SwerveModule(frontRight, Constants.DriveConstants.frontRight);
-    this.backLeft = new SwerveModule(backLeft, Constants.DriveConstants.backLeft);
-    this.backRight = new SwerveModule(backRight, Constants.DriveConstants.backRight);
+    this.frontLeft = new SwerveModule(frontLeft, Constants.DriveConstants.FRONT_LEFT);
+    this.frontRight = new SwerveModule(frontRight, Constants.DriveConstants.FRONT_RIGHT);
+    this.backLeft = new SwerveModule(backLeft, Constants.DriveConstants.BACK_LEFT);
+    this.backRight = new SwerveModule(backRight, Constants.DriveConstants.BACK_RIGHT);
     io = swerveIO;
     io.updateInputs(inputs);
 
     odometry =
         new SwerveDriveOdometry(
-            DriveConstants.kinematics,
+            DriveConstants.KINEMATICS,
             Rotation2d.fromDegrees(inputs.gyroYawPosition),
             new SwerveModulePosition[] {
               this.frontLeft.getPosition(),
@@ -74,7 +74,7 @@ public class SwerveSubsystem extends SubsystemBase {
             new Pose2d());
     poseEstimator =
         new SwerveDrivePoseEstimator(
-            DriveConstants.kinematics,
+            DriveConstants.KINEMATICS,
             Rotation2d.fromDegrees(inputs.gyroYawPosition),
             new SwerveModulePosition[] {
               this.frontLeft.getPosition(),
@@ -129,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return The position of the robot on the field.
    */
-  public Pose2d getEstimatedPose() {
+  private Pose2d getEstimatedPose() {
     if (Robot.isReal()) {
       return poseEstimator.getEstimatedPosition();
     } else {
@@ -137,12 +137,27 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  public Pose2d getRegularPose() {
+  public Pose2d getUsablePose() {
+    if (Constants.ENABLE_VISION_POSE_ESTIMATION) {
+      return getEstimatedPose();
+    } else {
+      return getRegularPose();
+    }
+  }
+
+  private Pose2d getRegularPose() {
     if (Robot.isReal()) {
       return odometry.getPoseMeters();
     } else {
       return simOdometryPose;
     }
+  }
+
+  public double getTotalCurrentDraw() {
+    return frontLeft.getTotalCurrentDraw()
+        + frontRight.getTotalCurrentDraw()
+        + backLeft.getTotalCurrentDraw()
+        + backRight.getTotalCurrentDraw();
   }
 
   public void updateVisionPose(TimestampedDoubleArray array) {
@@ -220,7 +235,7 @@ public class SwerveSubsystem extends SubsystemBase {
             backLeft.getMeasuredState(),
             backRight.getMeasuredState()
           };
-      ChassisSpeeds speeds = Constants.DriveConstants.kinematics.toChassisSpeeds(measuredStates);
+      ChassisSpeeds speeds = Constants.DriveConstants.KINEMATICS.toChassisSpeeds(measuredStates);
       simOdometryPose =
           simOdometryPose.exp(
               new Twist2d(

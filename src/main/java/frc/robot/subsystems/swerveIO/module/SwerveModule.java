@@ -56,9 +56,22 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModulePosition(
         inputs.driveEncoderPositionMetres, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
   }
+
   // Only used to characterize the drive
   public double getVoltageAppliedForCharacterization() {
     return inputs.driveOutputVolts;
+  }
+
+  public double getAziCurrentDraw() {
+    return inputs.aziCurrentDrawAmps;
+  }
+
+  public double getDriveCurrentDraw() {
+    return inputs.driveCurrentDrawAmps;
+  }
+
+  public double getTotalCurrentDraw() {
+    return inputs.driveCurrentDrawAmps + inputs.aziCurrentDrawAmps;
   }
 
   // Only used to characterize the drive

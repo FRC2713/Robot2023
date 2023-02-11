@@ -24,7 +24,7 @@ public class PIDFFController extends PIDController {
 
   @Override
   public double calculate(double measurement) {
-    if (Constants.tuningMode) {
+    if (Constants.TUNING_MODE) {
       if (gains.hasChanged(this, feedforward)) {
         setP(gains.kP.get());
         setI(gains.kI.get());
