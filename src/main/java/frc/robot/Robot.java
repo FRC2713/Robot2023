@@ -17,9 +17,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
@@ -167,10 +164,11 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setRollerVelocityRPM(100),
                     FourBar.Commands.extend())))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
+                new WaitCommand(0.5),
                 Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
+                Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
 
     driver
@@ -183,8 +181,9 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setRollerVelocityRPM(100),
                     FourBar.Commands.extend())))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
+                new WaitCommand(0.5),
                 Intake.Commands.setWheelVelocityRPM(0),
                 Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
@@ -199,13 +198,17 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setRollerVelocityRPM(100),
                     FourBar.Commands.extend())))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
+                new WaitCommand(0.5),
                 Intake.Commands.setWheelVelocityRPM(0),
                 Intake.Commands.setRollerVelocityRPM(0),
                 FourBar.Commands.retract()));
 
-    driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
+    driver
+        .b()
+        .onTrue(FourBar.Commands.extend())
+        .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
 
     driver
         .y()
@@ -214,9 +217,10 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setRollerVelocityRPM(100),
                 Intake.Commands.setWheelVelocityRPM(100)))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Intake.Commands.setRollerVelocityRPM(0),
                 Intake.Commands.setWheelVelocityRPM(0),
+                new WaitCommand(0.5),
                 FourBar.Commands.retract(),
                 LightStrip.Commands.setColorPattern(DarkGreen)));
 
