@@ -34,6 +34,11 @@ public final class Constants {
   public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
 
   @UtilityClass
+  public final class LimeLightConstants {
+    public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
+  }
+
+  @UtilityClass
   public static final class RobotMap {
     public static final int PIGEON_CAN_ID = 20;
     public static final int SWERVE_CANID_1 = 1;
