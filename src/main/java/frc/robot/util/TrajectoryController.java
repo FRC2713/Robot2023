@@ -42,6 +42,12 @@ public class TrajectoryController {
     traj = newTrajectory;
 
     Logger.getInstance().recordOutput("Trajectory/Trajectory Obj", newTrajectory);
+    Logger.getInstance().recordOutput("Trajectory/Total time", newTrajectory.getTotalTimeSeconds());
+    Logger.getInstance()
+        .recordOutput(
+            "Trajectory/Ititial State Velocity",
+            newTrajectory.getInitialState().velocityMetersPerSecond);
+
     timer.reset();
     timer.stop();
   }

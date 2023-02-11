@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPoint;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 // liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -11,6 +13,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
 
@@ -59,8 +62,6 @@ public final class Constants {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
   }
-
-  public static final class FieldConstants {}
 
   @UtilityClass
   public static class ElevatorConstants {
@@ -143,6 +144,52 @@ public final class Constants {
 
   @UtilityClass
   public static final class DriveConstants {
+
+    @UtilityClass
+    public static class FieldTunables {
+      // OTF Trajctory Generation (go over or under Charge Station)
+      public static final double MIN_GO_TOP = 4;
+      public static final double MAX_GO_TOP = 6;
+      public static final double MAX_GO_BOTTOM = MIN_GO_TOP - 1;
+      public static final double MIN_GO_BOTTOM = 2;
+      public static final double TIME_BETWEEN_REGERATION_SECONDS = 3;
+
+      public static final double CHARGE_STATION_OFFSET = 0.6;
+
+      public static final double GRID_OFFSET = 0.7;
+
+      public static final Rotation2d CLOSEST_GRID_HEADING = Rotation2d.fromDegrees(180);
+
+      public static final PathPoint GRID_CORNERS_FOR_SWERVE[] = {
+        // Top Left
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[1].plus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+        // Top Right
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[3].plus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+
+        // Bottom Left
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[0].minus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+
+        // Bottom Right
+        new PathPoint(
+            FieldConstants.Community.chargingStationCorners[2].minus(
+                new Translation2d(0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET)),
+            CLOSEST_GRID_HEADING,
+            CLOSEST_GRID_HEADING),
+      };
+    }
+
     public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
     public static final double WHEEL_DIAMETER = 4;
     public static final double GEAR_RATIO = 6.12;
@@ -151,7 +198,7 @@ public final class Constants {
 
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.75);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(0.5);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
     public static final int CURRENT_LIMIT = 65;

@@ -20,8 +20,9 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -45,6 +46,7 @@ import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
+import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -57,6 +59,7 @@ public class Robot extends LoggedRobot {
   public static Intake intake;
   public static Vision vision;
   public static SwerveSubsystem swerveDrive;
+  public GoClosestGrid goClosestGrid;
   public static LightStrip lights;
   private Command autoCommand;
 
@@ -87,6 +90,7 @@ public class Robot extends LoggedRobot {
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
+
     swerveDrive =
         isSimulation()
             ? new SwerveSubsystem(
@@ -109,7 +113,8 @@ public class Robot extends LoggedRobot {
                     MathUtil.clamp(
                         elevator.getTargetHeight()
                             + (MathUtil.applyDeadband(
-                                    -operator.getRightY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+                                    -operator.getRightY(),
+                                    Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
                                 / 10),
                         0,
                         50)),
@@ -119,6 +124,7 @@ public class Robot extends LoggedRobot {
 
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
+    goClosestGrid = new GoClosestGrid();
 
     // Driver Controls
     driver
@@ -155,6 +161,31 @@ public class Robot extends LoggedRobot {
                 () -> {
                   motionMode = MotionMode.HEADING_CONTROLLER;
                   SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+                }));
+
+    driver
+        .x()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.TRAJECTORY;
+                  goClosestGrid.changingPath();
+                  goClosestGrid.regenerateTrajectory();
+                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+                }))
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      if (goClosestGrid.hasElapsed()) {
+                        TrajectoryController.getInstance()
+                            .changePath(goClosestGrid.getTrajectory());
+                      }
+                    })))
+        .onFalse(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
                 }));
 
     driver
