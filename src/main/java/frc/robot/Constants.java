@@ -26,11 +26,11 @@ import lombok.experimental.UtilityClass;
 public final class Constants {
 
   public static final boolean TUNING_MODE = false;
-  public static final int ZERO = 0; // in case you need a zero :)
+  public static final int zero = 0; // in case you need a zero :)
   public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
-  public static final double DOUBLE_PLACEHOLDER = 0;
-  public static final int INT_PLACEHOLDER = 0;
+  public static final double DOUBLE_PLACEHOLDER = zero;
+  public static final int INT_PLACEHOLDER = zero;
   public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
 
   @UtilityClass
@@ -56,7 +56,7 @@ public final class Constants {
 
     public static final int BLINKIN_PORT = 1;
 
-    public static final int DRIVER_PORT = 0;
+    public static final int DRIVER_PORT = zero;
     public static final int OPERATOR_PORT = 1;
   }
 
@@ -88,7 +88,7 @@ public final class Constants {
 
     public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
 
-    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = 0;
+    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = zero;
 
     public static final double ELEVATOR_CONE_FLOOR_UP_INTAKE = 12;
   }
@@ -107,7 +107,7 @@ public final class Constants {
     public static final int FOUR_BAR_CURRENT_LIMIT = 50;
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.4).kI(0.0).kD(0.0).kG(0.001).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.4).kI(zero).kD(zero).kG(0.001).build();
   }
 
   @UtilityClass
@@ -188,7 +188,7 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(0).build();
+        PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(zero).build();
 
     public static final ModuleInfo FRONT_LEFT =
         ModuleInfo.builder()
@@ -197,7 +197,7 @@ public final class Constants {
             .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
             .driveCANId(1)
             .aziCANId(8)
-            .aziEncoderCANId(ZERO)
+            .aziEncoderCANId(zero)
             .offset(0.1124)
             .location(FRONT_LEFT_LOCATION)
             .build();

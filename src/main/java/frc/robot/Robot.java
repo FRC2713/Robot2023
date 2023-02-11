@@ -108,7 +108,7 @@ public class Robot extends LoggedRobot {
                             + (MathUtil.applyDeadband(
                                     -operator.getRightY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
                                 / 10),
-                        0,
+                        Constants.zero,
                         50)),
             elevator));
 
@@ -167,8 +167,8 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
     driver
@@ -184,8 +184,8 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
     driver
@@ -201,8 +201,8 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
     driver
@@ -218,8 +218,8 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setWheelVelocityRPM(100)))
         .onFalse(
             new SequentialCommandGroup(
-                Intake.Commands.setRollerVelocityRPM(0),
-                Intake.Commands.setWheelVelocityRPM(0),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
                 new WaitCommand(0.5),
                 FourBar.Commands.retract(),
                 LightStrip.Commands.setColorPattern(DarkGreen)));
@@ -339,7 +339,7 @@ public class Robot extends LoggedRobot {
   public void teleopPeriodic() {
     TimestampedDoubleArray[] queue = visionPose.readQueue();
 
-    if (queue.length > 0) {
+    if (queue.length > Constants.zero) {
       TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
       swerveDrive.updateVisionPose(lastCameraReading);
     }

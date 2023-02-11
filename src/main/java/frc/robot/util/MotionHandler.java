@@ -101,10 +101,10 @@ public class MotionHandler {
   public static SwerveModuleState[] lockdown() {
     SwerveModuleState[] swerveModuleStates =
         new SwerveModuleState[] {
-          new SwerveModuleState(Constants.ZERO, Rotation2d.fromDegrees(45)),
-          new SwerveModuleState(Constants.ZERO, Rotation2d.fromDegrees(-45)),
-          new SwerveModuleState(Constants.ZERO, Rotation2d.fromDegrees(-45)),
-          new SwerveModuleState(Constants.ZERO, Rotation2d.fromDegrees(45))
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(Constants.zero, Rotation2d.fromDegrees(45))
         };
 
     return swerveModuleStates;
