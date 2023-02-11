@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,18 +12,18 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.RedHawkUtil;
-import frc.robot.util.Triple;
 import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class GoClosestGrid {
   private PathPlannerTrajectory traj;
   private final Timer timer;
   private PathPoint targetGrid;
-  public boolean hasSetTargetGrid = false;
+  private boolean hasSetTargetGrid = false;
   private ArrayList<PathPoint> points = new ArrayList<>();
 
-  private ArrayList<Triple<Double, Double, PathPoint>> breakPointsTop = new ArrayList<>();
-  private ArrayList<Triple<Double, Double, PathPoint>> breakPointsBottom = new ArrayList<>();
+  private ArrayList<Pair<Double, PathPoint>> breakPointsTop = new ArrayList<>();
+  private ArrayList<Pair<Double, PathPoint>> breakPointsBottom = new ArrayList<>();
 
   private Rotation2d heading = RedHawkUtil.Reflections.reflectIfRed(Rotation2d.fromDegrees(180));
   private final PathConstraints constraints =
@@ -48,10 +49,10 @@ public class GoClosestGrid {
     breakPointsTop = new ArrayList<>();
     breakPointsBottom = new ArrayList<>();
 
+    // TODO: Avoid ridge and foreign starting zone
     breakPointsTop.add(
-        new Triple<>(
+        new Pair<>(
             FieldConstants.Community.chargingStationOuterX,
-            -1.0,
             new PathPoint(
                 RedHawkUtil.Reflections.reflectIfRed(
                     FieldConstants.Community.chargingStationCorners[3].plus(
@@ -60,9 +61,8 @@ public class GoClosestGrid {
                 heading,
                 heading)));
     breakPointsTop.add(
-        new Triple<>(
+        new Pair<>(
             FieldConstants.Community.chargingStationInnerX,
-            -1.0,
             new PathPoint(
                 RedHawkUtil.Reflections.reflectIfRed(
                     FieldConstants.Community.chargingStationCorners[1].plus(
@@ -70,22 +70,10 @@ public class GoClosestGrid {
                             0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
                 heading,
                 heading)));
-    // TODO: Avoid ridge and foreign starting zone
-    // breakPointsTop.add(
-    // new Triple<>(
-    // -1.0,
-    // FieldConstants.Community.leftY,
-    // new PathPoint(
-    // RedHawkUtil.Reflections.reflectIfRed(
-    // FieldConstants.Community.chargingStationCorners[1].plus(
-    // new Translation2d(3, 3))),
-    // heading,
-    // heading)));
 
     breakPointsBottom.add(
-        new Triple<>(
+        new Pair<>(
             FieldConstants.Community.chargingStationOuterX,
-            -1.0,
             new PathPoint(
                 RedHawkUtil.Reflections.reflectIfRed(
                     FieldConstants.Community.chargingStationCorners[2].minus(
@@ -95,9 +83,8 @@ public class GoClosestGrid {
                 heading)));
 
     breakPointsBottom.add(
-        new Triple<>(
+        new Pair<>(
             FieldConstants.Community.chargingStationInnerX,
-            0.0,
             new PathPoint(
                 RedHawkUtil.Reflections.reflectIfRed(
                     FieldConstants.Community.chargingStationCorners[0].minus(
@@ -114,19 +101,11 @@ public class GoClosestGrid {
         && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
       for (int i = 0; i < breakPointsTop.size(); i++) {
-        if ((Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst())
-            && (Robot.swerveDrive.getRegularPose().getY() > breakPointsBottom.get(i).getSecond())) {
-          points.add(breakPointsTop.get(i).getThird());
+        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getRegularPose().getX())
+            > breakPointsTop.get(i).getFirst())) {
+          points.add(breakPointsTop.get(i).getSecond());
         }
       }
-      // Iterator<Triple<Double, Double, PathPoint>> iter = breakPointsTop.iterator();
-      // while (iter.hasNext()) {
-      // Triple<Double, Double, PathPoint> next = iter.next();
-      // if ((Robot.swerveDrive.getRegularPose().getX() > next.getFirst())
-      // && (Robot.swerveDrive.getRegularPose().getY() > next.getSecond())) {
-      // points.add(next.getThird());
-      // }
-      // }
     }
 
     // Bottom
@@ -135,8 +114,9 @@ public class GoClosestGrid {
         && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
       for (int i = 0; i < breakPointsBottom.size(); i++) {
-        if (Robot.swerveDrive.getRegularPose().getX() > breakPointsBottom.get(i).getFirst()) {
-          points.add(breakPointsBottom.get(i).getThird());
+        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getRegularPose().getX())
+            > breakPointsBottom.get(i).getFirst())) {
+          points.add(breakPointsBottom.get(i).getSecond());
         }
       }
     }
@@ -145,36 +125,19 @@ public class GoClosestGrid {
 
     traj = PathPlanner.generatePath(constraints, points);
     return this;
-    /*
-     *
-     * ArrayList<PathPoint> points = new ArrayList<>();
-     *
-     * final breakpointsUper = [
-     * (topRightCornerBridge, new Pose(a, b)),
-     * (topLeftCornerBridge, new Pose(c, d)),
-     * (someOtherPoint, new Pose(e, f))
-     * ]
-     * final breakpointsLower = [ ... ]
-     *
-     * breakpointsToUse = shouldGoUp() ? breakpointsUpper : breakpointsLower;
-     * points.add(currentPose())
-     * for each breakpoint in breakpoints {
-     * if robot to the right of breakpoint.getFirst() {
-     * points.add(breakpoint.getSecond())
-     * }
-     * }
-     * points.add(finishingPose)
-     *
-     * traj = ...
-     *
-     *
-     *
-     *
-     */
   }
 
   public boolean hasElapsed() {
-    if (timer.hasElapsed(3)) {
+    Logger.getInstance().recordOutput("OTF/Timer", timer.get());
+    Logger.getInstance()
+        .recordOutput(
+            "OTF/Closest Grid",
+            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY()));
+    Logger.getInstance()
+        .recordOutput(
+            "OTF/Time to regeneration",
+            (Constants.DriveConstants.FieldTunables.TIME_BETWEEN_REGERATION_SECONDS - timer.get()));
+    if (timer.hasElapsed(Constants.DriveConstants.FieldTunables.TIME_BETWEEN_REGERATION_SECONDS)) {
       regenerateTrajectory();
       timer.reset();
       timer.start();
@@ -193,6 +156,7 @@ public class GoClosestGrid {
               heading,
               2);
       targetGrid = closest;
+      hasSetTargetGrid = true;
       return closest;
     } else {
       return targetGrid;
@@ -205,5 +169,9 @@ public class GoClosestGrid {
         heading,
         Robot.swerveDrive.getRegularPose().getRotation(),
         Robot.swerveDrive.getAverageVelocity());
+  }
+
+  public void changingPath() {
+    hasSetTargetGrid = false;
   }
 }

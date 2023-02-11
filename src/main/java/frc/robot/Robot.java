@@ -141,9 +141,8 @@ public class Robot extends LoggedRobot {
             new InstantCommand(
                 () -> {
                   motionMode = MotionMode.TRAJECTORY;
-                  goClosestGrid.hasSetTargetGrid = false;
+                  goClosestGrid.changingPath();
                   goClosestGrid.regenerateTrajectory();
-                  goClosestGrid.hasSetTargetGrid = true;
                   TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
                 }))
         .whileTrue(
@@ -154,14 +153,12 @@ public class Robot extends LoggedRobot {
                         TrajectoryController.getInstance()
                             .changePath(goClosestGrid.getTrajectory());
                       }
-                    },
-                    swerveDrive)))
+                    })))
         .onFalse(
             new InstantCommand(
                 () -> {
                   motionMode = MotionMode.FULL_DRIVE;
-                },
-                swerveDrive));
+                }));
   }
 
   @Override
