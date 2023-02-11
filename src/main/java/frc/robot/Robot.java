@@ -113,7 +113,8 @@ public class Robot extends LoggedRobot {
                     MathUtil.clamp(
                         elevator.getTargetHeight()
                             + (MathUtil.applyDeadband(
-                                    -operator.getRightY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+                                    -operator.getRightY(),
+                                    Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
                                 / 10),
                         0,
                         50)),
@@ -124,7 +125,7 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     autoCommand = new OneToAToThreeToBridge();
     goClosestGrid = new GoClosestGrid();
-    
+
     // Driver Controls
     driver
         .povUp()
@@ -187,7 +188,7 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.FULL_DRIVE;
                 }));
 
-driver.
+    driver
         .leftBumper()
         .onTrue(
             new SequentialCommandGroup(

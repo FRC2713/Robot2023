@@ -198,7 +198,7 @@ public final class Constants {
 
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.75);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(0.5);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
     public static final int CURRENT_LIMIT = 65;

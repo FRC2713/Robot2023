@@ -28,7 +28,7 @@ public class GoClosestGrid {
   private Rotation2d heading = RedHawkUtil.Reflections.reflectIfRed(Rotation2d.fromDegrees(180));
   private final PathConstraints constraints =
       new PathConstraints(
-          Constants.DriveConstants.maxSwerveVel, Constants.DriveConstants.maxSwerveAccel);
+          Constants.DriveConstants.MAX_SWERVE_VEL, Constants.DriveConstants.MAX_SWERVE_ACCEL);
 
   public GoClosestGrid() {
     timer = new Timer();
@@ -96,12 +96,12 @@ public class GoClosestGrid {
     points.add(currentPosition());
 
     // Top
-    if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+    if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY())
             <= Constants.DriveConstants.FieldTunables.MAX_GO_TOP
-        && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+        && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_TOP) {
       for (int i = 0; i < breakPointsTop.size(); i++) {
-        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getRegularPose().getX())
+        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getUsablePose().getX())
             > breakPointsTop.get(i).getFirst())) {
           points.add(breakPointsTop.get(i).getSecond());
         }
@@ -109,12 +109,12 @@ public class GoClosestGrid {
     }
 
     // Bottom
-    else if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+    else if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY())
             <= Constants.DriveConstants.FieldTunables.MAX_GO_BOTTOM
-        && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY())
+        && RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY())
             >= Constants.DriveConstants.FieldTunables.MIN_GO_BOTTOM) {
       for (int i = 0; i < breakPointsBottom.size(); i++) {
-        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getRegularPose().getX())
+        if ((RedHawkUtil.Reflections.reflectIfRed(Robot.swerveDrive.getUsablePose().getX())
             > breakPointsBottom.get(i).getFirst())) {
           points.add(breakPointsBottom.get(i).getSecond());
         }
@@ -132,7 +132,7 @@ public class GoClosestGrid {
     Logger.getInstance()
         .recordOutput(
             "OTF/Closest Grid",
-            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getRegularPose().getY()));
+            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY()));
     Logger.getInstance()
         .recordOutput(
             "OTF/Time to regeneration",
@@ -151,7 +151,7 @@ public class GoClosestGrid {
       PathPoint closest =
           new PathPoint(
               RedHawkUtil.Reflections.reflectIfRed(
-                  RedHawkUtil.getClosestGrid(Robot.swerveDrive.getRegularPose().getY())),
+                  RedHawkUtil.getClosestGrid(Robot.swerveDrive.getUsablePose().getY())),
               heading,
               heading,
               2);
@@ -165,9 +165,9 @@ public class GoClosestGrid {
 
   private PathPoint currentPosition() {
     return new PathPoint(
-        RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getRegularPose()),
+        RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getUsablePose()),
         heading,
-        Robot.swerveDrive.getRegularPose().getRotation(),
+        Robot.swerveDrive.getUsablePose().getRotation(),
         Robot.swerveDrive.getAverageVelocity());
   }
 

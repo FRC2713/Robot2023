@@ -48,8 +48,8 @@ public final class RedHawkUtil {
         .sorted(
             (a, b) ->
                 Double.compare(
-                    a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
-                    b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+                    a.getDistance(Robot.swerveDrive.getUsablePose().getTranslation()),
+                    b.getDistance(Robot.swerveDrive.getUsablePose().getTranslation())))
         .findFirst()
         .get()
         .plus(new Translation2d(Constants.DriveConstants.FieldTunables.GRID_OFFSET, 0));
@@ -62,8 +62,8 @@ public final class RedHawkUtil {
                 .sorted(
                     (a, b) ->
                         Double.compare(
-                            a.getDistance(Robot.swerveDrive.getRegularPose().getTranslation()),
-                            b.getDistance(Robot.swerveDrive.getRegularPose().getTranslation())))
+                            a.getDistance(Robot.swerveDrive.getUsablePose().getTranslation()),
+                            b.getDistance(Robot.swerveDrive.getUsablePose().getTranslation())))
                 .findFirst()
                 .get());
   }
