@@ -49,7 +49,9 @@ import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
   private static MechanismManager mechManager;
@@ -82,6 +84,9 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+    if (isReal()) {
+      Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda2"));
+    }
 
     Logger.getInstance().start();
 
