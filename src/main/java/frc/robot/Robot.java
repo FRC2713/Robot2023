@@ -49,6 +49,7 @@ import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
@@ -67,6 +68,9 @@ public class Robot extends LoggedRobot {
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
   public static final CommandXboxController operator =
       new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
+
+  private final LoggedDashboardChooser<Command> autoChooser =
+      new LoggedDashboardChooser<>("Autonomous Routine");
 
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
