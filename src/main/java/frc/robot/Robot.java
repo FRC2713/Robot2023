@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.OTF.GoClosestGrid;
-import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
+import frc.robot.commands.fullRoutines.TwoCargoOver;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -123,7 +123,7 @@ public class Robot extends LoggedRobot {
     // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
-    autoCommand = new OneToAToThreeToBridge();
+    autoCommand = new TwoCargoOver();
     goClosestGrid = new GoClosestGrid();
 
     // Driver Controls
