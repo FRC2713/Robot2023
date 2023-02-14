@@ -52,7 +52,10 @@ import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
   private static MechanismManager mechManager;
@@ -71,6 +74,9 @@ public class Robot extends LoggedRobot {
   public static final CommandXboxController operator =
       new CommandXboxController(Constants.RobotMap.OPERATOR_PORT);
 
+  private final LoggedDashboardChooser<Command> autoChooser =
+      new LoggedDashboardChooser<>("Autonomous Routine");
+
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
 
@@ -85,6 +91,9 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
+    if (isReal()) {
+      Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda2"));
+    }
 
     Logger.getInstance().start();
 
@@ -119,7 +128,7 @@ public class Robot extends LoggedRobot {
                                     -operator.getRightY(),
                                     Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
                                 / 10),
-                        0,
+                        Constants.zero,
                         50)),
             elevator));
 
@@ -262,31 +271,15 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setRollerVelocityRPM(100),
                     FourBar.Commands.extend())))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0), // Intake.Commands.intakeWheelsOff();
+                new WaitCommand(0.5),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
     driver
         .rightTrigger(0.25)
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeFloorUpIntakeAndWait()
-                    .until(() -> elevator.atTargetHeight()),
-                new ParallelCommandGroup(
-                    Intake.Commands.setWheelVelocityRPM(100),
-                    Intake.Commands.setRollerVelocityRPM(100),
-                    FourBar.Commands.extend())))
-        .onFalse(
-            new ParallelCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0),
-                FourBar.Commands.retract()));
-
-    driver
-        .rightBumper()
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeFloorTippedIntakeAndWait(),
@@ -295,13 +288,34 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setRollerVelocityRPM(100),
                     FourBar.Commands.extend())))
         .onFalse(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setWheelVelocityRPM(0),
-                Intake.Commands.setRollerVelocityRPM(0),
+                new WaitCommand(0.5),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
-    driver.b().onTrue(FourBar.Commands.extend()).onFalse(FourBar.Commands.retract());
+    driver
+        .rightBumper()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
+                new ParallelCommandGroup(
+                    Intake.Commands.setWheelVelocityRPM(100),
+                    Intake.Commands.setRollerVelocityRPM(100),
+                    FourBar.Commands.extend())))
+        .onFalse(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                new WaitCommand(0.5),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                FourBar.Commands.retract()));
+
+    driver
+        .b()
+        .onTrue(FourBar.Commands.extend())
+        .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
 
     driver
         .y()
@@ -310,9 +324,10 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setRollerVelocityRPM(100),
                 Intake.Commands.setWheelVelocityRPM(100)))
         .onFalse(
-            new ParallelCommandGroup(
-                Intake.Commands.setRollerVelocityRPM(0),
-                Intake.Commands.setWheelVelocityRPM(0),
+            new SequentialCommandGroup(
+                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                new WaitCommand(0.5),
                 FourBar.Commands.retract(),
                 LightStrip.Commands.setColorPattern(DarkGreen)));
 
@@ -321,46 +336,46 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .and(operator.y())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .rightBumper()
         .and(operator.b())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.y())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.b())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.a())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
 
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
@@ -431,7 +446,7 @@ public class Robot extends LoggedRobot {
   public void teleopPeriodic() {
     TimestampedDoubleArray[] queue = visionPose.readQueue();
 
-    if (queue.length > 0) {
+    if (queue.length > Constants.zero) {
       TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
       swerveDrive.updateVisionPose(lastCameraReading);
     }
