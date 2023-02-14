@@ -37,8 +37,8 @@ public class FourBar extends SubsystemBase {
 
   public void setAngleDeg(double targetDegs) {
     double rads = Units.degreesToRadians(targetDegs);
-    if (rads < Constants.FourBarConstants.MIN_ANGLE_RADIANS
-        || rads > Constants.FourBarConstants.MAX_ANGLE_RADIANS) {
+    if (rads < Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS
+        || rads > Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS) {
       RedHawkUtil.ErrHandler.getInstance().addError("4Bar: Set to degress out of limits range!");
     }
     this.targetDegs = targetDegs;
@@ -63,22 +63,22 @@ public class FourBar extends SubsystemBase {
     effort = MathUtil.clamp(effort, -12, 12);
 
     if ((inputs.angleDegreesOne
-        > Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS))) {
+        > Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS))) {
       effort =
           MathUtil.clamp(
               controller.calculate(
                   inputs.angleDegreesOne,
-                  Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS)),
+                  Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS)),
               -0.5,
               0.5);
       RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MAX LIMITS!");
     } else if (inputs.angleDegreesOne
-        < Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)) {
+        < Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS)) {
       effort =
           MathUtil.clamp(
               controller.calculate(
                   inputs.angleDegreesOne,
-                  Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS)),
+                  Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS)),
               -0.5,
               0.5);
       RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MIN LIMITS!");
@@ -105,11 +105,15 @@ public class FourBar extends SubsystemBase {
     }
 
     public static Command retract() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MAX_ANGLE_RADIANS));
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.IDLE_ANGLE_RADIANS));
+    }
+
+    public static Command retractFully() {
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
     }
 
     public static Command extend() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.MIN_ANGLE_RADIANS));
+      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS));
     }
   }
 }

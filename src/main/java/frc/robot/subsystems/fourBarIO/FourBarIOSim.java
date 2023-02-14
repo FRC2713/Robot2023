@@ -15,8 +15,8 @@ public class FourBarIOSim implements FourBarIO {
           SingleJointedArmSim.estimateMOI(
               Constants.FourBarConstants.LENGTH_METRES, Constants.FourBarConstants.MASS_KG),
           Constants.FourBarConstants.LENGTH_METRES,
-          Constants.FourBarConstants.MIN_ANGLE_RADIANS,
-          Constants.FourBarConstants.MAX_ANGLE_RADIANS,
+          Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS,
+          Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS,
           true);
 
   @Override
