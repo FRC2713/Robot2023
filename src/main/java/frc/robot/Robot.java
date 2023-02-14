@@ -9,6 +9,8 @@ import static frc.robot.subsystems.LightStrip.Pattern.*;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -42,6 +44,7 @@ import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil.ErrHandler;
@@ -136,41 +139,102 @@ public class Robot extends LoggedRobot {
     goClosestGrid = new GoClosestGrid();
 
     // Driver Controls
-    driver
-        .povUp()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
-                }));
+    if (Constants.DEBUG_MODE == DebugMode.MATCH) {
+      driver
+          .povUp()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.HEADING_CONTROLLER;
+                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+                  }));
 
-    driver
-        .povLeft()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
-                }));
+      driver
+          .povLeft()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.HEADING_CONTROLLER;
+                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+                  }));
 
-    driver
-        .povDown()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
-                }));
+      driver
+          .povDown()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.HEADING_CONTROLLER;
+                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+                  }));
 
-    driver
-        .povRight()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.HEADING_CONTROLLER;
-                  SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
-                }));
+      driver
+          .povRight()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.HEADING_CONTROLLER;
+                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+                  }));
+    } else if (Constants.DEBUG_MODE == DebugMode.TUNE_MODULES) {
+      driver
+          .povUp()
+          .whileTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.NULL;
+                    swerveDrive.setModuleStates(
+                        new SwerveModuleState[] {
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(0)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(0)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(0)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(0))
+                        });
+                  },
+                  swerveDrive))
+          .onFalse(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.FULL_DRIVE;
+                  },
+                  swerveDrive));
+      driver
+          .povDown()
+          .whileTrue(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.NULL;
+                    swerveDrive.setModuleStates(
+                        new SwerveModuleState[] {
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(180)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(180)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(180)),
+                          new SwerveModuleState(
+                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(180))
+                        });
+                  },
+                  swerveDrive))
+          .onFalse(
+              new InstantCommand(
+                  () -> {
+                    motionMode = MotionMode.FULL_DRIVE;
+                  },
+                  swerveDrive));
+    }
 
     driver
         .x()

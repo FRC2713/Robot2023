@@ -13,6 +13,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
+import frc.robot.util.DebugMode;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.PIDFFGains;
 import lombok.experimental.UtilityClass;
@@ -29,12 +30,14 @@ import lombok.experimental.UtilityClass;
 public final class Constants {
 
   public static final boolean TUNING_MODE = false;
+  public static final DebugMode DEBUG_MODE = DebugMode.TUNE_MODULES;
   public static final int zero = 0; // in case you need a zero :)
   public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
   public static final double DOUBLE_PLACEHOLDER = zero;
   public static final int INT_PLACEHOLDER = zero;
   public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
+  public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
 
   @UtilityClass
   public static final class RobotMap {
