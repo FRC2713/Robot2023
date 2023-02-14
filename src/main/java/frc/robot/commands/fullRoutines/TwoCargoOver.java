@@ -13,14 +13,15 @@ import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 
-public class OneToAToThreeToBridge extends SequentialCommandGroup {
-  public OneToAToThreeToBridge() {
+public class TwoCargoOver extends SequentialCommandGroup {
+  public TwoCargoOver() {
     addCommands(
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
                   Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
             }),
+        FourBar.Commands.retract(),
         Elevator.Commands.setTargetHeightAndWait(
             Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE),
         FourBar.Commands.extend(),
