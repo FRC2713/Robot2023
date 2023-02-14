@@ -237,31 +237,6 @@ public class Robot extends LoggedRobot {
     }
 
     driver
-        .x()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.TRAJECTORY;
-                  goClosestGrid.changingPath();
-                  goClosestGrid.regenerateTrajectory();
-                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
-                }))
-        .whileTrue(
-            new RepeatCommand(
-                new InstantCommand(
-                    () -> {
-                      if (goClosestGrid.hasElapsed()) {
-                        TrajectoryController.getInstance()
-                            .changePath(goClosestGrid.getTrajectory());
-                      }
-                    })))
-        .onFalse(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
-
-    driver
         .leftBumper()
         .onTrue(
             new SequentialCommandGroup(
@@ -316,6 +291,29 @@ public class Robot extends LoggedRobot {
         .b()
         .onTrue(FourBar.Commands.extend())
         .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
+
+    driver
+        .a()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.TRAJECTORY;
+                  goClosestGrid.changingPath();
+                  goClosestGrid.regenerateTrajectory();
+                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+                }))
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      if (goClosestGrid.hasElapsed()) {
+                        TrajectoryController.getInstance()
+                            .changePath(goClosestGrid.getTrajectory());
+                      }
+                    })))
+        .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
+
+    driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
 
     driver
         .y()
@@ -445,6 +443,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if (driver.getRightX() > 0.5) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
 
     if (queue.length > Constants.zero) {
       TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
