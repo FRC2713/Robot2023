@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,6 +42,7 @@ import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
@@ -166,6 +169,25 @@ public class Robot extends LoggedRobot {
                   motionMode = MotionMode.FULL_DRIVE;
                 },
                 swerveDrive));
+
+    driver
+        .leftBumper()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.TRAJECTORY;
+                  TrajectoryController.getInstance()
+                      .changePath(
+                          PathPlanner.generatePath(
+                              new PathConstraints(3, 4),
+                              new AvoidBoudingBoxes(
+                                      new RectangleBoudingBox(
+                                          new Pose2d(0.88, 6.03, Rotation2d.fromDegrees(0)),
+                                          new Pose2d(3.55, 5.07, Rotation2d.fromDegrees(0))))
+                                  .generateTrajectories(
+                                      RedHawkUtil.Pose2dToTranslation2d(
+                                          swerveDrive.getRegularPose()))));
+                }));
   }
 
   @Override
@@ -185,7 +207,14 @@ public class Robot extends LoggedRobot {
                     new RectangleBoudingBox(
                         new Pose2d(0.88, 6.03, Rotation2d.fromDegrees(0)),
                         new Pose2d(3.55, 5.07, Rotation2d.fromDegrees(0))))
-                .insideBoxWithPadding(swerveDrive.getRegularPose(), new Translation2d(1, 1)));
+                .insideBoxWithPadding(
+                    RedHawkUtil.Pose2dToTranslation2d(swerveDrive.getRegularPose()),
+                    new Translation2d(1, 1)));
+
+    new AvoidBoudingBoxes(
+        new RectangleBoudingBox(
+            new Pose2d(0.88, 6.03, Rotation2d.fromDegrees(0)),
+            new Pose2d(3.55, 5.07, Rotation2d.fromDegrees(0))));
   }
 
   @Override
