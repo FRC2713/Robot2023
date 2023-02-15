@@ -25,7 +25,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.OTF.GoClosestGrid;
-import frc.robot.commands.fullRoutines.OneToAToThreeToBridge;
+import frc.robot.commands.fullRoutines.TwoCargoOver;
+import frc.robot.commands.fullRoutines.TwoCargoUnder;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -52,7 +53,6 @@ import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -135,8 +135,11 @@ public class Robot extends LoggedRobot {
     // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     mechManager = new MechanismManager();
-    autoCommand = new OneToAToThreeToBridge();
+    autoCommand = new TwoCargoOver();
     goClosestGrid = new GoClosestGrid();
+
+    autoChooser.addOption("TwoBridgeOver", new TwoCargoOver());
+    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -237,31 +240,6 @@ public class Robot extends LoggedRobot {
     }
 
     driver
-        .x()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.TRAJECTORY;
-                  goClosestGrid.changingPath();
-                  goClosestGrid.regenerateTrajectory();
-                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
-                }))
-        .whileTrue(
-            new RepeatCommand(
-                new InstantCommand(
-                    () -> {
-                      if (goClosestGrid.hasElapsed()) {
-                        TrajectoryController.getInstance()
-                            .changePath(goClosestGrid.getTrajectory());
-                      }
-                    })))
-        .onFalse(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.FULL_DRIVE;
-                }));
-
-    driver
         .leftBumper()
         .onTrue(
             new SequentialCommandGroup(
@@ -316,6 +294,29 @@ public class Robot extends LoggedRobot {
         .b()
         .onTrue(FourBar.Commands.extend())
         .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
+
+    driver
+        .a()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.TRAJECTORY;
+                  goClosestGrid.changingPath();
+                  goClosestGrid.regenerateTrajectory();
+                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+                }))
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      if (goClosestGrid.hasElapsed()) {
+                        TrajectoryController.getInstance()
+                            .changePath(goClosestGrid.getTrajectory());
+                      }
+                    })))
+        .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
+
+    driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
 
     driver
         .y()
@@ -417,6 +418,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     motionMode = MotionMode.TRAJECTORY;
+    autoCommand = autoChooser.get();
 
     if (autoCommand != null) {
       autoCommand.schedule();
@@ -445,6 +447,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     TimestampedDoubleArray[] queue = visionPose.readQueue();
+
+    if (driver.getRightX() > 0.5) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
 
     if (queue.length > Constants.zero) {
       TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];

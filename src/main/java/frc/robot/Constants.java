@@ -99,8 +99,9 @@ public final class Constants {
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(-113);
-    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(27);
+    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(-113);
+    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(-30);
+    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(27);
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double GEARING = 200.0;
