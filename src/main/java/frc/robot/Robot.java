@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.fullRoutines.TwoCargoOver;
+import frc.robot.commands.fullRoutines.TwoCargoUnder;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -52,7 +53,6 @@ import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -137,6 +137,9 @@ public class Robot extends LoggedRobot {
     mechManager = new MechanismManager();
     autoCommand = new TwoCargoOver();
     goClosestGrid = new GoClosestGrid();
+
+    autoChooser.addOption("TwoBridgeOver", new TwoCargoOver());
+    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -415,6 +418,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     motionMode = MotionMode.TRAJECTORY;
+    autoCommand = autoChooser.get();
 
     if (autoCommand != null) {
       autoCommand.schedule();
