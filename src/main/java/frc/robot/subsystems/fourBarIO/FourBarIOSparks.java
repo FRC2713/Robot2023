@@ -10,27 +10,27 @@ public class FourBarIOSparks implements FourBarIO {
 
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
-    fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
+    // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
-    fourBarTwo.restoreFactoryDefaults();
+    // fourBarTwo.restoreFactoryDefaults();
     fourBarOne.setInverted(true); // subject to change
-    fourBarTwo.setInverted(true); // subject to change
+    // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
-    fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
+    // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     fourBarOne
         .getEncoder()
         .setPositionConversionFactor(Constants.FourBarConstants.FOUR_BAR_ANGLE_CONVERSION);
-    fourBarTwo
-        .getEncoder()
-        .setPositionConversionFactor(Constants.FourBarConstants.FOUR_BAR_ANGLE_CONVERSION);
+    // fourBarTwo
+    //     .getEncoder()
+    //     .setPositionConversionFactor(Constants.FourBarConstants.FOUR_BAR_ANGLE_CONVERSION);
     fourBarOne
         .getEncoder()
         .setVelocityConversionFactor(
             Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
-    fourBarTwo
-        .getEncoder()
-        .setVelocityConversionFactor(
-            Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
+    // fourBarTwo
+    //     .getEncoder()
+    //     .setVelocityConversionFactor(
+    //         Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
   }
 
   @Override
@@ -38,25 +38,25 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.outputVoltage = MathUtil.clamp(fourBarOne.getOutputCurrent(), -12, 12);
 
     inputs.angleDegreesOne = fourBarOne.getEncoder().getPosition();
-    inputs.angleDegreesTwo = fourBarTwo.getEncoder().getPosition();
+    // inputs.angleDegreesTwo = fourBarTwo.getEncoder().getPosition();
     inputs.angleDegreesRange =
-        fourBarOne.getEncoder().getPosition() - fourBarTwo.getEncoder().getPosition();
+        // fourBarOne.getEncoder().getPosition(); - fourBarTwo.getEncoder().getPosition();
 
-    inputs.velocityDegreesPerSecondOne = fourBarOne.getEncoder().getVelocity();
-    inputs.velocityDegreesPerSecondTwo = fourBarTwo.getEncoder().getVelocity();
+        inputs.velocityDegreesPerSecondOne = fourBarOne.getEncoder().getVelocity();
+    // inputs.velocityDegreesPerSecondTwo = fourBarTwo.getEncoder().getVelocity();
     inputs.velocityDegreesPerSecondRange =
-        fourBarOne.getEncoder().getVelocity() - fourBarTwo.getEncoder().getVelocity();
+        fourBarOne.getEncoder().getVelocity(); // - fourBarTwo.getEncoder().getVelocity();
 
     inputs.tempCelciusOne = fourBarOne.getMotorTemperature();
-    inputs.tempCelciusTwo = fourBarTwo.getMotorTemperature();
+    // inputs.tempCelciusTwo = fourBarTwo.getMotorTemperature();
 
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
-    inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
+    // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
   }
 
   @Override
   public void setVoltage(double volts) {
     fourBarOne.setVoltage(volts);
-    fourBarTwo.setVoltage(volts);
+    // fourBarTwo.setVoltage(volts);
   }
 }

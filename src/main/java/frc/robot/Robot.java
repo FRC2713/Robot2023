@@ -92,7 +92,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
     if (isReal()) {
-      Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda2"));
+      Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1"));
     }
 
     Logger.getInstance().start();

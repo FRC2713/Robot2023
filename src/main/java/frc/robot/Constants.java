@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-// liam sais hi :)
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -42,14 +41,6 @@ public final class Constants {
   @UtilityClass
   public static final class RobotMap {
     public static final int PIGEON_CAN_ID = 20;
-    public static final int SWERVE_CANID_1 = 1;
-    public static final int SWERVE_CANID_2 = 2;
-    public static final int SWERVE_CANID_3 = 3;
-    public static final int SWERVE_CANID_4 = 4;
-    public static final int SWERVE_CANID_5 = 5;
-    public static final int SWERVE_CANID_6 = 6;
-    public static final int SWERVE_CANID_7 = 9;
-    public static final int SWERVE_CANID_8 = 10;
 
     public static final int ELEVATOR_LEFT_CANID = 7;
     public static final int ELEVATOR_RIGHT_CANID = 8;
@@ -60,7 +51,7 @@ public final class Constants {
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
 
-    public static final int BLINKIN_PORT = 1;
+    public static final int BLINKIN_PORT = 9;
 
     public static final int DRIVER_PORT = zero;
     public static final int OPERATOR_PORT = 1;
@@ -247,7 +238,7 @@ public final class Constants {
             .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
             .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
             .driveCANId(1)
-            .aziCANId(8)
+            .aziCANId(2)
             .aziEncoderCANId(zero)
             .offset(0.1124)
             .location(FRONT_LEFT_LOCATION)
@@ -259,7 +250,7 @@ public final class Constants {
             .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
             .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
             .driveCANId(3)
-            .aziCANId(2)
+            .aziCANId(4)
             .aziEncoderCANId(1)
             .offset(0.6028)
             .location(FRONT_RIGHT_LOCATION)
@@ -270,8 +261,8 @@ public final class Constants {
             .name(SwerveModuleName.BACK_LEFT)
             .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
             .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
-            .driveCANId(4)
-            .aziCANId(5)
+            .driveCANId(10)
+            .aziCANId(9)
             .aziEncoderCANId(2)
             .offset(0.0626)
             .location(BACK_LEFT_LOCATION)
@@ -282,8 +273,8 @@ public final class Constants {
             .name(SwerveModuleName.BACK_RIGHT)
             .driveGains(Constants.DriveConstants.Gains.K_DEFAULT_DRIVING_GAINS)
             .azimuthGains(Constants.DriveConstants.Gains.K_DEFAULT_AZIMUTH_GAINS)
-            .driveCANId(6)
-            .aziCANId(7)
+            .driveCANId(5)
+            .aziCANId(6)
             .aziEncoderCANId(3)
             .offset(0.775)
             .location(BACK_RIGHT_LOCATION)
