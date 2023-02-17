@@ -58,7 +58,7 @@ public class FourBar extends SubsystemBase {
 
   public void periodic() {
     double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
-    double ffEffort = ff.calculate(Units.radiansToDegrees(inputs.angleDegreesOne + 90), 0);
+    double ffEffort = ff.calculate(Units.radiansToDegrees(inputs.angleDegreesOne), 0);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
