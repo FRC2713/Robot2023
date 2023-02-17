@@ -15,6 +15,7 @@ import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
 import frc.robot.util.DebugMode;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.PIDFFGains;
+import frc.robot.util.SuperstructureConfig;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -305,5 +306,18 @@ public final class Constants {
         PIDFFGains.builder("Back Left").kP(0.1).kS(.15).tolerance(1.0).build();
     public static final PIDFFGains K_BACK_RIGHT_AZIMUTH_GAINS =
         PIDFFGains.builder("Back Right").kP(0.1).kS(.13).tolerance(1.0).build();
+  }
+
+  public static final class SuperstructureConstants {
+    public static final SuperstructureConfig INTAKE_TIPPED_CONE =
+        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+    public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
+        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+    public static final SuperstructureConfig INTAKE_CUBE =
+        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+    public static final SuperstructureConfig SCORE_CONE =
+        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+    public static final SuperstructureConfig SCORE_CUBE =
+        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
   }
 }
