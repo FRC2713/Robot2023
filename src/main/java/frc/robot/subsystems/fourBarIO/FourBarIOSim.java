@@ -1,6 +1,7 @@
 package frc.robot.subsystems.fourBarIO;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -8,16 +9,20 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 
 public class FourBarIOSim implements FourBarIO {
-  private final SingleJointedArmSim sim =
+  private static final SingleJointedArmSim sim =
       new SingleJointedArmSim(
-          DCMotor.getNEO(2),
+          DCMotor.getNEO(1),
           Constants.FourBarConstants.GEARING,
           SingleJointedArmSim.estimateMOI(
               Constants.FourBarConstants.LENGTH_METRES, Constants.FourBarConstants.MASS_KG),
           Constants.FourBarConstants.LENGTH_METRES,
-          Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS,
+          Constants.FourBarConstants.MAX_ANGLE_RADIANS,
           Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS,
           true);
+
+  static {
+    sim.setState(VecBuilder.fill(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS, 0));
+  }
 
   @Override
   public void updateInputs(FourBarInputs inputs) {

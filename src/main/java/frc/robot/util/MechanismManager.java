@@ -58,9 +58,9 @@ public class MechanismManager {
   }
 
   public void periodic() {
-    m_four.setAngle(Robot.fourBar.getCurrentDegs() + ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
+    m_four.setAngle(Robot.fourBar.getCurrentDegs() - ElevatorConstants.ELEVATOR_ANGLE_DEGREES);
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
     m_elevator.setLength(Robot.elevator.getCurrentHeight());
-    m_front.setAngle(-90 - Robot.fourBar.getCurrentDegs());
+    m_front.setAngle(-45 - Robot.fourBar.getCurrentDegs());
   }
 }

@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class FourBarIOSparks implements FourBarIO {
@@ -35,7 +36,11 @@ public class FourBarIOSparks implements FourBarIO {
     //     .setVelocityConversionFactor(
     //         Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
 
-    fourBarOne.getEncoder().setPosition(27.4);
+    if (Math.abs(fourBarOne.getEncoder().getPosition()) < 0.01) {
+      fourBarOne
+          .getEncoder()
+          .setPosition(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
+    }
   }
 
   @Override

@@ -90,17 +90,18 @@ public final class Constants {
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(-67);
-    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(0);
-    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(27.5);
+    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(-10);
+    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(45);
+    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(90);
+    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(117.5);
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
-    public static final double MASS_KG = 0.5;
+    public static final double MASS_KG = Units.lbsToKilograms(7.7);
     public static final double GEARING = 250.0;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 50;
-    public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
+    public static final double LENGTH_METRES = Units.inchesToMeters(10);
     public static final PIDFFGains FOUR_BAR_GAINS =
         PIDFFGains.builder("4Bar Controller").kP(0.25).kI(zero).kD(zero).kG(0.000).build();
   }
