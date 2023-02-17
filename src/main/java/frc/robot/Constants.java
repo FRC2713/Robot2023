@@ -45,8 +45,8 @@ public final class Constants {
     public static final int ELEVATOR_LEFT_CANID = 7;
     public static final int ELEVATOR_RIGHT_CANID = 8;
 
-    public static final int INTAKE_WHEELS_CANID = 11;
-    public static final int INTAKE_ROLLERS_CANID = 12;
+    public static final int INTAKE_WHEELS_CANID = 12;
+    public static final int INTAKE_ROLLERS_CANID = 11;
 
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
@@ -90,27 +90,26 @@ public final class Constants {
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(-113);
-    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(-30);
-    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(27);
+    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(-67);
+    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(0);
+    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(27.5);
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
-    public static final double GEARING = 200.0;
     public static final double MASS_KG = 0.5;
-    public static final double FOUR_BAR_RATIO = 5;
-    public static final double FOUR_BAR_ANGLE_CONVERSION = FOUR_BAR_RATIO * 360;
+    public static final double GEARING = 250.0;
+    public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 50;
     public static final double LENGTH_METRES = Units.inchesToMeters(11.315);
     public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.4).kI(zero).kD(zero).kG(0.001).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.25).kI(zero).kD(zero).kG(0.000).build();
   }
 
   @UtilityClass
   public static class IntakeConstants {
-    public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
-    public static final double ROLLER_GEARING = 10;
-    public static final double WHEELS_GEARING = 10;
+    public static final DCMotor INTAKE_MOTOR = DCMotor.getNEO(1);
+    public static final double ROLLER_GEARING = 24.0 / 20.0;
+    public static final double WHEELS_GEARING = 1;
 
     public static final double MAX_ROLLER_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
@@ -127,12 +126,12 @@ public final class Constants {
     public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
     public static final double ROLLERS_CONE_TIPPED_INTAKE_RPM = 100;
     public static final double ROLLERS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double ROLLERS_CUBE_INTAKE_RPM = 100;
+    public static final double ROLLERS_CUBE_INTAKE_RPM = 1500;
     public static final double ROLLERS_CONE_SCORE_RPM = -100;
     public static final double ROLLERS_CUBE_SCORE_RPM = -100;
     public static final double WHEELS_CONE_TIPPED_INTAKE_RPM = 100;
     public static final double WHEELS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double WHEELS_CUBE_INTAKE_RPM = 100;
+    public static final double WHEELS_CUBE_INTAKE_RPM = 0;
     public static final double WHEELS_CONE_SCORE_RPM = -100;
     public static final double WHEELS_CUBE_SCORE_RPM = -100;
   }

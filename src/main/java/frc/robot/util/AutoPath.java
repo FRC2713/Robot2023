@@ -13,7 +13,6 @@ public class AutoPath {
   public static final double fieldWidth = Units.inchesToMeters(315.5);
 
   public enum Autos {
-    DOCK("dock"),
     A_TO_FIVE("cargoAtogrid5", 4, 3),
     A_TO_THREE("cargoAtogrid3", 4, 3),
     D_TO_SEVEN("cargoDtogrid7", 4, 3),

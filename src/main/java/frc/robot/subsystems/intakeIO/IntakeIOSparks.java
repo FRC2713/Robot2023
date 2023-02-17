@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intakeIO;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
@@ -17,6 +18,8 @@ public class IntakeIOSparks implements IntakeIO {
     rollers.restoreFactoryDefaults();
     wheels.setSmartCurrentLimit(Constants.IntakeConstants.WHEELS_CURRENT_LIMIT);
     rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLERS_CURRENT_LIMIT);
+    wheels.setIdleMode(IdleMode.kBrake);
+    rollers.setIdleMode(IdleMode.kBrake);
     wheels
         .getEncoder()
         .setPositionConversionFactor(Constants.IntakeConstants.WHEELS_POSITION_CONVERSION_FACTOR);
@@ -33,8 +36,8 @@ public class IntakeIOSparks implements IntakeIO {
 
   @Override
   public void updateInputs(IntakeInputs inputs) {
-    inputs.wheelsOutputVoltage = MathUtil.clamp(wheels.getOutputCurrent(), -12.0, 12.0);
-    inputs.rollersOutputVoltage = MathUtil.clamp(rollers.getOutputCurrent(), -12.0, 12.0);
+    inputs.wheelsOutputVoltage = MathUtil.clamp(wheels.getAppliedOutput() * 12, -12.0, 12.0);
+    inputs.rollersOutputVoltage = MathUtil.clamp(rollers.getAppliedOutput() * 12, -12.0, 12.0);
     inputs.wheelsIsOn =
         Units.rotationsPerMinuteToRadiansPerSecond(wheels.getEncoder().getVelocity()) > 0.005;
     inputs.rollersIsOn =

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.fourBarIO;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
@@ -13,6 +14,8 @@ public class FourBarIOSparks implements FourBarIO {
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
+    fourBarOne.setIdleMode(IdleMode.kCoast);
+
     fourBarOne.setInverted(true); // subject to change
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
@@ -31,6 +34,8 @@ public class FourBarIOSparks implements FourBarIO {
     //     .getEncoder()
     //     .setVelocityConversionFactor(
     //         Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
+
+    fourBarOne.getEncoder().setPosition(27.4);
   }
 
   @Override
