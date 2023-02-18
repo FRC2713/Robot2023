@@ -61,7 +61,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(1.125).kD(0.0).kG(0.54).build();
+        PIDFFGains.builder("Elevator Controller").kP(1.35).kD(0.0).kG(0.54).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -73,7 +73,7 @@ public final class Constants {
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
-    public static final int ELEVATOR_CURRENT_LIMIT = 35;
+    public static final int ELEVATOR_CURRENT_LIMIT = 45;
 
     public static final double ELEVATOR_CONE_LOW_SCORE = 13;
     public static final double ELEVATOR_CUBE_LOW_SCORE = 15;
