@@ -20,7 +20,7 @@ public class FourBar extends SubsystemBase {
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
-  private double targetDegs = 0;
+  private double targetDegs = Units.radiansToDegrees(Constants.FourBarConstants.IDLE_ANGLE_RADIANS);
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
@@ -45,7 +45,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegreesOne - targetDegs) < 0.1;
+    return Math.abs(inputs.angleDegreesOne - targetDegs) < 1;
   }
 
   public double getCurrentDegs() {
