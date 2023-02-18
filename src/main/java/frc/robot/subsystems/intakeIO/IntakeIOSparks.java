@@ -32,6 +32,9 @@ public class IntakeIOSparks implements IntakeIO {
     rollers
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.ROLLERS_VELOCITY_CONVERSION_FACTOR);
+
+    wheels.burnFlash();
+    rollers.burnFlash();
   }
 
   @Override

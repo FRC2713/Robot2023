@@ -241,7 +241,7 @@ public final class Constants {
             .driveCANId(1)
             .aziCANId(2)
             .aziEncoderCANId(zero)
-            .offset(0.1124)
+            .offset(0.319)
             .location(FRONT_LEFT_LOCATION)
             .build();
 
@@ -253,7 +253,7 @@ public final class Constants {
             .driveCANId(3)
             .aziCANId(4)
             .aziEncoderCANId(1)
-            .offset(0.6028)
+            .offset(0.527)
             .location(FRONT_RIGHT_LOCATION)
             .build();
 
@@ -265,7 +265,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.0626)
+            .offset(0.857)
             .location(BACK_LEFT_LOCATION)
             .build();
 
@@ -277,14 +277,14 @@ public final class Constants {
             .driveCANId(5)
             .aziCANId(6)
             .aziEncoderCANId(3)
-            .offset(0.775)
+            .offset(0.850)
             .location(BACK_RIGHT_LOCATION)
             .build();
 
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.05).tolerance(0).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.07).tolerance(0).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 

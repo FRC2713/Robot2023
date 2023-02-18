@@ -41,6 +41,8 @@ public class FourBarIOSparks implements FourBarIO {
           .getEncoder()
           .setPosition(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
     }
+
+    fourBarOne.burnFlash();
   }
 
   @Override
