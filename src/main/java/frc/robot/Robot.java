@@ -30,6 +30,7 @@ import frc.robot.commands.fullRoutines.TwoCargoUnder;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
@@ -97,8 +98,8 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    // elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
-    elevator = new Elevator(new ElevatorIOSim());
+    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    // elevator = new Elevator(new ElevatorIOSim());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
