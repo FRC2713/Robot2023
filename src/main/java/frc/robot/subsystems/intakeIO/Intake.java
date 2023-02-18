@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Robot;
+import frc.robot.Robot.GamePieceMode;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -55,6 +56,20 @@ public class Intake extends SubsystemBase {
 
     public static Command setRollerVelocityRPM(double targetRPM) {
       return new InstantCommand(() -> Robot.intake.setRollerRPM(targetRPM));
+    }
+
+    public static Command setWheelVelocityRPM(double targetRPM, GamePieceMode gamePieceMode) {
+      return new InstantCommand(
+          () ->
+              Robot.intake.setWheelRpm(
+                  targetRPM * (Robot.gamePieceMode == GamePieceMode.CUBE ? -1 : 1)));
+    }
+
+    public static Command setRollerVelocityRPM(double targetRPM, GamePieceMode gamePieceMode) {
+      return new InstantCommand(
+          () ->
+              Robot.intake.setRollerRPM(
+                  targetRPM * (Robot.gamePieceMode == GamePieceMode.CUBE ? -1 : 1)));
     }
 
     public static Command setWheelVelocityRPMAndWait(double targetRPM) {

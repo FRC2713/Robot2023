@@ -79,7 +79,7 @@ public final class Constants {
     public static final double ELEVATOR_CUBE_LOW_SCORE = 15;
     public static final double ELEVATOR_CONE_MID_SCORE = 30;
     public static final double ELEVATOR_CUBE_MID_SCORE = 32;
-    public static final double ELEVATOR_CONE_HIGH_SCORE = 40;
+    public static final double ELEVATOR_CONE_HIGH_SCORE = 45;
     public static final double ELEVATOR_CUBE_HIGH_SCORE = 45;
 
     public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
@@ -310,14 +310,31 @@ public final class Constants {
 
   public static final class SuperstructureConstants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
-        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(-20)
+            .wheelRPM(-3000)
+            .rollerRPM(-3000)
+            .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
-        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(45)
+            .wheelRPM(-3000)
+            .rollerRPM(-3000)
+            .build();
     public static final SuperstructureConfig INTAKE_CUBE =
-        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
-    public static final SuperstructureConfig SCORE_CONE =
-        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
-    public static final SuperstructureConfig SCORE_CUBE =
-        SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1).build();
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(20)
+            .wheelRPM(-1000)
+            .rollerRPM(1000)
+            .build();
+    public static final SuperstructureConfig SCORE =
+        SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(1000).rollerRPM(1000).build();
+    // public static final SuperstructureConfig SCORE_CUBE =
+    //     SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1)
+    //     .wheelRPM(1000)
+    //     .rollerRPM(1000).build();
   }
 }
