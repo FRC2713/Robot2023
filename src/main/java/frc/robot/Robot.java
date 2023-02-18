@@ -224,17 +224,17 @@ public class Robot extends LoggedRobot {
                     swerveDrive.setModuleStates(
                         new SwerveModuleState[] {
                           new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(180)),
+                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(90)),
                           new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(180)),
+                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(90)),
                           new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(180)),
+                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(90)),
                           new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(180))
+                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+                              Rotation2d.fromDegrees(90))
                         });
                   },
                   swerveDrive))
