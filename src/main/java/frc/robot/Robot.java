@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.*;
@@ -69,6 +70,8 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
+  private Command twoCargoOver;
+  private Command twoCargoUnder;
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -81,8 +84,11 @@ public class Robot extends LoggedRobot {
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
 
+  Alliance currentAlliance = Alliance.Invalid;
+
   @Override
   public void robotInit() {
+    checkAlliance();
     CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
@@ -152,10 +158,13 @@ public class Robot extends LoggedRobot {
 
     mechManager = new MechanismManager();
     autoCommand = new TwoCargoOver();
-    goClosestGrid = new GoClosestGrid();
 
-    autoChooser.addOption("TwoBridgeOver", new TwoCargoOver());
-    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+    goClosestGrid = new GoClosestGrid();
+    twoCargoOver = new TwoCargoOver();
+    twoCargoUnder = new TwoCargoUnder();
+
+    autoChooser.addOption("TwoBridgeOver", twoCargoOver);
+    autoChooser.addOption("TwoBridgeUnder", twoCargoUnder);
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -528,6 +537,18 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testExit() {}
+
+  public void checkAlliance() {
+    Alliance checkedAlliance = DriverStation.getAlliance();
+
+    if (DriverStation.isDSAttached() && checkedAlliance != currentAlliance) {
+      currentAlliance = checkedAlliance;
+
+      goClosestGrid = new GoClosestGrid();
+      twoCargoOver = new TwoCargoOver();
+      twoCargoUnder = new TwoCargoUnder();
+    }
+  }
 
   public String goFast() {
     return "nyoooooooooom";
