@@ -26,7 +26,6 @@ import frc.robot.commands.fullRoutines.TwoCargoUnder;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
-import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
@@ -100,8 +99,8 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
-    // elevator = new Elevator(new ElevatorIOSim());
+    // elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    elevator = new Elevator(new ElevatorIOSim());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
@@ -122,32 +121,32 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
     // fourBar.setDefaultCommand(
-    //     new InstantCommand(
-    //         () ->
-    //             fourBar.setAngleDeg(
-    //                 MathUtil.clamp(
-    //                     fourBar.getCurrentDegs()
-    //                         + (MathUtil.applyDeadband(
-    //                                 -operator.getLeftY(),
-    //                                 Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    //                             / 10),
-    //                     Units.radiansToDegrees(FourBarConstants.MAX_ANGLE_RADIANS),
-    //                     Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS))),
-    //         fourBar));
+    // new InstantCommand(
+    // () ->
+    // fourBar.setAngleDeg(
+    // MathUtil.clamp(
+    // fourBar.getCurrentDegs()
+    // + (MathUtil.applyDeadband(
+    // -operator.getLeftY(),
+    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+    // / 10),
+    // Units.radiansToDegrees(FourBarConstants.MAX_ANGLE_RADIANS),
+    // Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS))),
+    // fourBar));
 
     // elevator.setDefaultCommand(
-    //     new InstantCommand(
-    //         () ->
-    //             elevator.setTargetHeight(
-    //                 MathUtil.clamp(
-    //                     elevator.getTargetHeight()
-    //                         + (MathUtil.applyDeadband(
-    //                                 -operator.getRightY(),
-    //                                 Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    //                             / 10),
-    //                     Constants.zero,
-    //                     Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    //         elevator));
+    // new InstantCommand(
+    // () ->
+    // elevator.setTargetHeight(
+    // MathUtil.clamp(
+    // elevator.getTargetHeight()
+    // + (MathUtil.applyDeadband(
+    // -operator.getRightY(),
+    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+    // / 10),
+    // Constants.zero,
+    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
+    // elevator));
 
     // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
@@ -333,8 +332,7 @@ public class Robot extends LoggedRobot {
 
     driver
         .b()
-        .onTrue(
-            FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE.getFourBarPosition()))
+        .onTrue(FourBar.Commands.setAngleDegAndWait(15))
         .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
 
     driver
@@ -373,7 +371,7 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 Intake.Commands.setWheelVelocityRPM(Constants.zero),
                 new WaitCommand(0.5),
-                Elevator.Commands.setTargetHeightAndWait(0),
+                // Elevator.Commands.setTargetHeightAndWait(0),
                 LightStrip.Commands.setColorPattern(DarkGreen)));
 
     // Operator Buttons
@@ -418,6 +416,18 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+
+    operator
+        .povDown()
+        .onTrue(
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    Elevator.Commands.setTargetHeightAndWait(0).withTimeout(2.0),
+                    FourBar.Commands.retract()),
+                new InstantCommand(
+                    () -> {
+                      elevator.resetencoders();
+                    })));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
@@ -509,6 +519,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testInit() {
+    swerveDrive.zeroGyro();
     CommandScheduler.getInstance().cancelAll();
   }
 

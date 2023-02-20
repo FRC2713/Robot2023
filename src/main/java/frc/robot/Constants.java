@@ -61,7 +61,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(1.35).kD(0.0).kG(0.54).build();
+        PIDFFGains.builder("Elevator Controller").kP(1).kD(0.0).kG(0.54).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -75,12 +75,12 @@ public final class Constants {
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 45;
 
-    public static final double ELEVATOR_CONE_LOW_SCORE = 13;
-    public static final double ELEVATOR_CUBE_LOW_SCORE = 15;
-    public static final double ELEVATOR_CONE_MID_SCORE = 30;
-    public static final double ELEVATOR_CUBE_MID_SCORE = 32;
-    public static final double ELEVATOR_CONE_HIGH_SCORE = 45;
-    public static final double ELEVATOR_CUBE_HIGH_SCORE = 45;
+    public static final double ELEVATOR_CONE_LOW_SCORE = 0;
+    public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
+    public static final double ELEVATOR_CONE_MID_SCORE = 35;
+    public static final double ELEVATOR_CUBE_MID_SCORE = 17;
+    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
+    public static final double ELEVATOR_CUBE_HIGH_SCORE = 30;
 
     public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
 
@@ -197,7 +197,7 @@ public final class Constants {
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
-    public static final int CURRENT_LIMIT = 65;
+    public static final int CURRENT_LIMIT = 25;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
 
@@ -241,7 +241,7 @@ public final class Constants {
             .driveCANId(1)
             .aziCANId(2)
             .aziEncoderCANId(zero)
-            .offset(0.319)
+            .offset(0.317)
             .location(FRONT_LEFT_LOCATION)
             .build();
 
@@ -265,7 +265,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.857)
+            .offset(0.86)
             .location(BACK_LEFT_LOCATION)
             .build();
 
@@ -277,7 +277,7 @@ public final class Constants {
             .driveCANId(5)
             .aziCANId(6)
             .aziEncoderCANId(3)
-            .offset(0.850)
+            .offset(0.851)
             .location(BACK_RIGHT_LOCATION)
             .build();
 
@@ -327,8 +327,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(20)
-            .wheelRPM(-1000)
-            .rollerRPM(1000)
+            .wheelRPM(-1500)
+            .rollerRPM(1500)
             .build();
     public static final SuperstructureConfig SCORE =
         SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(1000).rollerRPM(1000).build();

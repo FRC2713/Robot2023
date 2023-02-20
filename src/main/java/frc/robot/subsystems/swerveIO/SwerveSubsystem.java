@@ -87,6 +87,10 @@ public class SwerveSubsystem extends SubsystemBase {
     simOdometryPose = odometry.getPoseMeters();
   }
 
+  public void zeroGyro() {
+    io.zeroGyro();
+  }
+
   /**
    * Sets the gyro to the given rotation.
    *
