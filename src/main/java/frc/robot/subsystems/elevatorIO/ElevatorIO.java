@@ -19,5 +19,7 @@ public interface ElevatorIO {
 
   public void updateInputs(ElevatorInputs inputs);
 
+  public void resetEncoders();
+
   public void setVoltage(double volts);
 }

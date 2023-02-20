@@ -27,4 +27,6 @@ public interface SwerveIO {
    * @param rotation2d The desired rotation
    */
   public void resetGyro(Rotation2d rotation2d);
+
+  public void zeroGyro();
 }

@@ -21,6 +21,7 @@ public class ElevatorIOSim implements ElevatorIO {
           null,
           Rotation2d.fromDegrees(Constants.ElevatorConstants.ELEVATOR_ANGLE_DEGREES));
 
+  public void resetEncoders() {}
   /**
    * Automatically updates given {@code ElevatorInputs} instance based on simulation
    *

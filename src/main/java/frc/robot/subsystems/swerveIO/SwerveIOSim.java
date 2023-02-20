@@ -16,6 +16,8 @@ public class SwerveIOSim implements SwerveIO {
     inputs.gyroYawPosition = 0;
   }
 
+  public void zeroGyro() {}
+
   @Override
   public void resetGyro(Rotation2d rotation2d) {}
 }

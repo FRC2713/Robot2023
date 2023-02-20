@@ -75,6 +75,8 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/Control Effort", effortLeft);
     Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
+    Logger.getInstance().recordOutput("Elevator/shouldReset", shouldResetEncoders());
+
     Logger.getInstance().recordOutput("Elevator/heightInchesLeft", inputs.heightInchesLeft);
     Logger.getInstance().recordOutput("Elevator/heightInchesRight", inputs.heightInchesRight);
 
@@ -103,6 +105,26 @@ public class Elevator extends SubsystemBase {
       IO.setVoltage(0);
       return;
     }
+
+    if (shouldResetEncoders()) {
+      IO.resetEncoders();
+    }
+  }
+
+  public void resetencoders() {
+    IO.resetEncoders();
+  }
+
+  public boolean shouldResetEncoders() {
+    var avgVelocity =
+        (Math.abs(inputs.velocityInchesPerSecondLeft)
+                + Math.abs(inputs.velocityInchesPerSecondRight))
+            / 2.0;
+    var avgCurrent = (inputs.currentDrawAmpsLeft + inputs.currentDrawAmpsRight) / 2.0;
+    var avgHeight = (Math.abs(inputs.heightInchesLeft) + Math.abs(inputs.heightInchesRight)) / 2.0;
+    return (Math.abs(avgVelocity) < 0.01)
+        && avgCurrent > 3.0 /* might need to tune */
+        && avgHeight < 2.0;
   }
 
   public static class Commands {

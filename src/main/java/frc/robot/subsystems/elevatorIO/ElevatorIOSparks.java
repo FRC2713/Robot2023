@@ -41,6 +41,11 @@ public class ElevatorIOSparks implements ElevatorIO {
     right.burnFlash();
   }
 
+  public void resetEncoders() {
+    left.getEncoder().setPosition(0);
+    right.getEncoder().setPosition(0);
+  }
+
   @Override
   public void updateInputs(ElevatorInputs inputs) {
     inputs.outputVoltageLeft =
