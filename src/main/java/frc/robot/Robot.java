@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.fullRoutines.TwoCargoOver;
 import frc.robot.commands.fullRoutines.TwoCargoUnder;
@@ -156,6 +157,7 @@ public class Robot extends LoggedRobot {
 
     autoChooser.addDefaultOption("TwoCargoOver", new TwoCargoOver());
     autoChooser.addOption("TwoCargoUnder", new TwoCargoUnder());
+    autoChooser.addOption("Bridge", new GetOnBridge());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
