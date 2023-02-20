@@ -121,36 +121,6 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
-    // fourBar.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // fourBar.setAngleDeg(
-    // MathUtil.clamp(
-    // fourBar.getCurrentDegs()
-    // + (MathUtil.applyDeadband(
-    // -operator.getLeftY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Units.radiansToDegrees(FourBarConstants.MAX_ANGLE_RADIANS),
-    // Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS))),
-    // fourBar));
-
-    // elevator.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // elevator.setTargetHeight(
-    // MathUtil.clamp(
-    // elevator.getTargetHeight()
-    // + (MathUtil.applyDeadband(
-    // -operator.getRightY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Constants.zero,
-    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    // elevator));
-
-    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
-
     mechManager = new MechanismManager();
     autoCommand = new TwoCargoOver();
     goClosestGrid = new GoClosestGrid();
