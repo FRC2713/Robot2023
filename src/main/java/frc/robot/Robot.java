@@ -154,8 +154,8 @@ public class Robot extends LoggedRobot {
     autoCommand = new TwoCargoOver();
     goClosestGrid = new GoClosestGrid();
 
-    autoChooser.addOption("TwoBridgeOver", new TwoCargoOver());
-    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+    autoChooser.addDefaultOption("TwoCargoOver", new TwoCargoOver());
+    autoChooser.addOption("TwoCargoUnder", new TwoCargoUnder());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {

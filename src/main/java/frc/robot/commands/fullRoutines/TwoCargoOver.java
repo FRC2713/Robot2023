@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.commands.GetOnBridge;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -19,18 +18,29 @@ public class TwoCargoOver extends SequentialCommandGroup {
   private SequentialCommandGroup score() {
     return new SequentialCommandGroup(
         FourBar.Commands.extend(),
-        Intake.Commands.setRollerVelocityRPM(Constants.IntakeConstants.ROLLERS_CONE_SCORE_RPM),
-        Intake.Commands.setWheelVelocityRPM(Constants.IntakeConstants.WHEELS_CONE_SCORE_RPM),
+        Intake.Commands.setRollerVelocityRPM(
+            Constants.SuperstructureConstants.SCORE.getRollerRPM(), Robot.gamePieceMode),
+        Intake.Commands.setWheelVelocityRPM(
+            Constants.SuperstructureConstants.SCORE.getWheelRPM(), Robot.gamePieceMode),
         new WaitCommand(1));
   }
 
-  private SequentialCommandGroup intake() {
+  private SequentialCommandGroup startIntake() {
     return new SequentialCommandGroup(
         FourBar.Commands.extend(),
         Intake.Commands.setRollerVelocityRPM(
-            Constants.IntakeConstants.ROLLERS_CONE_UPRIGHT_INTAKE_RPM),
+            Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getRollerRPM(),
+            Robot.gamePieceMode),
         Intake.Commands.setWheelVelocityRPM(
-            Constants.IntakeConstants.WHEELS_CONE_UPRIGHT_INTAKE_RPM));
+            Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM(),
+            Robot.gamePieceMode));
+  }
+
+  private SequentialCommandGroup stopIntake() {
+    return new SequentialCommandGroup(
+        FourBar.Commands.retract(),
+        Intake.Commands.setRollerVelocityRPM(500),
+        Intake.Commands.setWheelVelocityRPM(500));
   }
 
   public TwoCargoOver() {
@@ -43,22 +53,17 @@ public class TwoCargoOver extends SequentialCommandGroup {
         FourBar.Commands.retract(),
         Elevator.Commands.elevatorConeHighScoreAndWait(),
         score(),
+        stopIntake(),
         Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
-        intake(),
+        startIntake(),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        FourBar.Commands.retract(),
-        Intake.Commands.setRollerVelocityRPM(0),
-        Intake.Commands.setWheelVelocityRPM(0),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_FIVE.getTrajectory()),
+        stopIntake(),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_THREE.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         Elevator.Commands.elevatorConeHighScoreAndWait(),
-        FourBar.Commands.extend(),
-        Intake.Commands.setRollerVelocityRPM(100),
-        Intake.Commands.setWheelVelocityRPM(100),
-        new WaitCommand(1),
-        FourBar.Commands.retract(),
-        Elevator.Commands.setTargetHeightAndWait(Constants.zero),
-        new GetOnBridge());
+        score(),
+        stopIntake(),
+        Elevator.Commands.setTargetHeightAndWait(Constants.zero));
   }
 }
