@@ -129,6 +129,22 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCargoUnder", new TwoCargoUnder());
     autoChooser.addOption("Bridge", new GetOnBridge());
 
+    // elevator.setDefaultCommand(
+    //     new InstantCommand(
+    //         () ->
+    //             elevator.setTargetHeight(
+    //                 MathUtil.clamp(
+    //                     elevator.getTargetHeight()
+    //                         + (MathUtil.applyDeadband(
+    //                                 -operator.getRightY(),
+    //                                 Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+    //                             / 10),
+    //                     Constants.zero,
+    //                     Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
+    //         elevator));
+
+    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
+
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
       driver
