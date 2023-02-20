@@ -160,11 +160,9 @@ public class Robot extends LoggedRobot {
     autoCommand = new TwoCargoOver();
 
     goClosestGrid = new GoClosestGrid();
-    twoCargoOver = new TwoCargoOver();
-    twoCargoUnder = new TwoCargoUnder();
 
-    autoChooser.addOption("TwoBridgeOver", twoCargoOver);
-    autoChooser.addOption("TwoBridgeUnder", twoCargoUnder);
+    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
+    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -482,6 +480,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+    checkAlliance();
     motionMode = MotionMode.TRAJECTORY;
     autoCommand = autoChooser.get();
 
@@ -545,8 +544,8 @@ public class Robot extends LoggedRobot {
       currentAlliance = checkedAlliance;
 
       goClosestGrid = new GoClosestGrid();
-      twoCargoOver = new TwoCargoOver();
-      twoCargoUnder = new TwoCargoUnder();
+      autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
+      autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
     }
   }
 
