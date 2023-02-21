@@ -158,11 +158,8 @@ public class Robot extends LoggedRobot {
 
     mechManager = new MechanismManager();
     autoCommand = new TwoCargoOver();
-
     goClosestGrid = new GoClosestGrid();
-
-    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
-    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+    buildAutoChooser();
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -537,6 +534,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void testExit() {}
 
+  public void buildAutoChooser() {
+    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
+    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+  }
+
   public void checkAlliance() {
     Alliance checkedAlliance = DriverStation.getAlliance();
 
@@ -544,8 +546,7 @@ public class Robot extends LoggedRobot {
       currentAlliance = checkedAlliance;
 
       goClosestGrid = new GoClosestGrid();
-      autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
-      autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+      buildAutoChooser();
     }
   }
 
