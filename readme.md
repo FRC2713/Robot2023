@@ -30,3 +30,16 @@
 - Install AdvantageScope
     - https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest
     - You are probably not running arm64, so download win-x64.
+
+---
+
+### Software static IPs
+- Radio - `10.27.13.1` , set by radio config tool
+- roboRIO - `10.27.13.2`, need to manually set static ip inside rio webpage config tool
+  - Subnet mask `255.255.255.0`
+- Driver station - `10.27.13.5`, need to manually set static ip inside windows setting
+  - Subnet mask `255.0.0.0`
+  - Leave gateway blank
+- Limelight - `10.27.13.11`, need to manually set inside limelight webpage config
+  - Gateway `10.27.13.1`
+  - Subnet mask `255.255.255.0`
