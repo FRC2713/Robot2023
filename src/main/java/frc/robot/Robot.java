@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.subsystems.LightStrip.Pattern.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -15,6 +16,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.*;
@@ -69,6 +71,7 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
+  private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -454,6 +457,10 @@ public class Robot extends LoggedRobot {
                 + swerveDrive.getTotalCurrentDraw()));
 
     Logger.getInstance().recordOutput("Game piece mode", gamePieceMode.name());
+    Logger.getInstance()
+        .recordOutput(
+            "Filtered CAN Utilization",
+            canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
   }
 
   @Override
