@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.REVLibError;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -153,5 +155,79 @@ public final class RedHawkUtil {
       }
       return old;
     }
+  }
+
+  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  public static void configureDefaultTrafficSpark(CANSparkMax spark) {
+    // Applied output, faults, sticky faults, isFollower
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
+
+    // velocity, temperature, voltage, current
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);
+
+    // position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);
+
+    // analog sensor voltage, analog sensor velocity, analog sensor position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
+
+    // alt encoder velocity, alt encoder position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
+
+    // duty cycle absolute encoder position, duty cycle absolute encoder angle
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
+
+    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+  }
+
+  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  // Used for sparks that aren't that important and don't need to be broadcasting info very often
+  public static void configureLowTrafficSpark(CANSparkMax spark) {
+    // Applied output, faults, sticky faults, isFollower
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
+
+    // velocity, temperature, voltage, current
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 40);
+
+    // position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 100);
+
+    // analog sensor voltage, analog sensor velocity, analog sensor position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+
+    // alt encoder velocity, alt encoder position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+
+    // duty cycle absolute encoder position, duty cycle absolute encoder angle
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+
+    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+  }
+
+  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  // Used for sparks that are critical to robot functionality
+  public static void configureHighTrafficSpark(CANSparkMax spark) {
+    // Applied output, faults, sticky faults, isFollower
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
+
+    // velocity, temperature, voltage, current
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
+
+    // position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
+
+    // analog sensor voltage, analog sensor velocity, analog sensor position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+
+    // alt encoder velocity, alt encoder position
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+
+    // duty cycle absolute encoder position, duty cycle absolute encoder angle
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+
+    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
   }
 }

@@ -47,6 +47,9 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver.restoreFactoryDefaults();
     azimuth.restoreFactoryDefaults();
 
+    RedHawkUtil.configureHighTrafficSpark(azimuth);
+    RedHawkUtil.configureHighTrafficSpark(driver);
+
     azimuth.setInverted(true);
     driver.setInverted(true);
 

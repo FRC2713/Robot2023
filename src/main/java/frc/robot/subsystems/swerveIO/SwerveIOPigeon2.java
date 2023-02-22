@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerveIO;
 
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.RobotMap;
 
