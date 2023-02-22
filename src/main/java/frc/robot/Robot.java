@@ -70,8 +70,6 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
-  private Command twoCargoOver;
-  private Command twoCargoUnder;
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
