@@ -30,7 +30,7 @@ public final class RedHawkUtil {
    * @param status A RevLibError
    * @param name The name of the RevLibError, logged (see description)
    */
-  public static void errorHandleSparkMAX(@NonNull REVLibError status, @NonNull String name) {
+  public static void errorHandleSparkMAX(@NonNull REVLibError status) {
     if (status != REVLibError.kOk) {
       StackTraceElement[] rawStackTrace = Thread.currentThread().getStackTrace();
       ErrHandler.getInstance()
@@ -41,6 +41,10 @@ public final class RedHawkUtil {
                   + ":"
                   + rawStackTrace[2].getLineNumber());
     }
+  }
+
+  public static void cOk(REVLibError status) {
+    errorHandleSparkMAX(status);
   }
 
   public static Translation2d Pose2dToTranslation2d(Pose2d pose) {
