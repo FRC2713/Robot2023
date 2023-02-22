@@ -468,7 +468,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    checkAlliance();
+  }
 
   @Override
   public void disabledExit() {}
