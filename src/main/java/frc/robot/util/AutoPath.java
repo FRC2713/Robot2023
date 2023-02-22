@@ -13,13 +13,19 @@ public class AutoPath {
   public static final double fieldWidth = Units.inchesToMeters(315.5);
 
   public enum Autos {
+    // Cone Paths (Paths to/from grids with cone goals)
     A_TO_FIVE("cargoAtogrid5", 4, 3),
     A_TO_THREE("cargoAtogrid3", 4, 3),
     D_TO_SEVEN("cargoDtogrid7", 4, 3),
     ONE_TO_A("grid1tocargoA", 4, 3),
     THREE_TO_B("grid3tocargoB", 4, 3),
     NINE_TO_D("grid9tocargoD", 4, 3),
-    A_TO_TWO("cargoAtogrid2", 4, 3);
+
+    // Cube Paths (Paths to/from grids with cube goals)
+    A_TO_TWO("cargoAtogrid2", 4, 3),
+    A_TO_FOUR("cargoAtogrid4", 4, 3),
+    TWO_TO_A("grid2tocargoA", 4, 3),
+    FOUR_TO_B("grid4tocargoB", 4, 3);
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {

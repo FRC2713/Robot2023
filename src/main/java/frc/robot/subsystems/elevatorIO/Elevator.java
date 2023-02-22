@@ -205,36 +205,39 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(
-                  Constants.ElevatorConstants.ELEVATOR_CUBE_FLOOR_INTAKE),
+                  Constants.SuperstructureConstants.INTAKE_CUBE.getElevatorPosition()),
           Robot.elevator);
     }
 
     public static Command elevatorCubeFloorIntakeAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_FLOOR_INTAKE);
+      return setTargetHeightAndWait(
+          Constants.SuperstructureConstants.INTAKE_CUBE.getElevatorPosition());
     }
 
     public static Command elevatorConeFloorTippedIntake() {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(
-                  Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_TIPPED_INTAKE),
+                  Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition()),
           Robot.elevator);
     }
 
     public static Command elevatorConeFloorTippedIntakeAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_TIPPED_INTAKE);
+      return setTargetHeightAndWait(
+          Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition());
     }
 
     public static Command elevatorConeFloorUpIntake() {
       return new InstantCommand(
           () ->
               Robot.elevator.setTargetHeight(
-                  Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE),
+                  Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition()),
           Robot.elevator);
     }
 
     public static Command elevatorConeFloorUpIntakeAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_FLOOR_UP_INTAKE);
+      return setTargetHeightAndWait(
+          Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition());
     }
 
     public static Command elevatorCurrentHeight() {

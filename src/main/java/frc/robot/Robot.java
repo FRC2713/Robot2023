@@ -22,8 +22,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
-import frc.robot.commands.fullRoutines.TwoCargoOver;
-import frc.robot.commands.fullRoutines.TwoCargoUnder;
+import frc.robot.commands.fullRoutines.TwoConeOver;
+import frc.robot.commands.fullRoutines.TwoConeUnder;
+import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -122,11 +123,12 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
     mechManager = new MechanismManager();
-    autoCommand = new TwoCargoOver();
+    autoCommand = new TwoConeOver();
     goClosestGrid = new GoClosestGrid();
 
-    autoChooser.addDefaultOption("TwoCargoOver", new TwoCargoOver());
-    autoChooser.addOption("TwoCargoUnder", new TwoCargoUnder());
+    autoChooser.addOption("TwoConeOver", new TwoConeOver());
+    autoChooser.addDefaultOption("TwoCubeOver", new TwoCubeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("Bridge", new GetOnBridge());
 
     // elevator.setDefaultCommand(

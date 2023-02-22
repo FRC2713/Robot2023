@@ -81,12 +81,6 @@ public final class Constants {
     public static final double ELEVATOR_CUBE_MID_SCORE = 17;
     public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
     public static final double ELEVATOR_CUBE_HIGH_SCORE = 30;
-
-    public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
-
-    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = zero;
-
-    public static final double ELEVATOR_CONE_FLOOR_UP_INTAKE = 12;
   }
 
   @UtilityClass
