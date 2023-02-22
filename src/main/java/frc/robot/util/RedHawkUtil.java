@@ -154,4 +154,22 @@ public final class RedHawkUtil {
       return old;
     }
   }
+
+  public static double constrainToRange(double value, double min, double max) {
+    double step = max - min;
+
+    while (value < min) {
+      value += step;
+    }
+
+    while (value >= max) {
+      value -= step;
+    }
+
+    return value;
+  }
+
+  public static Rotation2d constrainToRange(Rotation2d value, Rotation2d min, Rotation2d max) {
+    return Rotation2d.fromDegrees(constrainToRange(value.getDegrees(), -180, 180));
+  }
 }

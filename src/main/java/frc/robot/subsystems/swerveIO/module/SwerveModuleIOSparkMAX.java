@@ -47,6 +47,9 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver.restoreFactoryDefaults();
     azimuth.restoreFactoryDefaults();
 
+    azimuth.getEncoder().setPosition(0);
+    driver.getEncoder().setPosition(0);
+
     azimuth.setInverted(true);
     driver.setInverted(true);
 
@@ -71,7 +74,10 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     inputs.aziOutputVolts = azimuth.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.aziTempCelcius = azimuth.getMotorTemperature();
     inputs.aziCurrentDrawAmps = azimuth.getOutputCurrent();
-    inputs.aziEncoderPositionDeg = getAziEncoder().getPosition();
+
+    inputs.aziEncoderPositionDeg =
+        RedHawkUtil.constrainToRange(getAziEncoder().getPosition(), -180, 180);
+
     inputs.aziEncoderVelocityDegPerSecond = getAziEncoder().getVelocity();
 
     inputs.driveEncoderPositionMetres = getDriveEncoder().getPosition();

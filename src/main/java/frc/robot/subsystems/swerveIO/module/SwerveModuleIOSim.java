@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot.util.RedHawkUtil;
 
 public class SwerveModuleIOSim implements SwerveModuleIO {
 
@@ -30,8 +31,14 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     inputs.aziOutputVolts = MathUtil.clamp(azimuthSim.getOutput(0), -12.0, 12.0);
     inputs.aziTempCelcius = 0.0;
     inputs.aziCurrentDrawAmps = azimuthSim.getCurrentDrawAmps();
-    inputs.aziEncoderPositionDeg +=
-        Units.radiansToDegrees(azimuthSim.getAngularVelocityRadPerSec()) * 0.02;
+
+    inputs.aziEncoderPositionDeg =
+        RedHawkUtil.constrainToRange(
+            inputs.aziEncoderPositionDeg
+                + Units.radiansToDegrees(azimuthSim.getAngularVelocityRadPerSec()) * 0.02,
+            -180,
+            180);
+
     inputs.aziEncoderVelocityDegPerSecond =
         Units.radiansToDegrees(azimuthSim.getAngularVelocityRadPerSec());
 
