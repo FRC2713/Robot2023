@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.REVLibError;
@@ -229,5 +231,63 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+  }
+
+  // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
+  public static void configureDefaultPigeon2(Pigeon2 pigeon) {
+    // 5, 7, 8 don't seem to exist
+
+    // calibration status, IMU temperature
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 100);
+
+    // biased gyro values (x, y, z)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 100);
+
+    // accelerometer derived angles
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 100);
+
+    // unprocessed magnetometer values (x, y, z)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 20);
+
+    // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 10);
+
+    // six degree fused yaw, pitch, roll
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+
+    // six degree fused quaternion
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 100);
+
+    // accumulated gyro angles
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 20);
+  }
+
+  // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
+  public static void configureOptimizedPigeon2(Pigeon2 pigeon) {
+    // 5, 7, 8 don't seem to exist
+
+    // calibration status, IMU temperature
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 1000);
+
+    // biased gyro values (x, y, z)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 1000);
+
+    // accelerometer derived angles
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 1000);
+
+    // unprocessed magnetometer values (x, y, z)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 1000);
+
+    // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 1000);
+
+    // six degree fused yaw, pitch, roll
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+
+    // six degree fused quaternion
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 1000);
+
+    // accumulated gyro angles
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 1000);
   }
 }

@@ -1,10 +1,9 @@
 package frc.robot.subsystems.swerveIO;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.RobotMap;
+import frc.robot.util.RedHawkUtil;
 
 public class SwerveIOPigeon2 implements SwerveIO {
 
@@ -12,6 +11,7 @@ public class SwerveIOPigeon2 implements SwerveIO {
 
   public SwerveIOPigeon2() {
     gyro = new Pigeon2(RobotMap.PIGEON_CAN_ID);
+    RedHawkUtil.configureOptimizedPigeon2(gyro);
     // gyro.zeroGyroBiasNow();
     // gyro.setYaw(0);
   }
