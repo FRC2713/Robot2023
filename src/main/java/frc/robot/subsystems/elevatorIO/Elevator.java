@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
     this.elevatorController =
         Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
-            new Constraints(60, 100));
+            new Constraints(60, 50));
     SmartDashboard.putData("Elevator PID", elevatorController);
     this.inputs = new ElevatorInputsAutoLogged();
     IO.updateInputs(inputs);
@@ -81,34 +81,34 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance().recordOutput("Elevator/heightInchesRight", inputs.heightInchesRight);
 
     Logger.getInstance().processInputs("Elevator", inputs);
-    if (inputs.heightInchesLeft
-            <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
-        && inputs.velocityInchesPerSecondLeft < 0) {
-      IO.setVoltage(0);
-      return;
-    }
-    if (inputs.heightInchesLeft
-            >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
-        && inputs.velocityInchesPerSecondLeft > 0) {
-      IO.setVoltage(0);
-      return;
-    }
-    if (inputs.heightInchesRight
-            <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
-        && inputs.velocityInchesPerSecondRight < 0) {
-      IO.setVoltage(0);
-      return;
-    }
-    if (inputs.heightInchesRight
-            >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
-        && inputs.velocityInchesPerSecondRight > 0) {
-      IO.setVoltage(0);
-      return;
-    }
+    // if (inputs.heightInchesLeft
+    //         <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
+    //     && inputs.velocityInchesPerSecondLeft < 0) {
+    //   IO.setVoltage(0);
+    //   return;
+    // }
+    // if (inputs.heightInchesLeft
+    //         >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
+    //     && inputs.velocityInchesPerSecondLeft > 0) {
+    //   IO.setVoltage(0);
+    //   return;
+    // }
+    // if (inputs.heightInchesRight
+    //         <= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MIN_HEIGHT_METERS)
+    //     && inputs.velocityInchesPerSecondRight < 0) {
+    //   IO.setVoltage(0);
+    //   return;
+    // }
+    // if (inputs.heightInchesRight
+    //         >= Units.metersToInches(Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS)
+    //     && inputs.velocityInchesPerSecondRight > 0) {
+    //   IO.setVoltage(0);
+    //   return;
+    // }
 
-    if (shouldResetEncoders()) {
-      IO.resetEncoders();
-    }
+    // if (shouldResetEncoders()) {
+    //   IO.resetEncoders();
+    // }
   }
 
   public void resetencoders() {

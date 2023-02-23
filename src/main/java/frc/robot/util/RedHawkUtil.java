@@ -194,10 +194,10 @@ public final class RedHawkUtil {
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
 
     // velocity, temperature, voltage, current
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 40);
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);
 
     // position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 100);
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 125);
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
@@ -210,6 +210,8 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
@@ -235,6 +237,8 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
@@ -274,7 +278,7 @@ public final class RedHawkUtil {
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 1000);
 
     // biased gyro values (x, y, z)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 1000);
+    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 500);
 
     // accelerometer derived angles
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 1000);
@@ -293,5 +297,7 @@ public final class RedHawkUtil {
 
     // accumulated gyro angles
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 1000);
+
+    configureDefaultPigeon2(pigeon);
   }
 }
