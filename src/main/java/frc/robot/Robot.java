@@ -291,8 +291,8 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(Constants.zero),
-                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                Intake.Commands.setWheelVelocityRPM(-500),
+                Intake.Commands.setRollerVelocityRPM(-500),
                 FourBar.Commands.retract()));
 
     driver
@@ -350,7 +350,7 @@ public class Robot extends LoggedRobot {
 
     driver
         .y()
-        .whileTrue(Intake.Commands.scoreCube())
+        .whileTrue(Intake.Commands.score())
         .onFalse(
             new SequentialCommandGroup(
                 Intake.Commands.setRollerVelocityRPM(Constants.zero),
@@ -405,14 +405,8 @@ public class Robot extends LoggedRobot {
     operator
         .povDown()
         .onTrue(
-            new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    Elevator.Commands.setTargetHeightAndWait(0).withTimeout(2.0),
-                    FourBar.Commands.retract()),
-                new InstantCommand(
-                    () -> {
-                      elevator.resetencoders();
-                    })));
+            new ParallelCommandGroup(
+                Elevator.Commands.setTargetHeightAndWait(0), FourBar.Commands.retract()));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));

@@ -1,6 +1,9 @@
 package frc.robot.commands.fullRoutines;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -16,35 +19,42 @@ import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.TrajectoryController;
 
 public class TwoConeUnder extends SequentialCommandGroup {
-  private SequentialCommandGroup score() {
+
+  private Command score() {
     return new SequentialCommandGroup(
-        Intake.Commands.setRollerVelocityRPM(
-            Constants.SuperstructureConstants.SCORE_CUBE.getRollerRPM(), Robot.gamePieceMode),
-        Intake.Commands.setWheelVelocityRPM(
-            Constants.SuperstructureConstants.SCORE_CUBE.getWheelRPM(), Robot.gamePieceMode),
-        new WaitCommand(1));
+        FourBar.Commands.score(), Intake.Commands.score(), new WaitCommand(1));
   }
 
-  private SequentialCommandGroup startIntake() {
-    return new SequentialCommandGroup(
-        FourBar.Commands.extend(),
-        Intake.Commands.setRollerVelocityRPM(
-            Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getRollerRPM()),
-        Intake.Commands.setWheelVelocityRPM(
-            Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM()));
+  private Command startIntake() {
+    return new ConditionalCommand(
+        new ParallelCommandGroup(
+            FourBar.Commands.setToAngle(
+                Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
+            Intake.Commands.setRollerVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_CUBE.getRollerRPM()),
+            Intake.Commands.setWheelVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_CUBE.getWheelRPM())),
+        new ParallelCommandGroup(
+            FourBar.Commands.setToAngle(
+                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
+            Intake.Commands.setRollerVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getRollerRPM()),
+            Intake.Commands.setWheelVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM())),
+        () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
-  private SequentialCommandGroup stopIntake() {
-    SequentialCommandGroup intakeCommand = new SequentialCommandGroup(FourBar.Commands.retract());
-    if (Robot.gamePieceMode == GamePieceMode.CONE) {
-      intakeCommand.addCommands(
-          Intake.Commands.setRollerVelocityRPM(500), Intake.Commands.setWheelVelocityRPM(500));
-    } else {
-      intakeCommand.addCommands(
-          Intake.Commands.setRollerVelocityRPM(0), Intake.Commands.setWheelVelocityRPM(0));
-    }
-    ;
-    return intakeCommand;
+  private Command stopIntake() {
+    return new ConditionalCommand(
+        new ParallelCommandGroup(
+            Intake.Commands.setRollerVelocityRPM(0),
+            Intake.Commands.setWheelVelocityRPM(0),
+            FourBar.Commands.retract()),
+        new ParallelCommandGroup(
+            Intake.Commands.setRollerVelocityRPM(-500),
+            Intake.Commands.setWheelVelocityRPM(-500),
+            FourBar.Commands.retract()),
+        () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
   public TwoConeUnder() {
