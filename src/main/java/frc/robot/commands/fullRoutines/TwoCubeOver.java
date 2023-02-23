@@ -65,18 +65,19 @@ public class TwoCubeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CUBE;
             }),
         FourBar.Commands.retract(),
-        Elevator.Commands.elevatorCubeMidScoreAndWait(),
+        Elevator.Commands.elevatorCubeLowScoreAndWait(),
         score(),
         stopIntake(),
         Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
         startIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_A.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
+        stopIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        Elevator.Commands.elevatorCubeLowScoreAndWait(),
+        Elevator.Commands.elevatorCubeMidScoreAndWait(),
         score(),
         stopIntake(),
-        Elevator.Commands.setTargetHeightAndWait(Constants.zero));
+        Elevator.Commands.setToHeight(Constants.zero));
   }
 }
