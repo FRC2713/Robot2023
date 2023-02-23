@@ -15,17 +15,20 @@ public class AutoPath {
   public enum Autos {
     // Cone Paths (Paths to/from grids with cone goals)
     A_TO_FIVE("cargoAtogrid5", 2, 3),
+    A_TO_FOUR("cargoAtogrid4", 2, 3),
     A_TO_THREE("cargoAtogrid3", 2, 3),
     D_TO_SEVEN("cargoDtogrid7", 2, 3),
     ONE_TO_A("grid1tocargoA", 2, 3),
     THREE_TO_B("grid3tocargoB", 2, 3),
+    FOUR_TO_B("grid4tocargoB", 2, 3),
     NINE_TO_D("grid9tocargoD", 2, 3),
 
     // Cube Paths (Paths to/from grids with cube goals)
     A_TO_TWO("cargoAtogrid2", 2, 3),
-    A_TO_FOUR("cargoAtogrid4", 2, 3),
+    B_TO_TWO("cargoBtogrid2", 2, 3),
     TWO_TO_A("grid2tocargoA", 2, 3),
-    FOUR_TO_B("grid4tocargoB", 2, 3);
+    TWO_TO_B("grid2tocargoB", 2, 3),
+    FIVE_TO_B("grid5tocargoB", 2, 3);
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
+import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
@@ -127,7 +128,8 @@ public class Robot extends LoggedRobot {
     goClosestGrid = new GoClosestGrid();
 
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
-    autoChooser.addDefaultOption("TwoCubeOver", new TwoCubeOver());
+    autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
+    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("Bridge", new GetOnBridge());
 
