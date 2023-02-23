@@ -20,9 +20,9 @@ public class TwoConeOver extends SequentialCommandGroup {
     return new SequentialCommandGroup(
         FourBar.Commands.extend(),
         Intake.Commands.setRollerVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getRollerRPM(), Robot.gamePieceMode),
+            Constants.SuperstructureConstants.SCORE_CUBE.getRollerRPM(), Robot.gamePieceMode),
         Intake.Commands.setWheelVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getWheelRPM(), Robot.gamePieceMode),
+            Constants.SuperstructureConstants.SCORE_CUBE.getWheelRPM(), Robot.gamePieceMode),
         new WaitCommand(1));
   }
 

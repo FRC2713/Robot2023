@@ -1,9 +1,12 @@
 package frc.robot.subsystems.intakeIO;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import org.littletonrobotics.junction.Logger;
@@ -78,6 +81,21 @@ public class Intake extends SubsystemBase {
 
     public static Command setRollerVelocityRPMAndWait(double targetRPM) {
       return setRollerVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    }
+
+    public static Command scoreCube() {
+      return new ConditionalCommand(
+          new ParallelCommandGroup(
+              Intake.Commands.setRollerVelocityRPM(
+                  SuperstructureConstants.SCORE_CUBE.getRollerRPM()),
+              Intake.Commands.setWheelVelocityRPM(
+                  SuperstructureConstants.SCORE_CUBE.getWheelRPM())),
+          new ParallelCommandGroup(
+              Intake.Commands.setRollerVelocityRPM(
+                  SuperstructureConstants.SCORE_CONE.getRollerRPM()),
+              Intake.Commands.setWheelVelocityRPM(
+                  SuperstructureConstants.SCORE_CONE.getWheelRPM())),
+          () -> Robot.gamePieceMode == GamePieceMode.CUBE);
     }
   }
 }

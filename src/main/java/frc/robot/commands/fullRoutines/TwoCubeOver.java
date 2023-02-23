@@ -18,17 +18,13 @@ public class TwoCubeOver extends SequentialCommandGroup {
 
   private SequentialCommandGroup score() {
     return new SequentialCommandGroup(
-        FourBar.Commands.extend(),
-        Intake.Commands.setRollerVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getRollerRPM(), Robot.gamePieceMode),
-        Intake.Commands.setWheelVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getWheelRPM(), Robot.gamePieceMode),
-        new WaitCommand(1));
+        FourBar.Commands.extend(), Intake.Commands.scoreCube(), new WaitCommand(1));
   }
 
   private SequentialCommandGroup startIntake() {
     return new SequentialCommandGroup(
-        FourBar.Commands.extend(),
+        FourBar.Commands.setToAngle(
+            Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
         Intake.Commands.setRollerVelocityRPM(
             Constants.SuperstructureConstants.INTAKE_CUBE.getRollerRPM()),
         Intake.Commands.setWheelVelocityRPM(
@@ -64,7 +60,6 @@ public class TwoCubeOver extends SequentialCommandGroup {
         startIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_A.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        stopIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         Elevator.Commands.elevatorCubeLowScoreAndWait(),

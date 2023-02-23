@@ -324,7 +324,10 @@ public final class Constants {
             .wheelRPM(-1500)
             .rollerRPM(1500)
             .build();
-    public static final SuperstructureConfig SCORE =
+    public static final SuperstructureConfig SCORE_CUBE =
+        SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(-1000).rollerRPM(-1000).build();
+
+    public static final SuperstructureConfig SCORE_CONE =
         SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(1000).rollerRPM(-1000).build();
   }
 }

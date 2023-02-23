@@ -350,12 +350,7 @@ public class Robot extends LoggedRobot {
 
     driver
         .y()
-        .whileTrue(
-            new ParallelCommandGroup(
-                Intake.Commands.setRollerVelocityRPM(
-                    SuperstructureConstants.SCORE.getRollerRPM(), gamePieceMode),
-                Intake.Commands.setWheelVelocityRPM(
-                    SuperstructureConstants.SCORE.getWheelRPM(), gamePieceMode)))
+        .whileTrue(Intake.Commands.scoreCube())
         .onFalse(
             new SequentialCommandGroup(
                 Intake.Commands.setRollerVelocityRPM(Constants.zero),

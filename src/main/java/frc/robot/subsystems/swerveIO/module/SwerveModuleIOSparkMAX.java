@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
 import frc.robot.util.RedHawkUtil;
 
@@ -52,6 +53,8 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
     driver.setIdleMode(IdleMode.kBrake);
     azimuth.setIdleMode(IdleMode.kBrake);
+
+    driver.setSmartCurrentLimit(Constants.DriveConstants.CURRENT_LIMIT);
 
     getDriveEncoder()
         .setPositionConversionFactor((1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI);

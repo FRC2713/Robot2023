@@ -19,9 +19,9 @@ public class TwoConeUnder extends SequentialCommandGroup {
   private SequentialCommandGroup score() {
     return new SequentialCommandGroup(
         Intake.Commands.setRollerVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getRollerRPM(), Robot.gamePieceMode),
+            Constants.SuperstructureConstants.SCORE_CUBE.getRollerRPM(), Robot.gamePieceMode),
         Intake.Commands.setWheelVelocityRPM(
-            Constants.SuperstructureConstants.SCORE.getWheelRPM(), Robot.gamePieceMode),
+            Constants.SuperstructureConstants.SCORE_CUBE.getWheelRPM(), Robot.gamePieceMode),
         new WaitCommand(1));
   }
 
