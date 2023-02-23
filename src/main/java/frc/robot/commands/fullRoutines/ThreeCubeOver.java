@@ -65,7 +65,7 @@ public class ThreeCubeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CUBE;
             }),
         FourBar.Commands.retract(),
-        Elevator.Commands.elevatorCubeHighScoreAndWait(),
+        Elevator.Commands.elevatorCubeLowScoreAndWait(),
         score(),
         stopIntake(),
         Elevator.Commands.elevatorCubeFloorIntakeAndWait(),
@@ -84,7 +84,7 @@ public class ThreeCubeOver extends SequentialCommandGroup {
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.B_TO_TWO.getTrajectory()),
-        Elevator.Commands.elevatorCubeLowScoreAndWait(),
+        Elevator.Commands.elevatorCubeHighScoreAndWait(),
         score(),
         stopIntake(),
         Elevator.Commands.setTargetHeightAndWait(0));
