@@ -68,8 +68,8 @@ public final class Constants {
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
-    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR =
-        (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 1.3019175;
+    // (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
