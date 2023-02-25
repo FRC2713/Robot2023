@@ -13,12 +13,12 @@ public class AutoPath {
   public static final double fieldWidth = Units.inchesToMeters(315.5);
 
   public enum Autos {
-    A_TO_FIVE("cargoAtogrid5", 4, 3),
-    A_TO_THREE("cargoAtogrid3", 4, 3),
-    D_TO_SEVEN("cargoDtogrid7", 4, 3),
-    ONE_TO_A("grid1tocargoA", 4, 3),
-    THREE_TO_B("grid3tocargoB", 4, 3),
-    NINE_TO_D("grid9tocargoD", 4, 3);
+    A_TO_FIVE("cargoAtogrid5", 1, 3),
+    A_TO_THREE("cargoAtogrid3", 1, 3),
+    D_TO_SEVEN("cargoDtogrid7", 1, 3),
+    ONE_TO_A("grid1tocargoA", 1, 3),
+    THREE_TO_B("grid3tocargoB", 1, 3),
+    NINE_TO_D("grid9tocargoD", 1, 3);
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {
