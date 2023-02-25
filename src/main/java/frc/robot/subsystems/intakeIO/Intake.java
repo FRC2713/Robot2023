@@ -1,9 +1,12 @@
 package frc.robot.subsystems.intakeIO;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import org.littletonrobotics.junction.Logger;
@@ -58,26 +61,23 @@ public class Intake extends SubsystemBase {
       return new InstantCommand(() -> Robot.intake.setRollerRPM(targetRPM));
     }
 
-    public static Command setWheelVelocityRPM(double targetRPM, GamePieceMode gamePieceMode) {
-      return new InstantCommand(
-          () ->
-              Robot.intake.setWheelRpm(
-                  targetRPM * (Robot.gamePieceMode == GamePieceMode.CUBE ? -1 : 1)));
-    }
-
-    public static Command setRollerVelocityRPM(double targetRPM, GamePieceMode gamePieceMode) {
-      return new InstantCommand(
-          () ->
-              Robot.intake.setRollerRPM(
-                  targetRPM * (Robot.gamePieceMode == GamePieceMode.CUBE ? -1 : 1)));
-    }
-
     public static Command setWheelVelocityRPMAndWait(double targetRPM) {
       return setWheelVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
     }
 
     public static Command setRollerVelocityRPMAndWait(double targetRPM) {
       return setRollerVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    }
+
+    public static Command score() {
+      return new ConditionalCommand(
+          new ParallelCommandGroup(
+              setRollerVelocityRPM(SuperstructureConstants.SCORE_CUBE.getRollerRPM()),
+              setWheelVelocityRPM(SuperstructureConstants.SCORE_CUBE.getWheelRPM())),
+          new ParallelCommandGroup(
+              setRollerVelocityRPM(SuperstructureConstants.SCORE_CONE.getRollerRPM()),
+              setWheelVelocityRPM(SuperstructureConstants.SCORE_CONE.getWheelRPM())),
+          () -> Robot.gamePieceMode == GamePieceMode.CUBE);
     }
   }
 }

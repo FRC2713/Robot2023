@@ -89,12 +89,6 @@ public final class Constants {
     public static final double ELEVATOR_CUBE_MID_SCORE = 17;
     public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
     public static final double ELEVATOR_CUBE_HIGH_SCORE = 30;
-
-    public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
-
-    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = zero;
-
-    public static final double ELEVATOR_CONE_FLOOR_UP_INTAKE = 12;
   }
 
   @UtilityClass
@@ -338,11 +332,11 @@ public final class Constants {
             .wheelRPM(-1500)
             .rollerRPM(1500)
             .build();
-    public static final SuperstructureConfig SCORE =
-        SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(1000).rollerRPM(1000).build();
-    // public static final SuperstructureConfig SCORE_CUBE =
-    //     SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1)
-    //     .wheelRPM(1000)
-    //     .rollerRPM(1000).build();
+
+    public static final SuperstructureConfig SCORE_CUBE =
+        SuperstructureConfig.builder().fourBarPosition(45).wheelRPM(-1000).rollerRPM(-1000).build();
+
+    public static final SuperstructureConfig SCORE_CONE =
+        SuperstructureConfig.builder().fourBarPosition(45).wheelRPM(1000).rollerRPM(-1000).build();
   }
 }
