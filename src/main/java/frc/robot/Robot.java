@@ -374,7 +374,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                FourBar.Commands.extend()));
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CONE_HIGH.getFourBarPosition())));
 
     operator
         .rightBumper()
@@ -382,7 +383,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                FourBar.Commands.setAngleDegAndWait(100)));
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CONE_MID.getFourBarPosition())));
 
     operator
         .rightBumper()
@@ -390,7 +392,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                FourBar.Commands.extend()));
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CONE_LOW.getFourBarPosition())));
 
     operator
         .leftBumper()
@@ -398,21 +401,26 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(75)));
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CUBE_HIGH.getFourBarPosition())));
 
     operator
         .leftBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID)));
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CUBE_MID.getFourBarPosition())));
 
     operator
         .leftBumper()
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW)));
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
+                FourBar.Commands.setAngleDegAndWait(
+                    SuperstructureConstants.SCORE_CUBE_LOW.getFourBarPosition())));
 
     operator
         .povDown()

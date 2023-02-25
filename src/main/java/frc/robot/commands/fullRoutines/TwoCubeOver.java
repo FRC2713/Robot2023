@@ -72,12 +72,9 @@ public class TwoCubeOver extends SequentialCommandGroup {
                   Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;
             }),
-        // FourBar.Commands.retract(),
-        score(SuperstructureConstants.SCORE_CUBE_LOW),
-        stopIntake(),
         Commands.parallel(
+            Commands.sequence(Intake.Commands.score(), new WaitCommand(0.5), startIntake()),
             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-            startIntake(),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_A.getTrajectory())),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
