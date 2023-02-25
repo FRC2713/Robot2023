@@ -8,7 +8,6 @@ import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
 import static frc.robot.subsystems.LightStrip.Pattern.Purple;
 import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -101,7 +100,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
@@ -384,36 +382,34 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .and(operator.b())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorConeMidScoreAndWait(),
+                FourBar.Commands.setAngleDegAndWait(100)));
 
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
-            new SequentialCommandGroup(
+            new ParallelCommandGroup(
                 Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.y())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.elevatorCubeHighScoreAndWait(),
+                FourBar.Commands.setAngleDegAndWait(75)));
 
     operator
         .leftBumper()
         .and(operator.b())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeMidScoreAndWait()));
 
     operator
         .leftBumper()
         .and(operator.a())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeLowScoreAndWait()));
 
     operator
         .povDown()

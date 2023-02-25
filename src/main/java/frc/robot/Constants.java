@@ -85,10 +85,10 @@ public final class Constants {
 
     public static final double ELEVATOR_CONE_LOW_SCORE = 0;
     public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
-    public static final double ELEVATOR_CONE_MID_SCORE = 35;
-    public static final double ELEVATOR_CUBE_MID_SCORE = 17;
+    public static final double ELEVATOR_CONE_MID_SCORE = 32.5;
+    public static final double ELEVATOR_CUBE_MID_SCORE = 12;
     public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
-    public static final double ELEVATOR_CUBE_HIGH_SCORE = 30;
+    public static final double ELEVATOR_CUBE_HIGH_SCORE = 26;
   }
 
   @UtilityClass
