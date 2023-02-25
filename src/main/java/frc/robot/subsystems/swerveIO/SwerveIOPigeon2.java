@@ -18,7 +18,7 @@ public class SwerveIOPigeon2 implements SwerveIO {
 
   @Override
   public void updateInputs(SwerveInputs inputs) {
-    inputs.gyroCompassHeading = gyro.getAbsoluteCompassHeading();
+    // inputs.gyroCompassHeading = gyro.getAbsoluteCompassHeading();
     inputs.previousgyroPitchPosition = inputs.gyroPitchPosition;
     inputs.gyroPitchPosition = gyro.getPitch();
     inputs.gyroRollPosition = gyro.getRoll();
