@@ -18,8 +18,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -84,7 +84,7 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
-  private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+  private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.25, 0.02);
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -101,7 +101,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    checkAlliance();
     CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
@@ -140,14 +139,10 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
     mechManager = new MechanismManager();
-    autoCommand = new TwoConeOver();
     goClosestGrid = new GoClosestGrid();
 
-    autoChooser.addOption("TwoConeOver", new TwoConeOver());
-    autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
-    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
-    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
-    autoChooser.addOption("Bridge", new GetOnBridge());
+    checkAlliance();
+    buildAutoChooser();
 
     // elevator.setDefaultCommand(
     //     new InstantCommand(
@@ -534,12 +529,16 @@ public class Robot extends LoggedRobot {
   public void testExit() {}
 
   public void buildAutoChooser() {
-    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
-    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+    autoChooser.addOption("TwoConeOver", new TwoConeOver());
+    autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
+    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
+    autoChooser.addOption("Bridge", new GetOnBridge());
   }
 
   public void checkAlliance() {
     Alliance checkedAlliance = DriverStation.getAlliance();
+    Logger.getInstance().recordOutput("DS Alliance", currentAlliance.name());
 
     if (DriverStation.isDSAttached() && checkedAlliance != currentAlliance) {
       currentAlliance = checkedAlliance;
