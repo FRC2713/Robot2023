@@ -374,8 +374,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CONE_HIGH.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH)));
 
     operator
         .rightBumper()
@@ -383,8 +382,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CONE_MID.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID)));
 
     operator
         .rightBumper()
@@ -392,8 +390,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CONE_LOW.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW)));
 
     operator
         .leftBumper()
@@ -401,8 +398,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CUBE_HIGH.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH)));
 
     operator
         .leftBumper()
@@ -410,8 +406,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CUBE_MID.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID)));
 
     operator
         .leftBumper()
@@ -419,8 +414,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                FourBar.Commands.setAngleDegAndWait(
-                    SuperstructureConstants.SCORE_CUBE_LOW.getFourBarPosition())));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW)));
 
     operator
         .povDown()
