@@ -83,12 +83,12 @@ public final class Constants {
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 45;
 
-    public static final double ELEVATOR_CONE_LOW_SCORE = 0;
-    public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
-    public static final double ELEVATOR_CONE_MID_SCORE = 32.5;
-    public static final double ELEVATOR_CUBE_MID_SCORE = 12;
-    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
-    public static final double ELEVATOR_CUBE_HIGH_SCORE = 26;
+    // public static final double ELEVATOR_CONE_LOW_SCORE = 0;
+    // public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
+    // public static final double ELEVATOR_CONE_MID_SCORE = 32.5;
+    // public static final double ELEVATOR_CUBE_MID_SCORE = 12;
+    // public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
+    // public static final double ELEVATOR_CUBE_HIGH_SCORE = 26;
   }
 
   @UtilityClass
@@ -196,7 +196,7 @@ public final class Constants {
 
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.75);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
     public static final int CURRENT_LIMIT = 25;
@@ -333,10 +333,52 @@ public final class Constants {
             .rollerRPM(1500)
             .build();
 
-    public static final SuperstructureConfig SCORE_CUBE =
-        SuperstructureConfig.builder().fourBarPosition(45).wheelRPM(-1000).rollerRPM(-1000).build();
+    public static final SuperstructureConfig SCORE_CUBE_LOW =
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(45)
+            .wheelRPM(-1000)
+            .rollerRPM(-1000)
+            .build();
 
-    public static final SuperstructureConfig SCORE_CONE =
-        SuperstructureConfig.builder().fourBarPosition(45).wheelRPM(1000).rollerRPM(-1000).build();
+    public static final SuperstructureConfig SCORE_CUBE_MID =
+        SuperstructureConfig.builder()
+            .elevatorPosition(12)
+            .fourBarPosition(45)
+            .wheelRPM(-1000)
+            .rollerRPM(-1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CUBE_HIGH =
+        SuperstructureConfig.builder()
+            .elevatorPosition(26)
+            .fourBarPosition(45)
+            .wheelRPM(-1000)
+            .rollerRPM(-1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_LOW =
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(45)
+            .wheelRPM(1000)
+            .rollerRPM(-1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_MID =
+        SuperstructureConfig.builder()
+            .elevatorPosition(32.5)
+            .fourBarPosition(45)
+            .wheelRPM(1000)
+            .rollerRPM(-1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_HIGH =
+        SuperstructureConfig.builder()
+            .elevatorPosition(50)
+            .fourBarPosition(45)
+            .wheelRPM(1000)
+            .rollerRPM(-1000)
+            .build();
   }
 }

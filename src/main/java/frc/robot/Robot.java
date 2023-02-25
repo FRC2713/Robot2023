@@ -264,8 +264,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CUBE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_CUBE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getWheelRPM()),
@@ -289,8 +288,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getWheelRPM()),
@@ -314,8 +312,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM()),
@@ -376,14 +373,15 @@ public class Robot extends LoggedRobot {
         .and(operator.y())
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
+                FourBar.Commands.extend()));
 
     operator
         .rightBumper()
         .and(operator.b())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.elevatorConeMidScoreAndWait(),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 FourBar.Commands.setAngleDegAndWait(100)));
 
     operator
@@ -391,31 +389,36 @@ public class Robot extends LoggedRobot {
         .and(operator.a())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
+                FourBar.Commands.extend()));
 
     operator
         .leftBumper()
         .and(operator.y())
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.elevatorCubeHighScoreAndWait(),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(75)));
 
     operator
         .leftBumper()
         .and(operator.b())
-        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeMidScoreAndWait()));
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID)));
 
     operator
         .leftBumper()
         .and(operator.a())
-        .onTrue(new ParallelCommandGroup(Elevator.Commands.elevatorCubeLowScoreAndWait()));
+        .onTrue(
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW)));
 
     operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.setTargetHeightAndWait(0), FourBar.Commands.retract()));
+                Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract()));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));

@@ -72,11 +72,11 @@ public class Intake extends SubsystemBase {
     public static Command score() {
       return new ConditionalCommand(
           new ParallelCommandGroup(
-              setRollerVelocityRPM(SuperstructureConstants.SCORE_CUBE.getRollerRPM()),
-              setWheelVelocityRPM(SuperstructureConstants.SCORE_CUBE.getWheelRPM())),
+              setRollerVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getRollerRPM()),
+              setWheelVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getWheelRPM())),
           new ParallelCommandGroup(
-              setRollerVelocityRPM(SuperstructureConstants.SCORE_CONE.getRollerRPM()),
-              setWheelVelocityRPM(SuperstructureConstants.SCORE_CONE.getWheelRPM())),
+              setRollerVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getRollerRPM()),
+              setWheelVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getWheelRPM())),
           () -> Robot.gamePieceMode == GamePieceMode.CUBE);
     }
   }

@@ -8,14 +8,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
-import frc.robot.Robot.GamePieceMode;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -122,14 +118,6 @@ public class FourBar extends SubsystemBase {
 
     public static Command extend() {
       return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS));
-    }
-
-    public static Command score() {
-      return new ConditionalCommand(
-          setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE.getFourBarPosition()),
-          new ParallelCommandGroup(
-              setAngleDegAndWait(SuperstructureConstants.SCORE_CONE.getFourBarPosition())),
-          () -> Robot.gamePieceMode == GamePieceMode.CUBE);
     }
   }
 }

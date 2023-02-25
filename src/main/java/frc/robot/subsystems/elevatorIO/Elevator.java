@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
+import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -135,7 +136,7 @@ public class Elevator extends SubsystemBase {
 
   public static class Commands {
 
-    public static Command setTargetHeightAndWait(double targetHeightInches) {
+    public static Command setToHeightAndWait(double targetHeightInches) {
       return setToHeight(targetHeightInches)
           .repeatedly()
           .until(() -> Robot.elevator.atTargetHeight());
@@ -145,105 +146,12 @@ public class Elevator extends SubsystemBase {
       return new InstantCommand(() -> Robot.elevator.setTargetHeight(height), Robot.elevator);
     }
 
-    public static Command elevatorConeLowScore() {
-      return new InstantCommand(
-          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CONE_LOW_SCORE),
-          Robot.elevator);
+    public static Command setToHeight(SuperstructureConfig config) {
+      return setToHeight(config.getElevatorPosition());
     }
 
-    public static Command elevatorConeLowScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_LOW_SCORE);
-    }
-
-    public static Command elevatorCubeLowScore() {
-      return new InstantCommand(
-          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE),
-          Robot.elevator);
-    }
-
-    public static Command elevatorCubeLowScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_LOW_SCORE);
-    }
-
-    public static Command elevatorConeMidScore() {
-      return new InstantCommand(
-          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CONE_MID_SCORE),
-          Robot.elevator);
-    }
-
-    public static Command elevatorConeMidScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_MID_SCORE);
-    }
-
-    public static Command elevatorCubeMidScore() {
-      return new InstantCommand(
-          () -> Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE),
-          Robot.elevator);
-    }
-
-    public static Command elevatorCubeMidScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_MID_SCORE);
-    }
-
-    public static Command elevatorConeHighScore() {
-      return new InstantCommand(
-          () ->
-              Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE),
-          Robot.elevator);
-    }
-
-    public static Command elevatorConeHighScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CONE_HIGH_SCORE);
-    }
-
-    public static Command elevatorCubeHighScore() {
-      return new InstantCommand(
-          () ->
-              Robot.elevator.setTargetHeight(Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE),
-          Robot.elevator);
-    }
-
-    public static Command elevatorCubeHighScoreAndWait() {
-      return setTargetHeightAndWait(Constants.ElevatorConstants.ELEVATOR_CUBE_HIGH_SCORE);
-    }
-
-    public static Command elevatorCubeFloorIntake() {
-      return new InstantCommand(
-          () ->
-              Robot.elevator.setTargetHeight(
-                  Constants.SuperstructureConstants.INTAKE_CUBE.getElevatorPosition()),
-          Robot.elevator);
-    }
-
-    public static Command elevatorCubeFloorIntakeAndWait() {
-      return setTargetHeightAndWait(
-          Constants.SuperstructureConstants.INTAKE_CUBE.getElevatorPosition());
-    }
-
-    public static Command elevatorConeFloorTippedIntake() {
-      return new InstantCommand(
-          () ->
-              Robot.elevator.setTargetHeight(
-                  Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition()),
-          Robot.elevator);
-    }
-
-    public static Command elevatorConeFloorTippedIntakeAndWait() {
-      return setTargetHeightAndWait(
-          Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition());
-    }
-
-    public static Command elevatorConeFloorUpIntake() {
-      return new InstantCommand(
-          () ->
-              Robot.elevator.setTargetHeight(
-                  Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition()),
-          Robot.elevator);
-    }
-
-    public static Command elevatorConeFloorUpIntakeAndWait() {
-      return setTargetHeightAndWait(
-          Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition());
+    public static Command setToHeightAndWait(SuperstructureConfig config) {
+      return setToHeightAndWait(config.getElevatorPosition());
     }
 
     public static Command elevatorCurrentHeight() {

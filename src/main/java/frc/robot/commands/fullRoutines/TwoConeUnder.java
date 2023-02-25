@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -16,13 +17,17 @@ import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.AutoPath.Autos;
+import frc.robot.util.SuperstructureConfig;
 import frc.robot.util.TrajectoryController;
 
 public class TwoConeUnder extends SequentialCommandGroup {
 
-  private Command score() {
+  private Command score(SuperstructureConfig config) {
     return new SequentialCommandGroup(
-        FourBar.Commands.score(), Intake.Commands.score(), new WaitCommand(1));
+        Elevator.Commands.setToHeightAndWait(config),
+        FourBar.Commands.setToAngle(config.getFourBarPosition()),
+        Intake.Commands.score(),
+        new WaitCommand(0.5));
   }
 
   private Command startIntake() {
@@ -66,19 +71,17 @@ public class TwoConeUnder extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         FourBar.Commands.retract(),
-        Elevator.Commands.elevatorConeMidScoreAndWait(),
-        score(),
+        score(SuperstructureConstants.SCORE_CONE_MID),
         stopIntake(),
-        Elevator.Commands.elevatorConeFloorUpIntakeAndWait(),
+        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
         startIntake(),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_SEVEN.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        Elevator.Commands.elevatorConeMidScoreAndWait(),
-        score(),
+        score(SuperstructureConstants.SCORE_CONE_MID),
         stopIntake(),
-        Elevator.Commands.setTargetHeightAndWait(Constants.zero));
+        Elevator.Commands.setToHeightAndWait(Constants.zero));
   }
 }
