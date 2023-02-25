@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.util.RedHawkUtil;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
@@ -15,6 +16,10 @@ public class FourBarIOSparks implements FourBarIO {
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
+
+    RedHawkUtil.configureHighTrafficSpark(fourBarOne);
+    // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
+
     fourBarOne.setIdleMode(IdleMode.kCoast);
 
     fourBarOne.setInverted(true); // subject to change

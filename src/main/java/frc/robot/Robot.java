@@ -4,9 +4,12 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.*;
+import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
+import static frc.robot.subsystems.LightStrip.Pattern.Purple;
+import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -15,9 +18,17 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
@@ -29,6 +40,7 @@ import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
+import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
@@ -72,6 +84,7 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
+  private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -84,8 +97,11 @@ public class Robot extends LoggedRobot {
   public static double[] poseValue;
   DoubleArraySubscriber visionPose;
 
+  Alliance currentAlliance = Alliance.Invalid;
+
   @Override
   public void robotInit() {
+    checkAlliance();
     CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
@@ -102,8 +118,8 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().start();
 
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    // elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
-    elevator = new Elevator(new ElevatorIOSim());
+    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
+    // elevator = new Elevator(new ElevatorIOSim());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
@@ -435,6 +451,10 @@ public class Robot extends LoggedRobot {
                 + swerveDrive.getTotalCurrentDraw()));
 
     Logger.getInstance().recordOutput("Game piece mode", gamePieceMode.name());
+    Logger.getInstance()
+        .recordOutput(
+            "Filtered CAN Utilization",
+            canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
   }
 
   @Override
@@ -447,13 +467,16 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    checkAlliance();
+  }
 
   @Override
   public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
+    checkAlliance();
     motionMode = MotionMode.TRAJECTORY;
     autoCommand = autoChooser.get();
 
@@ -509,6 +532,22 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testExit() {}
+
+  public void buildAutoChooser() {
+    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
+    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+  }
+
+  public void checkAlliance() {
+    Alliance checkedAlliance = DriverStation.getAlliance();
+
+    if (DriverStation.isDSAttached() && checkedAlliance != currentAlliance) {
+      currentAlliance = checkedAlliance;
+
+      goClosestGrid = new GoClosestGrid();
+      buildAutoChooser();
+    }
+  }
 
   public String goFast() {
     return "nyoooooooooom";
