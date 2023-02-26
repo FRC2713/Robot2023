@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
@@ -358,9 +359,19 @@ public class Robot extends LoggedRobot {
 
     driver
         .y()
-        .whileTrue(Intake.Commands.score())
+        .whileTrue(
+            Commands.sequence(
+                new InstantCommand(
+                    () -> {
+                      intake.setCurrentLimit(40);
+                    }),
+                Intake.Commands.score()))
         .onFalse(
             new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      intake.setCurrentLimit(20);
+                    }),
                 Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 Intake.Commands.setWheelVelocityRPM(Constants.zero),
                 new WaitCommand(0.5),

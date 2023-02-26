@@ -51,6 +51,10 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().processInputs("Intake", inputs);
   }
 
+  public void setCurrentLimit(int currentLimit) {
+    IO.setCurrentLimit(currentLimit);
+  }
+
   public static class Commands {
 
     public static Command setWheelVelocityRPM(double targetRPM) {

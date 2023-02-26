@@ -71,4 +71,9 @@ public class IntakeIOSparks implements IntakeIO {
   public void setVoltageRollers(double volts) {
     rollers.setVoltage(volts);
   }
+
+  public void setCurrentLimit(int currentLimit) {
+    wheels.setSmartCurrentLimit(currentLimit);
+    rollers.setSmartCurrentLimit(currentLimit);
+  }
 }
