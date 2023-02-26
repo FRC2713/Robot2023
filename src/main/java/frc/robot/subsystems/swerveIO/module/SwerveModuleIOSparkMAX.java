@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
 import frc.robot.util.RedHawkUtil;
 
@@ -45,25 +46,36 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver.restoreFactoryDefaults();
     azimuth.restoreFactoryDefaults();
 
+    driver.setCANTimeout(Constants.CAN_TIMEOUT_MS);
+    azimuth.setCANTimeout(Constants.CAN_TIMEOUT_MS);
+
     RedHawkUtil.configureHighTrafficSpark(azimuth);
     RedHawkUtil.configureHighTrafficSpark(driver);
 
-    azimuth.setInverted(true);
-    driver.setInverted(true);
+    for (int i = 0; i < 10; i++) {
+      azimuth.setInverted(true);
+      driver.setInverted(true);
 
-    cOk(driver.setIdleMode(IdleMode.kBrake));
-    cOk(azimuth.setIdleMode(IdleMode.kBrake));
+      cOk(driver.setIdleMode(IdleMode.kBrake));
+      cOk(azimuth.setIdleMode(IdleMode.kBrake));
 
-    cOk(
-        getDriveEncoder()
-            .setPositionConversionFactor((1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI));
-    cOk(
-        getDriveEncoder()
-            .setVelocityConversionFactor((1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI / 60));
+      cOk(
+          getDriveEncoder()
+              .setPositionConversionFactor((1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI));
+      cOk(
+          getDriveEncoder()
+              .setVelocityConversionFactor(
+                  (1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI / 60));
 
-    cOk(getAziEncoder().setPositionConversionFactor(7.0 / 150.0 * 360.0));
-    cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
-    cOk(getAziEncoder().setPosition(getAziAbsoluteEncoder().getAdjustedRotation2d().getDegrees()));
+      cOk(getAziEncoder().setPositionConversionFactor(7.0 / 150.0 * 360.0));
+      cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
+      cOk(
+          getAziEncoder()
+              .setPosition(getAziAbsoluteEncoder().getAdjustedRotation2d().getDegrees()));
+    }
+
+    driver.setCANTimeout(0);
+    azimuth.setCANTimeout(0);
   }
 
   @Override

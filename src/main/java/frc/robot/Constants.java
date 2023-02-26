@@ -38,6 +38,7 @@ public final class Constants {
   public static final int INT_PLACEHOLDER = zero;
   public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
+  public static final int CAN_TIMEOUT_MS = 200;
 
   @UtilityClass
   public static final class RobotMap {
