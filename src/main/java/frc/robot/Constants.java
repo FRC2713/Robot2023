@@ -104,7 +104,7 @@ public final class Constants {
     public static final double GEARING = 250.0;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
-    public static final int FOUR_BAR_CURRENT_LIMIT = 50;
+    public static final int FOUR_BAR_CURRENT_LIMIT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
     public static final PIDFFGains FOUR_BAR_GAINS =
         PIDFFGains.builder("4Bar Controller").kP(0.5).kI(zero).kD(zero).kG(0.000).build();
@@ -195,7 +195,7 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
 
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.8);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.85);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
@@ -315,7 +315,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-20)
+            .fourBarPosition(15)
             .wheelRPM(-3000)
             .rollerRPM(-3000)
             .build();
@@ -330,8 +330,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(27)
-            .wheelRPM(-1500)
-            .rollerRPM(3000)
+            .wheelRPM(-1000)
+            .rollerRPM(3500)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =
@@ -346,8 +346,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(12)
             .fourBarPosition(90)
-            .wheelRPM(-1000)
-            .rollerRPM(-1000)
+            .wheelRPM(-2000)
+            .rollerRPM(-2000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =
