@@ -323,15 +323,15 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(45)
-            .wheelRPM(-3000)
+            .wheelRPM(3000)
             .rollerRPM(-3000)
             .build();
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(27)
-            .wheelRPM(-1000)
-            .rollerRPM(3500)
+            .wheelRPM(-2500)
+            .rollerRPM(-2500)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =

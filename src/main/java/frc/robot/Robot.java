@@ -301,7 +301,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(-500),
+                Intake.Commands.setWheelVelocityRPM(500),
                 Intake.Commands.setRollerVelocityRPM(-500),
                 FourBar.Commands.retract()));
 
@@ -325,7 +325,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(-500),
+                Intake.Commands.setWheelVelocityRPM(500),
                 Intake.Commands.setRollerVelocityRPM(-500),
                 FourBar.Commands.retract()));
 

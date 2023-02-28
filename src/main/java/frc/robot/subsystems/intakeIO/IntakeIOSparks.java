@@ -3,6 +3,8 @@ package frc.robot.subsystems.intakeIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -22,7 +24,7 @@ public class IntakeIOSparks implements IntakeIO {
     RedHawkUtil.configureLowTrafficSpark(rollers);
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
-    // wheels.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10);
+    wheels.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10);
 
     wheels.setSmartCurrentLimit(Constants.IntakeConstants.WHEELS_CURRENT_LIMIT);
     rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLERS_CURRENT_LIMIT);
@@ -60,9 +62,9 @@ public class IntakeIOSparks implements IntakeIO {
         Units.rotationsPerMinuteToRadiansPerSecond(wheels.getEncoder().getPosition());
     inputs.rollersPositionRad =
         Units.rotationsPerMinuteToRadiansPerSecond(rollers.getEncoder().getPosition());
-    // inputs.encoderPosition = wheels.getAnalog(Mode.kAbsolute).getPosition();
-    // inputs.encoderVelocity = wheels.getAnalog(Mode.kAbsolute).getVelocity();
-    // inputs.encoderVoltage = wheels.getAnalog(Mode.kAbsolute).getVoltage();
+    inputs.encoderPosition = wheels.getAnalog(Mode.kAbsolute).getPosition();
+    inputs.encoderVelocity = wheels.getAnalog(Mode.kAbsolute).getVelocity();
+    inputs.encoderVoltage = wheels.getAnalog(Mode.kAbsolute).getVoltage();
   }
 
   @Override
