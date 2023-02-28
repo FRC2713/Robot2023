@@ -23,6 +23,8 @@ public interface IntakeIO {
     public double encoderVelocity = 0.0;
   }
 
+  public void setCurrentLimit(int currentLimit);
+
   public void updateInputs(IntakeInputs inputs);
 
   public void setVoltageWheels(double volts);

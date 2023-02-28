@@ -50,4 +50,6 @@ public class IntakeIOSim implements IntakeIO {
   public void setVoltageRollers(double volts) {
     simRollers.setInputVoltage(volts);
   }
+
+  public void setCurrentLimit(int currentLimit) {}
 }

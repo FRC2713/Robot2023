@@ -7,6 +7,7 @@ import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.util.RedHawkUtil;
 
 public class IntakeIOSparks implements IntakeIO {
 
@@ -17,6 +18,10 @@ public class IntakeIOSparks implements IntakeIO {
     rollers = new CANSparkMax(Constants.RobotMap.INTAKE_ROLLERS_CANID, MotorType.kBrushless);
     wheels.restoreFactoryDefaults();
     rollers.restoreFactoryDefaults();
+
+    RedHawkUtil.configureLowTrafficSpark(wheels);
+    RedHawkUtil.configureLowTrafficSpark(rollers);
+
     wheels.setSmartCurrentLimit(Constants.IntakeConstants.WHEELS_CURRENT_LIMIT);
     rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLERS_CURRENT_LIMIT);
     wheels.setIdleMode(IdleMode.kBrake);
@@ -69,5 +74,10 @@ public class IntakeIOSparks implements IntakeIO {
   @Override
   public void setVoltageRollers(double volts) {
     rollers.setVoltage(volts);
+  }
+
+  public void setCurrentLimit(int currentLimit) {
+    wheels.setSmartCurrentLimit(currentLimit);
+    rollers.setSmartCurrentLimit(currentLimit);
   }
 }
