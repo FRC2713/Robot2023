@@ -43,7 +43,6 @@ import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
-import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
@@ -115,7 +114,8 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    // fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    fourBar = new FourBar(new FourBarIOSim());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     // elevator = new Elevator(new ElevatorIOSim());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
