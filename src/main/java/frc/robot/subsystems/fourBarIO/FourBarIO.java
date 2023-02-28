@@ -20,6 +20,8 @@ public interface FourBarIO {
 
     public double currentDrawOne = 0.0;
     public double currentDrawTwo = 0.0;
+
+    public double absoluteEncoderVolts = 0.0;
   }
 
   public void updateInputs(FourBarInputs inputs);

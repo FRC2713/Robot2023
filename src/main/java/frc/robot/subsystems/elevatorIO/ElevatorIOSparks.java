@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
+import frc.robot.util.RedHawkUtil;
 
 public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
@@ -15,6 +16,9 @@ public class ElevatorIOSparks implements ElevatorIO {
 
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
+
+    RedHawkUtil.configureHighTrafficSpark(left);
+    RedHawkUtil.configureHighTrafficSpark(right);
 
     left.setIdleMode(CANSparkMax.IdleMode.kBrake);
     right.setIdleMode(CANSparkMax.IdleMode.kBrake);
