@@ -18,6 +18,9 @@ public interface IntakeIO {
     public double rollersCurrentAmps = 0.0;
     public double wheelsPositionRad = 0.0;
     public double rollersPositionRad = 0.0;
+    public double encoderVoltage = 0.0;
+    public double encoderPosition = 0.0;
+    public double encoderVelocity = 0.0;
   }
 
   public void updateInputs(IntakeInputs inputs);

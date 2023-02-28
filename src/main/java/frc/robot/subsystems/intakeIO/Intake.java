@@ -3,6 +3,7 @@ package frc.robot.subsystems.intakeIO;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
@@ -12,6 +13,7 @@ public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
+  private double detectionThreshold = 10000;
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
@@ -25,17 +27,29 @@ public class Intake extends SubsystemBase {
   }
 
   public void setWheelRpm(double rpm) {
-    this.targetRPM = rpm;
+    if (!hasGamepiece()) {
+      targetRPM = rpm;
+    } else {
+      targetRPM = 0;
+    }
     IO.setVoltageRollers(rpm / (IntakeConstants.MAX_WHEEL_RPM) * 12);
   }
 
   public void setRollerRPM(double rpm) {
-    this.targetRPM = rpm;
+    if (!hasGamepiece()) {
+      targetRPM = rpm;
+    } else {
+      targetRPM = 0;
+    }
     IO.setVoltageWheels(rpm / (IntakeConstants.MAX_ROLLER_RPM) * 12); // PLACEHOLDER VALUE
   }
 
   public double getCurrentDraw() {
     return inputs.wheelsCurrentAmps + inputs.rollersCurrentAmps;
+  }
+
+  public boolean hasGamepiece() {
+    return (inputs.encoderVoltage > detectionThreshold);
   }
 
   public void periodic() {
@@ -46,6 +60,11 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
 
     Logger.getInstance().processInputs("Intake", inputs);
+
+    if (hasGamepiece()) {
+      IO.setVoltageRollers(Constants.zero);
+      IO.setVoltageWheels(Constants.zero);
+    }
   }
 
   public static class Commands {
