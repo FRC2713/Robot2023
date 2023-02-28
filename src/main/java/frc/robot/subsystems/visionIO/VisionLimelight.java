@@ -51,8 +51,8 @@ public class VisionLimelight implements VisionIO {
     inputs.tid = getValueLong("tid");
     inputs.jsonDump = getValueString("json");
     inputs.botpose = getValueDoubleArray("botpose");
-    inputs.botpose_wpiblue = getValueDoubleArray("botpose red");
-    inputs.botpose_wpired = getValueDoubleArray("botpose red");
+    inputs.botpose_wpiblue = getValueDoubleArray("botpose_wpiblue");
+    inputs.botpose_wpired = getValueDoubleArray("botpose_wpired");
     inputs.camerapose_targetspace = getValueDoubleArray("camera pose - target space");
     inputs.targetpose_cameraspace = getValueDoubleArray("target pose - camera space");
     inputs.targetpose_robotspace = getValueDoubleArray("target pose - robot space");

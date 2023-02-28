@@ -150,7 +150,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private Pose2d getRegularPose() {
-    if (Robot.isReal()) {
+    if (false) {
       return odometry.getPoseMeters();
     } else {
       return simOdometryPose;
@@ -166,8 +166,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void updateVisionPose(TimestampedDoubleArray array) {
     double[] val = array.value;
-    Pose2d pose = new Pose2d(val[0], val[1], new Rotation2d(val[5]));
-    poseEstimator.addVisionMeasurement(pose, array.timestamp);
+    Pose2d pose = new Pose2d(val[0], val[1], Rotation2d.fromDegrees(val[5]));
+
+    if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
+      poseEstimator.addVisionMeasurement(pose, array.timestamp);
+    }
   }
 
   /**
@@ -231,7 +234,7 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    if (Robot.isSimulation()) {
+    if (true) {
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
             frontLeft.getMeasuredState(),
@@ -246,6 +249,7 @@ public class SwerveSubsystem extends SubsystemBase {
                   speeds.vxMetersPerSecond * .02,
                   speeds.vyMetersPerSecond * .02,
                   speeds.omegaRadiansPerSecond * .02));
+      inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
   }
 

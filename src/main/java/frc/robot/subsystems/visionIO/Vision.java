@@ -393,5 +393,14 @@ public class Vision extends SubsystemBase {
     IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Vision", inputs);
     SmartDashboard.putBoolean("Limelight State", hasValidTargets());
+
+    Logger.getInstance()
+        .recordOutput(
+            "Vision/LL Pose",
+            inputs.botpose_wpiblue.length > 0
+                ? new double[] {
+                  inputs.botpose_wpiblue[0], inputs.botpose_wpiblue[1], inputs.botpose_wpiblue[5],
+                }
+                : new double[] {});
   }
 }
