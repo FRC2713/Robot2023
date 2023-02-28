@@ -25,30 +25,29 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.rollersVelocityRPM - targetRPM)
-        < 0.5; // might be wheel rpm ¯\_(ツ)_/¯ we shall see
+    return Math.abs(inputs.topVelocityRPM - targetRPM) < 0.5;
   }
 
-  public void setWheelRpm(double rpm) {
+  public void setTopRpm(double rpm) {
     if (!hasGamepiece()) {
       targetRPM = rpm;
     } else {
       targetRPM = 0;
     }
-    IO.setVoltageRollers(rpm / (IntakeConstants.MAX_WHEEL_RPM) * 12);
+    IO.setTopVoltage(rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
   }
 
-  public void setRollerRPM(double rpm) {
+  public void setBottomRPM(double rpm) {
     if (!hasGamepiece()) {
       targetRPM = rpm;
     } else {
       targetRPM = 0;
     }
-    IO.setVoltageWheels(rpm / (IntakeConstants.MAX_ROLLER_RPM) * 12); // PLACEHOLDER VALUE
+    IO.setBottomVoltage(rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12); // PLACEHOLDER VALUE
   }
 
   public double getCurrentDraw() {
-    return inputs.wheelsCurrentAmps + inputs.rollersCurrentAmps;
+    return inputs.topCurrentAmps + inputs.bottomCurrentAmps;
   }
 
   public boolean hasGamepiece() {
@@ -65,8 +64,8 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().processInputs("Intake", inputs);
 
     if (hasGamepiece()) {
-      IO.setVoltageRollers(Constants.zero);
-      IO.setVoltageWheels(Constants.zero);
+      IO.setTopVoltage(Constants.zero);
+      IO.setBottomVoltage(Constants.zero);
     }
   }
 
@@ -76,30 +75,30 @@ public class Intake extends SubsystemBase {
 
   public static class Commands {
 
-    public static Command setWheelVelocityRPM(double targetRPM) {
-      return new InstantCommand(() -> Robot.intake.setWheelRpm(targetRPM));
+    public static Command setTopVelocityRPM(double targetRPM) {
+      return new InstantCommand(() -> Robot.intake.setTopRpm(targetRPM));
     }
 
-    public static Command setRollerVelocityRPM(double targetRPM) {
-      return new InstantCommand(() -> Robot.intake.setRollerRPM(targetRPM));
+    public static Command setBottomVelocityRPM(double targetRPM) {
+      return new InstantCommand(() -> Robot.intake.setBottomRPM(targetRPM));
     }
 
-    public static Command setWheelVelocityRPMAndWait(double targetRPM) {
-      return setWheelVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    public static Command setTopVelocityRPMAndWait(double targetRPM) {
+      return setTopVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
     }
 
-    public static Command setRollerVelocityRPMAndWait(double targetRPM) {
-      return setRollerVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
+    public static Command setBottomVelocityRPMAndWait(double targetRPM) {
+      return setBottomVelocityRPM(targetRPM).repeatedly().until(() -> Robot.intake.isAtTarget());
     }
 
     public static Command score() {
       return new ConditionalCommand(
           new ParallelCommandGroup(
-              setRollerVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getRollerRPM()),
-              setWheelVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getWheelRPM())),
+              setTopVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getTopRPM()),
+              setBottomVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getBottomRPM())),
           new ParallelCommandGroup(
-              setRollerVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getRollerRPM()),
-              setWheelVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getWheelRPM())),
+              setTopVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getTopRPM()),
+              setBottomVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getBottomRPM())),
           () -> Robot.gamePieceMode == GamePieceMode.CUBE);
     }
   }

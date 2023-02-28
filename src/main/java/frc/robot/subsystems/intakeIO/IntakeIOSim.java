@@ -7,48 +7,48 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
 
 public class IntakeIOSim implements IntakeIO {
-  private final DCMotorSim simWheels =
+  private final DCMotorSim simTopRollers =
       new DCMotorSim(
           DCMotor.getNeo550(1),
-          Constants.IntakeConstants.WHEELS_GEARING,
+          Constants.IntakeConstants.TOP_GEARING,
           Constants.IntakeConstants.MOI);
-  private final DCMotorSim simRollers =
+  private final DCMotorSim simBottomRollers =
       new DCMotorSim(
           DCMotor.getNeo550(1),
-          Constants.IntakeConstants.ROLLER_GEARING,
+          Constants.IntakeConstants.BOTTOM_GEARING,
           Constants.IntakeConstants.MOI);
 
   @Override
   public void updateInputs(IntakeInputs inputs) {
     if (DriverStation.isDisabled()) {
-      simWheels.setInputVoltage(0.0);
-      simRollers.setInputVoltage(0.0);
+      simTopRollers.setInputVoltage(0.0);
+      simBottomRollers.setInputVoltage(0.0);
     }
-    simWheels.update(0.02);
-    simRollers.update(0.02);
-    inputs.wheelsOutputVoltage = MathUtil.clamp(simWheels.getOutput(0), -12.0, 12.0);
-    inputs.rollersOutputVoltage = MathUtil.clamp(simRollers.getOutput(0), -12.0, 12.0);
-    inputs.wheelsIsOn = simWheels.getAngularVelocityRadPerSec() > 0.005;
-    inputs.rollersIsOn = simRollers.getAngularVelocityRadPerSec() > 0.005;
-    inputs.wheelsVelocityRPM = simWheels.getAngularVelocityRPM();
+    simTopRollers.update(0.02);
+    simBottomRollers.update(0.02);
+    inputs.topOutputVoltage = MathUtil.clamp(simTopRollers.getOutput(0), -12.0, 12.0);
+    inputs.bottomOutputVoltage = MathUtil.clamp(simBottomRollers.getOutput(0), -12.0, 12.0);
+    inputs.topIsOn = simTopRollers.getAngularVelocityRadPerSec() > 0.005;
+    inputs.bottomIsOn = simBottomRollers.getAngularVelocityRadPerSec() > 0.005;
+    inputs.topVelocityRPM = simTopRollers.getAngularVelocityRPM();
 
-    inputs.rollersVelocityRPM = simRollers.getAngularVelocityRPM();
-    inputs.wheelsTempCelcius = 0.0;
-    inputs.rollersTempCelcius = 0.0;
-    inputs.wheelsCurrentAmps = simWheels.getCurrentDrawAmps();
-    inputs.rollersCurrentAmps = simRollers.getCurrentDrawAmps();
-    inputs.wheelsPositionRad = simWheels.getAngularPositionRad();
-    inputs.rollersPositionRad = simRollers.getAngularPositionRad();
+    inputs.bottomVelocityRPM = simBottomRollers.getAngularVelocityRPM();
+    inputs.topTempCelcius = 0.0;
+    inputs.bottomTempCelcius = 0.0;
+    inputs.topCurrentAmps = simTopRollers.getCurrentDrawAmps();
+    inputs.bottomCurrentAmps = simBottomRollers.getCurrentDrawAmps();
+    inputs.topPositionRad = simTopRollers.getAngularPositionRad();
+    inputs.bottomPositionRad = simBottomRollers.getAngularPositionRad();
   }
 
   @Override
-  public void setVoltageWheels(double volts) {
-    simWheels.setInputVoltage(volts);
+  public void setTopVoltage(double volts) {
+    simTopRollers.setInputVoltage(volts);
   }
 
   @Override
-  public void setVoltageRollers(double volts) {
-    simRollers.setInputVoltage(volts);
+  public void setBottomVoltage(double volts) {
+    simBottomRollers.setInputVoltage(volts);
   }
 
   public void setCurrentLimit(int currentLimit) {}

@@ -267,18 +267,18 @@ public class Robot extends LoggedRobot {
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
                 new ParallelCommandGroup(
-                    Intake.Commands.setWheelVelocityRPM(
-                        SuperstructureConstants.INTAKE_CUBE.getWheelRPM()),
-                    Intake.Commands.setRollerVelocityRPM(
-                        SuperstructureConstants.INTAKE_CUBE.getRollerRPM()),
+                    Intake.Commands.setTopVelocityRPM(
+                        SuperstructureConstants.INTAKE_CUBE.getTopRPM()),
+                    Intake.Commands.setBottomVelocityRPM(
+                        SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(Constants.zero),
-                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                Intake.Commands.setTopVelocityRPM(Constants.zero),
+                Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
 
     driver
@@ -291,18 +291,18 @@ public class Robot extends LoggedRobot {
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
                 new ParallelCommandGroup(
-                    Intake.Commands.setWheelVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getWheelRPM()),
-                    Intake.Commands.setRollerVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getRollerRPM()),
+                    Intake.Commands.setTopVelocityRPM(
+                        SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
+                    Intake.Commands.setBottomVelocityRPM(
+                        SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(500),
-                Intake.Commands.setRollerVelocityRPM(-500),
+                Intake.Commands.setTopVelocityRPM(500),
+                Intake.Commands.setBottomVelocityRPM(-500),
                 FourBar.Commands.retract()));
 
     driver
@@ -315,18 +315,18 @@ public class Robot extends LoggedRobot {
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
                 new ParallelCommandGroup(
-                    Intake.Commands.setWheelVelocityRPM(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM()),
-                    Intake.Commands.setRollerVelocityRPM(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getRollerRPM()),
+                    Intake.Commands.setTopVelocityRPM(
+                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getTopRPM()),
+                    Intake.Commands.setBottomVelocityRPM(
+                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(500),
-                Intake.Commands.setRollerVelocityRPM(-500),
+                Intake.Commands.setTopVelocityRPM(500),
+                Intake.Commands.setBottomVelocityRPM(-500),
                 FourBar.Commands.retract()));
 
     driver
@@ -372,8 +372,8 @@ public class Robot extends LoggedRobot {
                     () -> {
                       intake.setCurrentLimit(20);
                     }),
-                Intake.Commands.setRollerVelocityRPM(Constants.zero),
-                Intake.Commands.setWheelVelocityRPM(Constants.zero),
+                Intake.Commands.setTopVelocityRPM(Constants.zero),
+                Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 new WaitCommand(0.5),
                 // Elevator.Commands.setTargetHeightAndWait(0),
                 LightStrip.Commands.setColorPattern(DarkGreen)));

@@ -6,18 +6,18 @@ public interface IntakeIO {
 
   @AutoLog
   public static class IntakeInputs {
-    public double wheelsOutputVoltage = 0.0;
-    public double rollersOutputVoltage = 0.0;
-    public boolean wheelsIsOn = false;
-    public boolean rollersIsOn = false;
-    public double wheelsVelocityRPM = 0.0;
-    public double rollersVelocityRPM = 0.0;
-    public double wheelsTempCelcius = 0.0;
-    public double rollersTempCelcius = 0.0;
-    public double wheelsCurrentAmps = 0.0;
-    public double rollersCurrentAmps = 0.0;
-    public double wheelsPositionRad = 0.0;
-    public double rollersPositionRad = 0.0;
+    public double topOutputVoltage = 0.0;
+    public double bottomOutputVoltage = 0.0;
+    public boolean topIsOn = false;
+    public boolean bottomIsOn = false;
+    public double topVelocityRPM = 0.0;
+    public double bottomVelocityRPM = 0.0;
+    public double topTempCelcius = 0.0;
+    public double bottomTempCelcius = 0.0;
+    public double topCurrentAmps = 0.0;
+    public double bottomCurrentAmps = 0.0;
+    public double topPositionRad = 0.0;
+    public double bottomPositionRad = 0.0;
     public double encoderVoltage = 0.0;
     public double encoderPosition = 0.0;
     public double encoderVelocity = 0.0;
@@ -27,7 +27,7 @@ public interface IntakeIO {
 
   public void updateInputs(IntakeInputs inputs);
 
-  public void setVoltageWheels(double volts);
+  public void setTopVoltage(double volts);
 
-  public void setVoltageRollers(double volts);
+  public void setBottomVoltage(double volts);
 }

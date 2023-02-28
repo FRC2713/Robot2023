@@ -47,8 +47,8 @@ public final class Constants {
     public static final int ELEVATOR_LEFT_CANID = 7;
     public static final int ELEVATOR_RIGHT_CANID = 8;
 
-    public static final int INTAKE_WHEELS_CANID = 12;
-    public static final int INTAKE_ROLLERS_CANID = 11;
+    public static final int TOP_INTAKE_ROLLER = 12;
+    public static final int BOTTOM_INTAKE_ROLLER = 11;
 
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
@@ -113,32 +113,21 @@ public final class Constants {
   @UtilityClass
   public static class IntakeConstants {
     public static final DCMotor INTAKE_MOTOR = DCMotor.getNEO(1);
-    public static final double ROLLER_GEARING = 24.0 / 20.0;
-    public static final double WHEELS_GEARING = 1;
+    public static final double BOTTOM_GEARING = 24.0 / 20.0;
+    public static final double TOP_GEARING = 1;
 
-    public static final double MAX_ROLLER_RPM =
+    public static final double MAX_BOTTOM_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
-            / ROLLER_GEARING;
-    public static final double MAX_WHEEL_RPM =
-        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
-            / WHEELS_GEARING;
+            / BOTTOM_GEARING;
+    public static final double MAX_TOP_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / TOP_GEARING;
     public static final double MOI = 0.1;
-    public static final int WHEELS_CURRENT_LIMIT = 20;
-    public static final int ROLLERS_CURRENT_LIMIT = 20;
-    public static final double WHEELS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double WHEELS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_CONE_TIPPED_INTAKE_RPM = 100;
-    public static final double ROLLERS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double ROLLERS_CUBE_INTAKE_RPM = 1500;
-    public static final double ROLLERS_CONE_SCORE_RPM = -100;
-    public static final double ROLLERS_CUBE_SCORE_RPM = -100;
-    public static final double WHEELS_CONE_TIPPED_INTAKE_RPM = 100;
-    public static final double WHEELS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double WHEELS_CUBE_INTAKE_RPM = 0;
-    public static final double WHEELS_CONE_SCORE_RPM = -100;
-    public static final double WHEELS_CUBE_SCORE_RPM = -100;
+    public static final int TOP_CURRENT_LIMIT = 20;
+    public static final int BOTTOM_CURRENT_LIMIT = 20;
+    public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / 3;
+    public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / 3;
+    public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / 3;
+    public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / 3;
   }
 
   @UtilityClass
@@ -316,70 +305,70 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(15)
-            .wheelRPM(-3000)
-            .rollerRPM(-3000)
+            .topRPM(-3000)
+            .bottomRPM(-3000)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(45)
-            .wheelRPM(3000)
-            .rollerRPM(-3000)
+            .topRPM(3000)
+            .bottomRPM(-3000)
             .build();
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(27)
-            .wheelRPM(-2500)
-            .rollerRPM(-2500)
+            .topRPM(-2500)
+            .bottomRPM(-2500)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(90)
-            .wheelRPM(-1000)
-            .rollerRPM(-1000)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(12)
             .fourBarPosition(90)
-            .wheelRPM(-2000)
-            .rollerRPM(-2000)
+            .topRPM(-2000)
+            .bottomRPM(-2000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =
         SuperstructureConfig.builder()
             .elevatorPosition(26)
             .fourBarPosition(75)
-            .wheelRPM(-2000)
-            .rollerRPM(-2000)
+            .topRPM(-2000)
+            .bottomRPM(-2000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(45)
-            .wheelRPM(1000)
-            .rollerRPM(1000)
+            .topRPM(1000)
+            .bottomRPM(1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(32.5)
             .fourBarPosition(100)
-            .wheelRPM(3000)
-            .rollerRPM(3000)
+            .topRPM(3000)
+            .bottomRPM(3000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_HIGH =
         SuperstructureConfig.builder()
             .elevatorPosition(50)
             .fourBarPosition(45)
-            .wheelRPM(1000)
-            .rollerRPM(1000)
+            .topRPM(1000)
+            .bottomRPM(1000)
             .build();
   }
 }
