@@ -154,6 +154,7 @@ public final class Constants {
       public static final double TIME_BETWEEN_REGERATION_SECONDS = 3;
 
       public static final double CHARGE_STATION_OFFSET = 0.6;
+      public static final double SINGLE_HUMAN_STATION_OFFSET = 0.6;
 
       public static final double GRID_OFFSET = 0.7;
 

@@ -93,7 +93,7 @@ public class GoClosestGrid {
                 heading,
                 heading)));
 
-    points.add(currentPosition());
+    points.add(RedHawkUtil.currentPositionPathPoint(heading));
 
     // Top
     if (RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY())
@@ -131,10 +131,6 @@ public class GoClosestGrid {
     Logger.getInstance().recordOutput("OTF/Timer", timer.get());
     Logger.getInstance()
         .recordOutput(
-            "OTF/Closest Grid",
-            RedHawkUtil.getClosestGridNumber(Robot.swerveDrive.getUsablePose().getY()));
-    Logger.getInstance()
-        .recordOutput(
             "OTF/Time to regeneration",
             (Constants.DriveConstants.FieldTunables.TIME_BETWEEN_REGERATION_SECONDS - timer.get()));
     if (timer.hasElapsed(Constants.DriveConstants.FieldTunables.TIME_BETWEEN_REGERATION_SECONDS)) {
@@ -161,14 +157,6 @@ public class GoClosestGrid {
     } else {
       return targetGrid;
     }
-  }
-
-  private PathPoint currentPosition() {
-    return new PathPoint(
-        RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getUsablePose()),
-        heading,
-        Robot.swerveDrive.getUsablePose().getRotation(),
-        Robot.swerveDrive.getAverageVelocity());
   }
 
   public void changingPath() {

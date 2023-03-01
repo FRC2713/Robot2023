@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
+import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
@@ -58,6 +60,7 @@ import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
@@ -81,6 +84,7 @@ public class Robot extends LoggedRobot {
   public static Vision vision;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
+  public GoHumanPlayer goHumanPlayer;
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
@@ -139,23 +143,24 @@ public class Robot extends LoggedRobot {
 
     mechManager = new MechanismManager();
     goClosestGrid = new GoClosestGrid();
+    goHumanPlayer = new GoHumanPlayer();
 
     checkAlliance();
     buildAutoChooser();
 
     // elevator.setDefaultCommand(
-    //     new InstantCommand(
-    //         () ->
-    //             elevator.setTargetHeight(
-    //                 MathUtil.clamp(
-    //                     elevator.getTargetHeight()
-    //                         + (MathUtil.applyDeadband(
-    //                                 -operator.getRightY(),
-    //                                 Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    //                             / 10),
-    //                     Constants.zero,
-    //                     Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    //         elevator));
+    // new InstantCommand(
+    // () ->
+    // elevator.setTargetHeight(
+    // MathUtil.clamp(
+    // elevator.getTargetHeight()
+    // + (MathUtil.applyDeadband(
+    // -operator.getRightY(),
+    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+    // / 10),
+    // Constants.zero,
+    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
+    // elevator));
 
     // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
@@ -337,22 +342,45 @@ public class Robot extends LoggedRobot {
     driver
         .a()
         .onTrue(
-            new InstantCommand(
-                () -> {
-                  motionMode = MotionMode.TRAJECTORY;
-                  goClosestGrid.changingPath();
-                  goClosestGrid.regenerateTrajectory();
-                  TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
-                }))
-        .whileTrue(
-            new RepeatCommand(
+            new ConditionalCommand(
+                // Past mid point
                 new InstantCommand(
                     () -> {
-                      if (goClosestGrid.hasElapsed()) {
-                        TrajectoryController.getInstance()
-                            .changePath(goClosestGrid.getTrajectory());
-                      }
-                    })))
+                      motionMode = MotionMode.TRAJECTORY;
+                      goHumanPlayer.regenerateTrajectory();
+                      TrajectoryController.getInstance().changePath(goHumanPlayer.getTrajectory());
+                    }),
+                // Mid point interior
+                new InstantCommand(
+                    () -> {
+                      motionMode = MotionMode.TRAJECTORY;
+                      goClosestGrid.changingPath();
+                      goClosestGrid.regenerateTrajectory();
+                      TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+                    }),
+                () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
+        .whileTrue(
+            new ConditionalCommand(
+                // Past mid point
+                new RepeatCommand(
+                    new InstantCommand(
+                        () -> {
+                          if (goHumanPlayer.hasElapsed()) {
+                            TrajectoryController.getInstance()
+                                .changePath(goHumanPlayer.getTrajectory());
+                          }
+                        })),
+
+                // Mid point interior
+                new RepeatCommand(
+                    new InstantCommand(
+                        () -> {
+                          if (goClosestGrid.hasElapsed()) {
+                            TrajectoryController.getInstance()
+                                .changePath(goClosestGrid.getTrajectory());
+                          }
+                        })),
+                () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
         .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
 
     driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
