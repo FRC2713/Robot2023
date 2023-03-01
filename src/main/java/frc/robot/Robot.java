@@ -4,8 +4,11 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.*;
+import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
+import static frc.robot.subsystems.LightStrip.Pattern.Purple;
+import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -15,14 +18,25 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
-import frc.robot.commands.fullRoutines.TwoCargoOver;
-import frc.robot.commands.fullRoutines.TwoCargoUnder;
+import frc.robot.commands.fullRoutines.ThreeCubeOver;
+import frc.robot.commands.fullRoutines.TwoConeOver;
+import frc.robot.commands.fullRoutines.TwoConeUnder;
+import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
@@ -70,6 +84,7 @@ public class Robot extends LoggedRobot {
   public static LightStrip lights;
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
+  private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.25, 0.02);
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -86,7 +101,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    checkAlliance();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
@@ -123,40 +137,27 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
-    // fourBar.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // fourBar.setAngleDeg(
-    // MathUtil.clamp(
-    // fourBar.getCurrentDegs()
-    // + (MathUtil.applyDeadband(
-    // -operator.getLeftY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Units.radiansToDegrees(FourBarConstants.MAX_ANGLE_RADIANS),
-    // Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS))),
-    // fourBar));
+    mechManager = new MechanismManager();
+    goClosestGrid = new GoClosestGrid();
+
+    checkAlliance();
+    buildAutoChooser();
 
     // elevator.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // elevator.setTargetHeight(
-    // MathUtil.clamp(
-    // elevator.getTargetHeight()
-    // + (MathUtil.applyDeadband(
-    // -operator.getRightY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Constants.zero,
-    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    // elevator));
+    //     new InstantCommand(
+    //         () ->
+    //             elevator.setTargetHeight(
+    //                 MathUtil.clamp(
+    //                     elevator.getTargetHeight()
+    //                         + (MathUtil.applyDeadband(
+    //                                 -operator.getRightY(),
+    //                                 Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+    //                             / 10),
+    //                     Constants.zero,
+    //                     Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
+    //         elevator));
 
     // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
-
-    mechManager = new MechanismManager();
-    autoCommand = new TwoCargoOver();
-    goClosestGrid = new GoClosestGrid();
-    buildAutoChooser();
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -264,8 +265,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CUBE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_CUBE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getWheelRPM()),
@@ -289,8 +289,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getWheelRPM()),
@@ -302,8 +301,8 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new WaitCommand(0.5),
-                Intake.Commands.setWheelVelocityRPM(Constants.zero),
-                Intake.Commands.setRollerVelocityRPM(Constants.zero),
+                Intake.Commands.setWheelVelocityRPM(-500),
+                Intake.Commands.setRollerVelocityRPM(-500),
                 FourBar.Commands.retract()));
 
     driver
@@ -314,8 +313,7 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
-                Elevator.Commands.setTargetHeightAndWait(
-                    SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition()),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
                 new ParallelCommandGroup(
                     Intake.Commands.setWheelVelocityRPM(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM()),
@@ -362,13 +360,18 @@ public class Robot extends LoggedRobot {
     driver
         .y()
         .whileTrue(
-            new ParallelCommandGroup(
-                Intake.Commands.setRollerVelocityRPM(
-                    SuperstructureConstants.SCORE.getRollerRPM(), gamePieceMode),
-                Intake.Commands.setWheelVelocityRPM(
-                    SuperstructureConstants.SCORE.getWheelRPM(), gamePieceMode)))
+            Commands.sequence(
+                new InstantCommand(
+                    () -> {
+                      intake.setCurrentLimit(40);
+                    }),
+                Intake.Commands.score()))
         .onFalse(
             new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      intake.setCurrentLimit(20);
+                    }),
                 Intake.Commands.setRollerVelocityRPM(Constants.zero),
                 Intake.Commands.setWheelVelocityRPM(Constants.zero),
                 new WaitCommand(0.5),
@@ -381,54 +384,54 @@ public class Robot extends LoggedRobot {
         .and(operator.y())
         .onTrue(
             new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeHighScoreAndWait(), FourBar.Commands.extend()));
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH)));
 
     operator
         .rightBumper()
         .and(operator.b())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeMidScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID)));
 
     operator
         .rightBumper()
         .and(operator.a())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorConeLowScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW)));
 
     operator
         .leftBumper()
         .and(operator.y())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeHighScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH)));
 
     operator
         .leftBumper()
         .and(operator.b())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeMidScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID)));
 
     operator
         .leftBumper()
         .and(operator.a())
         .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCubeLowScoreAndWait(), FourBar.Commands.extend()));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW)));
 
     operator
         .povDown()
         .onTrue(
-            new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    Elevator.Commands.setTargetHeightAndWait(0).withTimeout(2.0),
-                    FourBar.Commands.retract()),
-                new InstantCommand(
-                    () -> {
-                      elevator.resetencoders();
-                    })));
+            new ParallelCommandGroup(
+                Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract()));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
@@ -455,6 +458,10 @@ public class Robot extends LoggedRobot {
                 + swerveDrive.getTotalCurrentDraw()));
 
     Logger.getInstance().recordOutput("Game piece mode", gamePieceMode.name());
+    Logger.getInstance()
+        .recordOutput(
+            "Filtered CAN Utilization",
+            canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
   }
 
   @Override
@@ -534,12 +541,16 @@ public class Robot extends LoggedRobot {
   public void testExit() {}
 
   public void buildAutoChooser() {
-    autoChooser.addDefaultOption("TwoBridgeOver", new TwoCargoOver());
-    autoChooser.addOption("TwoBridgeUnder", new TwoCargoUnder());
+    autoChooser.addOption("TwoConeOver", new TwoConeOver());
+    autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
+    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
+    autoChooser.addOption("Bridge", new GetOnBridge());
   }
 
   public void checkAlliance() {
     Alliance checkedAlliance = DriverStation.getAlliance();
+    Logger.getInstance().recordOutput("DS Alliance", currentAlliance.name());
 
     if (DriverStation.isDSAttached() && checkedAlliance != currentAlliance) {
       currentAlliance = checkedAlliance;

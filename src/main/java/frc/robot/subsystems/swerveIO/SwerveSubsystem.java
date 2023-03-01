@@ -108,7 +108,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(
-        pose.getRotation(),
+        getUsablePose().getRotation(),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
           frontRight.getPosition(),
@@ -118,7 +118,7 @@ public class SwerveSubsystem extends SubsystemBase {
         pose);
 
     poseEstimator.resetPosition(
-        pose.getRotation(),
+        getUsablePose().getRotation(),
         new SwerveModulePosition[] {
           this.frontLeft.getPosition(),
           this.frontRight.getPosition(),

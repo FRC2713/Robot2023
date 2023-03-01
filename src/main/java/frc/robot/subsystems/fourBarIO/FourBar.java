@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.RedHawkUtil;
+import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
 
 public class FourBar extends SubsystemBase {
@@ -95,17 +96,21 @@ public class FourBar extends SubsystemBase {
     Logger.getInstance().processInputs("4Bar", inputs);
   }
 
-  public void debugOnlySetVoltage(double volts) {
-    // IO.setVoltage(volts);
-  }
-
   public static class Commands {
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }
 
+    public static Command setToAngle(SuperstructureConfig config) {
+      return setToAngle(config.getFourBarPosition());
+    }
+
     public static Command setAngleDegAndWait(double targetDegs) {
       return setToAngle(targetDegs).repeatedly().until(() -> Robot.fourBar.isAtTarget());
+    }
+
+    public static Command setAngleDegAndWait(SuperstructureConfig config) {
+      return setAngleDegAndWait(config.getFourBarPosition());
     }
 
     public static Command retract() {
