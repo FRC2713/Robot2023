@@ -6,7 +6,6 @@ package frc.robot;
 
 import static frc.robot.subsystems.LightStrip.Pattern.*;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -87,9 +86,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     checkAlliance();
-    CameraServer.startAutomaticCapture();
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -102,15 +100,15 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     elevator = new Elevator(new ElevatorIOSim());
-    intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
+    intake = new Intake(true ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
 
     swerveDrive =
-        isSimulation()
+        true
             ? new SwerveSubsystem(
                 new SwerveIOSim(),
                 new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),

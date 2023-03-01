@@ -169,7 +169,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Pose2d pose = new Pose2d(val[0], val[1], Rotation2d.fromDegrees(val[5]));
 
     if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
-      poseEstimator.addVisionMeasurement(pose, array.timestamp);
+      poseEstimator.addVisionMeasurement(pose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
     }
   }
 
@@ -216,6 +216,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * be run in periodic() or during every code loop to maintain accuracy.
    */
   public void updateOdometry() {
+
     odometry.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
@@ -225,7 +226,8 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    poseEstimator.update(
+    poseEstimator.updateWithTime(
+        edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -249,6 +251,7 @@ public class SwerveSubsystem extends SubsystemBase {
                   speeds.vxMetersPerSecond * .02,
                   speeds.vyMetersPerSecond * .02,
                   speeds.omegaRadiansPerSecond * .02));
+
       inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
   }

@@ -1,11 +1,12 @@
 {
+  "Clients": {
+    "open": true
+  },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
     "serverTeam": "2713"
   },
-  "retained": {
-    "limelight": {
-      "open": true
-    }
+  "Server": {
+    "open": true
   }
 }
