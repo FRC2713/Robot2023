@@ -24,7 +24,7 @@ public class IntakeIOSparks implements IntakeIO {
     RedHawkUtil.configureLowTrafficSpark(bottomRoller);
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
-    topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10);
+    topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);

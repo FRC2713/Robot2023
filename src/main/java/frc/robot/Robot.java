@@ -43,6 +43,7 @@ import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
+import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
@@ -114,16 +115,20 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    // fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
-    fourBar = new FourBar(new FourBarIOSim());
-    elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
-    // elevator = new Elevator(new ElevatorIOSim());
+    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    // elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
 
+    // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
+    elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
+    // intake = new Intake(true ? new IntakeIOSim() : new IntakeIOSparks());
+    // vision = new Vision(true ? new VisionIOSim() : new VisionLimelight());
+
     swerveDrive =
-        isSimulation()
+        // isSimulation()
+        true
             ? new SwerveSubsystem(
                 new SwerveIOSim(),
                 new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
@@ -276,7 +281,6 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                new WaitCommand(0.5),
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 FourBar.Commands.retract()));
@@ -300,7 +304,6 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                new WaitCommand(0.5),
                 Intake.Commands.setTopVelocityRPM(500),
                 Intake.Commands.setBottomVelocityRPM(-500),
                 FourBar.Commands.retract()));
@@ -324,7 +327,6 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                new WaitCommand(0.5),
                 Intake.Commands.setTopVelocityRPM(500),
                 Intake.Commands.setBottomVelocityRPM(-500),
                 FourBar.Commands.retract()));
@@ -363,14 +365,14 @@ public class Robot extends LoggedRobot {
             Commands.sequence(
                 new InstantCommand(
                     () -> {
-                      intake.setCurrentLimit(40);
+                      intake.setScoring(true);
                     }),
                 Intake.Commands.score()))
         .onFalse(
             new SequentialCommandGroup(
                 new InstantCommand(
                     () -> {
-                      intake.setCurrentLimit(20);
+                      intake.setScoring(false);
                     }),
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),

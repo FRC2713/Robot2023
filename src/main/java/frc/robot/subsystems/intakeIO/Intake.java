@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intakeIO;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -16,7 +17,11 @@ public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
-  private double detectionThreshold = 10000;
+  private double detectionThreshold = 1.3;
+  private double filteredVoltage = 0;
+  public boolean scoring = false;
+
+  private LinearFilter analogVoltageFilter = LinearFilter.singlePoleIIR(0.06, 0.02);
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
@@ -51,12 +56,20 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
-    return (inputs.encoderVoltage > detectionThreshold);
+    return (filteredVoltage > detectionThreshold) && !scoring;
+  }
+
+  public void setScoring(boolean scoring) {
+    this.scoring = scoring;
   }
 
   public void periodic() {
 
     IO.updateInputs(inputs);
+
+    filteredVoltage = analogVoltageFilter.calculate(inputs.encoderVoltage);
+
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor 1", filteredVoltage);
 
     Logger.getInstance().recordOutput("Intake/Target RPM", targetRPM);
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
