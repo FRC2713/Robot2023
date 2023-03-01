@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -476,6 +477,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     checkAlliance();
+    SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
+    SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(1));
   }
 
   @Override
