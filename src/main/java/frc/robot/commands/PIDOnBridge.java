@@ -29,7 +29,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
                               0,
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
-            .until(() -> Robot.swerveDrive.inputs.gyroPitchPosition >= maxRampAngle),
+            .until(() -> Math.abs(Robot.swerveDrive.inputs.gyroPitchPosition) >= maxRampAngle),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
