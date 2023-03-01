@@ -236,6 +236,9 @@ public final class Constants {
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
         PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(zero).build();
 
+    public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
+        PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
+
     public static final ModuleInfo FRONT_LEFT =
         ModuleInfo.builder()
             .name(SwerveModuleName.FRONT_LEFT)
