@@ -113,8 +113,8 @@ public final class Constants {
   @UtilityClass
   public static class IntakeConstants {
     public static final DCMotor INTAKE_MOTOR = DCMotor.getNEO(1);
-    public static final double BOTTOM_GEARING = 24.0 / 20.0;
-    public static final double TOP_GEARING = 1;
+    public static final double BOTTOM_GEARING = 3.0;
+    public static final double TOP_GEARING = 3.0;
 
     public static final double MAX_BOTTOM_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
@@ -303,31 +303,31 @@ public final class Constants {
   public static final class SuperstructureConstants {
 
     public static final SuperstructureConfig HOLD_CONE =
-        SuperstructureConfig.builder().topRPM(-500).bottomRPM(500).build();
+        SuperstructureConfig.builder().topRPM(500).bottomRPM(-500).build();
 
     public static final SuperstructureConfig HOLD_CUBE =
-        SuperstructureConfig.builder().topRPM(-500).bottomRPM(500).build();
+        SuperstructureConfig.builder().topRPM(-100).bottomRPM(100).build();
 
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(15)
-            .topRPM(3000)
-            .bottomRPM(3000)
+            .fourBarPosition(-17)
+            .topRPM(1250)
+            .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(45)
-            .topRPM(-3000)
-            .bottomRPM(3000)
+            .fourBarPosition(30)
+            .topRPM(1250)
+            .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(27)
-            .topRPM(2500)
-            .bottomRPM(2500)
+            .fourBarPosition(22)
+            .topRPM(1250)
+            .bottomRPM(1250)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =
@@ -366,8 +366,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(32.5)
             .fourBarPosition(100)
-            .topRPM(-3000)
-            .bottomRPM(-3000)
+            .topRPM(-1000)
+            .bottomRPM(1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_HIGH =
