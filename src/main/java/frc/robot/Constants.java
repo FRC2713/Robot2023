@@ -40,6 +40,11 @@ public final class Constants {
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
 
   @UtilityClass
+  public final class LimeLightConstants {
+    public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
+  }
+
+  @UtilityClass
   public static final class RobotMap {
     public static final int PIGEON_CAN_ID = 20;
 

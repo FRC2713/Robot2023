@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerveIO;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -164,12 +166,14 @@ public class SwerveSubsystem extends SubsystemBase {
         + backRight.getTotalCurrentDraw();
   }
 
-  public void updateVisionPose(TimestampedDoubleArray array) {
-    double[] val = array.value;
-    Pose2d pose = new Pose2d(val[0], val[1], Rotation2d.fromDegrees(val[5]));
-
-    if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
-      poseEstimator.addVisionMeasurement(pose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
+  public void updateVisionPose(
+      TimestampedDoubleArray fieldPoseArray, TimestampedDoubleArray cameraPoseArray) {
+    double[] fVal = fieldPoseArray.value;
+    double[] cVal = cameraPoseArray.value;
+    double distCamToTag = Units.metersToInches(VecBuilder.fill(cVal[0], cVal[1]).norm());
+    Pose2d fPose = new Pose2d(fVal[0], fVal[1], new Rotation2d(fVal[5]));
+    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES) {
+      poseEstimator.addVisionMeasurement(fPose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
     }
   }
 
