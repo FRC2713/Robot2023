@@ -478,7 +478,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     checkAlliance();
     SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
-    SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(1));
+    SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));
   }
 
   @Override
