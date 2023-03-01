@@ -13,7 +13,7 @@ public class SwerveIOSim implements SwerveIO {
     inputs.gyroPitchPosition = 0;
     inputs.previousgyroPitchPosition = 0;
     inputs.gyroRollPosition = 0;
-    inputs.gyroYawPosition = 0;
+    // inputs.gyroYawPosition = 0;
   }
 
   public void zeroGyro() {}

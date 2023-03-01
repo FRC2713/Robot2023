@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -166,8 +167,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void updateVisionPose(TimestampedDoubleArray array) {
     double[] val = array.value;
-    Pose2d pose = new Pose2d(val[0], val[1], new Rotation2d(val[5]));
-    poseEstimator.addVisionMeasurement(pose, array.timestamp);
+    Pose2d pose = new Pose2d(val[0], val[1], Rotation2d.fromDegrees(val[5]));
+
+    if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
+      poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+    }
   }
 
   /**
@@ -213,6 +217,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * be run in periodic() or during every code loop to maintain accuracy.
    */
   public void updateOdometry() {
+
     odometry.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
@@ -222,7 +227,8 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    poseEstimator.update(
+    poseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -246,6 +252,8 @@ public class SwerveSubsystem extends SubsystemBase {
                   speeds.vxMetersPerSecond * .02,
                   speeds.vyMetersPerSecond * .02,
                   speeds.omegaRadiansPerSecond * .02));
+
+      inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
   }
 

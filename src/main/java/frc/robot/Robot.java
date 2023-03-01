@@ -102,7 +102,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);

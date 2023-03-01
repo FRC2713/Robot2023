@@ -25,6 +25,7 @@ public interface VisionIO {
     public double[] targetpose_cameraspace = new double[] {};
     public double[] targetpose_robotspace = new double[] {};
     public double[] botpose_targetspace = new double[] {};
+    public double[] camerapose_robotspace = new double[] {};
     public long tid = 0;
     public long neuralDetectorID = 0;
     public long ledMode = 0;
