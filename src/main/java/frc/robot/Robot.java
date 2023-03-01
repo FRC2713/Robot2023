@@ -545,7 +545,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
-    autoChooser.addOption("Bridge", new GetOnBridge());
+    autoChooser.addOption("Bridge", new GetOnBridge(true));
   }
 
   public void checkAlliance() {
