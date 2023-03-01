@@ -26,6 +26,9 @@ public class IntakeIOSparks implements IntakeIO {
     // analog sensor voltage, analog sensor velocity, analog sensor position
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
+    topRoller.setInverted(true);
+    bottomRoller.setInverted(true);
+
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
     topRoller.setIdleMode(IdleMode.kBrake);

@@ -281,8 +281,9 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(Constants.zero),
-                Intake.Commands.setBottomVelocityRPM(Constants.zero),
+                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM()),
+                Intake.Commands.setBottomVelocityRPM(
+                    SuperstructureConstants.HOLD_CUBE.getBottomRPM()),
                 FourBar.Commands.retract()));
 
     driver
@@ -304,8 +305,9 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(500),
-                Intake.Commands.setBottomVelocityRPM(-500),
+                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                Intake.Commands.setBottomVelocityRPM(
+                    SuperstructureConstants.HOLD_CONE.getBottomRPM()),
                 FourBar.Commands.retract()));
 
     driver
@@ -327,8 +329,9 @@ public class Robot extends LoggedRobot {
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(500),
-                Intake.Commands.setBottomVelocityRPM(-500),
+                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                Intake.Commands.setBottomVelocityRPM(
+                    SuperstructureConstants.HOLD_CONE.getBottomRPM()),
                 FourBar.Commands.retract()));
 
     driver

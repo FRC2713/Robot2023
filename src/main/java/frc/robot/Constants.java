@@ -301,74 +301,81 @@ public final class Constants {
   }
 
   public static final class SuperstructureConstants {
+
+    public static final SuperstructureConfig HOLD_CONE =
+        SuperstructureConfig.builder().topRPM(-500).bottomRPM(500).build();
+
+    public static final SuperstructureConfig HOLD_CUBE =
+        SuperstructureConfig.builder().topRPM(-500).bottomRPM(500).build();
+
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(15)
-            .topRPM(-3000)
-            .bottomRPM(-3000)
+            .topRPM(3000)
+            .bottomRPM(3000)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(45)
-            .topRPM(3000)
-            .bottomRPM(-3000)
+            .topRPM(-3000)
+            .bottomRPM(3000)
             .build();
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(27)
-            .topRPM(-2500)
-            .bottomRPM(-2500)
+            .topRPM(2500)
+            .bottomRPM(2500)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(90)
-            .topRPM(-1000)
-            .bottomRPM(-1000)
+            .topRPM(1000)
+            .bottomRPM(1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(12)
             .fourBarPosition(90)
-            .topRPM(-2000)
-            .bottomRPM(-2000)
+            .topRPM(2000)
+            .bottomRPM(2000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =
         SuperstructureConfig.builder()
             .elevatorPosition(26)
             .fourBarPosition(75)
-            .topRPM(-2000)
-            .bottomRPM(-2000)
+            .topRPM(2000)
+            .bottomRPM(2000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
             .fourBarPosition(45)
-            .topRPM(1000)
-            .bottomRPM(1000)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(32.5)
             .fourBarPosition(100)
-            .topRPM(3000)
-            .bottomRPM(3000)
+            .topRPM(-3000)
+            .bottomRPM(-3000)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_HIGH =
         SuperstructureConfig.builder()
             .elevatorPosition(50)
             .fourBarPosition(45)
-            .topRPM(1000)
-            .bottomRPM(1000)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
             .build();
   }
 }
