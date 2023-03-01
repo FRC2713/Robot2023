@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -150,7 +151,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private Pose2d getRegularPose() {
-    if (false) {
+    if (Robot.isReal()) {
       return odometry.getPoseMeters();
     } else {
       return simOdometryPose;
@@ -169,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Pose2d pose = new Pose2d(val[0], val[1], Rotation2d.fromDegrees(val[5]));
 
     if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
-      poseEstimator.addVisionMeasurement(pose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
+      poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp());
     }
   }
 
@@ -227,7 +228,7 @@ public class SwerveSubsystem extends SubsystemBase {
         });
 
     poseEstimator.updateWithTime(
-        edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
+        Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -236,7 +237,7 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    if (true) {
+    if (Robot.isSimulation()) {
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
             frontLeft.getMeasuredState(),
