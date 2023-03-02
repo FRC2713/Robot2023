@@ -13,8 +13,8 @@ public class GetOnBridge extends SequentialCommandGroup {
   double crawlSpeed = 0;
 
   public GetOnBridge(boolean gridside) {
-    rampSpeed = gridside ? -0.7 : 0.7;
-    crawlSpeed = gridside ? -0.2 : 0.2;
+    rampSpeed = gridside ? 0.7 : -0.7;
+    crawlSpeed = gridside ? 0.2 : -0.2;
     addCommands(
         new RunCommand(
                 () -> {
