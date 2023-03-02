@@ -239,8 +239,8 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Driver Controller OK",
-              "_title": "Driver Controller OK",
+              "_source0": "network_table:///SmartDashboard/Limelight State",
+              "_title": "Limelight State",
               "_glyph": 148,
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
@@ -253,13 +253,11 @@
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Operator Controller OK",
-              "_title": "Operator Controller OK",
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
+              "_title": "limelight_PipelineName",
               "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_showGlyph": false
             }
           },
           "0,2": {
@@ -268,13 +266,24 @@
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Limelight State",
-              "_title": "Limelight State",
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Interface",
+              "_title": "limelight_Interface",
               "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_showGlyph": false
+            }
+          },
+          "1,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Stream",
+              "_title": "limelight_Stream",
+              "_glyph": 148,
+              "_showGlyph": false
             }
           }
         }
@@ -339,32 +348,6 @@
               "_type": "Text View",
               "_source0": "network_table:///AdvantageKit/Elevator/HeightInchesLeft",
               "_title": "Elevator Height",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///AdvantageKit/Intake/WheelsVelocityRPM",
-              "_title": "Wheel RPM",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///AdvantageKit/Intake/RollersVelocityRPM",
-              "_title": "Roller RPM",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -468,7 +451,7 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///AdvantageKit/SystemStats/BatteryVoltage",
-              "_title": "AdvantageKit/SystemStats/BatteryVoltage",
+              "_title": "Battery Voltage",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -488,34 +471,30 @@
               "Colors/Color when false": "#0000FFFF"
             }
           },
-          "0,2": {
+          "1,1": {
             "size": [
               1,
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Driver Controller OK",
-              "_title": "Driver OK",
+              "_type": "Text View",
+              "_source0": "network_table:///AdvantageKit/Intake/BottomVelocityRPM",
+              "_title": "Bottom Roller",
               "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_showGlyph": false
             }
           },
-          "1,2": {
+          "1,0": {
             "size": [
               1,
               1
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Operator Controller OK",
-              "_title": "Operator OK",
+              "_type": "Text View",
+              "_source0": "network_table:///AdvantageKit/Intake/TopVelocityRPM",
+              "_title": "Top Roller",
               "_glyph": 148,
-              "_showGlyph": false,
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+              "_showGlyph": false
             }
           }
         }
@@ -523,9 +502,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 0.0,
-    "y": 0.0,
-    "width": 1536.0,
-    "height": 816.0
+    "x": -6.400000095367432,
+    "y": -6.400000095367432,
+    "width": 1548.800048828125,
+    "height": 828.7999877929688
   }
 }

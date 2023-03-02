@@ -7,6 +7,6 @@ import lombok.Getter;
 public class SuperstructureConfig {
   @Getter private double fourBarPosition;
   @Getter private double elevatorPosition;
-  @Getter private double wheelRPM;
-  @Getter private double rollerRPM;
+  @Getter private double topRPM;
+  @Getter private double bottomRPM;
 }

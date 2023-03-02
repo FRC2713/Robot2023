@@ -3,6 +3,8 @@ package frc.robot.subsystems.intakeIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -10,70 +12,76 @@ import frc.robot.util.RedHawkUtil;
 
 public class IntakeIOSparks implements IntakeIO {
 
-  private CANSparkMax wheels, rollers;
+  private CANSparkMax topRoller, bottomRoller;
 
   public IntakeIOSparks() {
-    wheels = new CANSparkMax(Constants.RobotMap.INTAKE_WHEELS_CANID, MotorType.kBrushless);
-    rollers = new CANSparkMax(Constants.RobotMap.INTAKE_ROLLERS_CANID, MotorType.kBrushless);
-    wheels.restoreFactoryDefaults();
-    rollers.restoreFactoryDefaults();
+    topRoller = new CANSparkMax(Constants.RobotMap.TOP_INTAKE_ROLLER, MotorType.kBrushless);
+    bottomRoller = new CANSparkMax(Constants.RobotMap.BOTTOM_INTAKE_ROLLER, MotorType.kBrushless);
+    topRoller.restoreFactoryDefaults();
+    bottomRoller.restoreFactoryDefaults();
 
-    RedHawkUtil.configureLowTrafficSpark(wheels);
-    RedHawkUtil.configureLowTrafficSpark(rollers);
+    RedHawkUtil.configureLowTrafficSpark(topRoller);
+    RedHawkUtil.configureLowTrafficSpark(bottomRoller);
 
-    wheels.setSmartCurrentLimit(Constants.IntakeConstants.WHEELS_CURRENT_LIMIT);
-    rollers.setSmartCurrentLimit(Constants.IntakeConstants.ROLLERS_CURRENT_LIMIT);
-    wheels.setIdleMode(IdleMode.kBrake);
-    rollers.setIdleMode(IdleMode.kBrake);
-    wheels
-        .getEncoder()
-        .setPositionConversionFactor(Constants.IntakeConstants.WHEELS_POSITION_CONVERSION_FACTOR);
-    rollers
-        .getEncoder()
-        .setPositionConversionFactor(Constants.IntakeConstants.ROLLERS_POSITION_CONVERSION_FACTOR);
-    wheels
-        .getEncoder()
-        .setVelocityConversionFactor(Constants.IntakeConstants.WHEELS_VELOCITY_CONVERSION_FACTOR);
-    rollers
-        .getEncoder()
-        .setVelocityConversionFactor(Constants.IntakeConstants.ROLLERS_VELOCITY_CONVERSION_FACTOR);
+    // analog sensor voltage, analog sensor velocity, analog sensor position
+    topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-    wheels.burnFlash();
-    rollers.burnFlash();
+    topRoller.setInverted(true);
+    bottomRoller.setInverted(true);
+
+    topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
+    bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
+    topRoller.setIdleMode(IdleMode.kBrake);
+    bottomRoller.setIdleMode(IdleMode.kBrake);
+    topRoller
+        .getEncoder()
+        .setPositionConversionFactor(Constants.IntakeConstants.TOP_POSITION_CONVERSION_FACTOR);
+    bottomRoller
+        .getEncoder()
+        .setPositionConversionFactor(Constants.IntakeConstants.BOTTOM_POSITION_CONVERSION_FACTOR);
+    topRoller
+        .getEncoder()
+        .setVelocityConversionFactor(Constants.IntakeConstants.TOP_VELOCITY_CONVERSION_FACTOR);
+    bottomRoller
+        .getEncoder()
+        .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
   }
 
   @Override
   public void updateInputs(IntakeInputs inputs) {
-    inputs.wheelsOutputVoltage = MathUtil.clamp(wheels.getAppliedOutput() * 12, -12.0, 12.0);
-    inputs.rollersOutputVoltage = MathUtil.clamp(rollers.getAppliedOutput() * 12, -12.0, 12.0);
-    inputs.wheelsIsOn =
-        Units.rotationsPerMinuteToRadiansPerSecond(wheels.getEncoder().getVelocity()) > 0.005;
-    inputs.rollersIsOn =
-        Units.rotationsPerMinuteToRadiansPerSecond(rollers.getEncoder().getVelocity()) > 0.005;
-    inputs.wheelsVelocityRPM = wheels.getEncoder().getVelocity();
-    inputs.rollersVelocityRPM = rollers.getEncoder().getVelocity();
-    inputs.wheelsTempCelcius = wheels.getMotorTemperature();
-    inputs.rollersTempCelcius = rollers.getMotorTemperature();
-    inputs.wheelsCurrentAmps = wheels.getOutputCurrent();
-    inputs.rollersCurrentAmps = rollers.getOutputCurrent();
-    inputs.wheelsPositionRad =
-        Units.rotationsPerMinuteToRadiansPerSecond(wheels.getEncoder().getPosition());
-    inputs.rollersPositionRad =
-        Units.rotationsPerMinuteToRadiansPerSecond(rollers.getEncoder().getPosition());
+    inputs.topOutputVoltage = MathUtil.clamp(topRoller.getAppliedOutput() * 12, -12.0, 12.0);
+    inputs.bottomOutputVoltage = MathUtil.clamp(bottomRoller.getAppliedOutput() * 12, -12.0, 12.0);
+    inputs.topIsOn =
+        Units.rotationsPerMinuteToRadiansPerSecond(topRoller.getEncoder().getVelocity()) > 0.005;
+    inputs.bottomIsOn =
+        Units.rotationsPerMinuteToRadiansPerSecond(bottomRoller.getEncoder().getVelocity()) > 0.005;
+    inputs.topVelocityRPM = topRoller.getEncoder().getVelocity();
+    inputs.bottomVelocityRPM = bottomRoller.getEncoder().getVelocity();
+    inputs.topTempCelcius = topRoller.getMotorTemperature();
+    inputs.bottomTempCelcius = bottomRoller.getMotorTemperature();
+    inputs.topCurrentAmps = topRoller.getOutputCurrent();
+    inputs.bottomCurrentAmps = bottomRoller.getOutputCurrent();
+    inputs.topPositionRad =
+        Units.rotationsPerMinuteToRadiansPerSecond(topRoller.getEncoder().getPosition());
+    inputs.bottomPositionRad =
+        Units.rotationsPerMinuteToRadiansPerSecond(bottomRoller.getEncoder().getPosition());
+    inputs.encoderPosition = topRoller.getAnalog(Mode.kAbsolute).getPosition();
+    inputs.encoderVelocity = topRoller.getAnalog(Mode.kAbsolute).getVelocity();
+    inputs.encoderVoltage = topRoller.getAnalog(Mode.kAbsolute).getVoltage();
   }
 
   @Override
-  public void setVoltageWheels(double volts) {
-    wheels.setVoltage(volts);
+  public void setTopVoltage(double volts) {
+    topRoller.setVoltage(volts);
   }
 
   @Override
-  public void setVoltageRollers(double volts) {
-    rollers.setVoltage(volts);
+  public void setBottomVoltage(double volts) {
+    bottomRoller.setVoltage(volts);
   }
 
   public void setCurrentLimit(int currentLimit) {
-    wheels.setSmartCurrentLimit(currentLimit);
-    rollers.setSmartCurrentLimit(currentLimit);
+    topRoller.setSmartCurrentLimit(currentLimit);
+    bottomRoller.setSmartCurrentLimit(currentLimit);
   }
 }
