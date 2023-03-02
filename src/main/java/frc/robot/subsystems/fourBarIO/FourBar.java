@@ -114,15 +114,15 @@ public class FourBar extends SubsystemBase {
     }
 
     public static Command retract() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.IDLE_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.IDLE_ANGLE_DEGREES);
     }
 
     public static Command retractFully() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
     }
 
     public static Command extend() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES);
     }
   }
 }
