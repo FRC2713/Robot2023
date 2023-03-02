@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
-import static frc.robot.subsystems.LightStrip.Pattern.Purple;
-import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -69,6 +65,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import static frc.robot.subsystems.LightStrip.Pattern.*;
 
 public class Robot extends LoggedRobot {
   public enum GamePieceMode {
@@ -280,7 +278,8 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()))))
+                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
+                        LightStrip.Commands.setColorPattern(RedOrange))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -382,9 +381,10 @@ public class Robot extends LoggedRobot {
                     }),
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
-                new WaitCommand(0.5),
+                new WaitCommand(0.5)
                 // Elevator.Commands.setTargetHeightAndWait(0),
-                LightStrip.Commands.setColorPattern(DarkGreen)));
+                //LightStrip.Commands.setColorPattern(DarkGreen)
+            ));
 
     // Operator Buttons
     operator
@@ -393,7 +393,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -401,7 +402,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -409,7 +411,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -417,7 +420,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -425,7 +429,8 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -433,13 +438,15 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW)));
+                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract()));
+                Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract(),
+                    LightStrip.Commands.defaultColorPattern()));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
@@ -470,6 +477,9 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+    while(intake.hasGamepiece()){
+      LightStrip.Commands.setColorPattern(DarkGreen);
+    }
   }
 
   @Override
