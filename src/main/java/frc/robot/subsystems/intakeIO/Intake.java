@@ -34,20 +34,10 @@ public class Intake extends SubsystemBase {
   }
 
   public void setTopRpm(double rpm) {
-    if (!hasGamepiece()) {
-      targetRPM = rpm;
-    } else {
-      targetRPM = 0;
-    }
     IO.setTopVoltage(rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
   }
 
   public void setBottomRPM(double rpm) {
-    if (!hasGamepiece()) {
-      targetRPM = rpm;
-    } else {
-      targetRPM = 0;
-    }
     IO.setBottomVoltage(rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12); // PLACEHOLDER VALUE
   }
 
