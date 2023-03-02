@@ -7,14 +7,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
+import frc.robot.util.PIDFFController;
 
-public class GetOnBridge extends SequentialCommandGroup {
+public class PIDOnBridge extends SequentialCommandGroup {
+  double maxRampAngle = 33;
   double rampSpeed = 0;
   double crawlSpeed = 0;
+  PIDFFController controller = new PIDFFController(DriveConstants.K_BRIDGE_CONTROLLER_GAINS);
 
-  public GetOnBridge(boolean gridside) {
-    rampSpeed = gridside ? 0.7 : -0.7;
-    crawlSpeed = gridside ? 0.2 : -0.2;
+  public PIDOnBridge(boolean gridside) {
+    rampSpeed = gridside ? 0.7 : 0.7;
     addCommands(
         new RunCommand(
                 () -> {
@@ -27,18 +29,17 @@ public class GetOnBridge extends SequentialCommandGroup {
                               0,
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
-            .until(() -> Robot.swerveDrive.inputs.gyroPitchPosition >= 33),
+            .until(() -> Math.abs(Robot.swerveDrive.inputs.gyroPitchPosition) >= maxRampAngle),
         new RunCommand(
-                () -> {
-                  Robot.motionMode = MotionMode.NULL;
-                  Robot.swerveDrive.setModuleStates(
-                      DriveConstants.KINEMATICS.toSwerveModuleStates(
-                          ChassisSpeeds.fromFieldRelativeSpeeds(
-                              crawlSpeed,
-                              0,
-                              0,
-                              Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
-                })
-            .until(() -> Robot.swerveDrive.gyroPitchHasChanged()));
+            () -> {
+              Robot.motionMode = MotionMode.NULL;
+              Robot.swerveDrive.setModuleStates(
+                  DriveConstants.KINEMATICS.toSwerveModuleStates(
+                      ChassisSpeeds.fromFieldRelativeSpeeds(
+                          controller.calculate(Robot.swerveDrive.inputs.gyroPitchPosition, 0),
+                          0,
+                          0,
+                          Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
+            }));
   }
 }

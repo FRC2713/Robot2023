@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
+import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
@@ -553,7 +555,9 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
-    autoChooser.addOption("Bridge", new GetOnBridge());
+    autoChooser.addOption("Bridge", new GetOnBridge(true));
+    autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
+    autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
   }
 
   public void checkAlliance() {
