@@ -28,7 +28,10 @@ public class AutoPath {
     B_TO_TWO("cargoBtogrid2"),
     TWO_TO_A("grid2tocargoA"),
     TWO_TO_B("grid2tocargoB"),
-    FIVE_TO_B("grid5tocargoB");
+    FIVE_TO_B("grid5tocargoB"),
+
+    // Misc Paths (look man I can only make so many categories)
+    A_TO_BRIDGE("cargoAtobridge");
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {

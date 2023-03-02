@@ -16,7 +16,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   PIDFFController controller = new PIDFFController(DriveConstants.K_BRIDGE_CONTROLLER_GAINS);
 
   public PIDOnBridge(boolean gridside) {
-    rampSpeed = gridside ? -0.7 : 0.7;
+    rampSpeed = gridside ? 0.7 : 0.7;
     addCommands(
         new RunCommand(
                 () -> {
