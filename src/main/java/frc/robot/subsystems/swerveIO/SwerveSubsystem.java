@@ -1,7 +1,8 @@
 package frc.robot.subsystems.swerveIO;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -74,6 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backRight.getPosition()
             },
             new Pose2d());
+
     poseEstimator =
         new SwerveDrivePoseEstimator(
             DriveConstants.KINEMATICS,
@@ -84,7 +86,13 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backLeft.getPosition(),
               this.backRight.getPosition()
             },
-            new Pose2d());
+            new Pose2d(),
+            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.1),
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(
+                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                    Constants.LimeLightConstants.VISION_STD_DEVI_ROTATION_IN_RADIANS));
 
     simOdometryPose = odometry.getPoseMeters();
   }
@@ -170,9 +178,19 @@ public class SwerveSubsystem extends SubsystemBase {
       TimestampedDoubleArray fieldPoseArray, TimestampedDoubleArray cameraPoseArray) {
     double[] fVal = fieldPoseArray.value;
     double[] cVal = cameraPoseArray.value;
-    double distCamToTag = Units.metersToInches(VecBuilder.fill(cVal[0], cVal[1]).norm());
+    double distCamToTag = Units.metersToInches(Math.abs(cVal[2]));
+
+    Logger.getInstance().recordOutput("Vision/distCamToTag", distCamToTag);
     Pose2d fPose = new Pose2d(fVal[0], fVal[1], new Rotation2d(fVal[5]));
-    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES) {
+    double jump_distance =
+        Units.metersToInches(
+            poseEstimator
+                .getEstimatedPosition()
+                .getTranslation()
+                .getDistance(fPose.getTranslation()));
+    Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
+    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
       poseEstimator.addVisionMeasurement(fPose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
     }
   }
