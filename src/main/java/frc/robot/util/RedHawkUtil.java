@@ -165,16 +165,20 @@ public final class RedHawkUtil {
   public static class Reflections {
     public static Translation2d reflectIfRed(Translation2d old) {
       if (DriverStation.getAlliance() == Alliance.Red) {
-        return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
+        return reflect(old);
       }
       return old;
     }
 
     public static Translation2d reflectIfBlue(Translation2d old) {
       if (DriverStation.getAlliance() == Alliance.Blue) {
-        return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
+        return reflect(old);
       }
       return old;
+    }
+
+    public static Translation2d reflect(Translation2d old) {
+      return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
     }
 
     public static double reflectIfRed(double x) {

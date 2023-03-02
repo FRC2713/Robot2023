@@ -146,14 +146,15 @@ public final class Constants {
 
     @UtilityClass
     public static class FieldTunables {
-      // OTF Trajctory Generation (go over or under Charge Station)
+      // OTF Trajctory Generation (go over or under Charge Station, around barrier)
       public static final double MIN_GO_TOP = 4;
       public static final double MAX_GO_TOP = 6;
       public static final double MAX_GO_BOTTOM = MIN_GO_TOP - 1;
       public static final double MIN_GO_BOTTOM = 2;
       public static final double TIME_BETWEEN_REGERATION_SECONDS = 3;
 
-      public static final double CHARGE_STATION_OFFSET = 0.6;
+      public static final double CHARGE_STATION_OFFSET = 0.8;
+
       public static final double SINGLE_HUMAN_STATION_OFFSET = 0.6;
 
       public static final double GRID_OFFSET = 0.7;

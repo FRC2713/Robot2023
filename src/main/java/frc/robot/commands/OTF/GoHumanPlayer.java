@@ -43,26 +43,23 @@ public class GoHumanPlayer {
                 FieldConstants.Community.chargingStationOuterX,
                 FieldConstants.Community.chargingStationLeftY),
             new PathPoint(
-                RedHawkUtil.Reflections.reflectIfBlue(
-                    FieldConstants.Community.chargingStationCorners[3].plus(
+                RedHawkUtil.Reflections.reflectIfRed(
+                    FieldConstants.Community.Foreign.chargingStationCorners[3].plus(
                         new Translation2d(
-                            0,
-                            Constants.DriveConstants.FieldTunables.SINGLE_HUMAN_STATION_OFFSET))),
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
                 heading,
                 Rotation2d.fromDegrees(90))));
 
     breakPoints.add(
         new Pair<>(
-            RedHawkUtil.Reflections.reflectIfRed(
-                new Translation2d(
-                    FieldConstants.LoadingZone.regionCorners[0].getX(),
-                    FieldConstants.LoadingZone.regionCorners[0].getY())),
+            new Translation2d(
+                FieldConstants.LoadingZone.Foreign.regionCorners[0].getX(),
+                FieldConstants.LoadingZone.Foreign.regionCorners[0].getY()),
             new PathPoint(
                 RedHawkUtil.Reflections.reflectIfRed(
                     FieldConstants.LoadingZone.regionCorners[0].plus(
                         new Translation2d(
-                            0,
-                            Constants.DriveConstants.FieldTunables.SINGLE_HUMAN_STATION_OFFSET))),
+                            0, Constants.DriveConstants.FieldTunables.CHARGE_STATION_OFFSET))),
                 heading,
                 Rotation2d.fromDegrees(90))));
 
