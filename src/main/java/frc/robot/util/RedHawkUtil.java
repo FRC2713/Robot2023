@@ -52,6 +52,24 @@ public final class RedHawkUtil {
     return new Translation2d(pose.getX(), pose.getY());
   }
 
+  /**
+   * Checkes if given pose if past the mid point of the field form their community (exclusive).
+   * Flips {@code pose} if on red alliance
+   *
+   * @param pose the pose to check
+   */
+  public static boolean pastMidPoint(Pose2d pose) {
+    return Reflections.reflectIfRed(pose.getX()) > (FieldConstants.fieldLength / 2);
+  }
+
+  public static PathPoint currentPositionPathPoint(Rotation2d heading) {
+    return new PathPoint(
+        RedHawkUtil.Pose2dToTranslation2d(Robot.swerveDrive.getUsablePose()),
+        heading,
+        Robot.swerveDrive.getUsablePose().getRotation(),
+        Robot.swerveDrive.getAverageVelocity());
+  }
+
   public static Translation2d getClosestGrid(double y) {
     return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
         .sorted(
@@ -147,9 +165,20 @@ public final class RedHawkUtil {
   public static class Reflections {
     public static Translation2d reflectIfRed(Translation2d old) {
       if (DriverStation.getAlliance() == Alliance.Red) {
-        return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
+        return reflect(old);
       }
       return old;
+    }
+
+    public static Translation2d reflectIfBlue(Translation2d old) {
+      if (DriverStation.getAlliance() == Alliance.Blue) {
+        return reflect(old);
+      }
+      return old;
+    }
+
+    public static Translation2d reflect(Translation2d old) {
+      return new Translation2d(FieldConstants.fieldLength - old.getX(), old.getY());
     }
 
     public static double reflectIfRed(double x) {
