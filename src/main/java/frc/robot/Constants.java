@@ -67,6 +67,8 @@ public final class Constants {
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
+    public static final double ELEVATOR_MIN_HEIGHT_INCHES = 0.0;
+    public static final double ELEVATOR_MAX_HEIGHT_INCHES = 50.0;
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
 
@@ -94,10 +96,10 @@ public final class Constants {
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(-10);
-    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(45);
-    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(90);
-    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(117.5);
+    public static final double MAX_ANGLE_DEGREES = -10;
+    public static final double EXTENDED_ANGLE_DEGREES = 45;
+    public static final double IDLE_ANGLE_DEGREES = 90;
+    public static final double RETRACTED_ANGLE_DEGREES = 117.5;
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);

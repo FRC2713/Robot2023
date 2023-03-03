@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
 
@@ -49,9 +48,7 @@ public class FourBarIOSparks implements FourBarIO {
     //         Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
 
     if (Math.abs(fourBarOne.getEncoder().getPosition()) < 0.01) {
-      fourBarOne
-          .getEncoder()
-          .setPosition(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
+      fourBarOne.getEncoder().setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
     }
 
     absoluteEncoder = fourBarOne.getAbsoluteEncoder(Type.kDutyCycle);
