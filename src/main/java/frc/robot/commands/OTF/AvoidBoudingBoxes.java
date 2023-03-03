@@ -4,6 +4,8 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -36,12 +38,22 @@ public class AvoidBoudingBoxes {
     return (realX < boxX && realY > boxY);
   }
 
-  private boolean pastTop(double realX, double boxX, double realY, double boxY) {
-    return (realX < boxX && realY > boxY);
-  }
+  private static class Comparors {
+    private static boolean pastTopLeft(double realX, double boxX, double realY, double boxY) {
+      return (realX < boxX && realY > boxY);
+    }
 
-  private boolean pastBotton(double realX, double boxX, double realY, double boxY) {
-    return (realX > boxX && realY < boxY);
+    private static boolean pastTopRight(double realX, double boxX, double realY, double boxY) {
+      return (realX > boxX && realY > boxY);
+    }
+
+    private static boolean pastBottomRight(double realX, double boxX, double realY, double boxY) {
+      return (realX > boxX && realY < boxY);
+    }
+
+    private static boolean pastBottomLeft(double realX, double boxX, double realY, double boxY) {
+      return (realX < boxX && realY < boxY);
+    }
   }
 
   public boolean insideBoxWithPadding(Translation2d currentPose, Translation2d padding) {
@@ -62,7 +74,7 @@ public class AvoidBoudingBoxes {
             Rotation2d.fromDegrees(0));
 
     Logger.getInstance()
-        .recordOutput("PAST TOP", pastTop(x, points[0].getX(), y, points[0].getY()));
+        .recordOutput("PAST TOP", Comparors.pastTopLeft(x, points[0].getX(), y, points[0].getY()));
     Logger.getInstance().recordOutput("TOP LEFT X", top.getX());
     Logger.getInstance().recordOutput("TOP LEFT Y", top.getY());
     Logger.getInstance().recordOutput("X", currentPose.getX());
@@ -98,30 +110,97 @@ public class AvoidBoudingBoxes {
     PathPlannerTrajectory proposed =
         PathPlanner.generatePath(new PathConstraints(3, 4), current, goal);
 
-    ArrayList<Double> states = new ArrayList<>();
-    for (double i = 0; i < (proposed.getTotalTimeSeconds() * 2); i++) {
-      proposed.sample(i).poseMeters.getX();
+    ArrayList<Pose2d> states = new ArrayList<>();
+
+    for (double i = 0; i < (proposed.getTotalTimeSeconds()); i++) {
+      states.add(proposed.sample(i).poseMeters);
     }
 
-    Logger.getInstance().recordOutput("STATES/STATES 0", states.get(0));
-    Logger.getInstance().recordOutput("STATES/STATES 1", states.get(1));
-    Logger.getInstance().recordOutput("STATES/STATES 2", states.get(2));
-    Logger.getInstance().recordOutput("St", null);
+    Logger.getInstance().recordOutput("PROPOSED PATH TIME SECONDS", proposed.getTotalTimeSeconds());
+
+    Logger.getInstance().recordOutput("STATES LENGTH", states.size());
+
+    for (int i = 0; i < states.size(); i++) {
+      Logger.getInstance()
+          .recordOutput(
+              "INSIDE BOX",
+              insideBoxWithPadding(
+                  RedHawkUtil.Pose2dToTranslation2d(states.get(i)), new Translation2d(1, 1)));
+      if (insideBoxWithPadding(
+          RedHawkUtil.Pose2dToTranslation2d(states.get(i)), new Translation2d(1, 1))) {
+        Logger.getInstance()
+            .recordOutput(
+                "PAST BOTTOM RIGHT",
+                Comparors.pastBottomRight(
+                    states.get(i).getX(),
+                    object.getPoints()[1].getX(),
+                    states.get(i).getY(),
+                    object.getPoints()[1].getY()));
+
+        if (Comparors.pastTopLeft(
+            states.get(i).getX(),
+            object.getPoints()[0].getX(),
+            states.get(i).getY(),
+            object.getPoints()[0].getY())) {
+          list.add(
+              new PathPoint(
+                  RedHawkUtil.Pose2dToTranslation2d(object.getPoints()[0]),
+                  Rotation2d.fromDegrees(180)));
+        }
+        if (Comparors.pastTopRight(
+            states.get(i).getX(),
+            object.getPoints()[1].getX(),
+            states.get(i).getY(),
+            object.getPoints()[0].getY())) {
+          list.add(
+              new PathPoint(
+                  new Translation2d(object.getPoints()[1].getX(), object.getPoints()[0].getY()),
+                  Rotation2d.fromDegrees(180)));
+        }
+        if (Comparors.pastBottomLeft(
+            states.get(i).getX(),
+            object.getPoints()[0].getX(),
+            states.get(i).getY(),
+            object.getPoints()[1].getY())) {
+          list.add(
+              new PathPoint(
+                  new Translation2d(object.getPoints()[0].getX(), object.getPoints()[1].getY()),
+                  Rotation2d.fromDegrees(180)));
+        }
+        if (Comparors.pastBottomRight(
+            states.get(i).getX(),
+            object.getPoints()[1].getX(),
+            states.get(i).getY(),
+            object.getPoints()[1].getY())) {
+          list.add(
+              new PathPoint(
+                  RedHawkUtil.Pose2dToTranslation2d(object.getPoints()[1]),
+                  Rotation2d.fromDegrees(180)));
+        }
+      }
+    }
+
+    // Logger.getInstance().recordOutput("STATES/STATES 1", states.get(1));
+    // Logger.getInstance().recordOutput("STATES/STATES 2", states.get(2));
+    // Logger.getInstance().recordOutput("St", null);
 
     list.add(current);
 
-    // if (pastTop(x, points[0].getX(), y, points[0].getY())) {
+    // if (Comparors.pastTop(x, points[0].getX(), y, points[0].getY())) {
     // list.add(
     // new PathPoint(
     // new Translation2d(points[0].getX(), points[0].getY()),
     // Rotation2d.fromDegrees(180)));
     // }
-    if (pastTop(x, x, y, y)) list.add(goal);
+    // if (Comparors.pastTop(x, x, y, y))
+    list.add(goal);
 
     return list;
   }
 
   public ArrayList<PathPoint> generateTrajectories(Translation2d currentPose) {
+    Logger.getInstance().recordOutput("GOAL", object.getPoints()[1].getX());
+
     return generateTrajectories(
         currentPose,
         new PathPoint(
