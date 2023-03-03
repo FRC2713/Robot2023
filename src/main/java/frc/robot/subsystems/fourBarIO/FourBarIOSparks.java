@@ -3,18 +3,29 @@ package frc.robot.subsystems.fourBarIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.util.RedHawkUtil;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
+  private SparkMaxAbsoluteEncoder absoluteEncoder;
 
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
+
+    RedHawkUtil.configureHighTrafficSpark(fourBarOne);
+    // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
+
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+
     fourBarOne.setIdleMode(IdleMode.kCoast);
 
     fourBarOne.setInverted(true); // subject to change
@@ -37,12 +48,17 @@ public class FourBarIOSparks implements FourBarIO {
     //         Constants.FourBarConstants.FOUR_BAR_VELOCITY_CONVERSION_FACTOR);
 
     if (Math.abs(fourBarOne.getEncoder().getPosition()) < 0.01) {
-      fourBarOne
-          .getEncoder()
-          .setPosition(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
+      fourBarOne.getEncoder().setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
     }
 
-    fourBarOne.burnFlash();
+    absoluteEncoder = fourBarOne.getAbsoluteEncoder(Type.kDutyCycle);
+    absoluteEncoder.setPositionConversionFactor(1 / 2.5 * 360);
+    absoluteEncoder.setVelocityConversionFactor(1 / 2.5 * 360);
+    absoluteEncoder.setInverted(true);
+
+    absoluteEncoder.setZeroOffset(10);
+    // absoluteEncoder.setZeroOffset(
+    //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
   }
 
   @Override
@@ -64,6 +80,8 @@ public class FourBarIOSparks implements FourBarIO {
 
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
+
+    inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
   }
 
   @Override

@@ -30,7 +30,7 @@ import lombok.experimental.UtilityClass;
 public final class Constants {
 
   public static final boolean TUNING_MODE = false;
-  public static final DebugMode DEBUG_MODE = DebugMode.TUNE_MODULES;
+  public static final DebugMode DEBUG_MODE = DebugMode.MATCH;
   public static final int zero = 0; // in case you need a zero :)
   public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
@@ -38,6 +38,7 @@ public final class Constants {
   public static final int INT_PLACEHOLDER = zero;
   public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
+  public static final int CAN_TIMEOUT_MS = 200;
 
   @UtilityClass
   public final class LimeLightConstants {
@@ -54,8 +55,8 @@ public final class Constants {
     public static final int ELEVATOR_LEFT_CANID = 7;
     public static final int ELEVATOR_RIGHT_CANID = 8;
 
-    public static final int INTAKE_WHEELS_CANID = 12;
-    public static final int INTAKE_ROLLERS_CANID = 11;
+    public static final int TOP_INTAKE_ROLLER = 12;
+    public static final int BOTTOM_INTAKE_ROLLER = 11;
 
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
@@ -74,76 +75,69 @@ public final class Constants {
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
     public static final double ELEVATOR_MAX_HEIGHT_METERS = Units.inchesToMeters(50.0);
+    public static final double ELEVATOR_MIN_HEIGHT_INCHES = 0.0;
+    public static final double ELEVATOR_MAX_HEIGHT_INCHES = 50.0;
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
-    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR =
-        (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+
+    /* manual calculations
+       12 / 9.166701316833496 = 1.30908
+       24 / 18.452327728271484 = 1.30064
+       36 / 27.714082717895508 = 1.29897
+       48 / 36.9520263671875 = 1.29898
+    */
+    public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 1.3019175;
+    // (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
+
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
     public static final int ELEVATOR_CURRENT_LIMIT = 45;
 
-    public static final double ELEVATOR_CONE_LOW_SCORE = 0;
-    public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
-    public static final double ELEVATOR_CONE_MID_SCORE = 35;
-    public static final double ELEVATOR_CUBE_MID_SCORE = 17;
-    public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
-    public static final double ELEVATOR_CUBE_HIGH_SCORE = 30;
-
-    public static final double ELEVATOR_CUBE_FLOOR_INTAKE = 8;
-
-    public static final double ELEVATOR_CONE_FLOOR_TIPPED_INTAKE = zero;
-
-    public static final double ELEVATOR_CONE_FLOOR_UP_INTAKE = 12;
+    // public static final double ELEVATOR_CONE_LOW_SCORE = 0;
+    // public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
+    // public static final double ELEVATOR_CONE_MID_SCORE = 32.5;
+    // public static final double ELEVATOR_CUBE_MID_SCORE = 12;
+    // public static final double ELEVATOR_CONE_HIGH_SCORE = 50;
+    // public static final double ELEVATOR_CUBE_HIGH_SCORE = 26;
   }
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(-10);
-    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(45);
-    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(90);
-    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(117.5);
+    public static final double MAX_ANGLE_DEGREES = -10;
+    public static final double EXTENDED_ANGLE_DEGREES = 45;
+    public static final double IDLE_ANGLE_DEGREES = 90;
+    public static final double RETRACTED_ANGLE_DEGREES = 117.5;
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
-    public static final double GEARING = 250.0;
+    public static final double GEARING = 5 * 5 * 2.5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
-    public static final int FOUR_BAR_CURRENT_LIMIT = 50;
+    public static final int FOUR_BAR_CURRENT_LIMIT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
     public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.25).kI(zero).kD(zero).kG(0.000).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.15).kG(0.3).build();
   }
 
   @UtilityClass
   public static class IntakeConstants {
     public static final DCMotor INTAKE_MOTOR = DCMotor.getNEO(1);
-    public static final double ROLLER_GEARING = 24.0 / 20.0;
-    public static final double WHEELS_GEARING = 1;
+    public static final double BOTTOM_GEARING = 3.0;
+    public static final double TOP_GEARING = 3.0;
 
-    public static final double MAX_ROLLER_RPM =
+    public static final double MAX_BOTTOM_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
-            / ROLLER_GEARING;
-    public static final double MAX_WHEEL_RPM =
-        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
-            / WHEELS_GEARING;
+            / BOTTOM_GEARING;
+    public static final double MAX_TOP_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / TOP_GEARING;
     public static final double MOI = 0.1;
-    public static final int WHEELS_CURRENT_LIMIT = 50;
-    public static final int ROLLERS_CURRENT_LIMIT = 50;
-    public static final double WHEELS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_POSITION_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double WHEELS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_VELOCITY_CONVERSION_FACTOR = 1; // SUBJECT TO CHANGE
-    public static final double ROLLERS_CONE_TIPPED_INTAKE_RPM = 100;
-    public static final double ROLLERS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double ROLLERS_CUBE_INTAKE_RPM = 1500;
-    public static final double ROLLERS_CONE_SCORE_RPM = -100;
-    public static final double ROLLERS_CUBE_SCORE_RPM = -100;
-    public static final double WHEELS_CONE_TIPPED_INTAKE_RPM = 100;
-    public static final double WHEELS_CONE_UPRIGHT_INTAKE_RPM = 100;
-    public static final double WHEELS_CUBE_INTAKE_RPM = 0;
-    public static final double WHEELS_CONE_SCORE_RPM = -100;
-    public static final double WHEELS_CUBE_SCORE_RPM = -100;
+    public static final int TOP_CURRENT_LIMIT = 20;
+    public static final int BOTTOM_CURRENT_LIMIT = 20;
+    public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / 3;
+    public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / 3;
+    public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / 3;
+    public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / 3;
   }
 
   @UtilityClass
@@ -200,9 +194,9 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
 
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.75);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.85);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
     public static final int CURRENT_LIMIT = 25;
@@ -239,7 +233,10 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(zero).build();
+        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(1).build();
+
+    public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
+        PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
 
     public static final ModuleInfo FRONT_LEFT =
         ModuleInfo.builder()
@@ -317,32 +314,81 @@ public final class Constants {
   }
 
   public static final class SuperstructureConstants {
+
+    public static final SuperstructureConfig HOLD_CONE =
+        SuperstructureConfig.builder().topRPM(500).bottomRPM(-500).build();
+
+    public static final SuperstructureConfig HOLD_CUBE =
+        SuperstructureConfig.builder().topRPM(-100).bottomRPM(100).build();
+
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-20)
-            .wheelRPM(-3000)
-            .rollerRPM(-3000)
+            .fourBarPosition(-17)
+            .topRPM(1250)
+            .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(45)
-            .wheelRPM(-3000)
-            .rollerRPM(-3000)
+            .fourBarPosition(32)
+            .topRPM(1250)
+            .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(20)
-            .wheelRPM(-1500)
-            .rollerRPM(1500)
+            .fourBarPosition(22)
+            .topRPM(1250)
+            .bottomRPM(1250)
             .build();
-    public static final SuperstructureConfig SCORE =
-        SuperstructureConfig.builder().fourBarPosition(0).wheelRPM(1000).rollerRPM(1000).build();
-    // public static final SuperstructureConfig SCORE_CUBE =
-    //     SuperstructureConfig.builder().elevatorPosition(1).fourBarPosition(1)
-    //     .wheelRPM(1000)
-    //     .rollerRPM(1000).build();
+
+    public static final SuperstructureConfig SCORE_CUBE_LOW =
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(90)
+            .topRPM(1000)
+            .bottomRPM(1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CUBE_MID =
+        SuperstructureConfig.builder()
+            .elevatorPosition(15)
+            .fourBarPosition(90)
+            .topRPM(2000)
+            .bottomRPM(2000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CUBE_HIGH =
+        SuperstructureConfig.builder()
+            .elevatorPosition(32)
+            .fourBarPosition(75)
+            .topRPM(2000)
+            .bottomRPM(2000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_LOW =
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(45)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_MID =
+        SuperstructureConfig.builder()
+            .elevatorPosition(27.5)
+            .fourBarPosition(40)
+            .topRPM(-1000)
+            .bottomRPM(1000)
+            .build();
+
+    public static final SuperstructureConfig SCORE_CONE_HIGH =
+        SuperstructureConfig.builder()
+            .elevatorPosition(49)
+            .fourBarPosition(40)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
+            .build();
   }
 }

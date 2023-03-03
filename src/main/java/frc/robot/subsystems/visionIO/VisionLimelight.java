@@ -53,10 +53,11 @@ public class VisionLimelight implements VisionIO {
     inputs.botpose = getValueDoubleArray("botpose");
     inputs.botpose_wpiblue = getValueDoubleArray("botpose_wpiblue");
     inputs.botpose_wpired = getValueDoubleArray("botpose_wpired");
-    inputs.camerapose_targetspace = getValueDoubleArray("camera pose - target space");
-    inputs.targetpose_cameraspace = getValueDoubleArray("target pose - camera space");
-    inputs.targetpose_robotspace = getValueDoubleArray("target pose - robot space");
-    inputs.botpose_targetspace = getValueDoubleArray("botpose - target space");
+    inputs.camerapose_targetspace = getValueDoubleArray("camerapose_targetspace");
+    inputs.targetpose_cameraspace = getValueDoubleArray("targetpose_cameraspace");
+    inputs.targetpose_robotspace = getValueDoubleArray("targetpose_robotspace");
+    inputs.botpose_targetspace = getValueDoubleArray("botpose_targetspace");
+    inputs.camerapose_robotspace = getValueDoubleArray("camerapose_robotspace");
     inputs.neuralDetectorID = getValueLong("tclass");
     inputs.ledMode = getValueLong("ledMode");
     inputs.camMode = getValueLong("camMode");

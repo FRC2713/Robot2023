@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,6 +41,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
+
+  private LinearFilter filteredRoll = LinearFilter.singlePoleIIR(0.08, 0.02);
+  public double filteredRollVal = 0;
 
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
@@ -117,7 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(
-        pose.getRotation(),
+        getUsablePose().getRotation(),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
           frontRight.getPosition(),
@@ -127,7 +132,7 @@ public class SwerveSubsystem extends SubsystemBase {
         pose);
 
     poseEstimator.resetPosition(
-        pose.getRotation(),
+        getUsablePose().getRotation(),
         new SwerveModulePosition[] {
           this.frontLeft.getPosition(),
           this.frontRight.getPosition(),
@@ -160,7 +165,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private Pose2d getRegularPose() {
-    if (false) {
+    if (Robot.isReal()) {
       return odometry.getPoseMeters();
     } else {
       return simOdometryPose;
@@ -182,6 +187,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
     Logger.getInstance().recordOutput("Vision/distCamToTag", distCamToTag);
     Pose2d fPose = new Pose2d(fVal[0], fVal[1], new Rotation2d(fVal[5]));
+    
+    if (pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0) {
+      return;
+    }
+    
     double jump_distance =
         Units.metersToInches(
             poseEstimator
@@ -249,7 +259,7 @@ public class SwerveSubsystem extends SubsystemBase {
         });
 
     poseEstimator.updateWithTime(
-        edu.wpi.first.wpilibj.Timer.getFPGATimestamp(),
+        Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -258,7 +268,7 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    if (true) {
+    if (Robot.isSimulation()) {
       SwerveModuleState[] measuredStates =
           new SwerveModuleState[] {
             frontLeft.getMeasuredState(),
@@ -282,6 +292,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     updateOdometry();
+    filteredRollVal = filteredRoll.calculate(inputs.gyroRollPosition);
+    Logger.getInstance().recordOutput("Swerve/Filtered roll", filteredRollVal);
 
     switch (Robot.motionMode) {
       case FULL_DRIVE:
