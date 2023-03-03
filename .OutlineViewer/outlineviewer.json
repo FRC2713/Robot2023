@@ -1,0 +1,12 @@
+{
+  "Clients": {
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "2713"
+  },
+  "Server": {
+    "open": true
+  }
+}

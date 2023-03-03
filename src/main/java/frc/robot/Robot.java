@@ -5,8 +5,6 @@
 package frc.robot;
 
 import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
-import static frc.robot.subsystems.LightStrip.Pattern.Purple;
-import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,13 +30,17 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.commands.Bridge6328;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
+import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -102,7 +105,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    visionPose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
+    visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -438,8 +441,8 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract()));
 
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
@@ -481,6 +484,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     checkAlliance();
+    SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
+    SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));
   }
 
   @Override
@@ -550,7 +555,10 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
-    autoChooser.addOption("Bridge", new GetOnBridge());
+    autoChooser.addOption("Bridge", new GetOnBridge(true));
+    autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
+    autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("bridge6328", new Bridge6328());
   }
 
   public void checkAlliance() {
