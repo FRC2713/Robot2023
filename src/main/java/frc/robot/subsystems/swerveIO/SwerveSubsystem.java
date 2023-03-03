@@ -1,7 +1,10 @@
 package frc.robot.subsystems.swerveIO;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -9,7 +12,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,6 +41,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
+
+  private LinearFilter filteredRoll = LinearFilter.singlePoleIIR(0.08, 0.02);
+  public double filteredRollVal = 0;
 
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
@@ -72,6 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backRight.getPosition()
             },
             new Pose2d());
+
     poseEstimator =
         new SwerveDrivePoseEstimator(
             DriveConstants.KINEMATICS,
@@ -82,7 +91,13 @@ public class SwerveSubsystem extends SubsystemBase {
               this.backLeft.getPosition(),
               this.backRight.getPosition()
             },
-            new Pose2d());
+            new Pose2d(),
+            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.1),
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(
+                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                    Constants.LimeLightConstants.VISION_STD_DEVI_ROTATION_IN_RADIANS));
 
     simOdometryPose = odometry.getPoseMeters();
   }
@@ -164,10 +179,30 @@ public class SwerveSubsystem extends SubsystemBase {
         + backRight.getTotalCurrentDraw();
   }
 
-  public void updateVisionPose(TimestampedDoubleArray array) {
-    double[] val = array.value;
-    Pose2d pose = new Pose2d(val[0], val[1], new Rotation2d(val[5]));
-    poseEstimator.addVisionMeasurement(pose, array.timestamp);
+  public void updateVisionPose(
+      TimestampedDoubleArray fieldPoseArray, TimestampedDoubleArray cameraPoseArray) {
+    double[] fVal = fieldPoseArray.value;
+    double[] cVal = cameraPoseArray.value;
+    double distCamToTag = Units.metersToInches(Math.abs(cVal[2]));
+
+    Logger.getInstance().recordOutput("Vision/distCamToTag", distCamToTag);
+    Pose2d fPose = new Pose2d(fVal[0], fVal[1], new Rotation2d(fVal[5]));
+
+    if (fPose.getX() == 0 && fPose.getY() == 0 && fPose.getRotation().getDegrees() == 0) {
+      return;
+    }
+
+    double jump_distance =
+        Units.metersToInches(
+            poseEstimator
+                .getEstimatedPosition()
+                .getTranslation()
+                .getDistance(fPose.getTranslation()));
+    Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
+    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
+      poseEstimator.addVisionMeasurement(fPose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp());
+    }
   }
 
   /**
@@ -213,6 +248,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * be run in periodic() or during every code loop to maintain accuracy.
    */
   public void updateOdometry() {
+
     odometry.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
@@ -222,7 +258,8 @@ public class SwerveSubsystem extends SubsystemBase {
           backRight.getPosition()
         });
 
-    poseEstimator.update(
+    poseEstimator.updateWithTime(
+        Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
@@ -246,6 +283,8 @@ public class SwerveSubsystem extends SubsystemBase {
                   speeds.vxMetersPerSecond * .02,
                   speeds.vyMetersPerSecond * .02,
                   speeds.omegaRadiansPerSecond * .02));
+
+      inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
   }
 
@@ -253,6 +292,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     updateOdometry();
+    filteredRollVal = filteredRoll.calculate(inputs.gyroRollPosition);
+    Logger.getInstance().recordOutput("Swerve/Filtered roll", filteredRollVal);
 
     switch (Robot.motionMode) {
       case FULL_DRIVE:

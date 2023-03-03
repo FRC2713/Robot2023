@@ -21,7 +21,7 @@ public class FourBar extends SubsystemBase {
   private final ProfiledPIDController controller;
   private final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
-  private double targetDegs = Units.radiansToDegrees(Constants.FourBarConstants.IDLE_ANGLE_RADIANS);
+  private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
@@ -37,9 +37,8 @@ public class FourBar extends SubsystemBase {
   }
 
   public void setAngleDeg(double targetDegs) {
-    double rads = Units.degreesToRadians(targetDegs);
-    if (rads < Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS
-        || rads > Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS) {
+    if (targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+        || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES) {
       RedHawkUtil.ErrHandler.getInstance().addError("4Bar: Set to degress out of limits range!");
     }
     this.targetDegs = targetDegs;
@@ -58,8 +57,10 @@ public class FourBar extends SubsystemBase {
   }
 
   public void periodic() {
+
+    IO.updateInputs(inputs);
     double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
-    double ffEffort = ff.calculate(Units.radiansToDegrees(inputs.angleDegreesOne), 0);
+    double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
@@ -85,7 +86,6 @@ public class FourBar extends SubsystemBase {
     //   RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MIN LIMITS!");
     // }
 
-    IO.updateInputs(inputs);
     IO.setVoltage(effort);
 
     Logger.getInstance().recordOutput("4Bar/Target Degs", targetDegs);
@@ -114,15 +114,15 @@ public class FourBar extends SubsystemBase {
     }
 
     public static Command retract() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.IDLE_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.IDLE_ANGLE_DEGREES);
     }
 
     public static Command retractFully() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
     }
 
     public static Command extend() {
-      return setToAngle(Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS));
+      return setToAngle(Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES);
     }
   }
 }

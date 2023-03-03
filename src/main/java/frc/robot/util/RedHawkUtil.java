@@ -191,6 +191,10 @@ public final class RedHawkUtil {
       }
       return old;
     }
+
+    public static Pose2d reflectIfRed(Pose2d old) {
+      return new Pose2d(reflectIfRed(old.getTranslation()), reflectIfRed(old.getRotation()));
+    }
   }
 
   // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
@@ -323,5 +327,13 @@ public final class RedHawkUtil {
 
     // accumulated gyro angles
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 10000);
+  }
+
+  public PathPoint pathPointFromHolonomicPose(Pose2d pose) {
+    return pathPointFromHolonomicPose(pose, pose.getRotation());
+  }
+
+  public PathPoint pathPointFromHolonomicPose(Pose2d pose, Rotation2d pathHeading) {
+    return new PathPoint(pose.getTranslation(), pathHeading, pose.getRotation());
   }
 }

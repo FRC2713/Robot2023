@@ -3,7 +3,6 @@ package frc.robot.subsystems.visionIO;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,128 +34,8 @@ public class Vision extends SubsystemBase {
     getEntry(entryName).setNumber(value);
   }
 
-  /**
-   * @return true if the Limelight has any valid targets
-   */
-  public boolean hasValidTargets() {
-    return inputs.validTarget;
-  }
-
-  /**
-   * @return horizontal offset from crosshair to target (-27 degrees to 27 degrees)
-   */
-  public double getHorizontalOffset() {
-    return inputs.horizontalCrosshairOffset;
-  }
-
-  /**
-   * @return vertical offset from crosshair to target (-20.5 degrees to 20.5 degrees)
-   */
-  public double getVerticalOffset() {
-    return inputs.verticalCrosshairOffset;
-  }
-
-  /**
-   * @return target area (0% of image to 100% of image)
-   */
-  public double getTargetArea() {
-    return inputs.targetArea;
-  }
-
-  /**
-   * @return skew or rotation (-90 degrees to 0 degrees)
-   */
-  public double getSkewOrRotation() {
-    return inputs.skew;
-  }
-
-  /**
-   * @return pipeline's latency contribution (ms); add 11ms for image capture
-   */
-  public double getLatency() {
-    return inputs.pipelineLatency;
-  }
-
-  /**
-   * @return sidelength of shortest side of the fitted bounding box (pixels)
-   */
-  public double getShortSideLength() {
-    return inputs.shortSidelength;
-  }
-
-  /**
-   * @return sidelength of longest side of the fitted bounding box (pixels)
-   */
-  public double getLongSideLength() {
-    return inputs.longSideLength;
-  }
-
-  /**
-   * @return Horizontal sidelength of the rough bounding box (0 - 320 pixels)
-   */
-  public double getHorizontalSidelength() {
-    return inputs.horizontalSideLength;
-  }
-
-  /**
-   * @return Vertical sidelength of the rough bounding box (0 - 320 pixels)
-   */
-  public double getVerticalSidelength() {
-    return inputs.verticalSideLength;
-  }
-
-  /**
-   * @return True active pipeline index of the camera (0 .. 9)
-   */
-  public long getPipeline() {
-    return inputs.pipelineIndex;
-  }
-
-  /**
-   * @return Results of a 3D position solution, 6 numbers: Translation (x,y,y)
-   *     Rotation(pitch,yaw,roll)
-   */
-  //  public double[] getCamtran() {
-  //    return inputs.camtran;
-  // }
-  public long getTid() {
-    return inputs.tid;
-  }
-
-  public String getJsonDump() {
-    return inputs.jsonDump;
-  }
-
-  public double[] getBotPose() {
-    return inputs.botpose;
-  }
-
-  public double[] getBotPose_wpiBlue() {
-    return inputs.botpose_wpiblue;
-  }
-
-  public double[] getBotPose_wpiRed() {
-    return inputs.botpose_wpired;
-  }
-
-  public double[] getCameraPose_targetSpace() {
-    return inputs.camerapose_targetspace;
-  }
-
-  public double[] getTargetPose_cameraSpace() {
-    return inputs.targetpose_cameraspace;
-  }
-
-  public double[] getTargetPose_robotSpace() {
-    return inputs.targetpose_robotspace;
-  }
-
-  public double[] getBotPose_targetSpace() {
-    return inputs.botpose_targetspace;
-  }
-
-  public long getNeuralDetectorId() {
-    return inputs.neuralDetectorID;
+  public VisionInputsAutoLogged getInputs() {
+    return inputs;
   }
 
   public enum LedMode {
@@ -201,7 +80,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getDistanceFromGoal() {
-    double targetOffsetAngle_Vertical = getVerticalOffset();
+    double targetOffsetAngle_Vertical = inputs.verticalCrosshairOffset;
 
     // how many degrees back is your limelight rotated from perfectly vertical?
     // CHECK
@@ -385,13 +264,17 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public double[] getCrop() {
-    return inputs.crop;
-  }
-
   public void periodic() {
     IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Vision", inputs);
-    SmartDashboard.putBoolean("Limelight State", hasValidTargets());
+
+    Logger.getInstance()
+        .recordOutput(
+            "Vision/LL Pose",
+            inputs.botpose_wpiblue.length > 0
+                ? new double[] {
+                  inputs.botpose_wpiblue[0], inputs.botpose_wpiblue[1], inputs.botpose_wpiblue[5],
+                }
+                : new double[] {});
   }
 }
