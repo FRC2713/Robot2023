@@ -31,7 +31,7 @@ import lombok.experimental.UtilityClass;
 public final class Constants {
 
   public static final boolean TUNING_MODE = false;
-  public static final DebugMode DEBUG_MODE = DebugMode.TUNE_MODULES;
+  public static final DebugMode DEBUG_MODE = DebugMode.MATCH;
   public static final int zero = 0; // in case you need a zero :)
   public static final int MOVE_FORWARD_SPEED = 5; // subject to move/change : )
   public static final double π = Math.PI;
@@ -108,13 +108,13 @@ public final class Constants {
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
-    public static final double GEARING = 250.0;
+    public static final double GEARING = 5 * 5 * 2.5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
     public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.5).kI(zero).kD(zero).kG(0.000).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.15).kG(0.3).build();
   }
 
   @UtilityClass
@@ -230,7 +230,10 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(1).kD(0.01).tolerance(zero).build();
+        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(1).build();
+
+    public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
+        PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
 
     public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
         PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();

@@ -58,8 +58,10 @@ public class FourBar extends SubsystemBase {
   }
 
   public void periodic() {
+
+    IO.updateInputs(inputs);
     double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
-    double ffEffort = ff.calculate(Units.radiansToDegrees(inputs.angleDegreesOne), 0);
+    double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
 
@@ -85,7 +87,6 @@ public class FourBar extends SubsystemBase {
     //   RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MIN LIMITS!");
     // }
 
-    IO.updateInputs(inputs);
     IO.setVoltage(effort);
 
     Logger.getInstance().recordOutput("4Bar/Target Degs", targetDegs);

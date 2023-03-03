@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerveIO;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -37,6 +38,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
   private Pose2d simOdometryPose;
+
+  private LinearFilter filteredRoll = LinearFilter.singlePoleIIR(0.08, 0.02);
+  public double filteredRollVal = 0;
 
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
@@ -261,6 +265,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     updateOdometry();
+    filteredRollVal = filteredRoll.calculate(inputs.gyroRollPosition);
+    Logger.getInstance().recordOutput("Swerve/Filtered roll", filteredRollVal);
 
     switch (Robot.motionMode) {
       case FULL_DRIVE:

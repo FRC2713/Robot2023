@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.LightStrip.Pattern.*;
+import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -28,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.commands.Bridge6328;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.PIDOnBridge;
@@ -37,6 +41,7 @@ import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -65,8 +70,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import static frc.robot.subsystems.LightStrip.Pattern.*;
 
 public class Robot extends LoggedRobot {
   public enum GamePieceMode {
@@ -279,7 +282,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-                        LightStrip.Commands.setColorPattern(RedOrange))))
+                    LightStrip.Commands.setColorPattern(RedOrange))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -383,8 +386,8 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 new WaitCommand(0.5)
                 // Elevator.Commands.setTargetHeightAndWait(0),
-                //LightStrip.Commands.setColorPattern(DarkGreen)
-            ));
+                // LightStrip.Commands.setColorPattern(DarkGreen)
+                ));
 
     // Operator Buttons
     operator
@@ -394,7 +397,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -403,7 +406,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -412,7 +415,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -421,7 +424,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -430,7 +433,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .leftBumper()
@@ -439,17 +442,18 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                    LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract(),
-                    LightStrip.Commands.defaultColorPattern()));
+                Elevator.Commands.setToHeightAndWait(0),
+                FourBar.Commands.retract(),
+                LightStrip.Commands.defaultColorPattern()));
 
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
@@ -477,7 +481,7 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
-    while(intake.hasGamepiece()){
+    while (intake.hasGamepiece()) {
       LightStrip.Commands.setColorPattern(DarkGreen);
     }
   }
@@ -568,6 +572,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("bridge6328", new Bridge6328());
   }
 
   public void checkAlliance() {
