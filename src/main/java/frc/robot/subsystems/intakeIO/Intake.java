@@ -11,6 +11,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
+import frc.robot.subsystems.LightStrip.Pattern;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -69,6 +70,7 @@ public class Intake extends SubsystemBase {
     if (hasGamepiece()) {
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
+      Robot.lights.setColorPattern(Pattern.DarkGreen);
     }
   }
 

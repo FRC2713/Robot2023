@@ -5,7 +5,6 @@
 package frc.robot;
 
 import static frc.robot.subsystems.LightStrip.Pattern.*;
-import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -481,9 +480,6 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
-    while (intake.hasGamepiece()) {
-      LightStrip.Commands.setColorPattern(DarkGreen);
-    }
   }
 
   @Override

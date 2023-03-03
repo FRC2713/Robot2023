@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.swerveIO.module.ModuleInfo;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleName;
 import frc.robot.util.DebugMode;
@@ -97,10 +96,6 @@ public final class Constants {
 
   @UtilityClass
   public static class FourBarConstants {
-    public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(-10);
-    public static final double EXTENDED_ANGLE_RADIANS = Units.degreesToRadians(45);
-    public static final double IDLE_ANGLE_RADIANS = Units.degreesToRadians(90);
-    public static final double RETRACTED_ANGLE_RADIANS = Units.degreesToRadians(117.5);
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
@@ -231,9 +226,6 @@ public final class Constants {
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
         PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(1).build();
-
-    public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
-        PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
 
     public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
         PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
