@@ -187,11 +187,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
     Logger.getInstance().recordOutput("Vision/distCamToTag", distCamToTag);
     Pose2d fPose = new Pose2d(fVal[0], fVal[1], new Rotation2d(fVal[5]));
-    
-    if (pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0) {
+
+    if (fPose.getX() == 0 && fPose.getY() == 0 && fPose.getRotation().getDegrees() == 0) {
       return;
     }
-    
+
     double jump_distance =
         Units.metersToInches(
             poseEstimator
