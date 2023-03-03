@@ -5,8 +5,6 @@
 package frc.robot;
 
 import static frc.robot.subsystems.LightStrip.Pattern.DarkGreen;
-import static frc.robot.subsystems.LightStrip.Pattern.Purple;
-import static frc.robot.subsystems.LightStrip.Pattern.Yellow;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,6 +39,7 @@ import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
@@ -436,8 +435,8 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(0), FourBar.Commands.retract()));
 
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Yellow));
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Purple));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
