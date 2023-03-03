@@ -41,6 +41,14 @@ public final class Constants {
   public static final int CAN_TIMEOUT_MS = 200;
 
   @UtilityClass
+  public final class LimeLightConstants {
+    public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
+    public static double VISION_STD_DEVI_POSITION_IN_METERS = 0.9;
+    public static double VISION_STD_DEVI_ROTATION_IN_RADIANS = Units.degreesToRadians(5);
+    public static double MAX_POSE_JUMP_IN_INCHES = 18;
+  }
+
+  @UtilityClass
   public static final class RobotMap {
     public static final int PIGEON_CAN_ID = 20;
 

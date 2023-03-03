@@ -101,11 +101,13 @@ public class Robot extends LoggedRobot {
   DoubleArraySubscriber visionPose;
 
   Alliance currentAlliance = Alliance.Invalid;
+  DoubleArraySubscriber camera2TagPose;
 
   @Override
   public void robotInit() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    camera2TagPose = table.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -533,15 +535,17 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
-    TimestampedDoubleArray[] queue = visionPose.readQueue();
+    TimestampedDoubleArray[] fQueue = visionPose.readQueue();
+    TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
 
     if (driver.getRightX() > 0.5) {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    if (queue.length > Constants.zero) {
-      TimestampedDoubleArray lastCameraReading = queue[queue.length - 1];
-      swerveDrive.updateVisionPose(lastCameraReading);
+    if (fQueue.length > 0 && cQueue.length > 0) {
+      TimestampedDoubleArray fLastCameraReading = fQueue[fQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = cQueue[cQueue.length - 1];
+      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
     }
   }
 
