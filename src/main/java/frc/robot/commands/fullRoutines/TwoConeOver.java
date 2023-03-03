@@ -34,29 +34,29 @@ public class TwoConeOver extends SequentialCommandGroup {
         new ParallelCommandGroup(
             FourBar.Commands.setToAngle(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-            Intake.Commands.setRollerVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_CUBE.getRollerRPM()),
-            Intake.Commands.setWheelVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_CUBE.getWheelRPM())),
+            Intake.Commands.setBottomVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
+            Intake.Commands.setTopVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_CUBE.getTopRPM())),
         new ParallelCommandGroup(
             FourBar.Commands.setToAngle(
                 Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
-            Intake.Commands.setRollerVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getRollerRPM()),
-            Intake.Commands.setWheelVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getWheelRPM())),
+            Intake.Commands.setBottomVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
+            Intake.Commands.setTopVelocityRPM(
+                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getTopRPM())),
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
   private Command stopIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
-            Intake.Commands.setRollerVelocityRPM(0),
-            Intake.Commands.setWheelVelocityRPM(0),
+            Intake.Commands.setBottomVelocityRPM(0),
+            Intake.Commands.setTopVelocityRPM(0),
             FourBar.Commands.retract()),
         new ParallelCommandGroup(
-            Intake.Commands.setRollerVelocityRPM(-500),
-            Intake.Commands.setWheelVelocityRPM(-500),
+            Intake.Commands.setBottomVelocityRPM(-500),
+            Intake.Commands.setTopVelocityRPM(-500),
             FourBar.Commands.retract()),
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
