@@ -7,7 +7,9 @@ package frc.robot;
 import static frc.robot.subsystems.LightStrip.Pattern.*;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -484,6 +486,21 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
+    driver
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+                }));
+    driver
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+                }));
+
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
@@ -593,6 +610,7 @@ public class Robot extends LoggedRobot {
   public void testExit() {}
 
   public void buildAutoChooser() {
+    SwerveSubsystem.gyroOffset = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
@@ -601,6 +619,12 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("bridge6328", new Bridge6328());
+    autoChooser.addOption(
+        "Nothing red",
+        new InstantCommand(
+            () -> {
+              swerveDrive.resetOdometry(new Pose2d(new Translation2d(5, 2), new Rotation2d(0)));
+            }));
   }
 
   public void checkAlliance() {

@@ -38,6 +38,12 @@ public class AutoPath {
       try {
         blueTrajectory = PathPlanner.loadPath(filename, new PathConstraints(maxVel, maxAccel));
         redTrajectory = ReflectedTransform.reflectiveTransformTrajectory(blueTrajectory);
+
+        System.out.println(
+            "Red "
+                + this.name()
+                + " init holo pose -> "
+                + redTrajectory.getInitialHolonomicPose().getRotation().getDegrees());
       } catch (NullPointerException notAgain) {
         System.out.println(filename + "is not found.");
         RedHawkUtil.ErrHandler.getInstance()

@@ -68,6 +68,8 @@ public class TwoCubeOver extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
+              Robot.swerveDrive.resetGyro(
+                  Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose().getRotation());
               Robot.swerveDrive.resetOdometry(
                   Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;

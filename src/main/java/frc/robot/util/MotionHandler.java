@@ -9,6 +9,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 
 public class MotionHandler {
 
@@ -40,9 +41,9 @@ public class MotionHandler {
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeed * DriveConstants.MAX_SWERVE_VEL,
-                ySpeed * DriveConstants.MAX_SWERVE_VEL,
-                MathUtil.clamp(
+              xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+              ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+              MathUtil.clamp(
                     Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
                     -Constants.DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
                     Constants.DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC),
@@ -69,9 +70,10 @@ public class MotionHandler {
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeed * DriveConstants.MAX_SWERVE_VEL,
-                ySpeed * DriveConstants.MAX_SWERVE_VEL,
-                rSpeed * DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
+                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+                rSpeed
+                    * DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC
                 Robot.swerveDrive.getUsablePose().getRotation()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);

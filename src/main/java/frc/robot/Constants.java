@@ -381,13 +381,13 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(27.5)
             .fourBarPosition(40)
-            .topRPM(-1000)
-            .bottomRPM(1000)
+            .topRPM(-500)
+            .bottomRPM(500)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_HIGH =
         SuperstructureConfig.builder()
-            .elevatorPosition(49)
+            .elevatorPosition(48)
             .fourBarPosition(40)
             .topRPM(-1000)
             .bottomRPM(-1000)

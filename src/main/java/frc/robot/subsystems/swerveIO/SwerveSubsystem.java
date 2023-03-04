@@ -45,6 +45,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private LinearFilter filteredRoll = LinearFilter.singlePoleIIR(0.08, 0.02);
   public double filteredRollVal = 0;
 
+  public static double gyroOffset = 1;
+
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
    *
