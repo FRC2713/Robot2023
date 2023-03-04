@@ -486,6 +486,60 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
+    operator
+        .axisLessThan(1, -0.1)
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      double targetHeightInches =
+                          elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
+                      if (!(targetHeightInches
+                          > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+                        elevator.setTargetHeight(targetHeightInches);
+                      }
+                    })));
+
+    operator
+        .axisGreaterThan(1, 0.1)
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      double targetHeightInches =
+                          elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
+                      if (!(targetHeightInches
+                          > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+                        elevator.setTargetHeight(targetHeightInches);
+                      }
+                    })));
+
+    operator
+        .axisLessThan(5, -0.1)
+        .whileTrue(
+            new RepeatCommand(
+                (new InstantCommand(
+                    () -> {
+                      double targetDegs = fourBar.getCurrentDegs() + (20 * operator.getRawAxis(5));
+                      if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+                          || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+                        fourBar.setAngleDeg(targetDegs);
+                      }
+                    }))));
+
+    operator
+        .axisGreaterThan(5, 0.1)
+        .whileTrue(
+            new RepeatCommand(
+                (new InstantCommand(
+                    () -> {
+                      double targetDegs = fourBar.getCurrentDegs() + (20 * operator.getRawAxis(5));
+                      if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+                          || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+                        fourBar.setAngleDeg(targetDegs);
+                      }
+                    }))));
+
     driver
         .start()
         .onTrue(
