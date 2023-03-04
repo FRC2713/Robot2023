@@ -41,6 +41,12 @@ public final class Constants {
   public static final int CAN_TIMEOUT_MS = 200;
 
   @UtilityClass
+  public static final class Logging {
+    public static final String sda1Dir = "/media/sda1";
+    public static final String sda2Dir = "/media/sda2";
+  }
+
+  @UtilityClass
   public static final class RobotMap {
     public static final int PIGEON_CAN_ID = 20;
 
