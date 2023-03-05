@@ -25,6 +25,7 @@ public class IntakeIOSparks implements IntakeIO {
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
+    bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
     topRoller.setInverted(true);
     bottomRoller.setInverted(true);
@@ -65,9 +66,13 @@ public class IntakeIOSparks implements IntakeIO {
         Units.rotationsPerMinuteToRadiansPerSecond(topRoller.getEncoder().getPosition());
     inputs.bottomPositionRad =
         Units.rotationsPerMinuteToRadiansPerSecond(bottomRoller.getEncoder().getPosition());
-    inputs.encoderPosition = topRoller.getAnalog(Mode.kAbsolute).getPosition();
-    inputs.encoderVelocity = topRoller.getAnalog(Mode.kAbsolute).getVelocity();
-    inputs.encoderVoltage = topRoller.getAnalog(Mode.kAbsolute).getVoltage();
+    inputs.encoderPositionRight = topRoller.getAnalog(Mode.kAbsolute).getPosition();
+    inputs.encoderVelocityRight = topRoller.getAnalog(Mode.kAbsolute).getVelocity();
+    inputs.encoderVoltageRight = topRoller.getAnalog(Mode.kAbsolute).getVoltage();
+
+    inputs.encoderPositionLeft = bottomRoller.getAnalog(Mode.kAbsolute).getPosition();
+    inputs.encoderVelocityLeft = bottomRoller.getAnalog(Mode.kAbsolute).getVelocity();
+    inputs.encoderVoltageLeft = bottomRoller.getAnalog(Mode.kAbsolute).getVoltage();
   }
 
   @Override

@@ -42,7 +42,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridge(boolean gridside) {
-    rampSpeed = gridside ? 1.1 : -1.1;
+    rampSpeed = gridside ? -1.1 : 1.1;
     addCommands(
         new RunCommand(
                 () -> {

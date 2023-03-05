@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.*;
+import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,6 +38,7 @@ import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
@@ -60,8 +61,10 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -350,7 +353,7 @@ public class Robot extends LoggedRobot {
     driver
         .b()
         .onTrue(FourBar.Commands.setAngleDegAndWait(15))
-        .onFalse(new SequentialCommandGroup(new WaitCommand(0.5), FourBar.Commands.retract()));
+        .onFalse(new SequentialCommandGroup(new WaitCommand(0.0), FourBar.Commands.retract()));
 
     driver
         .a()
@@ -434,7 +437,7 @@ public class Robot extends LoggedRobot {
         .rightBumper()
         .and(operator.b())
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 LightStrip.Commands.defaultColorPattern()));
@@ -476,6 +479,24 @@ public class Robot extends LoggedRobot {
                 LightStrip.Commands.defaultColorPattern()));
 
     operator
+        .rightBumper()
+        .and(operator.x())
+        .onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      gamePieceMode = GamePieceMode.CONE;
+                    }),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+                new ParallelCommandGroup(
+                    Intake.Commands.setTopVelocityRPM(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+                    Intake.Commands.setBottomVelocityRPM(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+                    FourBar.Commands.setAngleDegAndWait(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+
+    operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
@@ -485,6 +506,61 @@ public class Robot extends LoggedRobot {
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
+
+    // operator
+    //     .axisLessThan(1, -0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   double targetHeightInches =
+    //                       elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
+    //                   if (!(targetHeightInches
+    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    //                     elevator.setTargetHeight(targetHeightInches);
+    //                   }
+    //                 })));
+
+    // operator
+    //     .axisGreaterThan(1, 0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   double targetHeightInches =
+    //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
+    //                   if (!(targetHeightInches
+    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    //                     elevator.setTargetHeight(targetHeightInches);
+    //                   }
+    //                 })));
+
+    // operator
+    //     .axisLessThan(5, -0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             (new InstantCommand(
+    //                 () -> {
+    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // operator.getRawAxis(5));
+    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    //                     fourBar.setAngleDeg(targetDegs);
+    //                   }
+    //                 }))));
+
+    // operator
+    //     .axisGreaterThan(5, 0.1)
+    //     .whileTrue(
+    //             (new InstantCommand(
+    //                 () -> {
+    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // operator.getRawAxis(5));
+    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    //                     fourBar.setAngleDeg(targetDegs);
+    //                   }
+    //                 })));
 
     driver
         .start()
@@ -536,6 +612,8 @@ public class Robot extends LoggedRobot {
     }
 
     Robot.motionMode = MotionMode.LOCKDOWN;
+
+    vision.setCurrentSnapshotMode(SnapshotMode.OFF);
   }
 
   @Override
@@ -571,6 +649,8 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
+
+    vision.setCurrentSnapshotMode(SnapshotMode.TWO_PER_SECOND);
   }
 
   // grab botpose from the network table, put it into swerve drive inputs, read
@@ -625,6 +705,18 @@ public class Robot extends LoggedRobot {
             () -> {
               swerveDrive.resetOdometry(new Pose2d(new Translation2d(5, 2), new Rotation2d(0)));
             }));
+    autoChooser.addOption("OneConeBridge", new OneConeBridge());
+    autoChooser.addOption(
+        "test",
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  Robot.swerveDrive.resetOdometry(
+                      Autos.TEST.getTrajectory().getInitialHolonomicPose());
+                  Robot.gamePieceMode = GamePieceMode.CUBE;
+                }),
+            Commands.parallel(
+                SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TEST.getTrajectory()))));
   }
 
   public void checkAlliance() {

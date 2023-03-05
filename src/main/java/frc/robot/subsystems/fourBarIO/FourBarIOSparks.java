@@ -26,7 +26,7 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
 
-    fourBarOne.setIdleMode(IdleMode.kCoast);
+    fourBarOne.setIdleMode(IdleMode.kBrake);
 
     fourBarOne.setInverted(true); // subject to change
     // fourBarTwo.setInverted(true); // subject to change

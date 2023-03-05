@@ -18,11 +18,12 @@ public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
-  private double detectionThreshold = 1.3;
-  private double filteredVoltage = 0;
+  private double detectionThreshold = 1.0;
+  private double filteredVoltageRight = 0, filteredVoltageLeft;
   public boolean scoring = false;
 
-  private LinearFilter analogVoltageFilter = LinearFilter.singlePoleIIR(0.06, 0.02);
+  private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.06, 0.02);
+  private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.06, 0.02);
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
@@ -47,7 +48,9 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
-    return (filteredVoltage > detectionThreshold) && !scoring;
+    return ((filteredVoltageRight > detectionThreshold)
+            || (filteredVoltageLeft > detectionThreshold))
+        && !scoring;
   }
 
   public void setScoring(boolean scoring) {
@@ -58,16 +61,18 @@ public class Intake extends SubsystemBase {
 
     IO.updateInputs(inputs);
 
-    filteredVoltage = analogVoltageFilter.calculate(inputs.encoderVoltage);
+    filteredVoltageRight = analogVoltageFilterRight.calculate(inputs.encoderVoltageRight);
+    filteredVoltageLeft = analogVoltageFilterLeft.calculate(inputs.encoderVoltageLeft);
 
-    Logger.getInstance().recordOutput("Intake/Filtered Sensor 1", filteredVoltage);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor R", filteredVoltageRight);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor L", filteredVoltageLeft);
 
     Logger.getInstance().recordOutput("Intake/Target RPM", targetRPM);
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
 
     Logger.getInstance().processInputs("Intake", inputs);
 
-    if (hasGamepiece()) {
+    if (hasGamepiece() && Robot.gamePieceMode != GamePieceMode.CONE) {
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
       Robot.lights.setColorPattern(Pattern.DarkGreen);

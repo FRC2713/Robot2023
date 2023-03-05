@@ -46,6 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public double filteredRollVal = 0;
 
   public static double gyroOffset = 1;
+  public static Rotation2d resetGyroVal = null;
 
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
@@ -123,8 +124,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pose The desired pose.
    */
   public void resetOdometry(Pose2d pose) {
+    Logger.getInstance().recordOutput("Reset odometry to ", pose);
     odometry.resetPosition(
-        getUsablePose().getRotation(),
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
           frontRight.getPosition(),
@@ -164,6 +166,10 @@ public class SwerveSubsystem extends SubsystemBase {
     } else {
       return getRegularPose();
     }
+  }
+
+  public Rotation2d getYaw() {
+    return Rotation2d.fromDegrees(inputs.gyroYawPosition);
   }
 
   private Pose2d getRegularPose() {

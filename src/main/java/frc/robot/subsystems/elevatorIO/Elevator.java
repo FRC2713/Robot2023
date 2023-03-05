@@ -61,7 +61,9 @@ public class Elevator extends SubsystemBase {
   }
 
   public void periodic() {
-    double effortLeft = elevatorController.calculate(inputs.heightInchesLeft, targetHeight);
+    double effortLeft =
+        elevatorController.calculate(
+            (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight);
     // double ffEffort = feedforward.calculate(0);
     effortLeft += 0.625;
     effortLeft = MathUtil.clamp(effortLeft, -12, 12);

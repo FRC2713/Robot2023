@@ -36,7 +36,7 @@ public final class Constants {
   public static final double π = Math.PI;
   public static final double DOUBLE_PLACEHOLDER = zero;
   public static final int INT_PLACEHOLDER = zero;
-  public static final boolean ENABLE_VISION_POSE_ESTIMATION = true;
+  public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
   public static final int CAN_TIMEOUT_MS = 200;
 
@@ -92,7 +92,7 @@ public final class Constants {
     public static final double ELEVATOR_VELOCITY_CONVERSION_FACTOR =
         ELEVATOR_POSITION_CONVERSION_FACTOR / 60;
     public static final double ELEVATOR_ANGLE_DEGREES = 55.0;
-    public static final int ELEVATOR_CURRENT_LIMIT = 45;
+    public static final int ELEVATOR_CURRENT_LIMIT = 35;
 
     // public static final double ELEVATOR_CONE_LOW_SCORE = 0;
     // public static final double ELEVATOR_CUBE_LOW_SCORE = 0;
@@ -132,8 +132,8 @@ public final class Constants {
     public static final double MAX_TOP_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / TOP_GEARING;
     public static final double MOI = 0.1;
-    public static final int TOP_CURRENT_LIMIT = 20;
-    public static final int BOTTOM_CURRENT_LIMIT = 20;
+    public static final int TOP_CURRENT_LIMIT = 15;
+    public static final int BOTTOM_CURRENT_LIMIT = 15;
     public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / 3;
     public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / 3;
     public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / 3;
@@ -196,12 +196,13 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
 
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.85);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0 * 0.90);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
 
-    public static final int CURRENT_LIMIT = 25;
+    public static final int DRIVE_CURRENT_LIMIT = 50;
+    public static final int AZI_CURRENT_LIMIT = 20;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
 
@@ -296,13 +297,13 @@ public final class Constants {
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
-          PIDFFGains.builder("Trajectory Controller X-Axis").kP(0.9).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(5).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_Y =
-          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(0.9).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(5).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
-          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.0).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.25).kD(0.0).build();
     }
 
     public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =
@@ -337,12 +338,21 @@ public final class Constants {
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
+
+    public static final SuperstructureConfig INTAKE_SHELF_CONE =
+        SuperstructureConfig.builder()
+            .elevatorPosition(39.5)
+            .fourBarPosition(90)
+            .topRPM(1250)
+            .bottomRPM(-1250)
+            .build();
+
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(22)
-            .topRPM(1250)
-            .bottomRPM(1250)
+            .fourBarPosition(27.13)
+            .topRPM(1_500)
+            .bottomRPM(1_500)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_LOW =
@@ -379,8 +389,8 @@ public final class Constants {
 
     public static final SuperstructureConfig SCORE_CONE_MID =
         SuperstructureConfig.builder()
-            .elevatorPosition(27.5)
-            .fourBarPosition(40)
+            .elevatorPosition(28)
+            .fourBarPosition(90)
             .topRPM(-500)
             .bottomRPM(500)
             .build();

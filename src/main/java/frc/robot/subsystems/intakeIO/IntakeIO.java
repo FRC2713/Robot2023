@@ -18,9 +18,12 @@ public interface IntakeIO {
     public double bottomCurrentAmps = 0.0;
     public double topPositionRad = 0.0;
     public double bottomPositionRad = 0.0;
-    public double encoderVoltage = 0.0;
-    public double encoderPosition = 0.0;
-    public double encoderVelocity = 0.0;
+    public double encoderVoltageRight = 0.0;
+    public double encoderPositionRight = 0.0;
+    public double encoderVelocityRight = 0.0;
+    public double encoderVoltageLeft = 0.0;
+    public double encoderPositionLeft = 0.0;
+    public double encoderVelocityLeft = 0.0;
   }
 
   public void setCurrentLimit(int currentLimit);
