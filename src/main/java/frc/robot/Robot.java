@@ -39,6 +39,7 @@ import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.OneConeBridge;
+import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
@@ -497,6 +498,29 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator
+        .povUp()
+        .onTrue(
+            new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      gamePieceMode = GamePieceMode.CONE;
+                    }),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+                new ParallelCommandGroup(
+                    Intake.Commands.setTopVelocityRPM(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+                    Intake.Commands.setBottomVelocityRPM(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+                    FourBar.Commands.setAngleDegAndWait(
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+
+    operator
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+
+    operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
@@ -706,6 +730,7 @@ public class Robot extends LoggedRobot {
               swerveDrive.resetOdometry(new Pose2d(new Translation2d(5, 2), new Rotation2d(0)));
             }));
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
+    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption(
         "test",
         new SequentialCommandGroup(

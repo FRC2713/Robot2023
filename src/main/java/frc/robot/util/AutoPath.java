@@ -25,10 +25,10 @@ public class AutoPath {
     TEST("test"),
 
     // Cube Paths (Paths to/from grids with cube goals)
-    A_TO_TWO("cargoAtogrid2", Units.feetToMeters(12), Units.feetToMeters(4)),
-    B_TO_TWO("cargoBtogrid2", Units.feetToMeters(12), Units.feetToMeters(4)),
-    TWO_TO_A("grid2tocargoA", Units.feetToMeters(12), Units.feetToMeters(4)),
-    TWO_TO_B("grid2tocargoB", Units.feetToMeters(12), Units.feetToMeters(4)),
+    A_TO_TWO("cargoAtogrid2"),
+    B_TO_TWO("cargoBtogrid2"),
+    TWO_TO_A("grid2tocargoA"),
+    TWO_TO_B("grid2tocargoB"),
     FIVE_TO_B("grid5tocargoB"),
 
     // Misc Paths (look man I can only make so many categories)

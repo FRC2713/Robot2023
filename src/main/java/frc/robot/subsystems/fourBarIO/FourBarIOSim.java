@@ -54,4 +54,7 @@ public class FourBarIOSim implements FourBarIO {
   public void setVoltage(double volts) {
     sim.setInputVoltage(volts);
   }
+
+  @Override
+  public void setPosition(double angleDeg) {}
 }

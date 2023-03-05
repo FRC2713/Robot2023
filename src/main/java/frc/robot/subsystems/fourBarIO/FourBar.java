@@ -19,7 +19,7 @@ import org.littletonrobotics.junction.Logger;
 public class FourBar extends SubsystemBase {
 
   private final ProfiledPIDController controller;
-  private final FourBarInputsAutoLogged inputs;
+  public final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
   private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
   private final ArmFeedforward ff;
@@ -54,6 +54,10 @@ public class FourBar extends SubsystemBase {
 
   public double getCurrentDraw() {
     return inputs.currentDrawOne;
+  }
+
+  public void setPosition(double angleDegs) {
+    IO.setPosition(angleDegs);
   }
 
   public void periodic() {

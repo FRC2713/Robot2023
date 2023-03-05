@@ -27,4 +27,6 @@ public interface FourBarIO {
   public void updateInputs(FourBarInputs inputs);
 
   public void setVoltage(double volts);
+
+  public void setPosition(double angleDeg);
 }

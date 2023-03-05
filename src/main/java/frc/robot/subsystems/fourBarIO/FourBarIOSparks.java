@@ -89,4 +89,9 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarOne.setVoltage(volts);
     // fourBarTwo.setVoltage(volts);
   }
+
+  @Override
+  public void setPosition(double angleDeg) {
+    fourBarOne.getEncoder().setPosition(angleDeg);
+  }
 }
