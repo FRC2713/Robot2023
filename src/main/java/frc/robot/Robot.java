@@ -627,6 +627,19 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+
+    TimestampedDoubleArray[] fQueue = visionPose.readQueue();
+    TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
+
+    if (driver.getRightX() > 0.5) {
+      motionMode = MotionMode.FULL_DRIVE;
+    }
+
+    if (fQueue.length > 0 && cQueue.length > 0) {
+      TimestampedDoubleArray fLastCameraReading = fQueue[fQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = cQueue[cQueue.length - 1];
+      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
+    }
   }
 
   @Override
@@ -683,20 +696,7 @@ public class Robot extends LoggedRobot {
   // using the vision command
 
   @Override
-  public void teleopPeriodic() {
-    TimestampedDoubleArray[] fQueue = visionPose.readQueue();
-    TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
-
-    if (driver.getRightX() > 0.5) {
-      motionMode = MotionMode.FULL_DRIVE;
-    }
-
-    if (fQueue.length > 0 && cQueue.length > 0) {
-      TimestampedDoubleArray fLastCameraReading = fQueue[fQueue.length - 1];
-      TimestampedDoubleArray cLastCameraReading = cQueue[cQueue.length - 1];
-      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
-    }
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void teleopExit() {}
