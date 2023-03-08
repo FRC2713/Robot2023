@@ -73,6 +73,7 @@ import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
+import java.io.File;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -125,7 +126,26 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
     if (isReal()) {
-      Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1"));
+      File sda1 = new File(Constants.Logging.sda1Dir);
+      File sda2 = new File(Constants.Logging.sda2Dir);
+
+      if (sda1.exists() && sda1.isDirectory()) {
+        Logger.getInstance().recordOutput("isLoggingToUsb", true);
+        Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
+      } else {
+        RedHawkUtil.ErrHandler.getInstance()
+            .addError("Cannot log to " + Constants.Logging.sda1Dir + ", trying " + Constants.Logging.sda2Dir);
+        if (sda2.exists() && sda2.isDirectory()) {
+          Logger.getInstance().recordOutput("isLoggingToUsb", true);
+          Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
+        } else {
+          RedHawkUtil.ErrHandler.getInstance().addError("Cannot log to " + Constants.Logging.sda2Dir);
+          Logger.getInstance().recordOutput("isLoggingToUsb", false);
+        }
+      }
+    }
+    else {
+      Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
 
     Logger.getInstance().start();

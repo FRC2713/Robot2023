@@ -41,6 +41,11 @@ public final class Constants {
   public static final int CAN_TIMEOUT_MS = 200;
 
   @UtilityClass
+  public static final class Logging {
+    public static final String sda1Dir = "/media/sda1";
+    public static final String sda2Dir = "/media/sda2";
+  }
+
   public final class LimeLightConstants {
     public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
     public static double VISION_STD_DEVI_POSITION_IN_METERS = 0.9;
