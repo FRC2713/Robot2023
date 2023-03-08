@@ -8,10 +8,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Robot.GamePieceMode;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
@@ -101,6 +103,36 @@ public class FourBar extends SubsystemBase {
   }
 
   public static class Commands {
+
+    public static ConditionalCommand conditionalFourbarHigh() {
+      return new ConditionalCommand(
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_HIGH.getFourBarPosition()),
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_HIGH.getFourBarPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
+    }
+
+    public static ConditionalCommand conditionalFourbarMid() {
+      return new ConditionalCommand(
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_MID.getFourBarPosition()),
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_MID.getFourBarPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
+    }
+
+    public static ConditionalCommand conditionalFourbarLow() {
+      return new ConditionalCommand(
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_LOW.getFourBarPosition()),
+          FourBar.Commands.setAngleDegAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_LOW.getFourBarPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
+    }
+
+
+
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }

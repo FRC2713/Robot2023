@@ -6,10 +6,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Robot.GamePieceMode;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
@@ -155,6 +157,33 @@ public class Elevator extends SubsystemBase {
     public static Command elevatorCurrentHeight() {
       return new InstantCommand(
           () -> Robot.elevator.setTargetHeight(Robot.elevator.getCurrentHeight()), Robot.elevator);
+    }
+
+    public static ConditionalCommand conditionalElevatorHigh() {
+      return new ConditionalCommand(
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_HIGH.getElevatorPosition()),
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_HIGH.getElevatorPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
+    }
+
+    public static ConditionalCommand conditionalElevatorMid() {
+      return new ConditionalCommand(
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_MID.getElevatorPosition()),
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_MID.getElevatorPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
+    }
+
+    public static ConditionalCommand conditionalElevatorLow() {
+      return new ConditionalCommand(
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CONE_LOW.getElevatorPosition()),
+          Elevator.Commands.setToHeightAndWait(
+              Constants.SuperstructureConstants.SCORE_CUBE_LOW.getElevatorPosition()),
+          () -> Robot.gamePieceMode == GamePieceMode.CONE);
     }
   }
 }

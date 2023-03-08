@@ -425,6 +425,14 @@ public class Robot extends LoggedRobot {
                 ));
 
     // Operator Buttons
+
+    // y high, b mid, a low
+    operator.y().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorHigh(), FourBar.Commands.conditionalFourbarHigh(), LightStrip.Commands.defaultColorPattern()));
+
+    operator.b().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorMid(), FourBar.Commands.conditionalFourbarMid(), LightStrip.Commands.defaultColorPattern()));
+
+    operator.a().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorLow(), FourBar.Commands.conditionalFourbarLow(), LightStrip.Commands.defaultColorPattern()));
+
     operator
         .rightBumper()
         .and(operator.y())
