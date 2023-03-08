@@ -161,7 +161,7 @@ public class LightStrip extends SubsystemBase {
     }
     */
     public static Command defaultColorPattern() {
-      return new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.RainbowLava));
+      return new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.Black));
     }
   }
 }

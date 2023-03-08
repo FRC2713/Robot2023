@@ -1,6 +1,7 @@
 package frc.robot.commands.fullRoutines;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -15,19 +16,20 @@ import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
-import frc.robot.util.AutoPath;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
 import frc.robot.util.TrajectoryController;
 
-public class TwoConeUnder extends SequentialCommandGroup {
+public class OneConeTwoCubeOver extends SequentialCommandGroup {
 
   private Command score(SuperstructureConfig config) {
-    return new SequentialCommandGroup(
+    return Commands.sequence(prepScore(config), Intake.Commands.score(), new WaitCommand(0.5));
+  }
+
+  private Command prepScore(SuperstructureConfig config) {
+    return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setToAngle(config.getFourBarPosition()),
-        Intake.Commands.score(),
-        new WaitCommand(0.5));
+        FourBar.Commands.setToAngle(config.getFourBarPosition()));
   }
 
   private Command startIntake() {
@@ -62,26 +64,41 @@ public class TwoConeUnder extends SequentialCommandGroup {
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
-  public TwoConeUnder() {
+  public OneConeTwoCubeOver() {
     addCommands(
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
-                  AutoPath.Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose());
+                  Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
-        FourBar.Commands.retract(),
-        score(SuperstructureConstants.SCORE_CONE_MID),
-        stopIntake(),
-        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
+        score(SuperstructureConstants.SCORE_CONE_HIGH),
+        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
+        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
+        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
         startIntake(),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_SEVEN.getTrajectory()),
+        Commands.parallel(
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
+            prepScore(SuperstructureConstants.SCORE_CUBE_MID)),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CONE_MID),
+        score(SuperstructureConstants.SCORE_CUBE_HIGH),
+        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
+        Elevator.Commands.setToHeight(Constants.zero),
+        Commands.parallel(
+            Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
+            startIntake(),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_B.getTrajectory())),
+        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
-        Elevator.Commands.setToHeightAndWait(Constants.zero));
+        Commands.parallel(
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.B_TO_TWO.getTrajectory()),
+            prepScore(SuperstructureConstants.SCORE_CUBE_MID)),
+        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
+        score(SuperstructureConstants.SCORE_CUBE_MID),
+        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
+        Elevator.Commands.setToHeightAndWait(0));
   }
 }

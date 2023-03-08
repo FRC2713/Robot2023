@@ -16,12 +16,14 @@ public class FourBarIOSim implements FourBarIO {
           SingleJointedArmSim.estimateMOI(
               Constants.FourBarConstants.LENGTH_METRES, Constants.FourBarConstants.MASS_KG),
           Constants.FourBarConstants.LENGTH_METRES,
-          Constants.FourBarConstants.MAX_ANGLE_RADIANS,
-          Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS,
+          Units.degreesToRadians(Constants.FourBarConstants.MAX_ANGLE_DEGREES),
+          Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES),
           true);
 
   static {
-    sim.setState(VecBuilder.fill(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS, 0));
+    sim.setState(
+        VecBuilder.fill(
+            Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES), 0));
   }
 
   @Override
@@ -52,4 +54,7 @@ public class FourBarIOSim implements FourBarIO {
   public void setVoltage(double volts) {
     sim.setInputVoltage(volts);
   }
+
+  @Override
+  public void setPosition(double angleDeg) {}
 }

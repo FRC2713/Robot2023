@@ -13,11 +13,14 @@ public class SwerveIOSim implements SwerveIO {
     inputs.gyroPitchPosition = 0;
     inputs.previousgyroPitchPosition = 0;
     inputs.gyroRollPosition = 0;
-    // inputs.gyroYawPosition = 0;
+    inputs.gyroYawPosition =
+        SwerveSubsystem.resetGyroVal == null ? 0 : SwerveSubsystem.resetGyroVal.getDegrees();
   }
 
   public void zeroGyro() {}
 
   @Override
-  public void resetGyro(Rotation2d rotation2d) {}
+  public void resetGyro(Rotation2d rotation2d) {
+    SwerveSubsystem.resetGyroVal = rotation2d;
+  }
 }

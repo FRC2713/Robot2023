@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.RedHawkUtil.Reflections;
 import java.util.Map;
 
 /**
@@ -58,6 +59,18 @@ public final class FieldConstants {
           new Translation2d(chargingStationOuterX, chargingStationRightY),
           new Translation2d(chargingStationOuterX, chargingStationLeftY)
         };
+
+    public static final class Foreign {
+      public static final Translation2d[] chargingStationCorners =
+          new Translation2d[FieldConstants.Community.chargingStationCorners.length];
+
+      static {
+        for (int i = 0; i < FieldConstants.Community.chargingStationCorners.length; i++) {
+          chargingStationCorners[i] =
+              Reflections.reflect(FieldConstants.Community.chargingStationCorners[i]);
+        }
+      }
+    }
 
     // Cable bump
     public static final double cableBumpInnerX =
@@ -156,6 +169,17 @@ public final class FieldConstants {
           new Translation2d(innerX, leftY),
           new Translation2d(innerX, rightY),
         };
+
+    public static final class Foreign {
+      public static final Translation2d[] regionCorners =
+          new Translation2d[FieldConstants.LoadingZone.regionCorners.length];
+
+      static {
+        for (int i = 0; i < FieldConstants.LoadingZone.regionCorners.length; i++) {
+          regionCorners[i] = Reflections.reflect(FieldConstants.LoadingZone.regionCorners[i]);
+        }
+      }
+    }
 
     // Double substation dimensions
     public static final double doubleSubstationLength = Units.inchesToMeters(14.0);
