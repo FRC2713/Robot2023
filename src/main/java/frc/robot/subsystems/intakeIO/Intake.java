@@ -12,6 +12,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
+import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -73,6 +74,10 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().processInputs("Intake", inputs);
 
     if (hasGamepiece() && Robot.gamePieceMode != GamePieceMode.CONE) {
+      if (inputs.bottomIsOn || inputs.topIsOn) {
+        RumbleManager.getInstance().setDriver(1.0, .25);
+      }
+
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
       Robot.lights.setColorPattern(Pattern.DarkGreen);

@@ -71,6 +71,7 @@ import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.RumbleManager;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -610,6 +611,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
+    RumbleManager.getInstance().periodic();
     mechManager.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
