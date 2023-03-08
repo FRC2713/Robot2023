@@ -22,7 +22,7 @@ public class AutoPath {
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
     NINE_TO_D("grid9tocargoD"),
-    TEST("test"),
+    TEST("traj testing"),
 
     // Cube Paths (Paths to/from grids with cube goals)
     A_TO_TWO("cargoAtogrid2"),
