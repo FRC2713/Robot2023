@@ -76,7 +76,7 @@ public class Elevator extends SubsystemBase {
     IO.setVoltage(effortLeft);
     Logger.getInstance().recordOutput("Elevator/Target Height", targetHeight);
     Logger.getInstance().recordOutput("Elevator/Control Effort", effortLeft);
-    // Logger.getInstance().recordOutput("Elevator/FF Effort", ffEffort);
+    // Logger.getInstance().recordOutput("Elevator/FF Effort", ffEff\\\\\\\\\\\\\\\\\ \\\
     Logger.getInstance().recordOutput("Elevator/isAtTarget", atTargetHeight());
     // Logger.getInstance().recordOutput("Elevator/shouldReset", shouldResetEncoders());
 
@@ -134,9 +134,37 @@ public class Elevator extends SubsystemBase {
   public static class Commands {
 
     public static Command setToHeightAndWait(double targetHeightInches) {
+      if(targetHeightInches == Constants.SuperstructureConstants.SCORE_CONE_LOW.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Low Cone Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.SCORE_CONE_MID.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Mid Cone Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.SCORE_CONE_HIGH.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "High Cone Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.SCORE_CUBE_LOW.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Low Cube Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.SCORE_CUBE_MID.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Mid Cube Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.SCORE_CUBE_HIGH.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "High Cube Score");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Intake Upright Cone");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getElevatorPosition()){
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Intake Tipped Cone");
+      }
+      else if (targetHeightInches == Constants.SuperstructureConstants.INTAKE_CUBE.getElevatorPosition()) {
+        Logger.getInstance().recordOutput("Field Piece Manipulation/Scoring/Intake set Point", "Intake Cube");
+      }
       return setToHeight(targetHeightInches)
           .repeatedly()
           .until(() -> Robot.elevator.atTargetHeight());
+
     }
 
     public static Command setToHeight(double height) {
