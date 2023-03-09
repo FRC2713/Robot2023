@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Robot.GamePieceMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +72,11 @@ public final class RedHawkUtil {
   }
 
   public static Translation2d getClosestGrid(double y) {
-    return Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+    return Arrays.asList(
+            Robot.gamePieceMode == GamePieceMode.CUBE
+                ? FieldConstants.Grids.cubeComplexLowTranslations
+                : FieldConstants.Grids.coneComplexLowTranslations)
+        .stream()
         .sorted(
             (a, b) ->
                 Double.compare(
@@ -85,7 +90,11 @@ public final class RedHawkUtil {
   public static int getClosestGridNumber(double y) {
     return Arrays.asList(FieldConstants.Grids.complexLowTranslations)
         .indexOf(
-            Arrays.asList(FieldConstants.Grids.complexLowTranslations).stream()
+            Arrays.asList(
+                    Robot.gamePieceMode == GamePieceMode.CUBE
+                        ? FieldConstants.Grids.cubeComplexLowTranslations
+                        : FieldConstants.Grids.coneComplexLowTranslations)
+                .stream()
                 .sorted(
                     (a, b) ->
                         Double.compare(

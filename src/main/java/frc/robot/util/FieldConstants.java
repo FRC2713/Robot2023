@@ -147,6 +147,21 @@ public final class FieldConstants {
           new Translation2d(
               complexLowXCones, nodeFirstY + nodeSeparationY * 8 + complexLowOuterYOffset),
         };
+
+    public static final Translation2d[] coneComplexLowTranslations =
+        new Translation2d[] {
+          complexLowTranslations[0],
+          complexLowTranslations[2],
+          complexLowTranslations[3],
+          complexLowTranslations[5],
+          complexLowTranslations[6],
+          complexLowTranslations[8]
+        };
+
+    public static final Translation2d[] cubeComplexLowTranslations =
+        new Translation2d[] {
+          complexLowTranslations[1], complexLowTranslations[4], complexLowTranslations[7],
+        };
   }
 
   // Dimensions for loading zone and substations, including the tape
