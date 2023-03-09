@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
+import org.littletonrobotics.junction.Logger;
 
 /** wow. docs Add your docs here. */
 public class LightStrip extends SubsystemBase {
@@ -153,6 +154,7 @@ public class LightStrip extends SubsystemBase {
 
   public static class Commands {
     public static Command setColorPattern(Pattern pattern) {
+      Logger.getInstance().recordOutput("Lights/Light Pattern", pattern.toString());
       return new InstantCommand(() -> Robot.lights.setColorPattern(pattern));
     }
     /*
