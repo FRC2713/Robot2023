@@ -134,17 +134,21 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
       } else {
         RedHawkUtil.ErrHandler.getInstance()
-            .addError("Cannot log to " + Constants.Logging.sda1Dir + ", trying " + Constants.Logging.sda2Dir);
+            .addError(
+                "Cannot log to "
+                    + Constants.Logging.sda1Dir
+                    + ", trying "
+                    + Constants.Logging.sda2Dir);
         if (sda2.exists() && sda2.isDirectory()) {
           Logger.getInstance().recordOutput("isLoggingToUsb", true);
           Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
         } else {
-          RedHawkUtil.ErrHandler.getInstance().addError("Cannot log to " + Constants.Logging.sda2Dir);
+          RedHawkUtil.ErrHandler.getInstance()
+              .addError("Cannot log to " + Constants.Logging.sda2Dir);
           Logger.getInstance().recordOutput("isLoggingToUsb", false);
         }
       }
-    }
-    else {
+    } else {
       Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
 

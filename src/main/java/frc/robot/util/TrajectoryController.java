@@ -45,7 +45,7 @@ public class TrajectoryController {
     Logger.getInstance().recordOutput("Trajectory/Total time", newTrajectory.getTotalTimeSeconds());
     Logger.getInstance()
         .recordOutput(
-            "Trajectory/Ititial State Velocity",
+            "Trajectory/Initial State Velocity",
             newTrajectory.getInitialState().velocityMetersPerSecond);
 
     timer.reset();
