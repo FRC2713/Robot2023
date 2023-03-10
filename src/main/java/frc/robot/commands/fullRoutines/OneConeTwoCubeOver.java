@@ -58,12 +58,12 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
   private Command stopIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(true)),
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             Intake.Commands.setBottomVelocityRPM(0),
             Intake.Commands.setTopVelocityRPM(0),
             FourBar.Commands.retract()),
         new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(true)),
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             Intake.Commands.setBottomVelocityRPM(-500),
             Intake.Commands.setTopVelocityRPM(-500),
             FourBar.Commands.retract()),
@@ -79,11 +79,16 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
-        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
-        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
-        startIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
+        Commands.parallel(
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
+            Commands.sequence(
+                new WaitCommand(0.5),
+                new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
+                new InstantCommand(() -> Robot.intake.setScoring(false)),
+                startIntake(),
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE))),
+        // new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
+        // startIntake(),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
         Commands.parallel(
