@@ -23,7 +23,11 @@ import frc.robot.util.TrajectoryController;
 public class OneConeTwoCubeOver extends SequentialCommandGroup {
 
   private Command score(SuperstructureConfig config) {
-    return Commands.sequence(prepScore(config), Intake.Commands.score(), new WaitCommand(0.5));
+    return Commands.sequence(
+        new InstantCommand(() -> Robot.intake.setScoring(true)),
+        prepScore(config),
+        Intake.Commands.score(),
+        new WaitCommand(1));
   }
 
   private Command prepScore(SuperstructureConfig config) {
@@ -54,10 +58,12 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
   private Command stopIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(true)),
             Intake.Commands.setBottomVelocityRPM(0),
             Intake.Commands.setTopVelocityRPM(0),
             FourBar.Commands.retract()),
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(true)),
             Intake.Commands.setBottomVelocityRPM(-500),
             Intake.Commands.setTopVelocityRPM(-500),
             FourBar.Commands.retract()),
@@ -82,14 +88,17 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
         stopIntake(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
-            prepScore(SuperstructureConstants.SCORE_CUBE_MID)),
+            Commands.sequence(
+                new WaitCommand(1),
+                prepScore(SuperstructureConstants.SCORE_CUBE_MID),
+                stopIntake())),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
-        Elevator.Commands.setToHeight(Constants.zero),
         Commands.parallel(
-            Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-            startIntake(),
+            Commands.sequence(
+                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
+                startIntake()),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_B.getTrajectory())),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),

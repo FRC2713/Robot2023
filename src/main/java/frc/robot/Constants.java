@@ -36,7 +36,7 @@ public final class Constants {
   public static final double π = Math.PI;
   public static final double DOUBLE_PLACEHOLDER = zero;
   public static final int INT_PLACEHOLDER = zero;
-  public static final boolean ENABLE_VISION_POSE_ESTIMATION = true;
+  public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
   public static final int CAN_TIMEOUT_MS = 200;
 
@@ -302,13 +302,13 @@ public final class Constants {
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
-          PIDFFGains.builder("Trajectory Controller X-Axis").kP(17).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(5).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_Y =
-          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(17).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(5).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
-          PIDFFGains.builder("Trajectory Controller Rotation").kP(3).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.1).kD(0.0).build();
     }
 
     public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =

@@ -136,7 +136,7 @@ public class SwerveSubsystem extends SubsystemBase {
         pose);
 
     poseEstimator.resetPosition(
-        getUsablePose().getRotation(),
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
           this.frontLeft.getPosition(),
           this.frontRight.getPosition(),
