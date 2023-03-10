@@ -196,11 +196,10 @@ public final class Constants {
     }
 
     public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
-    public static final double WHEEL_DIAMETER = 4;
+    public static final double WHEEL_DIAMETER = 3.85;
     public static final double GEAR_RATIO = 6.12;
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
-
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);

@@ -17,6 +17,7 @@ public class AutoPath {
     A_TO_FIVE("cargoAtogrid5"),
     A_TO_FOUR("cargoAtogrid4"),
     A_TO_THREE("cargoAtogrid3"),
+    B_TO_THREE("cargoBtogrid3"),
     D_TO_SEVEN("cargoDtogrid7"),
     ONE_TO_A("grid1tocargoA"),
     THREE_TO_B("grid3tocargoB"),

@@ -38,6 +38,7 @@ import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
@@ -755,6 +756,7 @@ public class Robot extends LoggedRobot {
             }));
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
+    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption(
         "test",
         new SequentialCommandGroup(
