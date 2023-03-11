@@ -46,7 +46,7 @@ public class GetOnBridge extends SequentialCommandGroup {
                               0,
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
-            .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 10),
+            .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 1),
         new RunCommand(
                 () -> {
                   var value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);

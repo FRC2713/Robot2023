@@ -37,6 +37,7 @@ import frc.robot.commands.Bridge6328;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
+import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
@@ -134,17 +135,21 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
       } else {
         RedHawkUtil.ErrHandler.getInstance()
-            .addError("Cannot log to " + Constants.Logging.sda1Dir + ", trying " + Constants.Logging.sda2Dir);
+            .addError(
+                "Cannot log to "
+                    + Constants.Logging.sda1Dir
+                    + ", trying "
+                    + Constants.Logging.sda2Dir);
         if (sda2.exists() && sda2.isDirectory()) {
           Logger.getInstance().recordOutput("isLoggingToUsb", true);
           Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
         } else {
-          RedHawkUtil.ErrHandler.getInstance().addError("Cannot log to " + Constants.Logging.sda2Dir);
+          RedHawkUtil.ErrHandler.getInstance()
+              .addError("Cannot log to " + Constants.Logging.sda2Dir);
           Logger.getInstance().recordOutput("isLoggingToUsb", false);
         }
       }
-    }
-    else {
+    } else {
       Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
 
@@ -447,11 +452,29 @@ public class Robot extends LoggedRobot {
     // Operator Buttons
 
     // y high, b mid, a low
-    operator.y().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorHigh(), FourBar.Commands.conditionalFourbarHigh(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .y()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorHigh(),
+                FourBar.Commands.conditionalFourbarHigh(),
+                LightStrip.Commands.defaultColorPattern()));
 
-    operator.b().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorMid(), FourBar.Commands.conditionalFourbarMid(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .b()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorMid(),
+                FourBar.Commands.conditionalFourbarMid(),
+                LightStrip.Commands.defaultColorPattern()));
 
-    operator.a().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorLow(), FourBar.Commands.conditionalFourbarLow(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .a()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorLow(),
+                FourBar.Commands.conditionalFourbarLow(),
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -759,6 +782,7 @@ public class Robot extends LoggedRobot {
             }));
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
+    autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
     autoChooser.addOption(
         "test",
         new SequentialCommandGroup(

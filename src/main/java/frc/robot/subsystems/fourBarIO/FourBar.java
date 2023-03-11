@@ -131,8 +131,6 @@ public class FourBar extends SubsystemBase {
           () -> Robot.gamePieceMode == GamePieceMode.CONE);
     }
 
-
-
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }
