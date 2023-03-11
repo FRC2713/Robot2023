@@ -1,15 +1,18 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
-import org.littletonrobotics.junction.Logger;
 
 public class GetOnBridge extends SequentialCommandGroup {
   double rampSpeed = 0;
@@ -17,8 +20,8 @@ public class GetOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.highPass(0.04, 0.02);
 
   public GetOnBridge(boolean gridside) {
-    rampSpeed = (2) * (gridside ? 1 : -1);
-    crawlSpeed = 0.4 * (gridside ? 1 : -1);
+    rampSpeed = (2) * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
+    crawlSpeed = 0.4 * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
     addCommands(
         // new RunCommand(
         //         () -> {

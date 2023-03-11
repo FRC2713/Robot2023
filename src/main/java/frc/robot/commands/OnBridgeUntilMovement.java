@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
+import frc.robot.util.MotionHandler;
 import frc.robot.util.MotionHandler.MotionMode;
 
 public class OnBridgeUntilMovement extends SequentialCommandGroup {
@@ -38,7 +39,10 @@ public class OnBridgeUntilMovement extends SequentialCommandGroup {
                           ChassisSpeeds.fromFieldRelativeSpeeds(
                               backSpeed, 0, 0, Rotation2d.fromDegrees(0))));
               }),
-      new WaitCommand(2)
+      new WaitCommand(2),
+      new InstantCommand(() -> {
+        Robot.motionMode = MotionMode.LOCKDOWN;
+      })
             );
   }
 }

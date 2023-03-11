@@ -4,6 +4,8 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -42,7 +44,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridge(boolean gridside) {
-    rampSpeed = gridside ? -1.3 : 1.3;
+    rampSpeed = gridside ? -1.3 : 1.3 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
     addCommands(
         new RunCommand(
                 () -> {
