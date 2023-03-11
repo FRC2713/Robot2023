@@ -241,7 +241,7 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(1).build();
+        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(0).build();
 
     public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
         PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
