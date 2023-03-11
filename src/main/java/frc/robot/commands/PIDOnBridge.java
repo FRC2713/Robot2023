@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.util.MotionHandler.MotionMode;
 
 public class PIDOnBridge extends SequentialCommandGroup {
@@ -44,7 +44,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridge(boolean gridside) {
-    rampSpeed = gridside ? -1.3 : 1.3 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
+    rampSpeed = (gridside ? -1.3 : 1.3) * (DriverStation.getAlliance() == Alliance.Red ? 1 : -1);
     addCommands(
         new RunCommand(
                 () -> {
