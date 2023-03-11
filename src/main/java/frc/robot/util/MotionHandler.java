@@ -31,18 +31,12 @@ public class MotionHandler {
         MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
     double ySpeed =
         MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
-    // Rotation2d rSetpoint =
-    //     new Rotation2d(
-    //         Units.degreesToRadians(
-    //             MathUtil.applyDeadband(
-    //                     -Robot.driver.getRightX(), DriveConstants.kJoystickTurnDeadzone)
-    //                 * DriveConstants.headingControllerDriverChangeRate));
-    // SwerveHeadingController.getInstance().addToSetpoint(rSetpoint);
+
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
-                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
+                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 MathUtil.clamp(
                     Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
                     -Constants.DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
@@ -70,8 +64,8 @@ public class MotionHandler {
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
-                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
+                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 rSpeed * DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
                 Robot.swerveDrive.getUsablePose().getRotation()));
 
