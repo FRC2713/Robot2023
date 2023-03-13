@@ -98,9 +98,12 @@ public class Intake extends SubsystemBase {
       timer.restart();
       previouslyHadGamePiece = true;
       RumbleManager.getInstance().setDriver(1.0, 2.0);
-      while(timer.get() <= 2.0){
+      if(timer.get() <= 2.0){
         Robot.lights.setColorPattern(Pattern.DarkGreen);
       }
+    }
+    if(!hasGamepiece()){
+      previouslyHadGamePiece = !true;
     }
   }
 
