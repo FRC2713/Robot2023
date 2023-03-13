@@ -1,6 +1,8 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -11,6 +13,7 @@ public class SwerveHeadingController {
   private static SwerveHeadingController instance;
   private Rotation2d setpoint;
   private PIDFFController controller;
+  private double error;
 
   private SwerveHeadingController() {
     controller = new PIDFFController(DriveConstants.K_HEADING_CONTROLLER_GAINS);
@@ -74,9 +77,16 @@ public class SwerveHeadingController {
     if (!controller.atSetpoint()) {
       Rotation2d currentHeading = Robot.swerveDrive.getUsablePose().getRotation();
       output = controller.calculate(currentHeading.getDegrees(), setpoint.getDegrees());
-      Logger.getInstance()
-          .recordOutput(
-              "Heading Controller/error", setpoint.getDegrees() - currentHeading.getDegrees());
+      output =
+          MathUtil.clamp(
+              output,
+              -Units.radiansToDegrees(DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC),
+              Units.radiansToDegrees(DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC));
+      error = setpoint.getDegrees() - currentHeading.getDegrees();
+      Logger.getInstance().recordOutput("Heading Controller/error", error);
+      if ((Math.abs(error) <= 1) || (Math.abs(error) >= 359 && Math.abs(error) <= 360)) {
+        return 0;
+      }
     }
 
     Logger.getInstance().recordOutput("Heading Controller/update", output);
