@@ -64,6 +64,7 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -773,17 +774,6 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
-    autoChooser.addOption(
-        "test",
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () -> {
-                  Robot.swerveDrive.resetOdometry(
-                      Autos.TEST.getTrajectory().getInitialHolonomicPose());
-                  Robot.gamePieceMode = GamePieceMode.CUBE;
-                }),
-            Commands.parallel(
-                SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TEST.getTrajectory()))));
     autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
   }
 

@@ -44,12 +44,12 @@ public class PIDOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridge(boolean gridside) {
-    if((gridside && DriverStation.getAlliance() == Alliance.Blue) || (!gridside && DriverStation.getAlliance() == Alliance.Red)){
+    if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
+        || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.3;
-    }else{
+    } else {
       rampSpeed = -1.3;
     }
-
 
     addCommands(
         new RunCommand(
