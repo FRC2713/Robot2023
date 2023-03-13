@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
 
 public class OnBridgeUntilMovement extends SequentialCommandGroup {
@@ -17,17 +17,15 @@ public class OnBridgeUntilMovement extends SequentialCommandGroup {
   double backSpeed = 0;
 
   public OnBridgeUntilMovement(boolean gridside) {
-    robotSpeed = 2 * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
-    backSpeed = 0.4 * (gridside ? -1 : 1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
 
-    if((gridside == true && DriverStation.getAlliance() == Alliance.Blue) || (gridside == false && DriverStation.getAlliance() == Alliance.Red)){
+    if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
+        || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       robotSpeed = 2;
       backSpeed = 0.4;
-    }else{
+    } else {
       robotSpeed = -2;
       backSpeed = -0.4;
     }
-
 
     addCommands(
         new RunCommand(
@@ -40,16 +38,16 @@ public class OnBridgeUntilMovement extends SequentialCommandGroup {
                 })
             .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 5),
         new InstantCommand(
-                () -> {
-                  Robot.swerveDrive.setModuleStates(
-                      DriveConstants.KINEMATICS.toSwerveModuleStates(
-                          ChassisSpeeds.fromFieldRelativeSpeeds(
-                              backSpeed, 0, 0, Rotation2d.fromDegrees(0))));
-              }),
-      new WaitCommand(2),
-      new InstantCommand(() -> {
-        Robot.motionMode = MotionMode.LOCKDOWN;
-      })
-            );
+            () -> {
+              Robot.swerveDrive.setModuleStates(
+                  DriveConstants.KINEMATICS.toSwerveModuleStates(
+                      ChassisSpeeds.fromFieldRelativeSpeeds(
+                          backSpeed, 0, 0, Rotation2d.fromDegrees(0))));
+            }),
+        new WaitCommand(2),
+        new InstantCommand(
+            () -> {
+              Robot.motionMode = MotionMode.LOCKDOWN;
+            }));
   }
 }

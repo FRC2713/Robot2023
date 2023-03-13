@@ -1,7 +1,5 @@
 package frc.robot.subsystems.intakeIO;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -14,6 +12,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
@@ -50,13 +49,14 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
-    if(Robot.gamePieceMode == GamePieceMode.CUBE){
+    if (Robot.gamePieceMode == GamePieceMode.CUBE) {
       return ((filteredVoltageRight > cubeDetectionThreshold)
-            || (filteredVoltageLeft > cubeDetectionThreshold))
-        && !scoring; 
-    }else{
-      return ((inputs.topCurrentAmps > coneDetectionThreshold) 
-            && (inputs.bottomCurrentAmps > coneDetectionThreshold) && !scoring);
+              || (filteredVoltageLeft > cubeDetectionThreshold))
+          && !scoring;
+    } else {
+      return ((inputs.topCurrentAmps > coneDetectionThreshold)
+          && (inputs.bottomCurrentAmps > coneDetectionThreshold)
+          && !scoring);
     }
   }
 
