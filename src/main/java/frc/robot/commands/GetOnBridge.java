@@ -19,8 +19,17 @@ public class GetOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.highPass(0.04, 0.02);
 
   public GetOnBridge(boolean gridside) {
-    rampSpeed = (2) * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
-    crawlSpeed = 0.4 * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
+   
+    if((gridside && DriverStation.getAlliance() == Alliance.Blue)
+        ||(!gridside && DriverStation.getAlliance() == Alliance.Red)){
+        rampSpeed = 2;
+        crawlSpeed = 0.4;
+    }else{
+        rampSpeed = -2;
+        crawlSpeed = -0.4;
+    }
+
+
     addCommands(
         // new RunCommand(
         //         () -> {
