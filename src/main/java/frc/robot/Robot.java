@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
+//import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -318,7 +318,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(RedOrange))))
+                    LightStrip.Commands.setColorPattern(Pattern.RedOrange))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),

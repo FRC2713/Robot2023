@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intakeIO;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -15,6 +16,8 @@ import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Robot.driver;
+
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
@@ -23,6 +26,10 @@ public class Intake extends SubsystemBase {
   private double coneDetectionThreshold = 15.0;
   private double filteredVoltageRight = 0, filteredVoltageLeft;
   public boolean scoring = false;
+
+  private boolean previouslyHadGamePiece = false;
+
+  private Timer timer = new Timer();
 
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.06, 0.02);
   private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.06, 0.02);
@@ -81,13 +88,19 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().processInputs("Intake", inputs);
 
     if (hasGamepiece() && Robot.gamePieceMode != GamePieceMode.CONE) {
-      if (inputs.bottomIsOn || inputs.topIsOn) {
+    /*  if (inputs.bottomIsOn || inputs.topIsOn) {
         RumbleManager.getInstance().setDriver(1.0, .25);
-      }
-
+      }*/
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
-      Robot.lights.setColorPattern(Pattern.DarkGreen);
+    }
+    if (hasGamepiece() && !previouslyHadGamePiece){
+      timer.restart();
+      previouslyHadGamePiece = true;
+      RumbleManager.getInstance().setDriver(1.0, 2.0);
+      while(timer.get() <= 2.0){
+        Robot.lights.setColorPattern(Pattern.DarkGreen);
+      }
     }
   }
 

@@ -35,8 +35,8 @@ public class MotionHandler {
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
-                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.gyroOffset,
+                xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
+                ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
                 Robot.swerveDrive.getYaw()));
 
