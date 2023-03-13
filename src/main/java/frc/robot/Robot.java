@@ -7,9 +7,7 @@ package frc.robot;
 import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -33,11 +31,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.commands.Bridge6328;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
+import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
@@ -71,6 +70,7 @@ import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.RedHawkUtil.ErrHandler;
+import frc.robot.util.RumbleManager;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import java.io.File;
@@ -134,17 +134,21 @@ public class Robot extends LoggedRobot {
         Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
       } else {
         RedHawkUtil.ErrHandler.getInstance()
-            .addError("Cannot log to " + Constants.Logging.sda1Dir + ", trying " + Constants.Logging.sda2Dir);
+            .addError(
+                "Cannot log to "
+                    + Constants.Logging.sda1Dir
+                    + ", trying "
+                    + Constants.Logging.sda2Dir);
         if (sda2.exists() && sda2.isDirectory()) {
           Logger.getInstance().recordOutput("isLoggingToUsb", true);
           Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
         } else {
-          RedHawkUtil.ErrHandler.getInstance().addError("Cannot log to " + Constants.Logging.sda2Dir);
+          RedHawkUtil.ErrHandler.getInstance()
+              .addError("Cannot log to " + Constants.Logging.sda2Dir);
           Logger.getInstance().recordOutput("isLoggingToUsb", false);
         }
       }
-    }
-    else {
+    } else {
       Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
 
@@ -447,11 +451,29 @@ public class Robot extends LoggedRobot {
     // Operator Buttons
 
     // y high, b mid, a low
-    operator.y().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorHigh(), FourBar.Commands.conditionalFourbarHigh(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .y()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorHigh(),
+                FourBar.Commands.conditionalFourbarHigh(),
+                LightStrip.Commands.defaultColorPattern()));
 
-    operator.b().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorMid(), FourBar.Commands.conditionalFourbarMid(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .b()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorMid(),
+                FourBar.Commands.conditionalFourbarMid(),
+                LightStrip.Commands.defaultColorPattern()));
 
-    operator.a().onTrue(new SequentialCommandGroup(Elevator.Commands.conditionalElevatorLow(), FourBar.Commands.conditionalFourbarLow(), LightStrip.Commands.defaultColorPattern()));
+    operator
+        .a()
+        .onTrue(
+            new SequentialCommandGroup(
+                Elevator.Commands.conditionalElevatorLow(),
+                FourBar.Commands.conditionalFourbarLow(),
+                LightStrip.Commands.defaultColorPattern()));
 
     operator
         .rightBumper()
@@ -638,6 +660,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ErrHandler.getInstance().log();
+    RumbleManager.getInstance().periodic();
     mechManager.periodic();
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
@@ -742,7 +765,7 @@ public class Robot extends LoggedRobot {
   public void testExit() {}
 
   public void buildAutoChooser() {
-    SwerveSubsystem.gyroOffset = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
@@ -750,26 +773,10 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
-    autoChooser.addOption("bridge6328", new Bridge6328());
-    autoChooser.addOption(
-        "Nothing red",
-        new InstantCommand(
-            () -> {
-              swerveDrive.resetOdometry(new Pose2d(new Translation2d(5, 2), new Rotation2d(0)));
-            }));
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
-    autoChooser.addOption(
-        "test",
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () -> {
-                  Robot.swerveDrive.resetOdometry(
-                      Autos.TEST.getTrajectory().getInitialHolonomicPose());
-                  Robot.gamePieceMode = GamePieceMode.CUBE;
-                }),
-            Commands.parallel(
-                SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TEST.getTrajectory()))));
+    autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
+    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
   }
 
   public void checkAlliance() {

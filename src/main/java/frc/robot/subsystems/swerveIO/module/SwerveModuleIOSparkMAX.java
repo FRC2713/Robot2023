@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
@@ -62,13 +61,10 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
       cOk(driver.setIdleMode(IdleMode.kBrake));
       cOk(azimuth.setIdleMode(IdleMode.kBrake));
 
+      cOk(getDriveEncoder().setPositionConversionFactor(Constants.DriveConstants.DIST_PER_PULSE));
       cOk(
           getDriveEncoder()
-              .setPositionConversionFactor((1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI));
-      cOk(
-          getDriveEncoder()
-              .setVelocityConversionFactor(
-                  (1.0 / 6.12) * Units.inchesToMeters(4.0) * Math.PI / 60));
+              .setVelocityConversionFactor((Constants.DriveConstants.DIST_PER_PULSE / 60)));
 
       cOk(getAziEncoder().setPositionConversionFactor(7.0 / 150.0 * 360.0));
       cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
@@ -79,6 +75,9 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
     driver.setCANTimeout(0);
     azimuth.setCANTimeout(0);
+
+    driver.burnFlash();
+    azimuth.burnFlash();
   }
 
   @Override

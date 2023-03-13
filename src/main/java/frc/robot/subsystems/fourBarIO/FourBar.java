@@ -47,7 +47,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegreesOne - targetDegs) < 1;
+    return Math.abs(inputs.angleDegreesOne - targetDegs) < 2;
   }
 
   public double getCurrentDegs() {
@@ -130,8 +130,6 @@ public class FourBar extends SubsystemBase {
               Constants.SuperstructureConstants.SCORE_CUBE_LOW.getFourBarPosition()),
           () -> Robot.gamePieceMode == GamePieceMode.CONE);
     }
-
-
 
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);

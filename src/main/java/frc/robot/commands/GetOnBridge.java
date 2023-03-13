@@ -3,6 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,8 +19,16 @@ public class GetOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.highPass(0.04, 0.02);
 
   public GetOnBridge(boolean gridside) {
-    rampSpeed = (2) * (gridside ? 1 : -1);
-    crawlSpeed = 0.4 * (gridside ? 1 : -1);
+
+    if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
+        || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
+      rampSpeed = 2;
+      crawlSpeed = 0.4;
+    } else {
+      rampSpeed = -2;
+      crawlSpeed = -0.4;
+    }
+
     addCommands(
         // new RunCommand(
         //         () -> {
@@ -46,7 +56,7 @@ public class GetOnBridge extends SequentialCommandGroup {
                               0,
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
-            .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 10),
+            .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 1),
         new RunCommand(
                 () -> {
                   var value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);
