@@ -34,6 +34,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
+import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
@@ -63,6 +64,7 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -771,6 +773,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
+    autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
     autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
   }
 

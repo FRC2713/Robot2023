@@ -18,7 +18,8 @@ public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
-  private double detectionThreshold = 1.0;
+  private double cubeDetectionThreshold = 1.0;
+  private double coneDetectionThreshold = 15.0;
   private double filteredVoltageRight = 0, filteredVoltageLeft;
   public boolean scoring = false;
 
@@ -48,9 +49,15 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
-    return ((filteredVoltageRight > detectionThreshold)
-            || (filteredVoltageLeft > detectionThreshold))
-        && !scoring;
+    if (Robot.gamePieceMode == GamePieceMode.CUBE) {
+      return ((filteredVoltageRight > cubeDetectionThreshold)
+              || (filteredVoltageLeft > cubeDetectionThreshold))
+          && !scoring;
+    } else {
+      return ((inputs.topCurrentAmps > coneDetectionThreshold)
+          && (inputs.bottomCurrentAmps > coneDetectionThreshold)
+          && !scoring);
+    }
   }
 
   public void setScoring(boolean scoring) {
