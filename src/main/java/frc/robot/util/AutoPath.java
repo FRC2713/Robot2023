@@ -17,27 +17,34 @@ public class AutoPath {
     A_TO_FIVE("cargoAtogrid5"),
     A_TO_FOUR("cargoAtogrid4"),
     A_TO_THREE("cargoAtogrid3"),
+    B_TO_THREE("cargoBtogrid3"),
+    B_TO_FOUR("cargoBtogrid4"),
     D_TO_SEVEN("cargoDtogrid7"),
     ONE_TO_A("grid1tocargoA"),
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
+    SEVEN_TO_D("grid7tocargoD"),
     NINE_TO_D("grid9tocargoD"),
-    TEST("test"),
 
     // Cube Paths (Paths to/from grids with cube goals)
     A_TO_TWO("cargoAtogrid2"),
     B_TO_TWO("cargoBtogrid2"),
+    B_TO_FIVE("cargoBtogrid5"),
+    D_TO_EIGHT("cargoDtogrid8"),
     TWO_TO_A("grid2tocargoA"),
     TWO_TO_B("grid2tocargoB"),
     FIVE_TO_B("grid5tocargoB"),
+    EIGHT_TO_D("grid8tocargoD"),
 
     // Misc Paths (look man I can only make so many categories)
-    A_TO_BRIDGE("cargoAtobridge");
+    A_TO_BRIDGE("cargoAtobridge"),
+    B_TO_BRIDGE("cargoBtobridge");
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {
       try {
-        blueTrajectory = PathPlanner.loadPath(filename, new PathConstraints(maxVel, maxAccel));
+        blueTrajectory =
+            PathPlanner.loadPath(filename, new PathConstraints(maxVel / 2, maxAccel / 2));
         redTrajectory = ReflectedTransform.reflectiveTransformTrajectory(blueTrajectory);
 
         System.out.println(

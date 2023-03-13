@@ -47,7 +47,7 @@ public class FourBar extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegreesOne - targetDegs) < 1;
+    return Math.abs(inputs.angleDegreesOne - targetDegs) < 2;
   }
 
   public double getCurrentDegs() {
