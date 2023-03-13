@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
-import frc.robot.util.MotionHandler;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.util.MotionHandler.MotionMode;
 
 public class OnBridgeUntilMovement extends SequentialCommandGroup {
@@ -20,6 +19,14 @@ public class OnBridgeUntilMovement extends SequentialCommandGroup {
   public OnBridgeUntilMovement(boolean gridside) {
     robotSpeed = 2 * (gridside ? 1 : -1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
     backSpeed = 0.4 * (gridside ? -1 : 1) * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1);
+
+    if((gridside == true && DriverStation.getAlliance() == Alliance.Blue) || (gridside == false && DriverStation.getAlliance() == Alliance.Red)){
+      robotSpeed = 2;
+      backSpeed = 0.4;
+    }else{
+      robotSpeed = -2;
+      backSpeed = -0.4;
+    }
 
 
     addCommands(
