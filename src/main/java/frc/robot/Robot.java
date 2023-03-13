@@ -7,9 +7,7 @@ package frc.robot;
 import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -33,12 +31,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.commands.Bridge6328;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
@@ -66,7 +64,6 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -765,7 +762,7 @@ public class Robot extends LoggedRobot {
   public void testExit() {}
 
   public void buildAutoChooser() {
-    SwerveSubsystem.gyroOffset = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
@@ -773,13 +770,6 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
-    autoChooser.addOption("bridge6328", new Bridge6328());
-    autoChooser.addOption(
-        "Nothing red",
-        new InstantCommand(
-            () -> {
-              swerveDrive.resetOdometry(new Pose2d(new Translation2d(5, 2), new Rotation2d(0)));
-            }));
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
@@ -794,6 +784,7 @@ public class Robot extends LoggedRobot {
                 }),
             Commands.parallel(
                 SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TEST.getTrajectory()))));
+    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
   }
 
   public void checkAlliance() {
