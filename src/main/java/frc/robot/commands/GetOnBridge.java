@@ -17,7 +17,7 @@ public class GetOnBridge extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.highPass(0.04, 0.02);
 
   public GetOnBridge(boolean gridside) {
-    rampSpeed = (2) * (gridside ? 1 : -1);
+    rampSpeed = 2 * (gridside ? 1 : -1);
     crawlSpeed = 0.4 * (gridside ? 1 : -1);
     addCommands(
         // new RunCommand(
