@@ -316,8 +316,7 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(Pattern.RedOrange))))
+                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
