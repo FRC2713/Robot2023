@@ -64,7 +64,6 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;

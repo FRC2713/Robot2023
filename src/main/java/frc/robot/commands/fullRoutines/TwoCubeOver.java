@@ -23,7 +23,11 @@ import frc.robot.util.TrajectoryController;
 public class TwoCubeOver extends SequentialCommandGroup {
 
   private Command score(SuperstructureConfig config) {
-    return Commands.sequence(prepScore(config), Intake.Commands.score(), new WaitCommand(0.5));
+    return Commands.sequence(
+        new InstantCommand(() -> Robot.intake.setScoring(true)),
+        prepScore(config),
+        Intake.Commands.score(),
+        new WaitCommand(0.5));
   }
 
   private Command prepScore(SuperstructureConfig config) {
@@ -35,6 +39,7 @@ public class TwoCubeOver extends SequentialCommandGroup {
   private Command startIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             FourBar.Commands.setToAngle(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
             Intake.Commands.setBottomVelocityRPM(
@@ -42,22 +47,25 @@ public class TwoCubeOver extends SequentialCommandGroup {
             Intake.Commands.setTopVelocityRPM(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getTopRPM())),
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             FourBar.Commands.setToAngle(
-                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
+                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
             Intake.Commands.setBottomVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
+                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
             Intake.Commands.setTopVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_UPRIGHT_CONE.getTopRPM())),
+                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM())),
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
   private Command stopIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             Intake.Commands.setBottomVelocityRPM(0),
             Intake.Commands.setTopVelocityRPM(0),
             FourBar.Commands.retract()),
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             Intake.Commands.setBottomVelocityRPM(-500),
             Intake.Commands.setTopVelocityRPM(-500),
             FourBar.Commands.retract()),

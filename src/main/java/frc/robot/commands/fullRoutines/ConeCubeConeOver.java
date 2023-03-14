@@ -27,7 +27,7 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
         new InstantCommand(() -> Robot.intake.setScoring(true)),
         prepScore(config),
         Intake.Commands.score(),
-        new WaitCommand(1));
+        new WaitCommand(0.5));
   }
 
   private Command prepScore(SuperstructureConfig config) {
@@ -39,6 +39,7 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
   private Command startIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             FourBar.Commands.setToAngle(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
             Intake.Commands.setBottomVelocityRPM(
@@ -46,6 +47,7 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
             Intake.Commands.setTopVelocityRPM(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getTopRPM())),
         new ParallelCommandGroup(
+            new InstantCommand(() -> Robot.intake.setScoring(false)),
             FourBar.Commands.setToAngle(
                 Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
             Intake.Commands.setBottomVelocityRPM(
@@ -83,12 +85,13 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             Commands.sequence(
                 new WaitCommand(0.5),
-                new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
-                new InstantCommand(() -> Robot.intake.setScoring(false)),
+                new InstantCommand(
+                    () -> {
+                      Robot.gamePieceMode = GamePieceMode.CUBE;
+                      Robot.intake.setScoring(false);
+                    }),
                 startIntake(),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE))),
-        // new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
-        // startIntake(),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
         Commands.parallel(

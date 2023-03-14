@@ -44,8 +44,7 @@ public class AutoPath {
 
     private Autos(String filename, double maxVel, double maxAccel) {
       try {
-        blueTrajectory =
-            PathPlanner.loadPath(filename, new PathConstraints(maxVel / 2, maxAccel / 2));
+        blueTrajectory = PathPlanner.loadPath(filename, new PathConstraints(maxVel, maxAccel));
         redTrajectory = ReflectedTransform.reflectiveTransformTrajectory(blueTrajectory);
 
         System.out.println(
