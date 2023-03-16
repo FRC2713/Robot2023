@@ -97,7 +97,7 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
             Commands.sequence(
                 new WaitCommand(1),
-                prepScore(SuperstructureConstants.SCORE_CUBE_MID),
+                prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
                 stopIntake())),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),

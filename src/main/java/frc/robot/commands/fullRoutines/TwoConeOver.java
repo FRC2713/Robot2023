@@ -81,7 +81,7 @@ public class TwoConeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         FourBar.Commands.retract(),
-        score(SuperstructureConstants.SCORE_CONE_MID),
+        score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
         startIntake(),
@@ -90,7 +90,7 @@ public class TwoConeOver extends SequentialCommandGroup {
         stopIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_THREE.getTrajectory()),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CONE_MID),
+        score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeightAndWait(Constants.zero));
   }

@@ -79,7 +79,8 @@ public class OneConeBridge extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
-        stopIntake(),
+        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
+        Elevator.Commands.setToHeight(0),
         new PIDOnBridge(true));
   }
 }

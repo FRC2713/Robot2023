@@ -76,8 +76,6 @@ public class TwoCubeOver extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(
             () -> {
-              //   Robot.swerveDrive.resetGyro(
-              //       Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose().getRotation());
               Robot.swerveDrive.resetOdometry(
                   Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;
@@ -90,9 +88,9 @@ public class TwoCubeOver extends SequentialCommandGroup {
         stopIntake(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
-            prepScore(SuperstructureConstants.SCORE_CUBE_MID)),
+            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH)),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CUBE_MID),
+        score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeight(Constants.zero));
   }

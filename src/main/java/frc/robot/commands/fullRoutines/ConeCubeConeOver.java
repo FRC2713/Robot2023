@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
@@ -18,7 +17,6 @@ import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
-import frc.robot.util.TrajectoryController;
 
 public class ConeCubeConeOver extends SequentialCommandGroup {
 
@@ -32,8 +30,7 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
 
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
-        Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setToAngle(config.getFourBarPosition()));
+        Elevator.Commands.setToHeightAndWait(config), FourBar.Commands.setToAngle(config));
   }
 
   private Command startIntake() {
@@ -81,43 +78,31 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
+        stopIntake(),
+        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             Commands.sequence(
                 new WaitCommand(0.5),
-                new InstantCommand(
-                    () -> {
-                      Robot.gamePieceMode = GamePieceMode.CUBE;
-                      Robot.intake.setScoring(false);
-                    }),
-                startIntake(),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE))),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        stopIntake(),
+                Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
+                startIntake())),
         Commands.parallel(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
-            Commands.sequence(
-                new WaitCommand(1),
-                prepScore(SuperstructureConstants.SCORE_CUBE_MID),
-                stopIntake())),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
+            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory())),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
-        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
-        Commands.parallel(
-            Commands.sequence(
-                new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CONE),
-                new InstantCommand(() -> Robot.intake.setScoring(false)),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
-                startIntake()),
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_B.getTrajectory())),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
+        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CONE),
         Commands.parallel(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.B_TO_THREE.getTrajectory()),
-            prepScore(SuperstructureConstants.SCORE_CONE_MID)),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CONE_MID),
-        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
-        Elevator.Commands.setToHeightAndWait(0));
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_B.getTrajectory()),
+            Commands.sequence(
+                new WaitCommand(0.5),
+                Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_TIPPED_CONE),
+                startIntake())),
+        Commands.parallel(
+            prepScore(SuperstructureConstants.SCORE_CONE_LOW),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.B_TO_THREE.getTrajectory())),
+        score(SuperstructureConstants.SCORE_CONE_LOW),
+        stopIntake(),
+        Elevator.Commands.setToHeight(0));
   }
 }

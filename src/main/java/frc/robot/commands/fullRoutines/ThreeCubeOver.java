@@ -83,7 +83,7 @@ public class ThreeCubeOver extends SequentialCommandGroup {
         stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.B_TO_TWO.getTrajectory()),
-            prepScore(SuperstructureConstants.SCORE_CUBE_MID)),
+            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH)),
         new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake(),
