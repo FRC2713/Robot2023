@@ -37,13 +37,16 @@ import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
+import frc.robot.commands.fullRoutines.FastThreeCubeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
+import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
+import frc.robot.commands.fullRoutines.TwoCubeOverBridge;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -767,15 +770,18 @@ public class Robot extends LoggedRobot {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
+    autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
   }
 
   public void checkAlliance() {
