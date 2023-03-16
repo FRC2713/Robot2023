@@ -86,6 +86,7 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
                 new WaitCommand(0.5),
                 Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
                 startIntake())),
+        stopIntake(),
         Commands.parallel(
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory())),

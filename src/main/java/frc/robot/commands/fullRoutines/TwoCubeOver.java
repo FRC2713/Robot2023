@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
@@ -18,7 +17,6 @@ import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
-import frc.robot.util.TrajectoryController;
 
 public class TwoCubeOver extends SequentialCommandGroup {
 
@@ -79,17 +77,16 @@ public class TwoCubeOver extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;
+              Robot.intake.setScoring(true);
             }),
         Commands.parallel(
             Commands.sequence(Intake.Commands.score(), new WaitCommand(0.5), startIntake()),
-            Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
+            Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_A.getTrajectory())),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH)),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeight(Constants.zero));

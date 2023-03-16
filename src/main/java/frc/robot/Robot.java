@@ -765,17 +765,17 @@ public class Robot extends LoggedRobot {
 
   public void buildAutoChooser() {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
-    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
-    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
-    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
-    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
   }
 
   public void checkAlliance() {
