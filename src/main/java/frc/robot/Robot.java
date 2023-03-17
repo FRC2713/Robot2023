@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
+import static frc.robot.subsystems.LightStrip.Pattern.ColorWavesRainbow;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -64,7 +64,6 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
-import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -318,7 +317,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(RedOrange))))
+                    LightStrip.Commands.setColorPattern(ColorWavesRainbow))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),

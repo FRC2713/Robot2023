@@ -38,10 +38,14 @@ public class Intake extends SubsystemBase {
   }
 
   public void setTopRpm(double rpm) {
+    Logger.getInstance()
+        .recordOutput("Intake/Applied Top Volts", rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
     IO.setTopVoltage(rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
   }
 
   public void setBottomRPM(double rpm) {
+    Logger.getInstance()
+        .recordOutput("Intake/Applied Bottom Volts", rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12);
     IO.setBottomVoltage(rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12); // PLACEHOLDER VALUE
   }
 
@@ -50,6 +54,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
+
     if (Robot.gamePieceMode == GamePieceMode.CUBE) {
       return ((filteredVoltageRight > cubeDetectionThreshold)
               || (filteredVoltageLeft > cubeDetectionThreshold))

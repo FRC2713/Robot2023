@@ -234,7 +234,7 @@ public final class RedHawkUtil {
   // Used for sparks that aren't that important and don't need to be broadcasting info very often
   public static void configureLowTrafficSpark(CANSparkMax spark) {
     // Applied output, faults, sticky faults, isFollower
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
+    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
 
     // velocity, temperature, voltage, current
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 40);
