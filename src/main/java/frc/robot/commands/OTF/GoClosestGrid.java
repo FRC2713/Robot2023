@@ -41,6 +41,10 @@ public class GoClosestGrid {
   }
 
   public GoClosestGrid regenerateTrajectory() {
+    return regenerateTrajectory(closestGrid());
+  }
+
+  public GoClosestGrid regenerateTrajectory(PathPoint grid) {
     heading =
         RedHawkUtil.Reflections.reflectIfRed(
             Constants.DriveConstants.FieldTunables.CLOSEST_GRID_HEADING);
@@ -121,7 +125,7 @@ public class GoClosestGrid {
       }
     }
 
-    points.add(closestGrid());
+    points.add(grid);
 
     traj = PathPlanner.generatePath(constraints, points);
     return this;

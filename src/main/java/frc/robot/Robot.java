@@ -67,6 +67,7 @@ import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.DebugMode;
+import frc.robot.util.FromGridSuggestion;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil;
@@ -98,6 +99,7 @@ public class Robot extends LoggedRobot {
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
   private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.25, 0.02);
+  public static FromGridSuggestion fromGridSuggestion;
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -135,6 +137,7 @@ public class Robot extends LoggedRobot {
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
+    fromGridSuggestion = new FromGridSuggestion();
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
@@ -403,6 +406,27 @@ public class Robot extends LoggedRobot {
     driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
 
     driver
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (fromGridSuggestion.driveSuggestion != null) {
+                    fromGridSuggestion.driveSuggestion.schedule();
+                  }
+                }))
+        .whileTrue(
+            new RepeatCommand(
+                new InstantCommand(
+                    () -> {
+                      if (goClosestGrid.hasElapsed()) {
+                        if (fromGridSuggestion.driveSuggestion != null) {
+                          fromGridSuggestion.driveSuggestion.schedule();
+                        }
+                      }
+                    })))
+        .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
+
+    driver
         .y()
         .whileTrue(
             Commands.sequence(
@@ -521,6 +545,16 @@ public class Robot extends LoggedRobot {
                 () -> fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
 
     operator
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  if (fromGridSuggestion.opSuggestion != null) {
+                    fromGridSuggestion.opSuggestion.schedule();
+                  }
+                }));
+
+    operator
         .povDown()
         .onTrue(
             new ParallelCommandGroup(
@@ -532,59 +566,59 @@ public class Robot extends LoggedRobot {
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     // operator
-    //     .axisLessThan(1, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
+    // .axisLessThan(1, -0.1)
+    // .whileTrue(
+    // new RepeatCommand(
+    // new InstantCommand(
+    // () -> {
+    // double targetHeightInches =
+    // elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
+    // if (!(targetHeightInches
+    // > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    // elevator.setTargetHeight(targetHeightInches);
+    // }
+    // })));
 
     // operator
-    //     .axisGreaterThan(1, 0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
+    // .axisGreaterThan(1, 0.1)
+    // .whileTrue(
+    // new RepeatCommand(
+    // new InstantCommand(
+    // () -> {
+    // double targetHeightInches =
+    // elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
+    // if (!(targetHeightInches
+    // > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    // elevator.setTargetHeight(targetHeightInches);
+    // }
+    // })));
 
     // operator
-    //     .axisLessThan(5, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // .axisLessThan(5, -0.1)
+    // .whileTrue(
+    // new RepeatCommand(
+    // (new InstantCommand(
+    // () -> {
+    // double targetDegs = fourBar.getCurrentDegs() + (20 *
     // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 }))));
+    // if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    // || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    // fourBar.setAngleDeg(targetDegs);
+    // }
+    // }))));
 
     // operator
-    //     .axisGreaterThan(5, 0.1)
-    //     .whileTrue(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // .axisGreaterThan(5, 0.1)
+    // .whileTrue(
+    // (new InstantCommand(
+    // () -> {
+    // double targetDegs = fourBar.getCurrentDegs() + (20 *
     // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 })));
+    // if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    // || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    // fourBar.setAngleDeg(targetDegs);
+    // }
+    // })));
 
     driver
         .start()
@@ -627,6 +661,8 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+
+    fromGridSuggestion.periodic();
   }
 
   @Override
