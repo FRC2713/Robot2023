@@ -72,15 +72,15 @@ public class Intake extends SubsystemBase {
     filteredVoltageCube = analogVoltageFilterRight.calculate(inputs.encoderVoltageRight);
     filteredVoltageCone = analogVoltageFilterLeft.calculate(inputs.encoderVoltageLeft);
 
-    Logger.getInstance().recordOutput("Intake/Filtered Sensor R", filteredVoltageCube);
-    Logger.getInstance().recordOutput("Intake/Filtered Sensor L", filteredVoltageCone);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor Cube", filteredVoltageCube);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor Cone", filteredVoltageCone);
 
     Logger.getInstance().recordOutput("Intake/Target RPM", targetRPM);
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
 
     Logger.getInstance().processInputs("Intake", inputs);
 
-    if (hasGamepiece() && Robot.gamePieceMode != GamePieceMode.CONE) {
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CUBE) {
       if (inputs.bottomIsOn || inputs.topIsOn) {
         RumbleManager.getInstance().setDriver(1.0, .25);
       }
@@ -88,6 +88,14 @@ public class Intake extends SubsystemBase {
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
       Robot.lights.setColorPattern(Pattern.DarkGreen);
+    }
+
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
+      if (inputs.bottomIsOn || inputs.topIsOn) {
+        RumbleManager.getInstance().setDriver(1.0, 0.25);
+      }
+      setTopRpm(500);
+      setBottomRPM(-500);
     }
   }
 
