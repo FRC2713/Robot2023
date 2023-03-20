@@ -19,9 +19,9 @@ public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
-  private double cubeDetectionThreshold = 1.0;
-  private double coneDetectionThreshold = 15.0;
-  private double filteredVoltageRight = 0, filteredVoltageLeft;
+  private double cubeDetectionThreshold = 0.4;
+  private double coneDetectionThreshold = 0.25;
+  private double filteredVoltageCube = 0, filteredVoltageCone;
   public boolean scoring = false;
 
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.06, 0.02);
@@ -38,10 +38,14 @@ public class Intake extends SubsystemBase {
   }
 
   public void setTopRpm(double rpm) {
+    Logger.getInstance()
+        .recordOutput("Intake/Applied Top Volts", rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
     IO.setTopVoltage(rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
   }
 
   public void setBottomRPM(double rpm) {
+    Logger.getInstance()
+        .recordOutput("Intake/Applied Bottom Volts", rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12);
     IO.setBottomVoltage(rpm / (IntakeConstants.MAX_BOTTOM_RPM) * 12); // PLACEHOLDER VALUE
   }
 
@@ -51,13 +55,9 @@ public class Intake extends SubsystemBase {
 
   public boolean hasGamepiece() {
     if (Robot.gamePieceMode == GamePieceMode.CUBE) {
-      return ((filteredVoltageRight > cubeDetectionThreshold)
-              || (filteredVoltageLeft > cubeDetectionThreshold))
-          && !scoring;
+      return (filteredVoltageCube > cubeDetectionThreshold) && !scoring;
     } else {
-      return ((inputs.topCurrentAmps > coneDetectionThreshold)
-          && (inputs.bottomCurrentAmps > coneDetectionThreshold)
-          && !scoring);
+      return (filteredVoltageCone > cubeDetectionThreshold) && !scoring;
     }
   }
 
@@ -69,11 +69,11 @@ public class Intake extends SubsystemBase {
 
     IO.updateInputs(inputs);
 
-    filteredVoltageRight = analogVoltageFilterRight.calculate(inputs.encoderVoltageRight);
-    filteredVoltageLeft = analogVoltageFilterLeft.calculate(inputs.encoderVoltageLeft);
+    filteredVoltageCube = analogVoltageFilterRight.calculate(inputs.encoderVoltageRight);
+    filteredVoltageCone = analogVoltageFilterLeft.calculate(inputs.encoderVoltageLeft);
 
-    Logger.getInstance().recordOutput("Intake/Filtered Sensor R", filteredVoltageRight);
-    Logger.getInstance().recordOutput("Intake/Filtered Sensor L", filteredVoltageLeft);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor R", filteredVoltageCube);
+    Logger.getInstance().recordOutput("Intake/Filtered Sensor L", filteredVoltageCone);
 
     Logger.getInstance().recordOutput("Intake/Target RPM", targetRPM);
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
