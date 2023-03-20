@@ -14,13 +14,13 @@ public class AutoPath {
 
   public enum Autos {
     // Cone Paths (Paths to/from grids with cone goals)
-    A_TO_FIVE("cargoAtogrid5"),
-    A_TO_FOUR("cargoAtogrid4"),
     A_TO_THREE("cargoAtogrid3"),
+    A_TO_FOUR("cargoAtogrid4"),
     B_TO_THREE("cargoBtogrid3"),
     B_TO_FOUR("cargoBtogrid4"),
     D_TO_SEVEN("cargoDtogrid7"),
     ONE_TO_A("grid1tocargoA"),
+    THREE_TO_A("grid3tocargoA"),
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
     SEVEN_TO_D("grid7tocargoD"),
@@ -28,6 +28,7 @@ public class AutoPath {
 
     // Cube Paths (Paths to/from grids with cube goals)
     A_TO_TWO("cargoAtogrid2"),
+    A_TO_FIVE("cargoAtogrid5"),
     B_TO_TWO("cargoBtogrid2"),
     B_TO_FIVE("cargoBtogrid5"),
     D_TO_EIGHT("cargoDtogrid8"),
