@@ -18,7 +18,7 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
 
-public class ScoreCommunity extends SequentialCommandGroup {
+public class ScoreCommunityUnder extends SequentialCommandGroup {
 
   // score based on where it goes
   private Command score(SuperstructureConfig config) {
@@ -59,9 +59,9 @@ public class ScoreCommunity extends SequentialCommandGroup {
   }
 
   // intake but spitting things out, subject to change
-  private Command startSpitIntake() {
+  private Command spitIntake() {
     return new ParallelCommandGroup(
-        new InstantCommand(() -> Robot.intake.setScoring(false)),
+        new InstantCommand(() -> Robot.intake.setScoring(true)),
         FourBar.Commands.setToAngle(
             Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
         Intake.Commands.setBottomVelocityRPM(
@@ -85,7 +85,7 @@ public class ScoreCommunity extends SequentialCommandGroup {
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
-  public ScoreCommunity() {
+  public ScoreCommunityUnder() {
     addCommands(
         new InstantCommand(
             () -> {
@@ -96,31 +96,21 @@ public class ScoreCommunity extends SequentialCommandGroup {
             }),
         Commands.sequence(
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
-            score(SuperstructureConstants.SCORE_CUBE_HIGH),
-            new WaitCommand(0.5)),
-        Commands.parallel(Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE)),
-        startIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.EIGHT_TO_D.getTrajectory()),
-        stopIntake(),
+            score(SuperstructureConstants.SCORE_CUBE_HIGH)),
         Commands.parallel(
-        //    Elevator.Commands.setToHeight(SuperstructureConstants.SCORE_CUBE_MID),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.EIGHT_TO_D.getTrajectory()),
             Commands.sequence(
-                SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                Autos.D_TO_COMMUNITY.getTrajectory()),
-                startSpitIntake(),
-                new WaitCommand(0.5))),
-        stopIntake(),
-        Commands.parallel(
-       //     Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
-            startIntake(),
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                Autos.COMMUNITY_TO_C.getTrajectory())),
-        stopIntake(),
-        Commands.parallel(
-      //      Elevator.Commands.setToHeight(SuperstructureConstants.SCORE_CUBE_MID),
-            Commands.sequence(SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                Autos.C_TO_COMMUNITY.getTrajectory()),startSpitIntake(), new WaitCommand(0.5))),
-      //Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
+                new WaitCommand(0.5),
+                Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE)),
+            startIntake()),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_COMMUNITY.getTrajectory()),
+        spitIntake(),
+        new WaitCommand(0.5),
+        startIntake(),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.COMMUNITY_TO_C.getTrajectory()),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.C_TO_COMMUNITY.getTrajectory()),
+        spitIntake(),
+        new WaitCommand(0.5),
         stopIntake());
   }
 }
