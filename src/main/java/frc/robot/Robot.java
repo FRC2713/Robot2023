@@ -327,8 +327,10 @@ public class Robot extends LoggedRobot {
                             LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
                     new ConditionalCommand(
                             LightStrip.Commands.setColorPattern(Pattern.Lime),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                            () ->intake.hasGamepiece())))
+                            new SequentialCommandGroup(
+                                    LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                                    new WaitCommand(2.0),
+                                    LightStrip.Commands.defaultColorPattern()),                            () ->intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -368,7 +370,10 @@ public class Robot extends LoggedRobot {
                             LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
                     new ConditionalCommand(
                             LightStrip.Commands.setColorPattern(Pattern.Lime),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                            new SequentialCommandGroup(
+                                    LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                                    new WaitCommand(2.0),
+                                    LightStrip.Commands.defaultColorPattern()),
                             () ->intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
@@ -409,7 +414,10 @@ public class Robot extends LoggedRobot {
                             LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
                             new ConditionalCommand(
                                     LightStrip.Commands.setColorPattern(Pattern.Lime),
-                                    LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                                    new SequentialCommandGroup(
+                                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                                            new WaitCommand(2.0),
+                                            LightStrip.Commands.defaultColorPattern()),
                                     () ->intake.hasGamepiece())))
             .onFalse(
             new SequentialCommandGroup(
