@@ -329,8 +329,8 @@ public class Robot extends LoggedRobot {
                             Elevator.Commands.elevatorCurrentHeight(),
                             new ConditionalCommand(
                                     new ParallelCommandGroup(
-                                            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                                            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                                            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM()),
+                                            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
                                     new ParallelCommandGroup(
                                             Intake.Commands.setTopVelocityRPM(0),
                                             Intake.Commands.setBottomVelocityRPM(0)),
@@ -385,14 +385,24 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()))))
-        .onFalse(
+                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition())),
+                    new WaitUntilCommand(() -> intake.hasGamepiece()),
+                    FourBar.Commands.retract(),
+                    new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly()
+                            .until(() -> fourBar.isAtTarget())))
+            .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                Intake.Commands.setBottomVelocityRPM(
-                    SuperstructureConstants.HOLD_CONE.getBottomRPM()),
-                FourBar.Commands.retract()));
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                                    Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                            new ParallelCommandGroup(
+                                    Intake.Commands.setTopVelocityRPM(0),
+                                    Intake.Commands.setBottomVelocityRPM(0)),
+                            () ->intake.hasGamepiece()
+                    ), FourBar.Commands.retract()));
 
     driver
         .b()
