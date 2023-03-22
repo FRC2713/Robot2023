@@ -38,13 +38,17 @@ import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
+import frc.robot.commands.fullRoutines.FastThreeCubeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
+import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
+import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
+import frc.robot.commands.fullRoutines.TwoCubeOverBridge;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -839,17 +843,21 @@ public class Robot extends LoggedRobot {
 
   public void buildAutoChooser() {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
+    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
-    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
-    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
-    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
-    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
+    autoChooser.addOption("CommunityScoring", new ScoreCommunityUnder());
+    autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
   }
 
   public void checkAlliance() {
@@ -858,6 +866,20 @@ public class Robot extends LoggedRobot {
 
     if (DriverStation.isDSAttached() && checkedAlliance != currentAlliance) {
       currentAlliance = checkedAlliance;
+
+      // these gyro resets are mostly for ironing out teleop driving issues
+
+      // if we are on blue, we are probably facing towards the blue DS, which is -x.
+      // that corresponds to a 180 deg heading.
+      if (checkedAlliance == Alliance.Blue) {
+        swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+      }
+
+      // if we are on red, we are probably facing towards the red DS, which is +x.
+      // that corresponds to a 0 deg heading.
+      if (checkedAlliance == Alliance.Red) {
+        swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+      }
 
       goClosestGrid = new GoClosestGrid();
       buildAutoChooser();

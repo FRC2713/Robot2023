@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
@@ -19,9 +18,8 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
-import frc.robot.util.TrajectoryController;
 
-public class TwoConeUnder extends SequentialCommandGroup {
+public class OneConeOneCubeUnder extends SequentialCommandGroup {
 
   private Command score(SuperstructureConfig config) {
     return Commands.sequence(
@@ -73,7 +71,7 @@ public class TwoConeUnder extends SequentialCommandGroup {
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
-  public TwoConeUnder() {
+  public OneConeOneCubeUnder() {
     addCommands(
         new InstantCommand(
             () -> {
@@ -84,14 +82,15 @@ public class TwoConeUnder extends SequentialCommandGroup {
         FourBar.Commands.retract(),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake(),
-        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
+        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
+        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
         startIntake(),
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
         stopIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_SEVEN.getTrajectory()),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CONE_HIGH),
+        Commands.parallel(
+            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_EIGHT.getTrajectory())),
+        score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeightAndWait(Constants.zero));
   }

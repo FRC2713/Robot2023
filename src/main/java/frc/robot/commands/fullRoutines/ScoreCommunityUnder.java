@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
@@ -16,13 +15,12 @@ import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
-import frc.robot.util.AutoPath;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
-import frc.robot.util.TrajectoryController;
 
-public class TwoConeUnder extends SequentialCommandGroup {
+public class ScoreCommunityUnder extends SequentialCommandGroup {
 
+  // score based on where it goes
   private Command score(SuperstructureConfig config) {
     return Commands.sequence(
         new InstantCommand(() -> Robot.intake.setScoring(true)),
@@ -31,12 +29,14 @@ public class TwoConeUnder extends SequentialCommandGroup {
         new WaitCommand(0.5));
   }
 
+  // prepare to score
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
         FourBar.Commands.setToAngle(config.getFourBarPosition()));
   }
 
+  // intake turn on
   private Command startIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
@@ -58,6 +58,18 @@ public class TwoConeUnder extends SequentialCommandGroup {
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
+  // intake but spitting things out, subject to change
+  private Command spitIntake() {
+    return new ParallelCommandGroup(
+        new InstantCommand(() -> Robot.intake.setScoring(true)),
+        FourBar.Commands.setToAngle(
+            Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
+        Intake.Commands.setBottomVelocityRPM(
+            Constants.SuperstructureConstants.SCORE_CUBE_HIGH.getBottomRPM() * 1.5),
+        Intake.Commands.setTopVelocityRPM(
+            Constants.SuperstructureConstants.SCORE_CUBE_HIGH.getTopRPM() * 1.5));
+  }
+
   private Command stopIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
@@ -73,26 +85,32 @@ public class TwoConeUnder extends SequentialCommandGroup {
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
 
-  public TwoConeUnder() {
+  public ScoreCommunityUnder() {
     addCommands(
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
-                  AutoPath.Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose());
-              Robot.gamePieceMode = GamePieceMode.CONE;
+                  Autos.EIGHT_TO_D.getTrajectory().getInitialHolonomicPose());
+              Robot.gamePieceMode = GamePieceMode.CUBE;
+              Robot.intake.setScoring(true);
             }),
-        FourBar.Commands.retract(),
-        score(SuperstructureConstants.SCORE_CONE_HIGH),
-        stopIntake(),
-        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
+        Commands.sequence(
+            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
+            score(SuperstructureConstants.SCORE_CUBE_HIGH)),
+        Commands.parallel(
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.EIGHT_TO_D.getTrajectory()),
+            Commands.sequence(
+                new WaitCommand(0.5),
+                Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE)),
+            startIntake()),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_COMMUNITY.getTrajectory()),
+        spitIntake(),
+        new WaitCommand(0.5),
         startIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        stopIntake(),
-        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_SEVEN.getTrajectory()),
-        new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()),
-        score(SuperstructureConstants.SCORE_CONE_HIGH),
-        stopIntake(),
-        Elevator.Commands.setToHeightAndWait(Constants.zero));
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.COMMUNITY_TO_C.getTrajectory()),
+        SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.C_TO_COMMUNITY.getTrajectory()),
+        spitIntake(),
+        new WaitCommand(0.5),
+        stopIntake());
   }
 }
