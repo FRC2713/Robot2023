@@ -37,6 +37,11 @@ public class AutoPath {
     FIVE_TO_B("grid5tocargoB"),
     EIGHT_TO_D("grid8tocargoD"),
 
+    // community autos
+    D_TO_COMMUNITY("cargoDtocommunity"),
+    COMMUNITY_TO_C("communitytocargoC"),
+    C_TO_COMMUNITY("cargoCtocommunity"),
+
     // Misc Paths (look man I can only make so many categories)
     A_TO_BRIDGE("cargoAtobridge"),
     B_TO_BRIDGE("cargoBtobridge");
@@ -44,8 +49,7 @@ public class AutoPath {
 
     private Autos(String filename, double maxVel, double maxAccel) {
       try {
-        blueTrajectory =
-            PathPlanner.loadPath(filename, new PathConstraints(maxVel / 2, maxAccel / 2));
+        blueTrajectory = PathPlanner.loadPath(filename, new PathConstraints(maxVel, maxAccel));
         redTrajectory = ReflectedTransform.reflectiveTransformTrajectory(blueTrajectory);
 
         System.out.println(
@@ -65,6 +69,17 @@ public class AutoPath {
           filename,
           Constants.DriveConstants.MAX_SWERVE_VEL,
           Constants.DriveConstants.MAX_SWERVE_ACCEL);
+    }
+
+    private void clear() {
+      this.redTrajectory = null;
+      this.blueTrajectory = null;
+    }
+
+    public static void clearAll() {
+      for (Autos auto : Autos.values()) {
+        auto.clear();
+      }
     }
 
     public PathPlannerTrajectory getTrajectory() {

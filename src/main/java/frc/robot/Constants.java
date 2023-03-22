@@ -240,7 +240,7 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(1).build();
+        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(0).build();
 
     public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
         PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
@@ -301,10 +301,10 @@ public final class Constants {
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
-          PIDFFGains.builder("Trajectory Controller X-Axis").kP(5).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(7).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_Y =
-          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(5).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(7).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
           PIDFFGains.builder("Trajectory Controller Rotation").kP(1.1).kD(0.0).build();
@@ -371,8 +371,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(15)
             .fourBarPosition(90)
-            .topRPM(2000)
-            .bottomRPM(2000)
+            .topRPM(1723)
+            .bottomRPM(1723)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =
