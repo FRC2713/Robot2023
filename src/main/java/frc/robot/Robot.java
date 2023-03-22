@@ -502,6 +502,10 @@ public class Robot extends LoggedRobot {
                     }),
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
+                new ConditionalCommand(
+                        LightStrip.Commands.setColorPattern(Pattern.Lime),
+                        LightStrip.Commands.defaultColorPattern(),
+                        () -> intake.hasGamepiece()),
                 new WaitCommand(0.5)
                 // Elevator.Commands.setTargetHeightAndWait(0),
                 // LightStrip.Commands.setColorPattern(DarkGreen)
