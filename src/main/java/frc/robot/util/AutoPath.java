@@ -37,6 +37,11 @@ public class AutoPath {
     FIVE_TO_B("grid5tocargoB"),
     EIGHT_TO_D("grid8tocargoD"),
 
+    // community autos
+    D_TO_COMMUNITY("cargoDtocommunity"),
+    COMMUNITY_TO_C("communitytocargoC"),
+    C_TO_COMMUNITY("cargoCtocommunity"),
+
     // Misc Paths (look man I can only make so many categories)
     A_TO_BRIDGE("cargoAtobridge"),
     B_TO_BRIDGE("cargoBtobridge");
