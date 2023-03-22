@@ -86,7 +86,8 @@ public class TwoCubeOver extends SequentialCommandGroup {
         stopIntake(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
-            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH)),
+            Commands.sequence(
+                new WaitCommand(0.5), prepScore(SuperstructureConstants.SCORE_CUBE_HIGH))),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
         stopIntake(),
         Elevator.Commands.setToHeight(Constants.zero));

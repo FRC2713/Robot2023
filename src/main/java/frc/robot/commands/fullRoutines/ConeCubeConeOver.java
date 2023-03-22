@@ -78,8 +78,8 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
-        stopIntake(),
         new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
+        stopIntake(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             Commands.sequence(
