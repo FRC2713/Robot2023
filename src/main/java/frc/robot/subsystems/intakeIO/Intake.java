@@ -13,7 +13,6 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
-import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -88,12 +87,10 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Has gamepiece", hasGamepiece());
 
     if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CUBE) {
-      if (inputs.bottomIsOn || inputs.topIsOn) {
-        RumbleManager.getInstance().setDriver(1.0, .25);
-      }
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
     }
+
     if (hasGamepiece() && !previouslyHadGamePiece) {
       timer.restart();
       previouslyHadGamePiece = true;
@@ -102,16 +99,14 @@ public class Intake extends SubsystemBase {
         Robot.lights.setColorPattern(Pattern.DarkGreen);
       }
     }
+
     if (!hasGamepiece()) {
       previouslyHadGamePiece = !true;
     }
 
     if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
-      if (inputs.bottomIsOn || inputs.topIsOn) {
-        RumbleManager.getInstance().setDriver(1.0, 0.25);
-      }
-      setTopRpm(500);
-      setBottomRPM(-500);
+      setTopRpm(SuperstructureConstants.HOLD_CUBE.getTopRPM());
+      setBottomRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM());
     }
   }
 

@@ -59,13 +59,13 @@ public class OneConeBridge extends SequentialCommandGroup {
     return new ConditionalCommand(
         new ParallelCommandGroup(
             new InstantCommand(() -> Robot.intake.setScoring(false)),
-            Intake.Commands.setBottomVelocityRPM(0),
-            Intake.Commands.setTopVelocityRPM(0),
+            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM()),
+            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM()),
             FourBar.Commands.retract()),
         new ParallelCommandGroup(
             new InstantCommand(() -> Robot.intake.setScoring(false)),
-            Intake.Commands.setBottomVelocityRPM(-500),
-            Intake.Commands.setTopVelocityRPM(-500),
+            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
+            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
             FourBar.Commands.retract()),
         () -> Robot.gamePieceMode == GamePieceMode.CUBE);
   }
