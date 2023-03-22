@@ -64,7 +64,7 @@ public class MotionHandler {
                 xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 rSpeed * DriveConstants.MAX_ROTATIONAL_SPEED_RAD_PER_SEC,
-                Robot.swerveDrive.getUsablePose().getRotation()));
+                Robot.swerveDrive.getYaw()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);
 
