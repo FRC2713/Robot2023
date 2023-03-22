@@ -38,13 +38,17 @@ import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
+import frc.robot.commands.fullRoutines.FastThreeCubeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
+import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
+import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
+import frc.robot.commands.fullRoutines.TwoCubeOverBridge;
 import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
@@ -312,7 +316,7 @@ public class Robot extends LoggedRobot {
                       gamePieceMode = GamePieceMode.CUBE;
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-                    new ParallelCommandGroup(
+                new ParallelCommandGroup(
                     Intake.Commands.setTopVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getTopRPM()),
                     Intake.Commands.setBottomVelocityRPM(
@@ -324,18 +328,20 @@ public class Robot extends LoggedRobot {
                 new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                     .repeatedly()
                     .until(() -> fourBar.isAtTarget())))
-            .onFalse(
-                    new SequentialCommandGroup(
-                            Elevator.Commands.elevatorCurrentHeight(),
-                            new ConditionalCommand(
-                                    new ParallelCommandGroup(
-                                            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                                            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                                    new ParallelCommandGroup(
-                                            Intake.Commands.setTopVelocityRPM(0),
-                                            Intake.Commands.setBottomVelocityRPM(0)),
-                                    () ->intake.hasGamepiece()
-                            ), FourBar.Commands.retract()));
+        .onFalse(
+            new SequentialCommandGroup(
+                Elevator.Commands.elevatorCurrentHeight(),
+                new ConditionalCommand(
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                        Intake.Commands.setBottomVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(0),
+                        Intake.Commands.setBottomVelocityRPM(0)),
+                    () -> intake.hasGamepiece()),
+                FourBar.Commands.retract()));
     driver
         .rightTrigger(0.25)
         .onTrue(
@@ -345,30 +351,32 @@ public class Robot extends LoggedRobot {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
-                    new ParallelCommandGroup(
+                new ParallelCommandGroup(
                     Intake.Commands.setTopVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition())),
-                    new WaitUntilCommand(() -> intake.hasGamepiece()),
-                    FourBar.Commands.retract(),
-                    new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                            .repeatedly()
-                            .until(() -> fourBar.isAtTarget())))
+                new WaitUntilCommand(() -> intake.hasGamepiece()),
+                FourBar.Commands.retract(),
+                new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                    .repeatedly()
+                    .until(() -> fourBar.isAtTarget())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new ConditionalCommand(
-                        new ParallelCommandGroup(
-                                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                                Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                        new ParallelCommandGroup(
-                                Intake.Commands.setTopVelocityRPM(0),
-                                Intake.Commands.setBottomVelocityRPM(0)),
-                        () ->intake.hasGamepiece()
-                        ), FourBar.Commands.retract()));
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                        Intake.Commands.setBottomVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(0),
+                        Intake.Commands.setBottomVelocityRPM(0)),
+                    () -> intake.hasGamepiece()),
+                FourBar.Commands.retract()));
 
     driver
         .rightBumper()
@@ -795,17 +803,21 @@ public class Robot extends LoggedRobot {
 
   public void buildAutoChooser() {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
+    autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
+    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
-    autoChooser.addDefaultOption("ThreeCubeOver", new ThreeCubeOver());
-    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
-    autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
-    autoChooser.addOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
+    autoChooser.addOption("CommunityScoring", new ScoreCommunityUnder());
+    autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
   }
 
   public void checkAlliance() {

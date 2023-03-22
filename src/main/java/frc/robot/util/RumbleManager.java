@@ -34,10 +34,10 @@ public class RumbleManager {
   public void setDriverNoTimer(double magnitude) {
     set(Robot.driver.getHID(), magnitude);
   }
-  public void stopDriver(){
+
+  public void stopDriver() {
     set(Robot.driver.getHID(), 0.0);
   }
-
 
   public void setOperator(double magnitude, double duration) {
     operatorTimer.reset();
