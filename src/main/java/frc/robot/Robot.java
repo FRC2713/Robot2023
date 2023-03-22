@@ -318,12 +318,17 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition())),
+                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
+                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
                 FourBar.Commands.retract(),
-                new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                    .repeatedly()
-                    .until(() -> fourBar.isAtTarget())))
+                    new ParallelCommandGroup(
+                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
+                            LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.Lime),
+                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                            () ->intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -338,6 +343,7 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
                 FourBar.Commands.retract()));
+
     driver
         .rightTrigger(0.25)
         .onTrue(
@@ -353,12 +359,17 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition())),
+                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
+                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
                 FourBar.Commands.retract(),
-                new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                    .repeatedly()
-                    .until(() -> fourBar.isAtTarget())))
+                    new ParallelCommandGroup(
+                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
+                            LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.Lime),
+                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                            () ->intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -392,7 +403,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                     new WaitUntilCommand(() -> intake.hasGamepiece()),
-                            FourBar.Commands.retract().until(() -> fourBar.isAtTarget()),
+                    FourBar.Commands.retract(),
                     new ParallelCommandGroup(
                             new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
                             LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
