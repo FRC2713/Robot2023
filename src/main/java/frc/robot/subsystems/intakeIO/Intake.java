@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
@@ -41,7 +40,7 @@ public class Intake extends SubsystemBase {
     return Math.abs(inputs.topVelocityRPM - targetRPM) < 0.5;
   }
 
-  public void setTopRpm(double rpm) {
+  public void setTopRPM(double rpm) {
     Logger.getInstance()
         .recordOutput("Intake/Applied Top Volts", rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
     IO.setTopVoltage(rpm / (IntakeConstants.MAX_TOP_RPM) * 12);
@@ -88,8 +87,13 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Has gamepiece", hasGamepiece());
 
     if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CUBE) {
-      IO.setTopVoltage(Constants.zero);
-      IO.setBottomVoltage(Constants.zero);
+      setTopRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM());
+      setBottomRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM());
+    }
+
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
+      setTopRPM(SuperstructureConstants.HOLD_CONE.getTopRPM());
+      setBottomRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM());
     }
 
     if (hasGamepiece() && !previouslyHadGamePiece) {
@@ -104,11 +108,6 @@ public class Intake extends SubsystemBase {
     if (!hasGamepiece()) {
       previouslyHadGamePiece = !true;
     }
-
-    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
-      setTopRpm(SuperstructureConstants.HOLD_CUBE.getTopRPM());
-      setBottomRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM());
-    }
   }
 
   public void setCurrentLimit(int currentLimit) {
@@ -118,7 +117,7 @@ public class Intake extends SubsystemBase {
   public static class Commands {
 
     public static Command setTopVelocityRPM(double targetRPM) {
-      return new InstantCommand(() -> Robot.intake.setTopRpm(targetRPM));
+      return new InstantCommand(() -> Robot.intake.setTopRPM(targetRPM));
     }
 
     public static Command setBottomVelocityRPM(double targetRPM) {
