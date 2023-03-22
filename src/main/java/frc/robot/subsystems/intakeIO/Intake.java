@@ -13,9 +13,8 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
+import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Robot.fourBar;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
@@ -94,7 +93,6 @@ public class Intake extends SubsystemBase {
       }
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
-
     }
     if (hasGamepiece() && !previouslyHadGamePiece) {
       timer.restart();
@@ -116,7 +114,6 @@ public class Intake extends SubsystemBase {
       setBottomRPM(-500);
     }
   }
-
 
   public void setCurrentLimit(int currentLimit) {
     IO.setCurrentLimit(currentLimit);
