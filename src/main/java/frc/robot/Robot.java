@@ -311,7 +311,7 @@ public class Robot extends LoggedRobot {
                       gamePieceMode = GamePieceMode.CUBE;
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-                new ParallelCommandGroup(
+                    new ParallelCommandGroup(
                     Intake.Commands.setTopVelocityRPM(
                         SuperstructureConstants.INTAKE_CUBE.getTopRPM()),
                     Intake.Commands.setBottomVelocityRPM(
@@ -323,14 +323,18 @@ public class Robot extends LoggedRobot {
                 new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                     .repeatedly()
                     .until(() -> fourBar.isAtTarget())))
-        .onFalse(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM()),
-                Intake.Commands.setBottomVelocityRPM(
-                    SuperstructureConstants.HOLD_CUBE.getBottomRPM()),
-                FourBar.Commands.retract()));
-
+            .onFalse(
+                    new SequentialCommandGroup(
+                            Elevator.Commands.elevatorCurrentHeight(),
+                            new ConditionalCommand(
+                                    new ParallelCommandGroup(
+                                            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                                            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                                    new ParallelCommandGroup(
+                                            Intake.Commands.setTopVelocityRPM(0),
+                                            Intake.Commands.setBottomVelocityRPM(0)),
+                                    () ->intake.hasGamepiece()
+                            ), FourBar.Commands.retract()));
     driver
         .rightTrigger(0.25)
         .onTrue(
@@ -340,20 +344,30 @@ public class Robot extends LoggedRobot {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
-                new ParallelCommandGroup(
+                    new ParallelCommandGroup(
                     Intake.Commands.setTopVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()))))
+                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition())),
+                    new WaitUntilCommand(() -> intake.hasGamepiece()),
+                    FourBar.Commands.retract(),
+                    new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly()
+                            .until(() -> fourBar.isAtTarget())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
-                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                Intake.Commands.setBottomVelocityRPM(
-                    SuperstructureConstants.HOLD_CONE.getBottomRPM()),
-                FourBar.Commands.retract()));
+                new ConditionalCommand(
+                        new ParallelCommandGroup(
+                                Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                                Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                        new ParallelCommandGroup(
+                                Intake.Commands.setTopVelocityRPM(0),
+                                Intake.Commands.setBottomVelocityRPM(0)),
+                        () ->intake.hasGamepiece()
+                        ), FourBar.Commands.retract()));
 
     driver
         .rightBumper()

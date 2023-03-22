@@ -16,6 +16,8 @@ import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Robot.fourBar;
+
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
@@ -91,19 +93,22 @@ public class Intake extends SubsystemBase {
       }*/
       IO.setTopVoltage(Constants.zero);
       IO.setBottomVoltage(Constants.zero);
+
     }
-    if (hasGamepiece() && !previouslyHadGamePiece) {
-      timer.restart();
-      previouslyHadGamePiece = true;
-      RumbleManager.getInstance().setDriver(1.0, 2.0);
-      if (timer.get() <= 2.0) {
-        Robot.lights.setColorPattern(Pattern.DarkGreen);
-      }
-    }
-    if (!hasGamepiece()) {
-      previouslyHadGamePiece = !true;
-    }
+//    if (hasGamepiece() && !previouslyHadGamePiece) {
+//      timer.restart();
+//      previouslyHadGamePiece = true;
+//      RumbleManager.getInstance().setDriverNoTimer(1.0);
+//
+//      if (timer.get() <= 2.0) {
+//        Robot.lights.setColorPattern(Pattern.DarkGreen);
+//      }
+//    }
+//    if (!hasGamepiece()) {
+//      previouslyHadGamePiece = !true;
+//    }
   }
+
 
   public void setCurrentLimit(int currentLimit) {
     IO.setCurrentLimit(currentLimit);
