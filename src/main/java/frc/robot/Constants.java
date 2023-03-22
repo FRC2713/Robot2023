@@ -127,9 +127,9 @@ public final class Constants {
 
   @UtilityClass
   public static class IntakeConstants {
-    public static final DCMotor INTAKE_MOTOR = DCMotor.getNEO(1);
-    public static final double BOTTOM_GEARING = 3.0;
-    public static final double TOP_GEARING = 3.0;
+    public static final DCMotor INTAKE_MOTOR = DCMotor.getNeo550(1);
+    public static final double BOTTOM_GEARING = 5.26;
+    public static final double TOP_GEARING = 5.26;
 
     public static final double MAX_BOTTOM_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec)
@@ -137,12 +137,12 @@ public final class Constants {
     public static final double MAX_TOP_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / TOP_GEARING;
     public static final double MOI = 0.1;
-    public static final int TOP_CURRENT_LIMIT = 15;
-    public static final int BOTTOM_CURRENT_LIMIT = 15;
-    public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / 3;
-    public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / 3;
-    public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / 3;
-    public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / 3;
+    public static final int TOP_CURRENT_LIMIT = 20;
+    public static final int BOTTOM_CURRENT_LIMIT = 20;
+    public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / TOP_GEARING;
+    public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
+    public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / TOP_GEARING;
+    public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
   }
 
   @UtilityClass
@@ -203,7 +203,7 @@ public final class Constants {
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
-    public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(225);
+    public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
     public static final int DRIVE_CURRENT_LIMIT = 50;
     public static final int AZI_CURRENT_LIMIT = 20;
@@ -338,7 +338,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(32)
+            .fourBarPosition(37)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
@@ -354,7 +354,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(27.13)
+            .fourBarPosition(24)
             .topRPM(1_500)
             .bottomRPM(1_500)
             .build();
@@ -379,8 +379,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(32)
             .fourBarPosition(75)
-            .topRPM(2000)
-            .bottomRPM(2000)
+            .topRPM(1750)
+            .bottomRPM(1750)
             .build();
 
     public static final SuperstructureConfig SCORE_CONE_LOW =
