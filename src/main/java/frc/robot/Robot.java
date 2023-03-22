@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.LightStrip.Pattern.ColorWavesRainbow;
 // import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
 
 import edu.wpi.first.math.filter.LinearFilter;
