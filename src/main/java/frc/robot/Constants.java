@@ -203,7 +203,7 @@ public final class Constants {
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
-    public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(180);
+    public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(225);
 
     public static final int DRIVE_CURRENT_LIMIT = 50;
     public static final int AZI_CURRENT_LIMIT = 20;
@@ -371,8 +371,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(15)
             .fourBarPosition(90)
-            .topRPM(2000)
-            .bottomRPM(2000)
+            .topRPM(1723)
+            .bottomRPM(1723)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =

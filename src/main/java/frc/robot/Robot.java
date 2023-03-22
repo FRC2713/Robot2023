@@ -64,6 +64,7 @@ import frc.robot.subsystems.visionIO.Vision;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
+import frc.robot.util.AutoPath;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -574,7 +575,15 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(0),
                 FourBar.Commands.retract(),
-                LightStrip.Commands.defaultColorPattern()));
+                LightStrip.Commands.defaultColorPattern(),
+                new ConditionalCommand(
+                    Commands.parallel(
+                        Intake.Commands.setTopVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
+                        Intake.Commands.setBottomVelocityRPM(
+                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+                    new InstantCommand(),
+                    () -> intake.hasGamepiece())));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
@@ -735,6 +744,8 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
+    // Autos.clearAll();
+    AutoPath.Autos.clearAll();
 
     vision.setCurrentSnapshotMode(SnapshotMode.TWO_PER_SECOND);
   }

@@ -13,14 +13,13 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
-import frc.robot.util.RumbleManager;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private final IntakeIO IO;
   private final IntakeInputsAutoLogged inputs;
   private double targetRPM = 0.0;
-  private double cubeDetectionThreshold = 1.0;
+  private double cubeDetectionThreshold = 0.5;
   private double coneDetectionThreshold = 15.0;
   private double filteredVoltageRight = 0, filteredVoltageLeft;
   public boolean scoring = false;
@@ -29,8 +28,8 @@ public class Intake extends SubsystemBase {
 
   private Timer timer = new Timer();
 
-  private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.06, 0.02);
-  private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.06, 0.02);
+  private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.04, 0.02);
+  private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.04, 0.02);
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
@@ -84,6 +83,8 @@ public class Intake extends SubsystemBase {
     Logger.getInstance().recordOutput("Intake/Has reached target", isAtTarget());
 
     Logger.getInstance().processInputs("Intake", inputs);
+    Logger.getInstance().recordOutput("Intake/Scoring", scoring);
+    Logger.getInstance().recordOutput("Intake/Has gamepiece", hasGamepiece());
 
     if (hasGamepiece() && Robot.gamePieceMode != GamePieceMode.CONE) {
       /*  if (inputs.bottomIsOn || inputs.topIsOn) {
@@ -95,7 +96,7 @@ public class Intake extends SubsystemBase {
     if (hasGamepiece() && !previouslyHadGamePiece) {
       timer.restart();
       previouslyHadGamePiece = true;
-      RumbleManager.getInstance().setDriver(1.0, 2.0);
+      // RumbleManager.getInstance().setDriver(1.0, 2.0);
       if (timer.get() <= 2.0) {
         Robot.lights.setColorPattern(Pattern.DarkGreen);
       }
