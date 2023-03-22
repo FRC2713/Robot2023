@@ -66,6 +66,17 @@ public class AutoPath {
           Constants.DriveConstants.MAX_SWERVE_ACCEL);
     }
 
+    private void clear() {
+      this.redTrajectory = null;
+      this.blueTrajectory = null;
+    }
+
+    public static void clearAll() {
+      for (Autos auto : Autos.values()) {
+        auto.clear();
+      }
+    }
+
     public PathPlannerTrajectory getTrajectory() {
       return DriverStation.getAlliance() == Alliance.Blue
           ? this.blueTrajectory
