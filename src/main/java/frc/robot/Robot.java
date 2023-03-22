@@ -828,11 +828,11 @@ public class Robot extends LoggedRobot {
       currentAlliance = checkedAlliance;
 
       // these gyro resets are mostly for ironing out teleop driving issues
-      
+
       // if we are on blue, we are probably facing towards the blue DS, which is -x.
-      // that corresponds to a -180 deg heading.
+      // that corresponds to a 180 deg heading.
       if (checkedAlliance == Alliance.Blue) {
-        swerveDrive.resetGyro(Rotation2d.fromDegrees(-180));
+        swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
       }
 
       // if we are on red, we are probably facing towards the red DS, which is +x.
