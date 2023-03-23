@@ -42,4 +42,6 @@ public interface SwerveModuleIO {
    * @param driveVolts volts to set the drive to
    */
   public void setDriveVoltage(double driveVolts);
+
+  public void seed();
 }

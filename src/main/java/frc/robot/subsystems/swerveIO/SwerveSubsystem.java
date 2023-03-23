@@ -207,10 +207,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 .getTranslation()
                 .getDistance(fPose.getTranslation()));
     Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
-    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
-      poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp());
-    }
+    // if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+    //     && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
+    poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp());
+    // }
   }
 
   /**
@@ -294,6 +294,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
       inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
+  }
+
+  public void seed() {
+    frontLeft.seed();
+    frontRight.seed();
+    backLeft.seed();
+    backRight.seed();
   }
 
   @Override

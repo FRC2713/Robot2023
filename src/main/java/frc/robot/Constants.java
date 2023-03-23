@@ -36,7 +36,7 @@ public final class Constants {
   public static final double π = Math.PI;
   public static final double DOUBLE_PLACEHOLDER = zero;
   public static final int INT_PLACEHOLDER = zero;
-  public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
+  public static final boolean ENABLE_VISION_POSE_ESTIMATION = true;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
   public static final int CAN_TIMEOUT_MS = 200;
 
@@ -205,7 +205,7 @@ public final class Constants {
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
-    public static final int DRIVE_CURRENT_LIMIT = 50;
+    public static final int DRIVE_CURRENT_LIMIT = 30;
     public static final int AZI_CURRENT_LIMIT = 20;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
@@ -331,7 +331,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-17)
+            .fourBarPosition(-18)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
@@ -371,8 +371,8 @@ public final class Constants {
         SuperstructureConfig.builder()
             .elevatorPosition(15)
             .fourBarPosition(90)
-            .topRPM(1723)
-            .bottomRPM(1723)
+            .topRPM(1350)
+            .bottomRPM(1350)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =

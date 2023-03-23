@@ -53,24 +53,22 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
     driver.setSmartCurrentLimit(Constants.DriveConstants.DRIVE_CURRENT_LIMIT);
     azimuth.setSmartCurrentLimit(Constants.DriveConstants.AZI_CURRENT_LIMIT);
+    azimuth.setInverted(true);
+    driver.setInverted(true);
 
-    for (int i = 0; i < 10; i++) {
-      azimuth.setInverted(true);
-      driver.setInverted(true);
+    cOk(driver.setIdleMode(IdleMode.kBrake));
+    cOk(azimuth.setIdleMode(IdleMode.kBrake));
 
-      cOk(driver.setIdleMode(IdleMode.kBrake));
-      cOk(azimuth.setIdleMode(IdleMode.kBrake));
+    cOk(getDriveEncoder().setPositionConversionFactor(Constants.DriveConstants.DIST_PER_PULSE));
+    cOk(
+        getDriveEncoder()
+            .setVelocityConversionFactor((Constants.DriveConstants.DIST_PER_PULSE / 60)));
 
-      cOk(getDriveEncoder().setPositionConversionFactor(Constants.DriveConstants.DIST_PER_PULSE));
-      cOk(
-          getDriveEncoder()
-              .setVelocityConversionFactor((Constants.DriveConstants.DIST_PER_PULSE / 60)));
+    cOk(getAziEncoder().setPositionConversionFactor(7.0 / 150.0 * 360.0));
+    cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
 
-      cOk(getAziEncoder().setPositionConversionFactor(7.0 / 150.0 * 360.0));
-      cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
-      cOk(
-          getAziEncoder()
-              .setPosition(getAziAbsoluteEncoder().getAdjustedRotation2d().getDegrees()));
+    for (int i = 0; i < 30; i++) {
+      seed();
     }
 
     driver.setCANTimeout(0);
@@ -78,6 +76,11 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
     driver.burnFlash();
     azimuth.burnFlash();
+  }
+
+  public void seed() {
+
+    cOk(getAziEncoder().setPosition(getAziAbsoluteEncoder().getAdjustedRotation2d().getDegrees()));
   }
 
   @Override

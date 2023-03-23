@@ -52,6 +52,10 @@ public class SwerveModule extends SubsystemBase {
     return state;
   }
 
+  public void seed() {
+    io.seed();
+  }
+
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         inputs.driveEncoderPositionMetres, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
