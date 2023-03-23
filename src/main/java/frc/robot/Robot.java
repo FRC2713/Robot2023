@@ -507,7 +507,7 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 new ConditionalCommand(
-                        LightStrip.Commands.setColorPattern(Pattern.Lime),
+                        LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
                         LightStrip.Commands.defaultColorPattern(),
                         () -> intake.hasGamepiece()),
                 new WaitCommand(0.5)
@@ -524,7 +524,10 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorHigh(),
                 FourBar.Commands.conditionalFourbarHigh(),
-                LightStrip.Commands.defaultColorPattern()));
+                new ConditionalCommand(
+                        LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                        LightStrip.Commands.defaultColorPattern(),
+                        () -> intake.hasGamepiece())));
 
     operator
         .b()
@@ -532,16 +535,20 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorMid(),
                 FourBar.Commands.conditionalFourbarMid(),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .a()
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorLow(),
                 FourBar.Commands.conditionalFourbarLow(),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .rightBumper()
         .and(operator.y())
@@ -549,8 +556,10 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .rightBumper()
         .and(operator.b())
@@ -558,8 +567,10 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .rightBumper()
         .and(operator.a())
@@ -567,8 +578,10 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .leftBumper()
         .and(operator.y())
@@ -576,8 +589,10 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .leftBumper()
         .and(operator.b())
@@ -585,8 +600,10 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .leftBumper()
         .and(operator.a())
@@ -594,8 +611,10 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                LightStrip.Commands.defaultColorPattern()));
-
+                    new ConditionalCommand(
+                            LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                            LightStrip.Commands.defaultColorPattern(),
+                            () -> intake.hasGamepiece())));
     operator
         .rightBumper()
         .and(operator.x())
@@ -644,6 +663,11 @@ public class Robot extends LoggedRobot {
                 Elevator.Commands.setToHeightAndWait(0),
                 FourBar.Commands.retract(),
                 LightStrip.Commands.defaultColorPattern(),
+                new ConditionalCommand(
+                        LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                        LightStrip.Commands.defaultColorPattern(),
+                        () -> intake.hasGamepiece()
+                ),
                 new ConditionalCommand(
                     Commands.parallel(
                         Intake.Commands.setTopVelocityRPM(
