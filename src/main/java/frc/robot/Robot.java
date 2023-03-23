@@ -350,7 +350,51 @@ public class Robot extends LoggedRobot {
                     () -> intake.hasGamepiece()),
                 FourBar.Commands.retract()));
 
-    driver
+      driver
+              .leftTrigger(0.25)
+              .onTrue(
+                      new SequentialCommandGroup(
+                              new InstantCommand(
+                                      () -> {
+                                          gamePieceMode = GamePieceMode.CUBE;
+                                      }),
+                              Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE_DEFLATED),
+                              new ParallelCommandGroup(
+                                      Intake.Commands.setTopVelocityRPM(
+                                              SuperstructureConstants.INTAKE_CUBE_DEFLATED.getTopRPM()),
+                                      Intake.Commands.setBottomVelocityRPM(
+                                              SuperstructureConstants.INTAKE_CUBE_DEFLATED.getBottomRPM()),
+                                      FourBar.Commands.setAngleDegAndWait(
+                                              SuperstructureConstants.INTAKE_CUBE_DEFLATED .getFourBarPosition()),
+                                      LightStrip.Commands.setColorPattern(Pattern.Yellow)),
+                              new WaitUntilCommand(() -> intake.hasGamepiece()),
+                              FourBar.Commands.retract(),
+                              new ParallelCommandGroup(
+                                      new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
+                                      LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen)).until(() -> fourBar.isAtTarget()),
+                              new ConditionalCommand(
+                                      LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+                                      new SequentialCommandGroup(
+                                              LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                                              new WaitCommand(2.0),
+                                              LightStrip.Commands.defaultColorPattern()),
+                                      () ->intake.hasGamepiece())))
+              .onFalse(
+                      new SequentialCommandGroup(
+                              Elevator.Commands.elevatorCurrentHeight(),
+                              new ConditionalCommand(
+                                      new ParallelCommandGroup(
+                                              Intake.Commands.setTopVelocityRPM(
+                                                      SuperstructureConstants.HOLD_CUBE.getTopRPM()),
+                                              Intake.Commands.setBottomVelocityRPM(
+                                                      SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
+                                      new ParallelCommandGroup(
+                                              Intake.Commands.setTopVelocityRPM(0),
+                                              Intake.Commands.setBottomVelocityRPM(0)),
+                                      () -> intake.hasGamepiece()),
+                              FourBar.Commands.retract()));
+
+      driver
         .rightTrigger(0.25)
         .onTrue(
             new SequentialCommandGroup(
