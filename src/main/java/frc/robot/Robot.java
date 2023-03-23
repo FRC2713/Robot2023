@@ -326,15 +326,18 @@ public class Robot extends LoggedRobot {
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
                 FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
-                    new ConditionalCommand(
-                            LightStrip.Commands.setColorPattern(Pattern.Lime),
-                            new SequentialCommandGroup(
-                                    LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                                    new WaitCommand(2.0),
-                                    LightStrip.Commands.defaultColorPattern()),                            () ->intake.hasGamepiece())))
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Lime))
+                    .until(() -> fourBar.isAtTarget()),
+                new ConditionalCommand(
+                    LightStrip.Commands.setColorPattern(Pattern.Lime),
+                    new SequentialCommandGroup(
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                        new WaitCommand(2.0),
+                        LightStrip.Commands.defaultColorPattern()),
+                    () -> intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -369,16 +372,18 @@ public class Robot extends LoggedRobot {
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
                 FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
-                    new ConditionalCommand(
-                            LightStrip.Commands.setColorPattern(Pattern.Lime),
-                            new SequentialCommandGroup(
-                                    LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                                    new WaitCommand(2.0),
-                                    LightStrip.Commands.defaultColorPattern()),
-                            () ->intake.hasGamepiece())))
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Lime))
+                    .until(() -> fourBar.isAtTarget()),
+                new ConditionalCommand(
+                    LightStrip.Commands.setColorPattern(Pattern.Lime),
+                    new SequentialCommandGroup(
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                        new WaitCommand(2.0),
+                        LightStrip.Commands.defaultColorPattern()),
+                    () -> intake.hasGamepiece())))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -411,19 +416,21 @@ public class Robot extends LoggedRobot {
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-                    new WaitUntilCommand(() -> intake.hasGamepiece()),
-                    FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.Lime)).until(() -> fourBar.isAtTarget()),
-                            new ConditionalCommand(
-                                    LightStrip.Commands.setColorPattern(Pattern.Lime),
-                                    new SequentialCommandGroup(
-                                            LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                                            new WaitCommand(2.0),
-                                            LightStrip.Commands.defaultColorPattern()),
-                                    () ->intake.hasGamepiece())))
-            .onFalse(
+                new WaitUntilCommand(() -> intake.hasGamepiece()),
+                FourBar.Commands.retract(),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Lime))
+                    .until(() -> fourBar.isAtTarget()),
+                new ConditionalCommand(
+                    LightStrip.Commands.setColorPattern(Pattern.Lime),
+                    new SequentialCommandGroup(
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                        new WaitCommand(2.0),
+                        LightStrip.Commands.defaultColorPattern()),
+                    () -> intake.hasGamepiece())))
+        .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
                 new ConditionalCommand(
@@ -507,9 +514,9 @@ public class Robot extends LoggedRobot {
                 Intake.Commands.setTopVelocityRPM(Constants.zero),
                 Intake.Commands.setBottomVelocityRPM(Constants.zero),
                 new ConditionalCommand(
-                        LightStrip.Commands.setColorPattern(Pattern.Lime),
-                        LightStrip.Commands.defaultColorPattern(),
-                        () -> intake.hasGamepiece()),
+                    LightStrip.Commands.setColorPattern(Pattern.Lime),
+                    LightStrip.Commands.defaultColorPattern(),
+                    () -> intake.hasGamepiece()),
                 new WaitCommand(0.5)
                 // Elevator.Commands.setTargetHeightAndWait(0),
                 // LightStrip.Commands.setColorPattern(DarkGreen)
