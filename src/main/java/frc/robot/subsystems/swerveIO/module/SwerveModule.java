@@ -102,8 +102,22 @@ public class SwerveModule extends SubsystemBase {
     final double driveOutput =
         driveController.calculate(
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
-    final double turnOutput =
-        azimuthController.calculate(inputs.aziEncoderPositionDeg, state.angle.getDegrees());
+
+    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) < 0.1;
+    boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) < 0.1;
+    double feedbackVal;
+    if (useMotorEncoder) {
+      feedbackVal = inputs.aziEncoderPositionDeg;
+      Logger.getInstance().recordOutput("Azimuth feedback source", "motor");
+    } else if (useAbsoluteEncoder) {
+      feedbackVal = inputs.aziAbsoluteEncoderAdjAngleDeg;
+      Logger.getInstance().recordOutput("Azimuth feedback source", "absolute encoder");
+    } else {
+      feedbackVal = inputs.aziEncoderPositionDeg;
+      Logger.getInstance().recordOutput("Azimuth feedback source", "motor backup");
+    }
+
+    final double turnOutput = azimuthController.calculate(feedbackVal, state.angle.getDegrees());
 
     Logger.getInstance().recordOutput("Drive Output", driveOutput);
     Logger.getInstance().recordOutput("Turn Output", turnOutput);

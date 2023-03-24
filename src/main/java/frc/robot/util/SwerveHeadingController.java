@@ -80,7 +80,7 @@ public class SwerveHeadingController {
     Logger.getInstance().recordOutput("Heading Controller/setpoint", setpoint.getDegrees());
     double output = 0;
     if (!controller.atSetpoint()) {
-      Rotation2d currentHeading = Robot.swerveDrive.getUsablePose().getRotation();
+      Rotation2d currentHeading = Robot.swerveDrive.getYaw();
       output = controller.calculate(currentHeading.getDegrees(), setpoint.getDegrees());
       output =
           MathUtil.clamp(

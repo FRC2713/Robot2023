@@ -79,7 +79,6 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
   }
 
   public void seed() {
-
     cOk(getAziEncoder().setPosition(getAziAbsoluteEncoder().getAdjustedRotation2d().getDegrees()));
   }
 

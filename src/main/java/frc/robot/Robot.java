@@ -325,7 +325,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
+                // FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -371,7 +371,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
+                // FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -417,7 +417,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
+                // FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -747,6 +747,8 @@ public class Robot extends LoggedRobot {
     if (Math.abs(driver.getRightX()) > 0.25) {
       motionMode = MotionMode.FULL_DRIVE;
     }
+
+    // swerveDrive.seed();
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(
