@@ -359,6 +359,14 @@ public final class Constants {
             .bottomRPM(1_500)
             .build();
 
+    public static final SuperstructureConfig INTAKE_CUBE_DEFLATED =
+            SuperstructureConfig.builder()
+                    .elevatorPosition(0)
+                    .fourBarPosition(20)
+                    .topRPM(1_500)
+                    .bottomRPM(1_500)
+                    .build();
+
     public static final SuperstructureConfig SCORE_CUBE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
