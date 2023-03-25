@@ -112,7 +112,7 @@ public final class Constants {
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
-    public static final double RETRACTED_ANGLE_DEGREES = 117.5;
+    public static final double RETRACTED_ANGLE_DEGREES = 116.5;
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
@@ -196,10 +196,11 @@ public final class Constants {
     }
 
     public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
-    public static final double WHEEL_DIAMETER = 3.85;
+    public static final double WHEEL_DIAMETER = 4.02267; // 3.85;
     public static final double GEAR_RATIO = 6.12;
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
+    // 1;
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
@@ -338,7 +339,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(37)
+            .fourBarPosition(32)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();

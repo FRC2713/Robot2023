@@ -23,8 +23,8 @@ public class FourBarIOSparks implements FourBarIO {
     RedHawkUtil.configureHighTrafficSpark(fourBarOne);
     // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
 
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
     fourBarOne.setIdleMode(IdleMode.kBrake);
 
@@ -56,7 +56,7 @@ public class FourBarIOSparks implements FourBarIO {
     absoluteEncoder.setVelocityConversionFactor(1 / 2.5 * 360);
     absoluteEncoder.setInverted(true);
 
-    absoluteEncoder.setZeroOffset(10);
+    absoluteEncoder.setZeroOffset(0);
     // absoluteEncoder.setZeroOffset(
     //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
   }
@@ -82,6 +82,7 @@ public class FourBarIOSparks implements FourBarIO {
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
+    inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (9.7);
   }
 
   @Override
@@ -93,5 +94,10 @@ public class FourBarIOSparks implements FourBarIO {
   @Override
   public void setPosition(double angleDeg) {
     fourBarOne.getEncoder().setPosition(angleDeg);
+  }
+
+  public void reseed(double absoluteEncoderVolts) {
+    var trueAngle = absoluteEncoderVolts - 9.7;
+    fourBarOne.getEncoder().setPosition(trueAngle);
   }
 }

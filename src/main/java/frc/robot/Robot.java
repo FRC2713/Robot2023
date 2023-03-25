@@ -714,7 +714,9 @@ public class Robot extends LoggedRobot {
         .back()
         .onTrue(
             new InstantCommand(
-                () -> fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+                () -> {
+                  fourBar.reseed();
+                }));
 
     operator
         .povDown()

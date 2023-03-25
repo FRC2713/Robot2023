@@ -56,7 +56,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     azimuth.setInverted(true);
     driver.setInverted(true);
 
-    cOk(driver.setIdleMode(IdleMode.kBrake));
+    cOk(driver.setIdleMode(IdleMode.kCoast));
     cOk(azimuth.setIdleMode(IdleMode.kBrake));
 
     cOk(getDriveEncoder().setPositionConversionFactor(Constants.DriveConstants.DIST_PER_PULSE));

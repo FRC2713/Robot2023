@@ -22,7 +22,10 @@ public interface FourBarIO {
     public double currentDrawTwo = 0.0;
 
     public double absoluteEncoderVolts = 0.0;
+    public double absoluteEncoderAdjustedAngle = 0.0;
   }
+
+  public void reseed(double absoluteEncoderVolts);
 
   public void updateInputs(FourBarInputs inputs);
 

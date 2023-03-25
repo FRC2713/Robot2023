@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
   private boolean previouslyHadGamePiece = false;
 
   private Timer timer = new Timer();
-
+  private Timer coneWaitTimer = new Timer();
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.04, 0.02);
   private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.04, 0.02);
 
@@ -90,8 +90,11 @@ public class Intake extends SubsystemBase {
       setTopRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM());
       setBottomRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM());
     }
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE && coneWaitTimer.get() < 1) {
+      coneWaitTimer.start();
+    }
 
-    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE && coneWaitTimer.get() > 1) {
       setTopRPM(SuperstructureConstants.HOLD_CONE.getTopRPM());
       setBottomRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM());
     }
@@ -107,6 +110,8 @@ public class Intake extends SubsystemBase {
 
     if (!hasGamepiece()) {
       previouslyHadGamePiece = !true;
+      coneWaitTimer.stop();
+      coneWaitTimer.reset();
     }
   }
 

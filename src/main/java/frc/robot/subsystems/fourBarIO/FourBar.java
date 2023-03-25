@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,6 +27,8 @@ public class FourBar extends SubsystemBase {
   private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
   private final ArmFeedforward ff;
 
+  private Timer reseedTimer = new Timer();
+
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_GAINS.createArmFeedforward();
     this.controller =
@@ -36,6 +39,7 @@ public class FourBar extends SubsystemBase {
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
+    reseedTimer.start();
   }
 
   public void setAngleDeg(double targetDegs) {
@@ -54,6 +58,10 @@ public class FourBar extends SubsystemBase {
     return inputs.angleDegreesOne;
   }
 
+  public void reseed() {
+    IO.reseed(inputs.absoluteEncoderVolts);
+  }
+
   public double getCurrentDraw() {
     return inputs.currentDrawOne;
   }
@@ -63,7 +71,6 @@ public class FourBar extends SubsystemBase {
   }
 
   public void periodic() {
-
     IO.updateInputs(inputs);
     double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
     double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
@@ -93,6 +100,14 @@ public class FourBar extends SubsystemBase {
     // }
 
     IO.setVoltage(effort);
+
+    boolean shouldReseed = inputs.absoluteEncoderVolts < 100 && reseedTimer.get() > 1;
+    Logger.getInstance().recordOutput("4Bar/Should Reseed", shouldReseed);
+    if (shouldReseed) {
+      IO.reseed(inputs.absoluteEncoderVolts);
+      reseedTimer.reset();
+      reseedTimer.start();
+    }
 
     Logger.getInstance().recordOutput("4Bar/Target Degs", targetDegs);
     Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
