@@ -5,12 +5,15 @@ import static frc.robot.Robot.fourBar;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -26,8 +29,12 @@ public class FourBar extends SubsystemBase {
   private final FourBarIO IO;
   private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
   private final ArmFeedforward ff;
+  private double filteredAbsEncoderVoltage;
 
+  private LinearFilter AbsEncoderFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
   private Timer reseedTimer = new Timer();
+
+  private boolean reseeding = false;
 
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_GAINS.createArmFeedforward();
@@ -66,6 +73,10 @@ public class FourBar extends SubsystemBase {
     return inputs.currentDrawOne;
   }
 
+  public void setReseeding(boolean reseeding) {
+    this.reseeding = reseeding;
+  }
+
   public void setPosition(double angleDegs) {
     IO.setPosition(angleDegs);
   }
@@ -99,10 +110,16 @@ public class FourBar extends SubsystemBase {
     //   RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MIN LIMITS!");
     // }
 
-    IO.setVoltage(effort);
+    if (!reseeding) {
 
+      IO.setVoltage(effort);
+    }
+
+    Logger.getInstance().recordOutput("4Bar/Reseeding", reseeding);
+    filteredAbsEncoderVoltage = AbsEncoderFilter.calculate(inputs.absoluteEncoderVolts);
     boolean shouldReseed = inputs.absoluteEncoderVolts < 100 && reseedTimer.get() > 1;
     Logger.getInstance().recordOutput("4Bar/Should Reseed", shouldReseed);
+    Logger.getInstance().recordOutput("4Bar/Filtered Absolute Encoder", filteredAbsEncoderVoltage);
     if (shouldReseed) {
       // IO.reseed(inputs.absoluteEncoderVolts);
       reseedTimer.reset();
@@ -173,5 +190,29 @@ public class FourBar extends SubsystemBase {
     public static Command extend() {
       return setToAngle(Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES);
     }
+
+    public static Command reset() {
+      return new SequentialCommandGroup(
+          new InstantCommand(
+              () -> {
+                Robot.fourBar.setReseeding(true);
+              }),
+          new RunCommand((() -> Robot.fourBar.setVoltage(3)))
+              .until(() -> Robot.fourBar.getLimitSwitch()),
+          new InstantCommand(
+              () -> {
+                Robot.fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
+                Robot.fourBar.setVoltage(0);
+                Robot.fourBar.setReseeding(false);
+              }));
+    }
+  }
+
+  public void setVoltage(int i) {
+    IO.setVoltage(i);
+  }
+
+  public boolean getLimitSwitch() {
+    return inputs.limSwitch;
   }
 }

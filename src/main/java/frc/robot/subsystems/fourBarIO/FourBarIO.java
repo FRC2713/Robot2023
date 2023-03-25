@@ -23,6 +23,8 @@ public interface FourBarIO {
 
     public double absoluteEncoderVolts = 0.0;
     public double absoluteEncoderAdjustedAngle = 0.0;
+
+    public boolean limSwitch = false;
   }
 
   public void reseed(double absoluteEncoderVolts);

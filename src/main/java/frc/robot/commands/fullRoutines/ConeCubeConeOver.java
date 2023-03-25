@@ -25,12 +25,12 @@ public class ConeCubeConeOver extends SequentialCommandGroup {
         new InstantCommand(() -> Robot.intake.setScoring(true)),
         prepScore(config),
         Intake.Commands.score(),
-        new WaitCommand(0.5));
+        new WaitCommand(0.75));
   }
 
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
-        Elevator.Commands.setToHeightAndWait(config), FourBar.Commands.setToAngle(config));
+        Elevator.Commands.setToHeightAndWait(config), FourBar.Commands.setAngleDegAndWait(config));
   }
 
   private Command startIntake() {

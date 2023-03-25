@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.FourBarConstants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
@@ -136,8 +135,8 @@ public class Robot extends LoggedRobot {
       File sda2 = new File(Constants.Logging.sda2Dir);
 
       if (sda1.exists() && sda1.isDirectory()) {
-        Logger.getInstance().recordOutput("isLoggingToUsb", true);
         Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
+        Logger.getInstance().recordOutput("isLoggingToUsb", true);
       } else {
         RedHawkUtil.ErrHandler.getInstance()
             .addError(
@@ -146,8 +145,8 @@ public class Robot extends LoggedRobot {
                     + ", trying "
                     + Constants.Logging.sda2Dir);
         if (sda2.exists() && sda2.isDirectory()) {
-          Logger.getInstance().recordOutput("isLoggingToUsb", true);
           Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
+          Logger.getInstance().recordOutput("isLoggingToUsb", true);
         } else {
           RedHawkUtil.ErrHandler.getInstance()
               .addError("Cannot log to " + Constants.Logging.sda2Dir);
@@ -712,21 +711,13 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  //   fourBar.reseed();
-                  fourBar.setPosition(FourBarConstants.RETRACTED_ANGLE_DEGREES);
-                }));
-    operator
         .start()
         .onTrue(
             new InstantCommand(
                 () -> {
                   fourBar.reseed();
-                  //   fourBar.setPosition(FourBarConstants.RETRACTED_ANGLE_DEGREES);
                 }));
+    operator.back().onTrue(FourBar.Commands.reset());
 
     operator
         .povDown()

@@ -346,7 +346,7 @@ public final class Constants {
 
     public static final SuperstructureConfig INTAKE_SHELF_CONE =
         SuperstructureConfig.builder()
-            .elevatorPosition(39.5)
+            .elevatorPosition(40)
             .fourBarPosition(90)
             .topRPM(1250)
             .bottomRPM(-1250)
@@ -371,9 +371,9 @@ public final class Constants {
     public static final SuperstructureConfig SCORE_CUBE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(90)
-            .topRPM(1000)
-            .bottomRPM(1000)
+            .fourBarPosition(24)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_MID =

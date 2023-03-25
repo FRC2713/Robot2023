@@ -139,9 +139,14 @@ public class Intake extends SubsystemBase {
 
     public static Command score() {
       return new ConditionalCommand(
-          new ParallelCommandGroup(
-              setTopVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getTopRPM()),
-              setBottomVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getBottomRPM())),
+          new ConditionalCommand(
+              new ParallelCommandGroup(
+                  setTopVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getTopRPM()),
+                  setBottomVelocityRPM(SuperstructureConstants.SCORE_CUBE_MID.getBottomRPM())),
+              new ParallelCommandGroup(
+                  setTopVelocityRPM(SuperstructureConstants.SCORE_CUBE_LOW.getTopRPM()),
+                  setBottomVelocityRPM(SuperstructureConstants.SCORE_CUBE_LOW.getBottomRPM())),
+              () -> Robot.elevator.getCurrentHeight() > 8),
           new ParallelCommandGroup(
               setTopVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getTopRPM()),
               setBottomVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getBottomRPM())),

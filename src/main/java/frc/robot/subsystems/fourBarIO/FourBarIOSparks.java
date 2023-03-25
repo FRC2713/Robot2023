@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
@@ -13,6 +14,8 @@ import frc.robot.util.RedHawkUtil;
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
+
+  private static double offset = 137.96978759765625 - 116.49999237060547;
 
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
@@ -59,6 +62,7 @@ public class FourBarIOSparks implements FourBarIO {
     absoluteEncoder.setZeroOffset(0);
     // absoluteEncoder.setZeroOffset(
     //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
+
   }
 
   @Override
@@ -82,7 +86,10 @@ public class FourBarIOSparks implements FourBarIO {
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
-    inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (9.7);
+    inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
+
+    inputs.limSwitch =
+        fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
   }
 
   @Override
@@ -97,7 +104,7 @@ public class FourBarIOSparks implements FourBarIO {
   }
 
   public void reseed(double absoluteEncoderVolts) {
-    var trueAngle = absoluteEncoderVolts - 9.7;
+    var trueAngle = absoluteEncoderVolts - offset;
     fourBarOne.getEncoder().setPosition(trueAngle);
   }
 }
