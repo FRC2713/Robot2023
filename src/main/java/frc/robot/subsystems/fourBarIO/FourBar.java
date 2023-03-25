@@ -104,7 +104,7 @@ public class FourBar extends SubsystemBase {
     boolean shouldReseed = inputs.absoluteEncoderVolts < 100 && reseedTimer.get() > 1;
     Logger.getInstance().recordOutput("4Bar/Should Reseed", shouldReseed);
     if (shouldReseed) {
-      IO.reseed(inputs.absoluteEncoderVolts);
+      // IO.reseed(inputs.absoluteEncoderVolts);
       reseedTimer.reset();
       reseedTimer.start();
     }

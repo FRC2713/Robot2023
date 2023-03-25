@@ -78,6 +78,8 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
                   Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
             }),
+        Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
+        Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake(),
         Commands.parallel(
