@@ -77,6 +77,7 @@ public class OneConeBridge extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   Autos.FIVE_TO_B.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
+              Robot.fourBar.reseed();
             }),
         Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
         Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),

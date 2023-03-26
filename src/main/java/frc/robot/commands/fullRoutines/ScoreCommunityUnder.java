@@ -93,6 +93,7 @@ public class ScoreCommunityUnder extends SequentialCommandGroup {
                   Autos.EIGHT_TO_D.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;
               Robot.intake.setScoring(true);
+              Robot.fourBar.reseed();
             }),
         Commands.sequence(
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),

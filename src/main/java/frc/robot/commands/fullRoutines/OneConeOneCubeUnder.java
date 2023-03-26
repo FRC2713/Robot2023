@@ -78,6 +78,7 @@ public class OneConeOneCubeUnder extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   AutoPath.Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
+              Robot.fourBar.reseed();
             }),
         Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
         Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),

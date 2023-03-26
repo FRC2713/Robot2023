@@ -80,6 +80,7 @@ public class TwoConeUnder extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   AutoPath.Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
+              Robot.fourBar.reseed();
             }),
         FourBar.Commands.retract(),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
