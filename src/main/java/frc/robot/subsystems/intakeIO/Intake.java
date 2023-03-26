@@ -146,7 +146,7 @@ public class Intake extends SubsystemBase {
               new ParallelCommandGroup(
                   setTopVelocityRPM(SuperstructureConstants.SCORE_CUBE_LOW.getTopRPM()),
                   setBottomVelocityRPM(SuperstructureConstants.SCORE_CUBE_LOW.getBottomRPM())),
-              () -> Robot.elevator.getCurrentHeight() > 8),
+              () -> Robot.elevator.getTargetHeight() > 8),
           new ParallelCommandGroup(
               setTopVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getTopRPM()),
               setBottomVelocityRPM(SuperstructureConstants.SCORE_CONE_MID.getBottomRPM())),

@@ -20,7 +20,7 @@ public class FourBarIOSparks implements FourBarIO {
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
-    fourBarOne.restoreFactoryDefaults();
+    // fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
 
     RedHawkUtil.configureHighTrafficSpark(fourBarOne);
@@ -31,7 +31,10 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.setIdleMode(IdleMode.kBrake);
 
-    fourBarOne.setInverted(true); // subject to change
+    for (int i = 0; i < 30; i++) {
+
+      fourBarOne.setInverted(true); // subject to change
+    }
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
@@ -66,6 +69,8 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarOne
         .getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
         .enableLimitSwitch(true);
+
+    fourBarOne.burnFlash();
   }
 
   @Override

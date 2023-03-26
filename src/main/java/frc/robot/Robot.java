@@ -44,6 +44,7 @@ import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
+import frc.robot.commands.fullRoutines.SimpleCone;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
@@ -947,6 +948,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("CommunityScoring", new ScoreCommunityUnder());
     autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
+    autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
   }
 
   public void checkAlliance() {

@@ -14,16 +14,20 @@ public class ElevatorIOSparks implements ElevatorIO {
     left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
     right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
 
-    left.restoreFactoryDefaults();
-    right.restoreFactoryDefaults();
+    // left.restoreFactoryDefaults();
+    // right.restoreFactoryDefaults();
 
     RedHawkUtil.configureHighTrafficSpark(left);
     RedHawkUtil.configureHighTrafficSpark(right);
 
     left.setIdleMode(CANSparkMax.IdleMode.kBrake);
     right.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    left.setInverted(true);
-    right.setInverted(false); // might be reversed, idk
+
+    for (int i = 0; i < 30; i++) {
+
+      left.setInverted(true);
+      right.setInverted(false); // might be reversed, idk
+    }
     left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     right.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()

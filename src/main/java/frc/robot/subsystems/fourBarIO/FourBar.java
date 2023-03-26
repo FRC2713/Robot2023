@@ -83,7 +83,7 @@ public class FourBar extends SubsystemBase {
 
   public void periodic() {
     IO.updateInputs(inputs);
-    double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
+    double effort = controller.calculate(inputs.absoluteEncoderAdjustedAngle, targetDegs);
     double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
