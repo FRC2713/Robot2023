@@ -63,6 +63,9 @@ public class FourBarIOSparks implements FourBarIO {
     // absoluteEncoder.setZeroOffset(
     //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
 
+    fourBarOne
+        .getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
+        .enableLimitSwitch(true);
   }
 
   @Override
