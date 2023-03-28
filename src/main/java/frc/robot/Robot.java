@@ -872,6 +872,15 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("CommunityScoring", new ScoreCommunityUnder());
     autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
+    autoChooser.addOption(
+        "FiveToBridge",
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () ->
+                    swerveDrive.resetOdometry(
+                        AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory().getInitialHolonomicPose())),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(
+                AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory())));
   }
 
   public void checkAlliance() {

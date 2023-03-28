@@ -44,7 +44,8 @@ public class AutoPath {
 
     // Misc Paths (look man I can only make so many categories)
     A_TO_BRIDGE("cargoAtobridge"),
-    B_TO_BRIDGE("cargoBtobridge");
+    B_TO_BRIDGE("cargoBtobridge"),
+    FIVE_ON_BRIDGE("grid5tobridge", Units.feetToMeters(16), Units.feetToMeters(1));
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {
