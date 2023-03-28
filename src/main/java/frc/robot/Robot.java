@@ -414,8 +414,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
-                    LightStrip.Commands.setLightState(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece())))
+                    LightStrip.Commands.setLightState(Pattern.Yellow))))
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -453,8 +452,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
-                    LightStrip.Commands.setLightState(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece())))
+                    LightStrip.Commands.setLightState(Pattern.Yellow))))
         // FourBar.Commands.retract(),
         .onFalse(
             new SequentialCommandGroup(
@@ -521,7 +519,8 @@ public class Robot extends LoggedRobot {
                           if (goClosestGrid.hasElapsed()) {
                             TrajectoryController.getInstance()
                                 .changePath(goClosestGrid.getTrajectory());
-                          }})),
+                          }
+                        })),
                 () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
         .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
 
@@ -624,23 +623,24 @@ public class Robot extends LoggedRobot {
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 LightStrip.Commands.setDefaultLightState()));
 
-//    operator
-//        .rightBumper()
-//        .and(operator.x())
-//        .onTrue(
-//            new SequentialCommandGroup(
-//                new InstantCommand(
-//                    () -> {
-//                      gamePieceMode = GamePieceMode.CONE;
-//                    }),
-//                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
-//                new ParallelCommandGroup(
-//                    Intake.Commands.setTopVelocityRPM(
-//                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
-//                    Intake.Commands.setBottomVelocityRPM(
-//                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
-//                    FourBar.Commands.setAngleDegAndWait(
-//                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+    //    operator
+    //        .rightBumper()
+    //        .and(operator.x())
+    //        .onTrue(
+    //            new SequentialCommandGroup(
+    //                new InstantCommand(
+    //                    () -> {
+    //                      gamePieceMode = GamePieceMode.CONE;
+    //                    }),
+    //
+    // Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+    //                new ParallelCommandGroup(
+    //                    Intake.Commands.setTopVelocityRPM(
+    //                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+    //                    Intake.Commands.setBottomVelocityRPM(
+    //                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+    //                    FourBar.Commands.setAngleDegAndWait(
+    //                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator
         .povUp()
@@ -659,10 +659,13 @@ public class Robot extends LoggedRobot {
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
-    operator.start().onTrue(
-            new InstantCommand(() -> {
-                fourBar.reseed();
-            }));
+    operator
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  fourBar.reseed();
+                }));
 
     operator.back().onTrue(FourBar.Commands.reset());
 
