@@ -725,6 +725,12 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+    Logger.getInstance()
+        .recordOutput(
+            "Memory Usage",
+            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                / 1024.0
+                / 1024.0);
 
     TimestampedDoubleArray[] fQueue = visionPose.readQueue();
     TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
