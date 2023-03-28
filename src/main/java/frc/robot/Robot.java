@@ -338,13 +338,13 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                    FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                                    .repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                            .until(() -> fourBar.isAtTarget()),
-                    LightStrip.Commands.setCollectionSuccessStatus()));
+                FourBar.Commands.retract(),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+                    .until(() -> fourBar.isAtTarget()),
+                LightStrip.Commands.setCollectionSuccessStatus()));
     //      driver
     //              .leftTrigger(0.25)
     //              .onTrue(
@@ -429,13 +429,13 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                    FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                                    .repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                            .until(() -> fourBar.isAtTarget()),
-                    LightStrip.Commands.setCollectionSuccessStatus()));
+                FourBar.Commands.retract(),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+                    .until(() -> fourBar.isAtTarget()),
+                LightStrip.Commands.setCollectionSuccessStatus()));
 
     driver
         .rightBumper()
@@ -455,7 +455,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setLightState(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece())))
-                // FourBar.Commands.retract(),
+        // FourBar.Commands.retract(),
         .onFalse(
             new SequentialCommandGroup(
                 Elevator.Commands.elevatorCurrentHeight(),
@@ -470,12 +470,12 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
                 FourBar.Commands.retract(),
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                                    .repeatedly(),
-                            LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                            .until(() -> fourBar.isAtTarget()),
-                    LightStrip.Commands.setCollectionSuccessStatus()));
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+                            .repeatedly(),
+                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+                    .until(() -> fourBar.isAtTarget()),
+                LightStrip.Commands.setCollectionSuccessStatus()));
 
     driver
         .b()
@@ -543,9 +543,9 @@ public class Robot extends LoggedRobot {
                     () -> {
                       intake.setScoring(false);
                     }),
-                    Intake.Commands.setTopVelocityRPM(Constants.zero),
-                    Intake.Commands.setBottomVelocityRPM(Constants.zero),
-                    LightStrip.Commands.setDefaultLightState(),
+                Intake.Commands.setTopVelocityRPM(Constants.zero),
+                Intake.Commands.setBottomVelocityRPM(Constants.zero),
+                LightStrip.Commands.setDefaultLightState(),
                 new WaitCommand(0.5)
                 // Elevator.Commands.setTargetHeightAndWait(0),
                 // LightStrip.Commands.setColorPattern(DarkGreen)
@@ -560,7 +560,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorHigh(),
                 FourBar.Commands.conditionalFourbarHigh(),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
 
     operator
         .b()
@@ -568,14 +568,14 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorMid(),
                 FourBar.Commands.conditionalFourbarMid(),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .a()
         .onTrue(
             new SequentialCommandGroup(
                 Elevator.Commands.conditionalElevatorLow(),
                 FourBar.Commands.conditionalFourbarLow(),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .rightBumper()
         .and(operator.y())
@@ -583,7 +583,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .rightBumper()
         .and(operator.b())
@@ -591,7 +591,7 @@ public class Robot extends LoggedRobot {
             new SequentialCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .rightBumper()
         .and(operator.a())
@@ -599,7 +599,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .leftBumper()
         .and(operator.y())
@@ -607,7 +607,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .leftBumper()
         .and(operator.b())
@@ -615,7 +615,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .leftBumper()
         .and(operator.a())
@@ -623,7 +623,7 @@ public class Robot extends LoggedRobot {
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                    LightStrip.Commands.setDefaultLightState()));
+                LightStrip.Commands.setDefaultLightState()));
     operator
         .rightBumper()
         .and(operator.x())
@@ -660,10 +660,10 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator.start().onTrue(
-            new InstantCommand(
-                () -> {
-                  fourBar.reseed();
-                }));
+            new InstantCommand(() -> {
+                fourBar.reseed();
+            }));
+
     operator.back().onTrue(FourBar.Commands.reset());
 
     operator
@@ -674,10 +674,6 @@ public class Robot extends LoggedRobot {
                 FourBar.Commands.retract(),
                 LightStrip.Commands.setDefaultLightState(),
                 new ConditionalCommand(
-                    LightStrip.Commands.setLightState(Pattern.DarkGreen),
-                    LightStrip.Commands.setDefaultLightState(),
-                    () -> intake.hasGamepiece()),
-                new ConditionalCommand(
                     Commands.parallel(
                         Intake.Commands.setTopVelocityRPM(
                             SuperstructureConstants.HOLD_CONE.getTopRPM()),
@@ -686,10 +682,14 @@ public class Robot extends LoggedRobot {
                     new InstantCommand(),
                     () -> intake.hasGamepiece())));
 
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setLightState(Pattern.StrobeGold))
-            .onFalse(LightStrip.Commands.setDefaultLightState());
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setLightState(Pattern.StrobeBlue))
-            .onFalse(LightStrip.Commands.setDefaultLightState());
+    operator
+        .rightTrigger(0.25)
+        .onTrue(LightStrip.Commands.setLightState(Pattern.StrobeGold))
+        .onFalse(LightStrip.Commands.setDefaultLightState());
+    operator
+        .leftTrigger(0.25)
+        .onTrue(LightStrip.Commands.setLightState(Pattern.StrobeBlue))
+        .onFalse(LightStrip.Commands.setDefaultLightState());
     // operator
     //     .axisLessThan(1, -0.1)
     //     .whileTrue(
