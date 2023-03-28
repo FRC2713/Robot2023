@@ -521,8 +521,7 @@ public class Robot extends LoggedRobot {
                           if (goClosestGrid.hasElapsed()) {
                             TrajectoryController.getInstance()
                                 .changePath(goClosestGrid.getTrajectory());
-                          }
-                        })),
+                          }})),
                 () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
         .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
 
@@ -624,23 +623,24 @@ public class Robot extends LoggedRobot {
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
                 LightStrip.Commands.setDefaultLightState()));
-    operator
-        .rightBumper()
-        .and(operator.x())
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+
+//    operator
+//        .rightBumper()
+//        .and(operator.x())
+//        .onTrue(
+//            new SequentialCommandGroup(
+//                new InstantCommand(
+//                    () -> {
+//                      gamePieceMode = GamePieceMode.CONE;
+//                    }),
+//                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+//                new ParallelCommandGroup(
+//                    Intake.Commands.setTopVelocityRPM(
+//                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+//                    Intake.Commands.setBottomVelocityRPM(
+//                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+//                    FourBar.Commands.setAngleDegAndWait(
+//                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator
         .povUp()
