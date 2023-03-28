@@ -753,7 +753,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+                  swerveDrive.reSeed();
                 }));
     driver
         .back()

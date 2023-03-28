@@ -302,7 +302,12 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeft.seed();
     backRight.seed();
   }
-
+  public void reSeed() {
+    frontLeft.seed();
+    frontRight.seed();
+    backLeft.seed();
+    backRight.seed();
+  }
   @Override
   public void periodic() {
     io.updateInputs(inputs);
