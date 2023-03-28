@@ -352,7 +352,9 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
 
     //      driver
     //              .leftTrigger(0.25)
@@ -451,7 +453,9 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
 
     driver
         .rightBumper()
@@ -497,12 +501,19 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
 
     driver
         .b()
-        .onTrue(FourBar.Commands.setAngleDegAndWait(15))
-        .onFalse(new SequentialCommandGroup(new WaitCommand(0.0), FourBar.Commands.retract()));
+        .onTrue(FourBar.Commands.setAngleDegAndWait(-15))
+        .onFalse(
+            new SequentialCommandGroup(
+                new WaitCommand(0.0),
+                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
 
     driver
         .a()

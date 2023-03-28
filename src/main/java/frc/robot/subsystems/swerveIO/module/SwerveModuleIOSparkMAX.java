@@ -54,10 +54,8 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver.setSmartCurrentLimit(Constants.DriveConstants.DRIVE_CURRENT_LIMIT);
     azimuth.setSmartCurrentLimit(Constants.DriveConstants.AZI_CURRENT_LIMIT);
 
-    for (int i = 0; i < 30; i++) {
-      azimuth.setInverted(true);
-      driver.setInverted(true);
-    }
+    azimuth.setInverted(false);
+    driver.setInverted(false);
 
     cOk(driver.setIdleMode(IdleMode.kCoast));
     cOk(azimuth.setIdleMode(IdleMode.kBrake));
@@ -105,11 +103,11 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
   @Override
   public void setAzimuthVoltage(double aziVolts) {
-    azimuth.setVoltage(aziVolts);
+    azimuth.setVoltage(-aziVolts);
   }
 
   @Override
   public void setDriveVoltage(double driveVolts) {
-    driver.setVoltage(driveVolts);
+    driver.setVoltage(-driveVolts);
   }
 }

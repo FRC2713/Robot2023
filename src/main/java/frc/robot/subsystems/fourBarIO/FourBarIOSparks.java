@@ -31,10 +31,8 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.setIdleMode(IdleMode.kBrake);
 
-    for (int i = 0; i < 30; i++) {
+    fourBarOne.setInverted(false); // subject to change
 
-      fourBarOne.setInverted(true); // subject to change
-    }
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
@@ -102,7 +100,7 @@ public class FourBarIOSparks implements FourBarIO {
 
   @Override
   public void setVoltage(double volts) {
-    fourBarOne.setVoltage(volts);
+    fourBarOne.setVoltage(-volts);
     // fourBarTwo.setVoltage(volts);
   }
 

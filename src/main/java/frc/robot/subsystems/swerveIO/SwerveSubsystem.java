@@ -395,6 +395,21 @@ public class SwerveSubsystem extends SubsystemBase {
           new WaitUntilCommand(() -> TrajectoryController.getInstance().isFinished()));
     }
 
+    public static SequentialCommandGroup fallBack() {
+      return new SequentialCommandGroup(
+          new InstantCommand(
+                  () ->
+                      Robot.swerveDrive.setModuleStates(
+                          DriveConstants.KINEMATICS.toSwerveModuleStates(
+                              ChassisSpeeds.fromFieldRelativeSpeeds(
+                                  3,
+                                  0,
+                                  0,
+                                  Rotation2d.fromDegrees(
+                                      Robot.swerveDrive.inputs.gyroYawPosition)))))
+              .until(() -> Robot.fourBar.getLimitSwitch()));
+    }
+
     public static SequentialCommandGroup stringTrajectoriesTogether(
         PathPlannerTrajectory... trajectories) {
       SequentialCommandGroup masterTrajectory =

@@ -23,11 +23,9 @@ public class ElevatorIOSparks implements ElevatorIO {
     left.setIdleMode(CANSparkMax.IdleMode.kBrake);
     right.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    for (int i = 0; i < 30; i++) {
+    left.setInverted(false);
+    right.setInverted(false);
 
-      left.setInverted(true);
-      right.setInverted(false); // might be reversed, idk
-    }
     left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     right.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()
@@ -73,7 +71,7 @@ public class ElevatorIOSparks implements ElevatorIO {
 
   @Override
   public void setVoltage(double volts) {
-    left.setVoltage(volts);
+    left.setVoltage(-volts);
     right.setVoltage(volts);
   }
 }
