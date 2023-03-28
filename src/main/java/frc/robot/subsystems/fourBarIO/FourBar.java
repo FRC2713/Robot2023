@@ -202,6 +202,10 @@ public class FourBar extends SubsystemBase {
           () -> Robot.gamePieceMode == GamePieceMode.CONE);
     }
 
+    public static Command setDrawVolts(int volts) {
+      return new InstantCommand(() -> Robot.fourBar.setVoltage(volts));
+    }
+
     public static Command setToAngle(double angleDeg) {
       return new InstantCommand(() -> Robot.fourBar.setAngleDeg(angleDeg), fourBar);
     }

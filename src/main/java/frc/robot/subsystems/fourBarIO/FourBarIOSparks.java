@@ -32,7 +32,7 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.setIdleMode(IdleMode.kCoast);
 
-    fourBarOne.setInverted(false);
+    fourBarOne.setInverted(false); // subject to change
 
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_BASE_CURRENT);
