@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
 
+import static frc.robot.Robot.intake;
+
 /** wow. docs Add your docs here. */
 public class LightStrip extends SubsystemBase {
 
@@ -153,7 +155,7 @@ public class LightStrip extends SubsystemBase {
   }
 
   public static class Commands {
-    public static Command setColorPattern(Pattern pattern) {
+    public static Command setLightState(Pattern pattern) {
       return new InstantCommand(() -> Robot.lights.setColorPattern(pattern));
     }
     /*
@@ -161,8 +163,11 @@ public class LightStrip extends SubsystemBase {
       return new InstantCommand(()-> )
     }
     */
-    public static Command defaultColorPattern() {
-      return new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.Black));
+    public static Command setDefaultLightState() {
+      return new ConditionalCommand(
+              new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.DarkGreen)),
+              new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.DarkGreen)),
+              () -> intake.hasGamepiece());
     }
 
     public static Command blinkAnyPattern(Pattern pattern) {
@@ -171,7 +176,16 @@ public class LightStrip extends SubsystemBase {
               new WaitCommand(0.25),
               new InstantCommand(() -> Robot.lights.setColorPattern(Pattern.Black)),
               new WaitCommand(0.25))
-          .repeatedly();
+              .repeatedly();
+    }
+      public static Command setCollectionSuccessStatus(){
+        return new ConditionalCommand(
+                LightStrip.Commands.setDefaultLightState(),
+                new SequentialCommandGroup(
+                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+                        new WaitCommand(2.0),
+                        LightStrip.Commands.setDefaultLightState()),
+                () -> intake.hasGamepiece());
+      }
     }
   }
-}
