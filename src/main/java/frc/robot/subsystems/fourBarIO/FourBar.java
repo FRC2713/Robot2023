@@ -210,6 +210,12 @@ public class FourBar extends SubsystemBase {
                 Robot.fourBar.setReseeding(false);
               }));
     }
+
+    public static Command retractWithVoltage(){
+      return new SequentialCommandGroup( FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+      FourBar.Commands.setAngleDegAndWait(
+          Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES));
+    }
   }
 
   public void setVoltage(int i) {
