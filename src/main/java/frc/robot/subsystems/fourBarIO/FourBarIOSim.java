@@ -17,7 +17,7 @@ public class FourBarIOSim implements FourBarIO {
               Constants.FourBarConstants.LENGTH_METRES, Constants.FourBarConstants.MASS_KG),
           Constants.FourBarConstants.LENGTH_METRES,
           Units.degreesToRadians(Constants.FourBarConstants.MAX_ANGLE_DEGREES),
-          Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES),
+          Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES + 10),
           true);
 
   static {
@@ -48,6 +48,10 @@ public class FourBarIOSim implements FourBarIO {
 
     inputs.currentDrawOne = sim.getCurrentDrawAmps();
     inputs.currentDrawTwo = sim.getCurrentDrawAmps();
+
+    inputs.limSwitch =
+        Units.radiansToDegrees(sim.getAngleRads())
+            > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES;
   }
 
   @Override
