@@ -83,7 +83,7 @@ public class FourBar extends SubsystemBase {
 
   public void periodic() {
     IO.updateInputs(inputs);
-    double effort = controller.calculate(inputs.absoluteEncoderAdjustedAngle, targetDegs);
+    double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
     double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
     effort += ffEffort;
     effort = MathUtil.clamp(effort, -12, 12);
@@ -114,6 +114,10 @@ public class FourBar extends SubsystemBase {
 
       IO.setVoltage(effort);
     }
+
+    // if (inputs.limSwitch) {
+    //   IO.setPosition(FourBarConstants.RETRACTED_ANGLE_DEGREES);
+    // }
 
     Logger.getInstance().recordOutput("4Bar/Reseeding", reseeding);
     filteredAbsEncoderVoltage = AbsEncoderFilter.calculate(inputs.absoluteEncoderVolts);

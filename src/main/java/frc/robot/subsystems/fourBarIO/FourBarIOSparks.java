@@ -20,16 +20,17 @@ public class FourBarIOSparks implements FourBarIO {
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
-    // fourBarOne.restoreFactoryDefaults();
+    fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
 
     RedHawkUtil.configureHighTrafficSpark(fourBarOne);
     // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
-
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 20);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
-    fourBarOne.setIdleMode(IdleMode.kBrake);
+    fourBarOne.setIdleMode(IdleMode.kCoast);
 
     for (int i = 0; i < 30; i++) {
 
