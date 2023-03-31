@@ -5,14 +5,11 @@ import static frc.robot.Robot.fourBar;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,17 +21,19 @@ import org.littletonrobotics.junction.Logger;
 
 public class FourBar extends SubsystemBase {
 
+  public enum FourBarMode {
+    CLOSED_LOOP,
+    OPEN_LOOP,
+    HOMING
+  }
+
+  private FourBarMode mode = FourBarMode.CLOSED_LOOP;
+
   private final ProfiledPIDController controller;
   public final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
   private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
   private final ArmFeedforward ff;
-  private double filteredAbsEncoderVoltage;
-
-  private LinearFilter AbsEncoderFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
-  private Timer reseedTimer = new Timer();
-
-  private boolean reseeding = false;
 
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_GAINS.createArmFeedforward();
@@ -46,7 +45,6 @@ public class FourBar extends SubsystemBase {
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
-    reseedTimer.start();
   }
 
   public void setAngleDeg(double targetDegs) {
@@ -73,69 +71,59 @@ public class FourBar extends SubsystemBase {
     return inputs.currentDrawOne;
   }
 
-  public void setReseeding(boolean reseeding) {
-    this.reseeding = reseeding;
-  }
-
   public void setPosition(double angleDegs) {
     IO.setPosition(angleDegs);
   }
 
+  public void setMode(FourBarMode newMode) {
+
+    if (mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
+      IO.setPosition(0);
+    }
+
+    mode = newMode;
+  }
+
   public void periodic() {
     IO.updateInputs(inputs);
-    double effort = controller.calculate(inputs.angleDegreesOne, targetDegs);
-    double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
-    effort += ffEffort;
-    effort = MathUtil.clamp(effort, -12, 12);
-
-    // if ((inputs.angleDegreesOne
-    //     > Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS))) {
-    //   effort =
-    //       MathUtil.clamp(
-    //           controller.calculate(
-    //               inputs.angleDegreesOne,
-    //               Units.radiansToDegrees(Constants.FourBarConstants.RETRACTED_ANGLE_RADIANS)),
-    //           -0.5,
-    //           0.5);
-    //   RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MAX LIMITS!");
-    // } else if (inputs.angleDegreesOne
-    //     < Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS)) {
-    //   effort =
-    //       MathUtil.clamp(
-    //           controller.calculate(
-    //               inputs.angleDegreesOne,
-    //               Units.radiansToDegrees(Constants.FourBarConstants.EXTENDED_ANGLE_RADIANS)),
-    //           -0.5,
-    //           0.5);
-    //   RedHawkUtil.ErrHandler.getInstance().addError("4BAR PAST MIN LIMITS!");
-    // }
-
-    if (!reseeding) {
-
-      IO.setVoltage(effort);
-    }
+    Logger.getInstance().processInputs("4Bar", inputs);
 
     // if (inputs.limSwitch) {
     //   IO.setPosition(FourBarConstants.RETRACTED_ANGLE_DEGREES);
     // }
 
-    Logger.getInstance().recordOutput("4Bar/Reseeding", reseeding);
-    filteredAbsEncoderVoltage = AbsEncoderFilter.calculate(inputs.absoluteEncoderVolts);
-    boolean shouldReseed = inputs.absoluteEncoderVolts < 100 && reseedTimer.get() > 1;
-    Logger.getInstance().recordOutput("4Bar/Should Reseed", shouldReseed);
-    Logger.getInstance().recordOutput("4Bar/Filtered Absolute Encoder", filteredAbsEncoderVoltage);
-    if (shouldReseed) {
-      // IO.reseed(inputs.absoluteEncoderVolts);
-      reseedTimer.reset();
-      reseedTimer.start();
+    double voltage = 0;
+    switch (mode) {
+      case CLOSED_LOOP:
+        {
+          double effort = controller.calculate(inputs.absoluteEncoderAdjustedAngle, targetDegs);
+          Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
+          double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
+          effort += ffEffort;
+          effort = MathUtil.clamp(effort, -12, 12);
+          voltage = effort;
+          Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
+        }
+        break;
+      case HOMING:
+        {
+          voltage = 3;
+          if (inputs.limSwitch && inputs.velocityDegreesPerSecondOne > 1) {
+            IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
+            setMode(FourBarMode.CLOSED_LOOP);
+            voltage = 0;
+          }
+        }
+        break;
+      case OPEN_LOOP:
+        break;
     }
+    Logger.getInstance().recordOutput("4Bar/Output", voltage);
+    IO.setVoltage(voltage);
+    Logger.getInstance().recordOutput("4Bar/Mode", mode.name());
 
     Logger.getInstance().recordOutput("4Bar/Target Degs", targetDegs);
-    Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
-    Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
     Logger.getInstance().recordOutput("4Bar/atTarget", isAtTarget());
-
-    Logger.getInstance().processInputs("4Bar", inputs);
   }
 
   public static class Commands {
@@ -199,16 +187,17 @@ public class FourBar extends SubsystemBase {
       return new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                Robot.fourBar.setReseeding(true);
-              }),
-          new RunCommand((() -> Robot.fourBar.setVoltage(3)))
+                Robot.fourBar.setMode(FourBarMode.HOMING);
+              })
+          /*new RunCommand((() -> Robot.fourBar.setVoltage(3)))
               .until(() -> Robot.fourBar.getLimitSwitch()),
           new InstantCommand(
               () -> {
                 Robot.fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
                 Robot.fourBar.setVoltage(0);
-                Robot.fourBar.setReseeding(false);
-              }));
+                Robot.fourBar.setMode(FourBarMode.CLOSED_LOOP);
+              })*/
+          );
     }
   }
 

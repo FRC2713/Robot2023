@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 
 public class FourBarIOSim implements FourBarIO {
+
+  boolean triggerReseed = false;
   private static final SingleJointedArmSim sim =
       new SingleJointedArmSim(
           DCMotor.getNEO(1),
@@ -35,9 +37,11 @@ public class FourBarIOSim implements FourBarIO {
 
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
 
-    inputs.angleDegreesOne = Units.radiansToDegrees(sim.getAngleRads());
-    inputs.angleDegreesTwo = Units.radiansToDegrees(sim.getAngleRads());
+    inputs.angleDegreesOne = this.triggerReseed ? 0 : Units.radiansToDegrees(sim.getAngleRads());
+    inputs.angleDegreesTwo = this.triggerReseed ? 0 : Units.radiansToDegrees(sim.getAngleRads());
     inputs.angleDegreesRange = 0.0;
+
+    this.triggerReseed = false;
 
     inputs.velocityDegreesPerSecondOne = Units.radiansToDegrees(sim.getVelocityRadPerSec());
     inputs.velocityDegreesPerSecondTwo = Units.radiansToDegrees(sim.getVelocityRadPerSec());
@@ -60,7 +64,13 @@ public class FourBarIOSim implements FourBarIO {
   }
 
   @Override
-  public void setPosition(double angleDeg) {}
+  public void setPosition(double angleDeg) {
+    sim.setState(VecBuilder.fill(Units.degreesToRadians(angleDeg), 0));
+  }
 
-  public void reseed(double absoluteEncoderVolts) {}
+  public void reseed(double absoluteEncoderVolts) {
+    sim.setState(
+        VecBuilder.fill(
+            Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES), 0));
+  }
 }

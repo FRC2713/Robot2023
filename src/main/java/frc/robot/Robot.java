@@ -901,6 +901,7 @@ public class Robot extends LoggedRobot {
       autoCommand.cancel();
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
+    Robot.fourBar.setMode(FourBar.FourBarMode.HOMING);
     // Autos.clearAll();
     // AutoPath.Autos.clearAll();
 
