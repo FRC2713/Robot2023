@@ -27,12 +27,12 @@ public class FourBar extends SubsystemBase {
     HOMING
   }
 
-  private FourBarMode mode = FourBarMode.CLOSED_LOOP;
+  private FourBarMode mode = FourBarMode.HOMING;
 
   private final ProfiledPIDController controller;
   public final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
-  private double targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
+  private double targetDegs = Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES;
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
@@ -75,28 +75,24 @@ public class FourBar extends SubsystemBase {
     IO.setPosition(angleDegs);
   }
 
-  private boolean finishedHoming() {
-    return mode == FourBarMode.HOMING
-        && (inputs.limSwitch
-            || (inputs.angleDegreesOne > 1 && Math.abs(inputs.velocityDegreesPerSecondOne) > 1));
-  }
-
   public void setMode(FourBarMode newMode) {
-
-    if (mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
+    if (this.mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
       IO.setPosition(0);
     }
 
-    mode = newMode;
+    this.mode = newMode;
+  }
+
+  public boolean isHomed(boolean useEncoders) {
+    // both methods work in sim
+    return useEncoders
+        ? (inputs.angleDegreesOne > 1 && inputs.velocityDegreesPerSecondOne < 1)
+        : inputs.limSwitch;
   }
 
   public void periodic() {
     IO.updateInputs(inputs);
     Logger.getInstance().processInputs("4Bar", inputs);
-
-    // if (inputs.limSwitch) {
-    //   IO.setPosition(FourBarConstants.RETRACTED_ANGLE_DEGREES);
-    // }
 
     double voltage = 0;
     switch (mode) {
@@ -113,19 +109,21 @@ public class FourBar extends SubsystemBase {
         break;
       case HOMING:
         {
-          voltage = 3;
-          if (finishedHoming()) {
+          voltage = Constants.FourBarConstants.HOMING_VOLTAGE;
+          if (isHomed(false)) {
             IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
             setMode(FourBarMode.CLOSED_LOOP);
-            setAngleDeg(90);
+            voltage = 0;
           }
         }
         break;
       case OPEN_LOOP:
         break;
     }
-    Logger.getInstance().recordOutput("4Bar/Output", voltage);
+
     IO.setVoltage(voltage);
+
+    Logger.getInstance().recordOutput("4Bar/Output", voltage);
     Logger.getInstance().recordOutput("4Bar/Mode", mode.name());
 
     Logger.getInstance().recordOutput("4Bar/Target Degs", targetDegs);
@@ -195,14 +193,16 @@ public class FourBar extends SubsystemBase {
               () -> {
                 Robot.fourBar.setMode(FourBarMode.HOMING);
               })
-          /*new RunCommand((() -> Robot.fourBar.setVoltage(3)))
+          /*
+          new RunCommand((() -> Robot.fourBar.setVoltage(3)))
               .until(() -> Robot.fourBar.getLimitSwitch()),
           new InstantCommand(
               () -> {
                 Robot.fourBar.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
                 Robot.fourBar.setVoltage(0);
                 Robot.fourBar.setMode(FourBarMode.CLOSED_LOOP);
-              })*/
+              })
+          */
           );
     }
   }

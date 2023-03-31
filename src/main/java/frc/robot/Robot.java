@@ -307,6 +307,7 @@ public class Robot extends LoggedRobot {
                   swerveDrive));
     }
 
+    // cube: LeftBumper(5), tipped cone: RightTrigger(Axis 3), upright cone: RightBumper(6)
     driver
         .leftBumper()
         .onTrue(
@@ -577,7 +578,8 @@ public class Robot extends LoggedRobot {
 
     // Operator Buttons
 
-    // y high, b mid, a low
+    // high: Y(4), mid B(2):, low: A(1), home 4bar: START(8)
+
     operator
         .y()
         .onTrue(
@@ -710,14 +712,14 @@ public class Robot extends LoggedRobot {
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
-    operator
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  fourBar.reseed();
-                }));
-    operator.back().onTrue(FourBar.Commands.reset());
+    // operator
+    //     .back()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               fourBar.reseed();
+    //             }));
+    operator.start().onTrue(FourBar.Commands.reset());
 
     operator
         .povDown()

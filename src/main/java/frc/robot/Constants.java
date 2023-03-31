@@ -121,6 +121,7 @@ public final class Constants {
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_CURRENT_LIMIT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
+    public static final double HOMING_VOLTAGE = 3;
     public static final PIDFFGains FOUR_BAR_GAINS =
         PIDFFGains.builder("4Bar Controller").kP(0.1).kG(0.3).build();
   }
