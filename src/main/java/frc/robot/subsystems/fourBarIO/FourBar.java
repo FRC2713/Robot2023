@@ -75,6 +75,12 @@ public class FourBar extends SubsystemBase {
     IO.setPosition(angleDegs);
   }
 
+  private boolean finishedHoming() {
+    return mode == FourBarMode.HOMING
+        && (inputs.limSwitch
+            || (inputs.angleDegreesOne > 1 && Math.abs(inputs.velocityDegreesPerSecondOne) > 1));
+  }
+
   public void setMode(FourBarMode newMode) {
 
     if (mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
@@ -108,10 +114,10 @@ public class FourBar extends SubsystemBase {
       case HOMING:
         {
           voltage = 3;
-          if (inputs.limSwitch && inputs.velocityDegreesPerSecondOne > 1) {
+          if (finishedHoming()) {
             IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
             setMode(FourBarMode.CLOSED_LOOP);
-            voltage = 0;
+            setAngleDeg(90);
           }
         }
         break;
