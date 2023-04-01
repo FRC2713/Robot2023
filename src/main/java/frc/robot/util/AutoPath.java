@@ -19,7 +19,8 @@ public class AutoPath {
     D_TO_SEVEN("cargoDtogrid7", 4, 3),
     ONE_TO_A("grid1tocargoA", 4, 3),
     THREE_TO_B("grid3tocargoB", 4, 3),
-    NINE_TO_D("grid9tocargoD", 4, 3);
+    NINE_TO_D("grid9tocargoD", 4, 3),
+    SINISTER_AUTO("sinisterAuto", 16, 12);
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {
