@@ -760,7 +760,7 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
-    operator.start().onTrue(new SequentialCommandGroup(Slapper.Commands.sendIt()));
+    operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
     // operator
     //     .axisLessThan(1, -0.1)
     //     .whileTrue(

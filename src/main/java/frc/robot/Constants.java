@@ -155,7 +155,7 @@ public final class Constants {
     public static final double GEARING = 5;
     public static final double LENGTH_METRES = Units.inchesToMeters(36);
     public static final PIDFFGains GAINS =
-        PIDFFGains.builder("Slapper Gains").kP(0.3).kD(1).build();
+        PIDFFGains.builder("Slapper Gains").kP(3).kD(0.6).build();
     public static final double MIN_ANGLE_DEG = 0;
     public static final double MAX_ANGLE_DEG = 120;
     public static final double MOI = 0.5;
