@@ -32,12 +32,10 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.setIdleMode(IdleMode.kCoast);
 
-    for (int i = 0; i < 30; i++) {
+    fourBarOne.setInverted(false);
 
-      fourBarOne.setInverted(true); // subject to change
-    }
     // fourBarTwo.setInverted(true); // subject to change
-    fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
+    fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_BASE_CURRENT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     fourBarOne
         .getEncoder()
@@ -103,7 +101,7 @@ public class FourBarIOSparks implements FourBarIO {
 
   @Override
   public void setVoltage(double volts) {
-    fourBarOne.setVoltage(volts);
+    fourBarOne.setVoltage(-volts);
     // fourBarTwo.setVoltage(volts);
   }
 
@@ -115,5 +113,10 @@ public class FourBarIOSparks implements FourBarIO {
   public void reseed(double absoluteEncoderVolts) {
     var trueAngle = absoluteEncoderVolts - offset;
     fourBarOne.getEncoder().setPosition(trueAngle);
+  }
+
+  @Override
+  public void setCurrentLimit(int currentLimit) {
+    fourBarOne.setSmartCurrentLimit(currentLimit);
   }
 }

@@ -4,6 +4,7 @@ import static frc.robot.Robot.fourBar;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.FourBarConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.util.RedHawkUtil;
@@ -29,19 +31,22 @@ public class FourBar extends SubsystemBase {
 
   private FourBarMode mode = FourBarMode.HOMING;
 
-  private final ProfiledPIDController controller;
+  private final ProfiledPIDController voltageController;
+  private final PIDController currentController;
   public final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
   private double targetDegs = Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES;
   private final ArmFeedforward ff;
 
   public FourBar(FourBarIO IO) {
-    this.ff = Constants.FourBarConstants.FOUR_BAR_GAINS.createArmFeedforward();
-    this.controller =
-        Constants.FourBarConstants.FOUR_BAR_GAINS.createProfiledPIDController(
+    this.ff = Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createArmFeedforward();
+    this.voltageController =
+        Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createProfiledPIDController(
             new Constraints(
                 Constants.FourBarConstants.MAX_VELOCITY,
                 Constants.FourBarConstants.MAX_ACCELERATION));
+    this.currentController =
+        Constants.FourBarConstants.FOUR_BAR_CURRENT_GAINS.createWpilibController();
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
@@ -98,8 +103,16 @@ public class FourBar extends SubsystemBase {
     switch (mode) {
       case CLOSED_LOOP:
         {
-          double effort = controller.calculate(inputs.absoluteEncoderAdjustedAngle, targetDegs);
+          double effort = voltageController.calculate(inputs.angleDegreesOne, targetDegs);
+          double current =
+              MathUtil.clamp(
+                  Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
+                      + FourBarConstants.FOUR_BAR_BASE_CURRENT,
+                  0,
+                  FourBarConstants.FOUR_BAR_MAX_CURRENT);
+          IO.setCurrentLimit((int) current);
           Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
+          Logger.getInstance().recordOutput("4Bar/Current Limit", current);
           double ffEffort = ff.calculate(Units.degreesToRadians(targetDegs), 0);
           effort += ffEffort;
           effort = MathUtil.clamp(effort, -12, 12);
@@ -110,6 +123,7 @@ public class FourBar extends SubsystemBase {
       case HOMING:
         {
           voltage = Constants.FourBarConstants.HOMING_VOLTAGE;
+          IO.setCurrentLimit(Constants.FourBarConstants.FOUR_BAR_MAX_CURRENT);
           if (isHomed(false)) {
             IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
             setMode(FourBarMode.CLOSED_LOOP);

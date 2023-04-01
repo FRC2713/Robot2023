@@ -73,4 +73,7 @@ public class FourBarIOSim implements FourBarIO {
         VecBuilder.fill(
             Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES), 0.0));
   }
+
+  @Override
+  public void setCurrentLimit(int currentLimit) {}
 }
