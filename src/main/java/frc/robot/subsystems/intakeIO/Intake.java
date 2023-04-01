@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intakeIO;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +27,7 @@ public class Intake extends SubsystemBase {
   private boolean previouslyHadGamePiece = false;
 
   private Timer timer = new Timer();
-  private Timer coneWaitTimer = new Timer();
+  private Debouncer debouncer = new Debouncer(1);
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.04, 0.02);
   private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.04, 0.02);
 
@@ -57,11 +58,10 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasGamepiece() {
-
     if (Robot.gamePieceMode == GamePieceMode.CUBE) {
       return (filteredVoltageCube > cubeDetectionThreshold) && !scoring;
     } else {
-      return (filteredVoltageCone > cubeDetectionThreshold) && !scoring;
+      return debouncer.calculate(filteredVoltageCone > cubeDetectionThreshold) && !scoring;
     }
   }
 
@@ -90,11 +90,8 @@ public class Intake extends SubsystemBase {
       setTopRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM());
       setBottomRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM());
     }
-    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE && coneWaitTimer.get() < 1) {
-      coneWaitTimer.start();
-    }
 
-    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE && coneWaitTimer.get() > 1) {
+    if (hasGamepiece() && Robot.gamePieceMode == GamePieceMode.CONE) {
       setTopRPM(SuperstructureConstants.HOLD_CONE.getTopRPM());
       setBottomRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM());
     }
@@ -110,8 +107,6 @@ public class Intake extends SubsystemBase {
 
     if (!hasGamepiece()) {
       previouslyHadGamePiece = !true;
-      coneWaitTimer.stop();
-      coneWaitTimer.reset();
     }
   }
 

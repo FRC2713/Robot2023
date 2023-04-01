@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-// import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -192,22 +190,6 @@ public class Robot extends LoggedRobot {
 
     checkAlliance();
     buildAutoChooser();
-
-    // elevator.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // elevator.setTargetHeight(
-    // MathUtil.clamp(
-    // elevator.getTargetHeight()
-    // + (MathUtil.applyDeadband(
-    // -operator.getRightY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Constants.zero,
-    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    // elevator));
-
-    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -576,8 +558,23 @@ public class Robot extends LoggedRobot {
                 // LightStrip.Commands.setColorPattern(DarkGreen)
                 ));
 
-    // Operator Buttons
+    driver
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+                }));
 
+    driver
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+                }));
+
+    // Operator Buttons
     // high: Y(4), mid B(2):, low: A(1), home 4bar: START(8)
 
     operator
@@ -712,13 +709,6 @@ public class Robot extends LoggedRobot {
                     FourBar.Commands.setAngleDegAndWait(
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
-    // operator
-    //     .back()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               fourBar.reseed();
-    //             }));
     operator.start().onTrue(FourBar.Commands.reset());
 
     operator
@@ -743,76 +733,6 @@ public class Robot extends LoggedRobot {
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
-
-    // operator
-    //     .axisLessThan(1, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
-
-    // operator
-    //     .axisGreaterThan(1, 0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
-
-    // operator
-    //     .axisLessThan(5, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
-    // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 }))));
-
-    // operator
-    //     .axisGreaterThan(5, 0.1)
-    //     .whileTrue(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
-    // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 })));
-
-    driver
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
-                }));
-    driver
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
-                }));
 
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
