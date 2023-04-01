@@ -79,6 +79,7 @@ public class TwoConeOver extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   Autos.ONE_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
+              Robot.fourBar.reseed();
             }),
         FourBar.Commands.retract(),
         score(SuperstructureConstants.SCORE_CONE_HIGH),

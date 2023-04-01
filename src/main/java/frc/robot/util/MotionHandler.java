@@ -27,17 +27,22 @@ public class MotionHandler {
    * @return The desired array of desaturated swerveModuleStates.
    */
   public static SwerveModuleState[] driveHeadingController() {
+    double speedFactor = (Robot.driver.getLeftTriggerAxis() > 0.25) ? 0.33 : 1.0;
+
     double xSpeed =
-        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
+        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+            * speedFactor;
     double ySpeed =
-        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
+        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+            * speedFactor;
 
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
                 ySpeed * DriveConstants.MAX_SWERVE_VEL * SwerveSubsystem.allianceFlipper,
-                Units.degreesToRadians(SwerveHeadingController.getInstance().update()),
+                Units.degreesToRadians(SwerveHeadingController.getInstance().update())
+                    * speedFactor,
                 Robot.swerveDrive.getYaw()));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SWERVE_VEL);
@@ -51,12 +56,17 @@ public class MotionHandler {
    * @return The desired array of desaturated swerveModuleStates.
    */
   public static SwerveModuleState[] driveFullControl() {
+    double speedFactor = (Robot.driver.getLeftTriggerAxis() > 0.25) ? 0.33 : 1.0;
+
     double xSpeed =
-        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
+        MathUtil.applyDeadband(-Robot.driver.getLeftY(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+            * speedFactor;
     double ySpeed =
-        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
+        MathUtil.applyDeadband(-Robot.driver.getLeftX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+            * speedFactor;
     double rSpeed =
-        MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE);
+        MathUtil.applyDeadband(-Robot.driver.getRightX(), DriveConstants.K_JOYSTICK_TURN_DEADZONE)
+            * speedFactor;
 
     SwerveModuleState[] swerveModuleStates =
         DriveConstants.KINEMATICS.toSwerveModuleStates(

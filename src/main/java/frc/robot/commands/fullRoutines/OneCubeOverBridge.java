@@ -79,6 +79,7 @@ public class OneCubeOverBridge extends SequentialCommandGroup {
                   Autos.TWO_TO_A.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CUBE;
               Robot.intake.setScoring(true);
+              Robot.fourBar.reseed();
             }),
         Commands.parallel(
             Commands.sequence(Intake.Commands.score(), new WaitCommand(0.5), startIntake()),

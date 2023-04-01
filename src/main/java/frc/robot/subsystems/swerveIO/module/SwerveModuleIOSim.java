@@ -56,4 +56,6 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     theDriveVolts = driveVolts;
     driveSim.setInputVoltage(driveVolts);
   }
+
+  public void seed() {}
 }

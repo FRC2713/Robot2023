@@ -17,8 +17,8 @@ public class IntakeIOSparks implements IntakeIO {
   public IntakeIOSparks() {
     topRoller = new CANSparkMax(Constants.RobotMap.TOP_INTAKE_ROLLER, MotorType.kBrushless);
     bottomRoller = new CANSparkMax(Constants.RobotMap.BOTTOM_INTAKE_ROLLER, MotorType.kBrushless);
-    topRoller.restoreFactoryDefaults();
-    bottomRoller.restoreFactoryDefaults();
+    // topRoller.restoreFactoryDefaults();
+    // bottomRoller.restoreFactoryDefaults();
 
     RedHawkUtil.configureLowTrafficSpark(topRoller);
     RedHawkUtil.configureLowTrafficSpark(bottomRoller);
@@ -27,8 +27,11 @@ public class IntakeIOSparks implements IntakeIO {
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
     bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-    topRoller.setInverted(true);
-    bottomRoller.setInverted(true);
+    for (int i = 0; i < 30; i++) {
+
+      topRoller.setInverted(true);
+      bottomRoller.setInverted(true);
+    }
 
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
@@ -46,6 +49,8 @@ public class IntakeIOSparks implements IntakeIO {
     bottomRoller
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
+    topRoller.burnFlash();
+    bottomRoller.burnFlash();
   }
 
   @Override

@@ -36,7 +36,7 @@ public final class Constants {
   public static final double π = Math.PI;
   public static final double DOUBLE_PLACEHOLDER = zero;
   public static final int INT_PLACEHOLDER = zero;
-  public static final boolean ENABLE_VISION_POSE_ESTIMATION = false;
+  public static final boolean ENABLE_VISION_POSE_ESTIMATION = true;
   public static final double TUNE_MODULES_DRIVE_SPEED = Units.feetToMeters(3);
   public static final int CAN_TIMEOUT_MS = 200;
 
@@ -116,7 +116,7 @@ public final class Constants {
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
-    public static final double RETRACTED_ANGLE_DEGREES = 117.5;
+    public static final double RETRACTED_ANGLE_DEGREES = 116.5;
     public static final double MAX_VELOCITY = 1600;
     public static final double MAX_ACCELERATION = 5000;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
@@ -126,7 +126,7 @@ public final class Constants {
     public static final int FOUR_BAR_CURRENT_LIMIT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
     public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.15).kG(0.3).build();
+        PIDFFGains.builder("4Bar Controller").kP(0.25).kG(0.3).build();
   }
 
   @UtilityClass
@@ -215,16 +215,17 @@ public final class Constants {
     }
 
     public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
-    public static final double WHEEL_DIAMETER = 3.85;
+    public static final double WHEEL_DIAMETER = 4.02267; // 3.85;
     public static final double GEAR_RATIO = 6.12;
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
+    // 1;
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
-    public static final int DRIVE_CURRENT_LIMIT = 50;
+    public static final int DRIVE_CURRENT_LIMIT = 30;
     public static final int AZI_CURRENT_LIMIT = 20;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
@@ -259,7 +260,7 @@ public final class Constants {
 
     public static final double HEADING_CONTROLLER_DRIVER_CHANGE_RATE = 4;
     public static final PIDFFGains K_HEADING_CONTROLLER_GAINS =
-        PIDFFGains.builder("Heading Controller").kP(10).kS(3).kD(0.35).tolerance(0).build();
+        PIDFFGains.builder("Heading Controller").kP(12).kS(3).kD(0.35).tolerance(1).build();
 
     public static final PIDFFGains K_BRIDGE_CONTROLLER_GAINS =
         PIDFFGains.builder("Bridge Controller").kP(0.01).kD(0).tolerance(zero).build();
@@ -315,7 +316,7 @@ public final class Constants {
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.07).tolerance(0).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12).tolerance(0.75).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
           PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
 
@@ -350,21 +351,21 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-17)
+            .fourBarPosition(-18)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(37)
+            .fourBarPosition(32)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
 
     public static final SuperstructureConfig INTAKE_SHELF_CONE =
         SuperstructureConfig.builder()
-            .elevatorPosition(39.5)
+            .elevatorPosition(40)
             .fourBarPosition(90)
             .topRPM(1250)
             .bottomRPM(-1250)
@@ -378,20 +379,28 @@ public final class Constants {
             .bottomRPM(1_500)
             .build();
 
+    public static final SuperstructureConfig INTAKE_CUBE_DEFLATED =
+        SuperstructureConfig.builder()
+            .elevatorPosition(0)
+            .fourBarPosition(20)
+            .topRPM(1_500)
+            .bottomRPM(1_500)
+            .build();
+
     public static final SuperstructureConfig SCORE_CUBE_LOW =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(90)
-            .topRPM(1000)
-            .bottomRPM(1000)
+            .fourBarPosition(24)
+            .topRPM(-1000)
+            .bottomRPM(-1000)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(15)
             .fourBarPosition(90)
-            .topRPM(1723)
-            .bottomRPM(1723)
+            .topRPM(1350)
+            .bottomRPM(1350)
             .build();
 
     public static final SuperstructureConfig SCORE_CUBE_HIGH =

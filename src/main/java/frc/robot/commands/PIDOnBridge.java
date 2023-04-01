@@ -17,7 +17,8 @@ public class PIDOnBridge extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance;
     SlewRateLimiter limiter;
-    final double speed = 0.33;
+    public double speed = 0.75;
+    private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
       this.setpoint = setpoint;
@@ -26,18 +27,23 @@ public class PIDOnBridge extends SequentialCommandGroup {
     }
 
     double calculate(double measurement) {
-      var out = limiter.calculate(speed);
-      if (Math.abs(measurement - setpoint) < tolerance) {
-        return 0;
+      double currentError = measurement - setpoint;
+      if (Math.signum(prevError) != Math.signum(currentError)) {
+        speed *= .9;
       }
-      if (measurement < setpoint) {
+      var out = limiter.calculate(speed);
+      if (currentError > tolerance) {
+        prevError = currentError;
+        return -out;
+      } else if (currentError < -tolerance) {
+        prevError = currentError;
         return out;
       }
-      return -out;
+      return 0;
     }
   }
 
-  double maxRampAngle = 10;
+  double maxRampAngle = 14;
   double rampSpeed = 0;
   double crawlSpeed = 0;
   BangBang controller = new BangBang(0, 4.5);
@@ -46,9 +52,9 @@ public class PIDOnBridge extends SequentialCommandGroup {
   public PIDOnBridge(boolean gridside) {
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
-      rampSpeed = 1.3;
+      rampSpeed = 1.75;
     } else {
-      rampSpeed = -1.3;
+      rampSpeed = -1.75;
     }
 
     addCommands(
@@ -63,14 +69,14 @@ public class PIDOnBridge extends SequentialCommandGroup {
                               0,
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
-            .until(() -> (Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
+            .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
               Robot.swerveDrive.setModuleStates(
                   DriveConstants.KINEMATICS.toSwerveModuleStates(
                       ChassisSpeeds.fromFieldRelativeSpeeds(
-                          controller.calculate(Robot.swerveDrive.filteredRollVal) * -1,
+                          controller.calculate(Robot.swerveDrive.filteredRollVal),
                           0,
                           0,
                           Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));

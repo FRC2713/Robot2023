@@ -31,7 +31,7 @@ public class OneConeBridge extends SequentialCommandGroup {
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setToAngle(config.getFourBarPosition()));
+        FourBar.Commands.setAngleDegAndWait(config.getFourBarPosition()));
   }
 
   private Command startIntake() {
@@ -77,7 +77,10 @@ public class OneConeBridge extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   Autos.FIVE_TO_B.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
+              Robot.fourBar.reseed();
             }),
+        Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
+        Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
         Elevator.Commands.setToHeight(0),
