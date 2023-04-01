@@ -63,6 +63,9 @@ public final class Constants {
     public static final int TOP_INTAKE_ROLLER = 12;
     public static final int BOTTOM_INTAKE_ROLLER = 11;
 
+    // TODO: MAKE REAL!!!
+    public static final int CONE_SLAPPER_MOTOR = 1;
+
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
 
@@ -143,6 +146,23 @@ public final class Constants {
     public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
     public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / TOP_GEARING;
     public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
+  }
+
+  @UtilityClass
+  public static class SlapperConstants {
+    public static final DCMotor MOTOR = DCMotor.getNEO(1);
+    public static final double GEARING = 5;
+    public static final double LENGTH_METRES = Units.feetToMeters(6);
+    public static final PIDFFGains GAINS =
+        PIDFFGains.builder("Slapper Gains").kP(0.3).kD(1).build();
+    public static final double MIN_ANGLE_DEG = 0;
+    public static final double MAX_ANGLE_DEG = 120;
+    public static final double MAX_RPM =
+        Units.radiansPerSecondToRotationsPerMinute(MOTOR.freeSpeedRadPerSec) / GEARING;
+    public static final double MOI = 0.5;
+    public static final int CURRENT_LIMIT = 20;
+    public static final double POSITION_CONVERSION_FACTOR = 1 / GEARING;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1 / GEARING;
   }
 
   @UtilityClass
