@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface SlapperIO {
 
   @AutoLog
-  public static class SlapperInputs {
+  public class SlapperInputs {
     public double outputVoltage = 0.0;
     public boolean isOn = false;
     public double velocityRPM = 0.0;

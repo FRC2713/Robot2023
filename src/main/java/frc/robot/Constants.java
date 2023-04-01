@@ -88,12 +88,13 @@ public final class Constants {
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
 
-    /* manual calculations
-       12 / 9.166701316833496 = 1.30908
-       24 / 18.452327728271484 = 1.30064
-       36 / 27.714082717895508 = 1.29897
-       48 / 36.9520263671875 = 1.29898
-    */
+    /*
+     * manual calculations
+     * 12 / 9.166701316833496 = 1.30908
+     * 24 / 18.452327728271484 = 1.30064
+     * 36 / 27.714082717895508 = 1.29897
+     * 48 / 36.9520263671875 = 1.29898
+     */
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 1.3019175;
     // (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
 
@@ -152,13 +153,11 @@ public final class Constants {
   public static class SlapperConstants {
     public static final DCMotor MOTOR = DCMotor.getNEO(1);
     public static final double GEARING = 5;
-    public static final double LENGTH_METRES = Units.feetToMeters(6);
+    public static final double LENGTH_METRES = Units.inchesToMeters(36);
     public static final PIDFFGains GAINS =
         PIDFFGains.builder("Slapper Gains").kP(0.3).kD(1).build();
     public static final double MIN_ANGLE_DEG = 0;
     public static final double MAX_ANGLE_DEG = 120;
-    public static final double MAX_RPM =
-        Units.radiansPerSecondToRotationsPerMinute(MOTOR.freeSpeedRadPerSec) / GEARING;
     public static final double MOI = 0.5;
     public static final int CURRENT_LIMIT = 20;
     public static final double POSITION_CONVERSION_FACTOR = 1 / GEARING;

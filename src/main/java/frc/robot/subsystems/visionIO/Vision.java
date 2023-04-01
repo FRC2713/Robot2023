@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase {
     FORCE_BLINK(2),
     FORCE_ON(3),
     UNKNOWN(-1);
+
     public double value;
 
     LedMode(double value) {
@@ -127,6 +128,7 @@ public class Vision extends SubsystemBase {
     VISION_CAM(0),
     DRIVER_CAM(1),
     UNKNOWN(-1);
+
     public double value;
 
     CamMode(double value) {
@@ -288,19 +290,24 @@ public class Vision extends SubsystemBase {
     }
   }
 
+  private double[] calculateLLPose(VisionInputsAutoLogged inputs) {
+    return inputs.botpose_wpiblue.length > 0
+        ? new double[] {
+          frontInputs.botpose_wpiblue[0],
+          frontInputs.botpose_wpiblue[1],
+          frontInputs.botpose_wpiblue[5],
+        }
+        : new double[] {};
+  }
+
   public void periodic() {
     frontIO.updateInputs(frontInputs);
-    Logger.getInstance().processInputs("Vision", frontInputs);
+    rearIO.updateInputs(rearInputs);
+    Logger.getInstance().processInputs("Vision/Front", frontInputs);
+    Logger.getInstance().processInputs("Vision/Rear", rearInputs);
 
-    Logger.getInstance()
-        .recordOutput(
-            "Vision/LL Pose",
-            frontInputs.botpose_wpiblue.length > 0
-                ? new double[] {
-                  frontInputs.botpose_wpiblue[0],
-                  frontInputs.botpose_wpiblue[1],
-                  frontInputs.botpose_wpiblue[5],
-                }
-                : new double[] {});
+    Logger.getInstance().recordOutput("Vision/Front/LL Pose", calculateLLPose(frontInputs));
+
+    Logger.getInstance().recordOutput("Vision/Rear/LL Pose", calculateLLPose(rearInputs));
   }
 }

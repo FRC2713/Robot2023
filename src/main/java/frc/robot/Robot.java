@@ -645,24 +645,7 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
-    operator
-        .start()
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      slapper.setTarget(10);
-                    }),
-                new WaitCommand(3),
-                new InstantCommand(
-                    () -> {
-                      slapper.setTarget(90);
-                    }),
-                new WaitCommand(3),
-                new InstantCommand(
-                    () -> {
-                      slapper.setTarget(-30);
-                    })));
+    operator.start().onTrue(new SequentialCommandGroup(Slapper.Commands.sendIt()));
     // operator
     //     .axisLessThan(1, -0.1)
     //     .whileTrue(
