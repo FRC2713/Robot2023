@@ -113,8 +113,8 @@ public final class Constants {
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
     public static final double RETRACTED_ANGLE_DEGREES = 116.5;
-    public static final double MAX_VELOCITY = 1600;
-    public static final double MAX_ACCELERATION = 5000;
+    public static final double MAX_VELOCITY = 25;
+    public static final double MAX_ACCELERATION = 25;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
     public static final double GEARING = 5 * 5 * 2.5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
