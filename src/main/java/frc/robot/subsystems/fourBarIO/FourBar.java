@@ -116,21 +116,21 @@ public class FourBar extends SubsystemBase {
                   Units.degreesToRadians(inputs.angleDegreesOne),
                   Units.degreesToRadians(targetDegs));
 
-          var x = voltageController.getGoal();
-          var y = voltageController.getSetpoint();
+          var goal = voltageController.getGoal();
+          var setpoint = voltageController.getSetpoint();
 
           Logger.getInstance()
-              .recordOutput("4Bar/Goal/Position", Units.radiansToDegrees(x.position));
+              .recordOutput("4Bar/Goal/Position", Units.radiansToDegrees(goal.position));
           Logger.getInstance()
-              .recordOutput("4Bar/Goal/Velocity", Units.radiansToDegrees(x.velocity));
+              .recordOutput("4Bar/Goal/Velocity", Units.radiansToDegrees(goal.velocity));
           Logger.getInstance()
-              .recordOutput("4Bar/Setpoint/Position", Units.radiansToDegrees(y.position));
+              .recordOutput("4Bar/Setpoint/Position", Units.radiansToDegrees(setpoint.position));
           Logger.getInstance()
-              .recordOutput("4Bar/Setpoint/Velocity", Units.radiansToDegrees(y.velocity));
+              .recordOutput("4Bar/Setpoint/Velocity", Units.radiansToDegrees(setpoint.velocity));
 
           Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
 
-          double ffEffort = ff.calculate(y.position, y.velocity);
+          double ffEffort = ff.calculate(setpoint.position, setpoint.velocity);
           Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
 
           effort += ffEffort;
@@ -138,14 +138,15 @@ public class FourBar extends SubsystemBase {
           Logger.getInstance().recordOutput("4Bar/Total Effort", effort);
 
           voltage = effort;
-          // double current =
-          //     MathUtil.clamp(
-          //         Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
-          //             + FourBarConstants.FOUR_BAR_BASE_CURRENT,
-          //         0,
-          //         FourBarConstants.FOUR_BAR_MAX_CURRENT);
-          // IO.setCurrentLimit((int) current);
-          // Logger.getInstance().recordOutput("4Bar/Current Limit", current);
+
+          double current =
+              MathUtil.clamp(
+                  Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
+                      + FourBarConstants.FOUR_BAR_BASE_CURRENT,
+                  0,
+                  FourBarConstants.FOUR_BAR_MAX_CURRENT);
+          IO.setCurrentLimit((int) current);
+          Logger.getInstance().recordOutput("4Bar/Current Limit", current);
         }
         break;
       case HOMING:
