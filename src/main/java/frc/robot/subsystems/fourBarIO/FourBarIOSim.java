@@ -7,6 +7,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import frc.robot.Constants.FourBarConstants;
 
 public class FourBarIOSim implements FourBarIO {
 
@@ -22,7 +23,8 @@ public class FourBarIOSim implements FourBarIO {
           true);
 
   static {
-    sim.setState(VecBuilder.fill(Units.degreesToRadians(15), 0.0));
+    sim.setState(
+        VecBuilder.fill(Units.degreesToRadians(FourBarConstants.RETRACTED_ANGLE_DEGREES), 0.0));
   }
 
   @Override
@@ -63,13 +65,13 @@ public class FourBarIOSim implements FourBarIO {
 
   @Override
   public void setPosition(double angleDeg) {
-    // sim.setState(VecBuilder.fill(Units.degreesToRadians(angleDeg), 0.0));
+    sim.setState(VecBuilder.fill(Units.degreesToRadians(angleDeg), 0.0));
   }
 
   public void reseed(double absoluteEncoderVolts) {
-    // sim.setState(
-    //     VecBuilder.fill(
-    //         Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES), 0.0));
+    sim.setState(
+        VecBuilder.fill(
+            Units.degreesToRadians(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES), 0.0));
   }
 
   @Override

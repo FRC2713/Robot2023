@@ -5,6 +5,8 @@ import static frc.robot.Robot.fourBar;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -27,9 +29,9 @@ public class FourBar extends SubsystemBase {
     HOMING
   }
 
-  private FourBarMode mode = FourBarMode.CLOSED_LOOP;
+  private FourBarMode mode = FourBarMode.HOMING;
 
-  private final PIDController voltageController;
+  private final ProfiledPIDController voltageController;
   private final PIDController currentController;
   public final FourBarInputsAutoLogged inputs;
   private final FourBarIO IO;
@@ -39,7 +41,8 @@ public class FourBar extends SubsystemBase {
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createArmFeedforward();
     this.voltageController =
-        Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createWpilibController();
+        Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createProfiledPIDController(
+            new Constraints(FourBarConstants.MAX_VELOCITY, FourBarConstants.MAX_ACCELERATION));
     this.currentController =
         Constants.FourBarConstants.FOUR_BAR_CURRENT_GAINS.createWpilibController();
     this.inputs = new FourBarInputsAutoLogged();
@@ -52,7 +55,8 @@ public class FourBar extends SubsystemBase {
         || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES) {
       RedHawkUtil.ErrHandler.getInstance().addError("4Bar: Set to degress out of limits range!");
     }
-
+    // voltageController.reset(Units.degreesToRadians(inputs.angleDegreesOne),
+    // Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
     this.targetDegs = targetDegs;
   }
 
@@ -76,9 +80,17 @@ public class FourBar extends SubsystemBase {
     IO.setPosition(angleDegs);
   }
 
+  public void reset() {
+    voltageController.reset(
+        Units.degreesToRadians(inputs.angleDegreesOne),
+        Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
+  }
+
   public void setMode(FourBarMode newMode) {
     if (this.mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
       IO.setPosition(0);
+    } else if (this.mode == FourBarMode.HOMING && newMode == FourBarMode.CLOSED_LOOP) {
+      reset();
     }
 
     this.mode = newMode;
@@ -99,26 +111,41 @@ public class FourBar extends SubsystemBase {
     switch (mode) {
       case CLOSED_LOOP:
         {
-          double effort = voltageController.calculate(inputs.angleDegreesOne, targetDegs);
+          double effort =
+              voltageController.calculate(
+                  Units.degreesToRadians(inputs.angleDegreesOne),
+                  Units.degreesToRadians(targetDegs));
 
-          double current =
-              MathUtil.clamp(
-                  Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
-                      + FourBarConstants.FOUR_BAR_BASE_CURRENT,
-                  0,
-                  FourBarConstants.FOUR_BAR_MAX_CURRENT);
-          IO.setCurrentLimit((int) current);
+          var x = voltageController.getGoal();
+          var y = voltageController.getSetpoint();
+
+          Logger.getInstance()
+              .recordOutput("4Bar/Goal/Position", Units.radiansToDegrees(x.position));
+          Logger.getInstance()
+              .recordOutput("4Bar/Goal/Velocity", Units.radiansToDegrees(x.velocity));
+          Logger.getInstance()
+              .recordOutput("4Bar/Setpoint/Position", Units.radiansToDegrees(y.position));
+          Logger.getInstance()
+              .recordOutput("4Bar/Setpoint/Velocity", Units.radiansToDegrees(y.velocity));
 
           Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
-          Logger.getInstance().recordOutput("4Bar/Current Limit", current);
-          double ffEffort =
-              Math.cos(Units.degreesToRadians(inputs.angleDegreesOne))
-                  * FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.kG.get();
+
+          double ffEffort = ff.calculate(y.position, y.velocity);
+          Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
+
           effort += ffEffort;
           effort = MathUtil.clamp(effort, -12, 12);
-          voltage = effort;
           Logger.getInstance().recordOutput("4Bar/Total Effort", effort);
-          Logger.getInstance().recordOutput("4Bar/FF Effort", ffEffort);
+
+          voltage = effort;
+          // double current =
+          //     MathUtil.clamp(
+          //         Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
+          //             + FourBarConstants.FOUR_BAR_BASE_CURRENT,
+          //         0,
+          //         FourBarConstants.FOUR_BAR_MAX_CURRENT);
+          // IO.setCurrentLimit((int) current);
+          // Logger.getInstance().recordOutput("4Bar/Current Limit", current);
         }
         break;
       case HOMING:
