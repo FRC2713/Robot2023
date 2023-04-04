@@ -9,33 +9,45 @@ import org.littletonrobotics.junction.Logger;
 public class Vision extends SubsystemBase {
   private boolean dashboardSignal = false;
   private double limelightHeightInches;
-  private final VisionIO IO;
-  private final VisionInputsAutoLogged inputs;
+  private final VisionIO frontIO;
+  private final VisionIO rearIO;
+  private final VisionInputsAutoLogged frontInputs;
+  private final VisionInputsAutoLogged rearInputs;
 
-  public Vision(VisionIO IO) {
-    this.inputs = new VisionInputsAutoLogged();
-    IO.updateInputs(inputs);
-    this.IO = IO;
+  public Vision(VisionIO frontIO, VisionIO rearIO) {
+    frontInputs = new VisionInputsAutoLogged();
+    rearInputs = new VisionInputsAutoLogged();
+
+    frontIO.updateInputs(frontInputs);
+    rearIO.updateInputs(rearInputs);
+
+    this.frontIO = frontIO;
+    this.rearIO = rearIO;
   }
 
-  private NetworkTable getTable() {
-    return NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTable getTable(String table) {
+    // "limelight"
+    return NetworkTableInstance.getDefault().getTable(table);
   }
 
-  private NetworkTableEntry getEntry(String entryName) {
-    return getTable().getEntry(entryName);
+  private NetworkTableEntry getEntry(String entryName, String table) {
+    return getTable(table).getEntry(entryName);
   }
 
-  private double getValue(String entryName) {
-    return getEntry(entryName).getDouble(0);
+  private double getValue(String entryName, String table) {
+    return getEntry(entryName, table).getDouble(0);
   }
 
-  private void setValue(String entryName, double value) {
-    getEntry(entryName).setNumber(value);
+  private void setValue(String entryName, double value, String table) {
+    getEntry(entryName, table).setNumber(value);
   }
 
-  public VisionInputsAutoLogged getInputs() {
-    return inputs;
+  public VisionInputsAutoLogged getFrontInputs() {
+    return frontInputs;
+  }
+
+  public VisionInputsAutoLogged getRearInputs() {
+    return rearInputs;
   }
 
   public enum LedMode {
@@ -44,6 +56,7 @@ public class Vision extends SubsystemBase {
     FORCE_BLINK(2),
     FORCE_ON(3),
     UNKNOWN(-1);
+
     public double value;
 
     LedMode(double value) {
@@ -51,11 +64,22 @@ public class Vision extends SubsystemBase {
     }
   }
 
+  public enum Limelights {
+    FRONT("limelight"),
+    REAR("rear");
+
+    public String table;
+
+    Limelights(String table) {
+      this.table = table;
+    }
+  }
+
   /**
    * @return The current LED mode set on the Limelight
    */
-  public LedMode getLedMode() {
-    double mode = getValue("ledMode");
+  public LedMode getLedMode(Limelights limelight) {
+    double mode = getValue("ledMode", limelight.table);
     if (mode == 0) {
       return LedMode.PIPELINE; // Uses the LED mode set in the pipeliine
     } else if (mode == 1) {
@@ -73,14 +97,14 @@ public class Vision extends SubsystemBase {
   /**
    * @param mode The LED Mode to set on the Limelight
    */
-  public void setLedMode(LedMode mode) {
+  public void setLedMode(LedMode mode, Limelights limelight) {
     if (mode != LedMode.UNKNOWN) {
-      setValue("ledMode", mode.value);
+      setValue("ledMode", mode.value, limelight.table);
     }
   }
 
   public double getDistanceFromGoal() {
-    double targetOffsetAngle_Vertical = inputs.verticalCrosshairOffset;
+    double targetOffsetAngle_Vertical = frontInputs.verticalCrosshairOffset;
 
     // how many degrees back is your limelight rotated from perfectly vertical?
     // CHECK
@@ -104,6 +128,7 @@ public class Vision extends SubsystemBase {
     VISION_CAM(0),
     DRIVER_CAM(1),
     UNKNOWN(-1);
+
     public double value;
 
     CamMode(double value) {
@@ -114,8 +139,8 @@ public class Vision extends SubsystemBase {
   /**
    * @return The current LED mode set on the Limelight
    */
-  public CamMode getCamMode() {
-    double mode = getValue("camMode");
+  public CamMode getCamMode(Limelights limelight) {
+    double mode = getValue("camMode", limelight.table);
     if (mode == 0) {
       return CamMode.VISION_CAM;
     } else if (mode == 1) {
@@ -129,9 +154,9 @@ public class Vision extends SubsystemBase {
   /**
    * @param mode The LED Mode to set on the Limelight
    */
-  public void setCamMode(CamMode mode) {
+  public void setCamMode(CamMode mode, Limelights limelight) {
     if (mode != CamMode.UNKNOWN) {
-      setValue("camMode", mode.value);
+      setValue("camMode", mode.value, limelight.table);
     }
   }
 
@@ -155,7 +180,7 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public Pipeline getCurrentPipeline() {
+  public Pipeline getCurrentPipeline(VisionInputsAutoLogged inputs) {
     long mode = inputs.pipeline;
     if (mode == 0) {
       return Pipeline.PIPELINE0;
@@ -186,9 +211,9 @@ public class Vision extends SubsystemBase {
   /**
    * @param mode The LED Mode to set on the Limelight
    */
-  public void setPipeline(Pipeline mode) {
+  public void setPipeline(Pipeline mode, Limelights limelight) {
     if (mode != Pipeline.UNKNOWN) {
-      setValue("pipeline", mode.value);
+      setValue("pipeline", mode.value, limelight.table);
     }
   }
 
@@ -208,7 +233,7 @@ public class Vision extends SubsystemBase {
   /**
    * @return The current LED mode set on the Limelight
    */
-  public StreamMode getCurrentStreamMode() {
+  public StreamMode getCurrentStreamMode(VisionInputsAutoLogged inputs) {
     double mode = inputs.stream;
     if (mode == 0) {
       return StreamMode.STANDARD; // Side-by-side streams if a webcam is attached to Limelight
@@ -227,9 +252,9 @@ public class Vision extends SubsystemBase {
   /**
    * @param mode The LED Mode to set on the Limelight
    */
-  public void setStreamMode(StreamMode mode) {
+  public void setStreamMode(StreamMode mode, Limelights limelight) {
     if (mode != StreamMode.UNKNOWN) {
-      setValue("stream", mode.value);
+      setValue("stream", mode.value, limelight.table);
     }
   }
 
@@ -246,14 +271,15 @@ public class Vision extends SubsystemBase {
   }
 
   public void setCurrentSnapshotMode(SnapshotMode mode) {
-    IO.setSnapshotMode(mode);
+    frontIO.setSnapshotMode(mode);
+    rearIO.setSnapshotMode(mode);
   }
 
   /**
    * @return The current LED mode set on the Limelight
    */
   public SnapshotMode getCurrentSnapShotMode() {
-    boolean mode = inputs.snapshot;
+    boolean mode = frontInputs.snapshot;
     if (mode == false) {
       return SnapshotMode.OFF;
     } else if (mode == true) {
@@ -264,17 +290,24 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public void periodic() {
-    IO.updateInputs(inputs);
-    Logger.getInstance().processInputs("Vision", inputs);
+  private double[] calculateLLPose(VisionInputsAutoLogged inputs) {
+    return inputs.botpose_wpiblue.length > 0
+        ? new double[] {
+          frontInputs.botpose_wpiblue[0],
+          frontInputs.botpose_wpiblue[1],
+          frontInputs.botpose_wpiblue[5],
+        }
+        : new double[] {};
+  }
 
-    Logger.getInstance()
-        .recordOutput(
-            "Vision/LL Pose",
-            inputs.botpose_wpiblue.length > 0
-                ? new double[] {
-                  inputs.botpose_wpiblue[0], inputs.botpose_wpiblue[1], inputs.botpose_wpiblue[5],
-                }
-                : new double[] {});
+  public void periodic() {
+    frontIO.updateInputs(frontInputs);
+    rearIO.updateInputs(rearInputs);
+    Logger.getInstance().processInputs("Vision/Front", frontInputs);
+    Logger.getInstance().processInputs("Vision/Rear", rearInputs);
+
+    Logger.getInstance().recordOutput("Vision/Front/LL Pose", calculateLLPose(frontInputs));
+
+    Logger.getInstance().recordOutput("Vision/Rear/LL Pose", calculateLLPose(rearInputs));
   }
 }

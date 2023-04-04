@@ -59,6 +59,9 @@ import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
+import frc.robot.subsystems.slapperIO.Slapper;
+import frc.robot.subsystems.slapperIO.SlapperIOSim;
+import frc.robot.subsystems.slapperIO.SlapperIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -96,6 +99,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
+  public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
@@ -113,16 +117,25 @@ public class Robot extends LoggedRobot {
       new LoggedDashboardChooser<>("Autonomous Routine");
 
   public static double[] poseValue;
-  DoubleArraySubscriber visionPose;
+  DoubleArraySubscriber frontVisionPose;
+  DoubleArraySubscriber rearVisionPose;
 
   Alliance currentAlliance = Alliance.Invalid;
-  DoubleArraySubscriber camera2TagPose;
+  DoubleArraySubscriber frontCamera2TagPose;
+  DoubleArraySubscriber rearCamera2TagPose;
 
   @Override
   public void robotInit() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    camera2TagPose = table.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
+    NetworkTable frontTable =
+        NetworkTableInstance.getDefault().getTable(Vision.Limelights.FRONT.table);
+    NetworkTable rearTable =
+        NetworkTableInstance.getDefault().getTable(Vision.Limelights.REAR.table);
+    frontVisionPose = frontTable.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    frontCamera2TagPose =
+        frontTable.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
+    rearVisionPose = rearTable.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    rearCamera2TagPose =
+        rearTable.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -161,8 +174,12 @@ public class Robot extends LoggedRobot {
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    vision =
+        new Vision(
+            isSimulation() ? new VisionIOSim() : new VisionLimelight(),
+            isSimulation() ? new VisionIOSim() : new VisionLimelight());
     lights = new LightStrip();
+    slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
@@ -746,6 +763,62 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
+    operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
+    // operator
+    //     .axisLessThan(1, -0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   double targetHeightInches =
+    //                       elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
+    //                   if (!(targetHeightInches
+    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    //                     elevator.setTargetHeight(targetHeightInches);
+    //                   }
+    //                 })));
+
+    // operator
+    //     .axisGreaterThan(1, 0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   double targetHeightInches =
+    //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
+    //                   if (!(targetHeightInches
+    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    //                     elevator.setTargetHeight(targetHeightInches);
+    //                   }
+    //                 })));
+
+    // operator
+    //     .axisLessThan(5, -0.1)
+    //     .whileTrue(
+    //         new RepeatCommand(
+    //             (new InstantCommand(
+    //                 () -> {
+    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // operator.getRawAxis(5));
+    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    //                     fourBar.setAngleDeg(targetDegs);
+    //                   }
+    //                 }))));
+
+    // operator
+    //     .axisGreaterThan(5, 0.1)
+    //     .whileTrue(
+    //             (new InstantCommand(
+    //                 () -> {
+    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // operator.getRawAxis(5));
+    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
+    //                     fourBar.setAngleDeg(targetDegs);
+    //                   }
+    //                 })));
+
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
@@ -775,17 +848,30 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+    Logger.getInstance()
+        .recordOutput(
+            "Memory Usage",
+            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                / 1024.0
+                / 1024.0);
 
-    TimestampedDoubleArray[] fQueue = visionPose.readQueue();
-    TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
+    TimestampedDoubleArray[] frontfQueue = frontVisionPose.readQueue();
+    TimestampedDoubleArray[] frontcQueue = frontCamera2TagPose.readQueue();
+
+    TimestampedDoubleArray[] rearfQueue = rearVisionPose.readQueue();
+    TimestampedDoubleArray[] rearcQueue = rearCamera2TagPose.readQueue();
 
     if (driver.getRightX() > 0.5) {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    if (fQueue.length > 0 && cQueue.length > 0) {
-      TimestampedDoubleArray fLastCameraReading = fQueue[fQueue.length - 1];
-      TimestampedDoubleArray cLastCameraReading = cQueue[cQueue.length - 1];
+    if (frontfQueue.length > 0 && frontcQueue.length > 0) {
+      TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
+      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
+    } else if (rearfQueue.length > 0 && rearcQueue.length > 0) {
+      TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
     }
   }

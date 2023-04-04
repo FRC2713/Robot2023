@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.util.PIDFFController;
 import org.littletonrobotics.junction.Logger;
 
@@ -103,7 +104,7 @@ public class SwerveModule extends SubsystemBase {
         driveController.calculate(
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
 
-    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) < 0.1;
+    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) < 0.1 || Robot.isSimulation();
     boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) < 0.1;
     double feedbackVal;
     if (useMotorEncoder) {
