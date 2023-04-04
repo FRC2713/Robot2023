@@ -62,6 +62,10 @@ public class Elevator extends SubsystemBase {
     return Math.abs(getCurrentHeight() - targetHeight) < 1;
   }
 
+  public void resetController() {
+    elevatorController.reset(inputs.heightInchesRight, inputs.velocityInchesPerSecondRight);
+  }
+
   public void periodic() {
     double effortLeft =
         elevatorController.calculate(
@@ -69,7 +73,11 @@ public class Elevator extends SubsystemBase {
             // returns 0 for a cycle sometimes
             inputs.heightInchesRight, targetHeight);
     // double ffEffort = feedforward.calculate(0);
-    effortLeft += 0.625;
+    if (IO.shouldApplyFF()) {
+      effortLeft +=
+          feedforward.calculate(
+              elevatorController.getSetpoint().position, elevatorController.getSetpoint().velocity);
+    }
     effortLeft = MathUtil.clamp(effortLeft, -12, 12);
 
     Logger.getInstance()

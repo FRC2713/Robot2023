@@ -736,7 +736,13 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
     operator.start().onTrue(FourBar.Commands.reset());
-
+    operator
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  fourBar.reseed();
+                }));
     operator
         .povDown()
         .onTrue(
@@ -760,7 +766,7 @@ public class Robot extends LoggedRobot {
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
-    operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
+    // operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
     // operator
     //     .axisLessThan(1, -0.1)
     //     .whileTrue(
@@ -889,6 +895,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     checkAlliance();
 
+    elevator.resetController();
     fourBar.reset();
     SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
     SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));

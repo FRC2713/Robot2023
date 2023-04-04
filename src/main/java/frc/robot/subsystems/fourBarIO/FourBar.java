@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +30,7 @@ public class FourBar extends SubsystemBase {
     HOMING
   }
 
-  private FourBarMode mode = FourBarMode.HOMING;
+  private FourBarMode mode;
 
   private final ProfiledPIDController voltageController;
   private final PIDController currentController;
@@ -37,6 +38,7 @@ public class FourBar extends SubsystemBase {
   private final FourBarIO IO;
   private double targetDegs = Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES;
   private final ArmFeedforward ff;
+  private Timer timer = new Timer();
 
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createArmFeedforward();
@@ -48,6 +50,7 @@ public class FourBar extends SubsystemBase {
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
+    setMode(FourBarMode.HOMING);
   }
 
   public void setAngleDeg(double targetDegs) {
@@ -88,6 +91,8 @@ public class FourBar extends SubsystemBase {
 
   public void setMode(FourBarMode newMode) {
     if (this.mode != FourBarMode.HOMING && newMode == FourBarMode.HOMING) {
+      timer.reset();
+      timer.start();
       IO.setPosition(0);
     } else if (this.mode == FourBarMode.HOMING && newMode == FourBarMode.CLOSED_LOOP) {
       reset();
@@ -98,9 +103,9 @@ public class FourBar extends SubsystemBase {
 
   public boolean isHomed(boolean useEncoders) {
     // both methods work in sim
-    return useEncoders
-        ? (inputs.angleDegreesOne > 1 && inputs.velocityDegreesPerSecondOne < 1)
-        : inputs.limSwitch;
+    return (useEncoders
+        ? (timer.get() > 1 && inputs.velocityDegreesPerSecondOne < 1)
+        : inputs.limSwitch);
   }
 
   public void periodic() {
@@ -153,7 +158,7 @@ public class FourBar extends SubsystemBase {
         {
           voltage = Constants.FourBarConstants.HOMING_VOLTAGE;
           IO.setCurrentLimit(Constants.FourBarConstants.FOUR_BAR_MAX_CURRENT);
-          if (isHomed(false)) {
+          if (isHomed(true)) {
             IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
             targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
             setMode(FourBarMode.CLOSED_LOOP);

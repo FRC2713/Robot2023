@@ -27,8 +27,11 @@ public class IntakeIOSparks implements IntakeIO {
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
     bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-    topRoller.setInverted(false);
-    bottomRoller.setInverted(false);
+    for (int i = 0; i < 30; i++) {
+
+      topRoller.setInverted(true);
+      bottomRoller.setInverted(true);
+    }
 
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
@@ -79,12 +82,12 @@ public class IntakeIOSparks implements IntakeIO {
 
   @Override
   public void setTopVoltage(double volts) {
-    topRoller.setVoltage(-volts);
+    topRoller.setVoltage(volts);
   }
 
   @Override
   public void setBottomVoltage(double volts) {
-    bottomRoller.setVoltage(-volts);
+    bottomRoller.setVoltage(volts);
   }
 
   public void setCurrentLimit(int currentLimit) {

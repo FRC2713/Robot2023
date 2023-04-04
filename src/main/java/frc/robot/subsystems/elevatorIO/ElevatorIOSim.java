@@ -45,6 +45,9 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.currentDrawAmpsRight = sim.getCurrentDrawAmps();
   }
 
+  public boolean shouldApplyFF() {
+    return true;
+  }
   /**
    * Sets the simulation's input voltage to the given {@code volts}
    *

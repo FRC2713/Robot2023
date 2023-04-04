@@ -21,5 +21,7 @@ public interface ElevatorIO {
 
   public void resetEncoders();
 
+  public boolean shouldApplyFF();
+
   public void setVoltage(double volts);
 }

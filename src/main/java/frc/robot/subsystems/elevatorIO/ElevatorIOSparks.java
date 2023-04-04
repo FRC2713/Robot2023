@@ -20,11 +20,14 @@ public class ElevatorIOSparks implements ElevatorIO {
     RedHawkUtil.configureHighTrafficSpark(left);
     RedHawkUtil.configureHighTrafficSpark(right);
 
-    left.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    right.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    left.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    right.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
-    left.setInverted(false);
-    right.setInverted(false);
+    for (int i = 0; i < 30; i++) {
+
+      left.setInverted(true);
+      right.setInverted(false); // might be reversed, idk
+    }
 
     left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     right.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
@@ -52,6 +55,10 @@ public class ElevatorIOSparks implements ElevatorIO {
     right.getEncoder().setPosition(0);
   }
 
+  public boolean shouldApplyFF() {
+    return right.getEncoder().getPosition() > 28.25;
+  }
+
   @Override
   public void updateInputs(ElevatorInputs inputs) {
     inputs.outputVoltageLeft =
@@ -71,7 +78,7 @@ public class ElevatorIOSparks implements ElevatorIO {
 
   @Override
   public void setVoltage(double volts) {
-    left.setVoltage(-volts);
+    left.setVoltage(volts);
     right.setVoltage(volts);
   }
 }

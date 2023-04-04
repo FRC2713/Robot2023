@@ -7,7 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxLimitSwitch;
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
 
@@ -15,7 +15,7 @@ public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
 
-  private static double offset = 137.96978759765625 - 116.49999237060547;
+  private static double offset = 173.95;
 
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
@@ -32,8 +32,9 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.setIdleMode(IdleMode.kCoast);
 
-    fourBarOne.setInverted(false); // subject to change
-
+    for (int i = 0; i < 30; i++) {
+      fourBarOne.setInverted(true);
+    }
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_BASE_CURRENT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
@@ -74,7 +75,7 @@ public class FourBarIOSparks implements FourBarIO {
 
   @Override
   public void updateInputs(FourBarInputs inputs) {
-    inputs.outputVoltage = MathUtil.clamp(fourBarOne.getOutputCurrent(), -12, 12);
+    inputs.outputVoltage = (fourBarOne.getAppliedOutput() * RobotController.getBatteryVoltage());
 
     inputs.angleDegreesOne = fourBarOne.getEncoder().getPosition();
     // inputs.angleDegreesTwo = fourBarTwo.getEncoder().getPosition();
@@ -95,13 +96,13 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
 
-    inputs.limSwitch =
-        fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
+    // inputs.limSwitch =
+    //     fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
   }
 
   @Override
   public void setVoltage(double volts) {
-    fourBarOne.setVoltage(-volts);
+    fourBarOne.setVoltage(volts);
     // fourBarTwo.setVoltage(volts);
   }
 
