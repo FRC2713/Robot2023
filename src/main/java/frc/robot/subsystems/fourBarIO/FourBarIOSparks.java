@@ -57,9 +57,9 @@ public class FourBarIOSparks implements FourBarIO {
     }
 
     absoluteEncoder = fourBarOne.getAbsoluteEncoder(Type.kDutyCycle);
-    absoluteEncoder.setPositionConversionFactor(1 / 2.5 * 360);
-    absoluteEncoder.setVelocityConversionFactor(1 / 2.5 * 360);
-    absoluteEncoder.setInverted(true);
+    absoluteEncoder.setPositionConversionFactor(360);
+    absoluteEncoder.setVelocityConversionFactor(360);
+    absoluteEncoder.setInverted(false);
 
     absoluteEncoder.setZeroOffset(0);
     // absoluteEncoder.setZeroOffset(
