@@ -64,7 +64,7 @@ public final class Constants {
     public static final int BOTTOM_INTAKE_ROLLER = 11;
 
     // TODO: MAKE REAL!!!
-    public static final int CONE_SLAPPER_MOTOR = 1;
+    public static final int CONE_SLAPPER_MOTOR = 15;
 
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
