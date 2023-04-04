@@ -118,7 +118,7 @@ public final class Constants {
     public static final double IDLE_ANGLE_DEGREES = 90;
     public static final double RETRACTED_ANGLE_DEGREES = 116.5;
     public static final double MAX_VELOCITY = 25;
-    public static final double MAX_ACCELERATION = 100;
+    public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
     public static final double GEARING = 5 * 5 * 2.5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
@@ -128,9 +128,9 @@ public final class Constants {
         PIDFFGains.builder("4Bar Current Gains").kP(0.0).build();
     public static final int FOUR_BAR_MAX_CURRENT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
-    public static final double HOMING_VOLTAGE = 3;
+    public static final double HOMING_VOLTAGE = 0.25;
     public static final PIDFFGains FOUR_BAR_VOLTAGE_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0).kG(0).build();
+        PIDFFGains.builder("4Bar Controller").kP(10).kG(0.25).build();
   }
 
   @UtilityClass

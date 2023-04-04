@@ -50,7 +50,8 @@ public class FourBar extends SubsystemBase {
     this.inputs = new FourBarInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
-    setMode(FourBarMode.HOMING);
+    // setMode(FourBarMode.HOMING);
+    setMode(FourBarMode.CLOSED_LOOP);
   }
 
   public void setAngleDeg(double targetDegs) {
@@ -73,6 +74,8 @@ public class FourBar extends SubsystemBase {
 
   public void reseed() {
     IO.reseed(inputs.absoluteEncoderVolts);
+    targetDegs += 0.01;
+    reset();
   }
 
   public double getCurrentDraw() {
@@ -144,12 +147,12 @@ public class FourBar extends SubsystemBase {
 
           voltage = effort;
 
-          double current =
-              MathUtil.clamp(
-                  Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
-                      + FourBarConstants.FOUR_BAR_BASE_CURRENT,
-                  0,
-                  FourBarConstants.FOUR_BAR_MAX_CURRENT);
+          double current = FourBarConstants.FOUR_BAR_MAX_CURRENT;
+          // MathUtil.clamp(
+          //     Math.abs(currentController.calculate(inputs.angleDegreesOne, targetDegs))
+          //         + FourBarConstants.FOUR_BAR_BASE_CURRENT,
+          //     0,
+          //     FourBarConstants.FOUR_BAR_MAX_CURRENT);
           IO.setCurrentLimit((int) current);
           Logger.getInstance().recordOutput("4Bar/Current Limit", current);
         }
