@@ -155,6 +155,7 @@ public class FourBar extends SubsystemBase {
           IO.setCurrentLimit(Constants.FourBarConstants.FOUR_BAR_MAX_CURRENT);
           if (isHomed(false)) {
             IO.setPosition(Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES);
+            targetDegs = Constants.FourBarConstants.IDLE_ANGLE_DEGREES;
             setMode(FourBarMode.CLOSED_LOOP);
             voltage = 0;
           }

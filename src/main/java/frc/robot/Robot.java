@@ -352,9 +352,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
                 FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     //      driver
     //              .leftTrigger(0.25)
@@ -453,9 +452,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
                 FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .rightBumper()
@@ -501,9 +499,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
                 FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .b()
@@ -513,7 +510,7 @@ public class Robot extends LoggedRobot {
                 new WaitCommand(0.0),
                 FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
                 FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)));
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .a()
