@@ -20,13 +20,12 @@ public class ElevatorIOSparks implements ElevatorIO {
     RedHawkUtil.configureHighTrafficSpark(left);
     RedHawkUtil.configureHighTrafficSpark(right);
 
-    left.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    right.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    left.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    right.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     for (int i = 0; i < 30; i++) {
-
       left.setInverted(true);
-      right.setInverted(false); // might be reversed, idk
+      right.setInverted(false);
     }
 
     left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);

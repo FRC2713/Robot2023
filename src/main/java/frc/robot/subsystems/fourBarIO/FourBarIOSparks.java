@@ -30,7 +30,7 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
     fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
-    fourBarOne.setIdleMode(IdleMode.kCoast);
+    fourBarOne.setIdleMode(IdleMode.kBrake);
 
     for (int i = 0; i < 30; i++) {
       fourBarOne.setInverted(true);

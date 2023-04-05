@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
     if (Robot.gamePieceMode == GamePieceMode.CUBE) {
       return (filteredVoltageCube > cubeDetectionThreshold) && !scoring;
     } else {
-      return debouncer.calculate(filteredVoltageCone > cubeDetectionThreshold) && !scoring;
+      return debouncer.calculate(filteredVoltageCone > coneDetectionThreshold) && !scoring;
     }
   }
 

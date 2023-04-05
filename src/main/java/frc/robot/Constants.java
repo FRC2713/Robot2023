@@ -355,14 +355,14 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-18)
+            .fourBarPosition(-22)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(32)
+            .fourBarPosition(29)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
@@ -378,7 +378,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(24)
+            .fourBarPosition(17)
             .topRPM(1_500)
             .bottomRPM(1_500)
             .build();
@@ -426,7 +426,7 @@ public final class Constants {
     public static final SuperstructureConfig SCORE_CONE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(28)
-            .fourBarPosition(90)
+            .fourBarPosition(80)
             .topRPM(-500)
             .bottomRPM(500)
             .build();
