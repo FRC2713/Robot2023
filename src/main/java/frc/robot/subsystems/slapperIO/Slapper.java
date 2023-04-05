@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.Logger;
 public class Slapper extends SubsystemBase {
   private final SlapperIO IO;
   private final SlapperInputsAutoLogged inputs;
-  private double targetangleDeg = 0.0;
+  private double targetangleDeg = 90.0;
   public PIDController controller;
   public boolean usePid = true;
   private final ArmFeedforward FF;
@@ -49,9 +49,7 @@ public class Slapper extends SubsystemBase {
     double effort;
 
     if (usePid) {
-      effort =
-          controller.calculate(
-              Units.degreesToRadians(inputs.positionDeg), Units.degreesToRadians(targetangleDeg));
+      effort = controller.calculate(inputs.positionDeg, targetangleDeg);
     } else {
       effort = !isAtTarget() ? (targetangleDeg - inputs.positionDeg) * 0.1 : 0;
     }

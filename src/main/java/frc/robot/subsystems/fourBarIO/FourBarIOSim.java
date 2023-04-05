@@ -57,4 +57,6 @@ public class FourBarIOSim implements FourBarIO {
 
   @Override
   public void setPosition(double angleDeg) {}
+
+  public void reseed(double absoluteEncoderVolts) {}
 }

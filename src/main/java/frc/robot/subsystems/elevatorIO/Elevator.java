@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getCurrentHeight() {
-    return inputs.heightInchesLeft;
+    return inputs.heightInchesRight;
   }
 
   public double getCurrentDraw() {
@@ -65,7 +65,9 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     double effortLeft =
         elevatorController.calculate(
-            (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight);
+            // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
+            // returns 0 for a cycle sometimes
+            inputs.heightInchesRight, targetHeight);
     // double ffEffort = feedforward.calculate(0);
     effortLeft += 0.625;
     effortLeft = MathUtil.clamp(effortLeft, -12, 12);
@@ -111,28 +113,7 @@ public class Elevator extends SubsystemBase {
     //   IO.setVoltage(0);
     //   return;
     // }
-
-    // if (shouldResetEncoders()) {
-    //   IO.resetEncoders();
-    // }
   }
-
-  // public void resetencoders() {
-  //   IO.resetEncoders();
-  // }
-
-  // public boolean shouldResetEncoders() {
-  //   var avgVelocity =
-  //       (Math.abs(inputs.velocityInchesPerSecondLeft)
-  //               + Math.abs(inputs.velocityInchesPerSecondRight))
-  //           / 2.0;
-  //   var avgCurrent = (inputs.currentDrawAmpsLeft + inputs.currentDrawAmpsRight) / 2.0;
-  //   var avgHeight = (Math.abs(inputs.heightInchesLeft) + Math.abs(inputs.heightInchesRight)) /
-  // 2.0;
-  //   return (Math.abs(avgVelocity) < 0.01)
-  //       && avgCurrent > 3.0 /* might need to tune */
-  //       && avgHeight < 2.0;
-  // }
 
   public static class Commands {
 

@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
@@ -14,21 +15,26 @@ public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
 
+  private static double offset = 137.96978759765625 - 116.49999237060547;
+
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
     // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
-    fourBarOne.restoreFactoryDefaults();
+    // fourBarOne.restoreFactoryDefaults();
     // fourBarTwo.restoreFactoryDefaults();
 
     RedHawkUtil.configureHighTrafficSpark(fourBarOne);
     // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
 
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
     fourBarOne.setIdleMode(IdleMode.kBrake);
 
-    fourBarOne.setInverted(true); // subject to change
+    for (int i = 0; i < 30; i++) {
+
+      fourBarOne.setInverted(true); // subject to change
+    }
     // fourBarTwo.setInverted(true); // subject to change
     fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
@@ -56,9 +62,15 @@ public class FourBarIOSparks implements FourBarIO {
     absoluteEncoder.setVelocityConversionFactor(1 / 2.5 * 360);
     absoluteEncoder.setInverted(true);
 
-    absoluteEncoder.setZeroOffset(10);
+    absoluteEncoder.setZeroOffset(0);
     // absoluteEncoder.setZeroOffset(
     //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
+
+    fourBarOne
+        .getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
+        .enableLimitSwitch(true);
+
+    fourBarOne.burnFlash();
   }
 
   @Override
@@ -82,6 +94,10 @@ public class FourBarIOSparks implements FourBarIO {
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
+    inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
+
+    inputs.limSwitch =
+        fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
   }
 
   @Override
@@ -93,5 +109,10 @@ public class FourBarIOSparks implements FourBarIO {
   @Override
   public void setPosition(double angleDeg) {
     fourBarOne.getEncoder().setPosition(angleDeg);
+  }
+
+  public void reseed(double absoluteEncoderVolts) {
+    var trueAngle = absoluteEncoderVolts - offset;
+    fourBarOne.getEncoder().setPosition(trueAngle);
   }
 }

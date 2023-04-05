@@ -296,6 +296,13 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+  public void seed() {
+    frontLeft.seed();
+    frontRight.seed();
+    backLeft.seed();
+    backRight.seed();
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -320,24 +327,23 @@ public class SwerveSubsystem extends SubsystemBase {
         break;
     }
 
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/Measured Module States",
-            new SwerveModuleState[] {
-              frontLeft.getMeasuredState(),
-              frontRight.getMeasuredState(),
-              backLeft.getMeasuredState(),
-              backRight.getMeasuredState()
-            });
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/Desired Module States",
-            new SwerveModuleState[] {
-              frontLeft.getDesiredState(),
-              frontRight.getDesiredState(),
-              backLeft.getDesiredState(),
-              backRight.getDesiredState()
-            });
+    SwerveModuleState[] measuredModuleStates =
+        new SwerveModuleState[] {
+          frontLeft.getMeasuredState(),
+          frontRight.getMeasuredState(),
+          backLeft.getMeasuredState(),
+          backRight.getMeasuredState()
+        };
+    SwerveModuleState[] desiredModuleStates =
+        new SwerveModuleState[] {
+          frontLeft.getDesiredState(),
+          frontRight.getDesiredState(),
+          backLeft.getDesiredState(),
+          backRight.getDesiredState()
+        };
+
+    Logger.getInstance().recordOutput("Swerve/Measured Module States", measuredModuleStates);
+    Logger.getInstance().recordOutput("Swerve/Desired Module States", desiredModuleStates);
 
     Logger.getInstance().processInputs("Swerve/Chassis", inputs);
     Logger.getInstance()
@@ -357,6 +363,29 @@ public class SwerveSubsystem extends SubsystemBase {
               getEstimatedPose().getRotation().getDegrees()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
+
+    ChassisSpeeds currentChassisSpeeds =
+        DriveConstants.KINEMATICS.toChassisSpeeds(measuredModuleStates);
+    ChassisSpeeds targetChassisSpeeds =
+        DriveConstants.KINEMATICS.toChassisSpeeds(desiredModuleStates);
+
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Chassis Speeds/Current/X mps", currentChassisSpeeds.vxMetersPerSecond);
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Chassis Speeds/Current/Y mps", currentChassisSpeeds.vyMetersPerSecond);
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Chassis Speeds/Current/R radps", currentChassisSpeeds.omegaRadiansPerSecond);
+
+    Logger.getInstance()
+        .recordOutput("Swerve/Chassis Speeds/Desired/X mps", targetChassisSpeeds.vxMetersPerSecond);
+    Logger.getInstance()
+        .recordOutput("Swerve/Chassis Speeds/Desired/Y mps", targetChassisSpeeds.vyMetersPerSecond);
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Chassis Speeds/Desired/R radps", targetChassisSpeeds.omegaRadiansPerSecond);
   }
 
   public static class Commands {
