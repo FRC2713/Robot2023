@@ -37,11 +37,11 @@ public class FourBarIOSim implements FourBarIO {
 
     inputs.outputVoltage = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
 
-    inputs.angleDegreesOne = Units.radiansToDegrees(sim.getAngleRads());
-    inputs.angleDegreesTwo = Units.radiansToDegrees(sim.getAngleRads());
+    inputs.angleDegreesOne = Units.radiansToDegrees(sim.getAngleRads()) + (Math.random() * 5 - 2.5);
+    // inputs.angleDegreesTwo = Units.radiansToDegrees(sim.getAngleRads());
     inputs.angleDegreesRange = 0.0;
 
-    inputs.absoluteEncoderAdjustedAngle = inputs.angleDegreesOne;
+    inputs.absoluteEncoderAdjustedAngle = Units.radiansToDegrees(sim.getAngleRads());
 
     inputs.velocityDegreesPerSecondOne = Units.radiansToDegrees(sim.getVelocityRadPerSec());
     inputs.velocityDegreesPerSecondTwo = Units.radiansToDegrees(sim.getVelocityRadPerSec());

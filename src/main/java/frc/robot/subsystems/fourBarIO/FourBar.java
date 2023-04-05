@@ -39,6 +39,7 @@ public class FourBar extends SubsystemBase {
   private double targetDegs = Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES;
   private final ArmFeedforward ff;
   private Timer timer = new Timer();
+  private double absOffset = 0;
 
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createArmFeedforward();
@@ -52,6 +53,7 @@ public class FourBar extends SubsystemBase {
     this.IO = IO;
     // setMode(FourBarMode.HOMING);
     setMode(FourBarMode.CLOSED_LOOP);
+    reseed();
   }
 
   public void setAngleDeg(double targetDegs) {
@@ -73,8 +75,9 @@ public class FourBar extends SubsystemBase {
   }
 
   public void reseed() {
-    IO.reseed(inputs.absoluteEncoderVolts);
-    targetDegs += 0.01;
+    absOffset = inputs.absoluteEncoderAdjustedAngle - inputs.angleDegreesOne;
+    // IO.reseed(inputs.absoluteEncoderVolts);
+    // targetDegs += 0.01;
     reset();
   }
 
@@ -86,9 +89,13 @@ public class FourBar extends SubsystemBase {
     IO.setPosition(angleDegs);
   }
 
+  public double computeOffsetAngle() {
+    return absOffset + inputs.angleDegreesOne;
+  }
+
   public void reset() {
     voltageController.reset(
-        Units.degreesToRadians(inputs.angleDegreesOne),
+        Units.degreesToRadians(computeOffsetAngle()),
         Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
   }
 
@@ -119,10 +126,13 @@ public class FourBar extends SubsystemBase {
     switch (mode) {
       case CLOSED_LOOP:
         {
+          boolean shouldReset = Math.abs(inputs.absoluteEncoderAdjustedAngle - inputs.angleDegreesOne) > 3;
+          if(shouldReset) {
+            // reseed();
+          }
           double effort =
               voltageController.calculate(
-                  Units.degreesToRadians(inputs.angleDegreesOne),
-                  Units.degreesToRadians(targetDegs));
+                  Units.degreesToRadians(inputs.absoluteEncoderAdjustedAngle), Units.degreesToRadians(targetDegs));
 
           var goal = voltageController.getGoal();
           var setpoint = voltageController.getSetpoint();
@@ -135,6 +145,9 @@ public class FourBar extends SubsystemBase {
               .recordOutput("4Bar/Setpoint/Position", Units.radiansToDegrees(setpoint.position));
           Logger.getInstance()
               .recordOutput("4Bar/Setpoint/Velocity", Units.radiansToDegrees(setpoint.velocity));
+
+          Logger.getInstance()
+              .recordOutput("4Bar/Should Reseed", shouldReset);
 
           Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
 
@@ -174,6 +187,9 @@ public class FourBar extends SubsystemBase {
     }
 
     IO.setVoltage(voltage);
+
+    Logger.getInstance().recordOutput("4Bar/Computed Offset Angle", computeOffsetAngle());
+    Logger.getInstance().recordOutput("4Bar/Offset Angle", absOffset);
 
     Logger.getInstance().recordOutput("4Bar/Output", voltage);
     Logger.getInstance().recordOutput("4Bar/Mode", mode.name());
