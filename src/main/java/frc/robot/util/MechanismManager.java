@@ -71,6 +71,6 @@ public class MechanismManager {
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
     m_elevator.setLength(Robot.elevator.getCurrentHeight());
     m_front.setAngle(-45 - Robot.fourBar.getCurrentDegs());
-    m_slapper.setAngle(Robot.slapper.getPositionDeg());
+    // m_slapper.setAngle(Robot.slapper.getPositionDeg());
   }
 }

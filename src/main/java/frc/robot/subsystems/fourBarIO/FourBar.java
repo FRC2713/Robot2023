@@ -126,13 +126,15 @@ public class FourBar extends SubsystemBase {
     switch (mode) {
       case CLOSED_LOOP:
         {
-          boolean shouldReset = Math.abs(inputs.absoluteEncoderAdjustedAngle - inputs.angleDegreesOne) > 3;
-          if(shouldReset) {
+          boolean shouldReset =
+              Math.abs(inputs.absoluteEncoderAdjustedAngle - inputs.angleDegreesOne) > 3;
+          if (shouldReset) {
             // reseed();
           }
           double effort =
               voltageController.calculate(
-                  Units.degreesToRadians(inputs.absoluteEncoderAdjustedAngle), Units.degreesToRadians(targetDegs));
+                  Units.degreesToRadians(inputs.absoluteEncoderAdjustedAngle),
+                  Units.degreesToRadians(targetDegs));
 
           var goal = voltageController.getGoal();
           var setpoint = voltageController.getSetpoint();
@@ -146,8 +148,7 @@ public class FourBar extends SubsystemBase {
           Logger.getInstance()
               .recordOutput("4Bar/Setpoint/Velocity", Units.radiansToDegrees(setpoint.velocity));
 
-          Logger.getInstance()
-              .recordOutput("4Bar/Should Reseed", shouldReset);
+          Logger.getInstance().recordOutput("4Bar/Should Reseed", shouldReset);
 
           Logger.getInstance().recordOutput("4Bar/Control Effort", effort);
 

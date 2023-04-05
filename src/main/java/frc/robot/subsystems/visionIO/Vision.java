@@ -66,7 +66,7 @@ public class Vision extends SubsystemBase {
 
   public enum Limelights {
     FRONT("limelight"),
-    REAR("rear");
+    REAR("limelight-rear");
 
     public String table;
 
@@ -293,9 +293,7 @@ public class Vision extends SubsystemBase {
   private double[] calculateLLPose(VisionInputsAutoLogged inputs) {
     return inputs.botpose_wpiblue.length > 0
         ? new double[] {
-          frontInputs.botpose_wpiblue[0],
-          frontInputs.botpose_wpiblue[1],
-          frontInputs.botpose_wpiblue[5],
+          inputs.botpose_wpiblue[0], inputs.botpose_wpiblue[1], inputs.botpose_wpiblue[5],
         }
         : new double[] {};
   }

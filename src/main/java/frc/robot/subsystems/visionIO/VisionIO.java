@@ -36,6 +36,8 @@ public interface VisionIO {
     public double[] crop = new double[] {};
   }
 
+  public String getName();
+
   public void updateInputs(VisionInputs inputs);
 
   public void setSnapshotMode(SnapshotMode mode);

@@ -43,7 +43,6 @@ import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
 import frc.robot.commands.fullRoutines.SimpleCone;
-import frc.robot.commands.fullRoutines.SlapConeCubeConeOver;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
@@ -60,9 +59,6 @@ import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
-import frc.robot.subsystems.slapperIO.Slapper;
-import frc.robot.subsystems.slapperIO.SlapperIOSim;
-import frc.robot.subsystems.slapperIO.SlapperIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -100,7 +96,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
-  public static Slapper slapper;
+  //   public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
@@ -177,10 +173,10 @@ public class Robot extends LoggedRobot {
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision =
         new Vision(
-            isSimulation() ? new VisionIOSim() : new VisionLimelight(),
-            isSimulation() ? new VisionIOSim() : new VisionLimelight());
+            isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight"),
+            isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight-rear"));
     lights = new LightStrip();
-    slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
+    // slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
@@ -961,7 +957,7 @@ public class Robot extends LoggedRobot {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
-    autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
+    // autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
     autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());

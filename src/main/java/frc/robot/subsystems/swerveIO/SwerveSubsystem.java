@@ -197,8 +197,10 @@ public class SwerveSubsystem extends SubsystemBase {
     Pose2d fPose = new Pose2d(fVal[0], fVal[1], Rotation2d.fromDegrees(fVal[5]));
 
     if (fPose.getX() == 0 && fPose.getY() == 0 && fPose.getRotation().getDegrees() == 0) {
+      Logger.getInstance().recordOutput("Vision/Got empty field pose", true);
       return;
     }
+    Logger.getInstance().recordOutput("Vision/Got empty field pose", false);
 
     double jump_distance =
         Units.metersToInches(
@@ -207,10 +209,10 @@ public class SwerveSubsystem extends SubsystemBase {
                 .getTranslation()
                 .getDistance(fPose.getTranslation()));
     Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
-    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
-      poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp());
-    }
+    // if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+    // && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
+    poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
+    // }
   }
 
   /**

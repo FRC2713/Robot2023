@@ -14,7 +14,6 @@ import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
-import frc.robot.subsystems.slapperIO.Slapper;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath.Autos;
 import frc.robot.util.SuperstructureConfig;
@@ -71,22 +70,22 @@ public class SlapConeCubeConeOver extends SequentialCommandGroup {
 
   public SlapConeCubeConeOver() {
     addCommands(
-        new InstantCommand(
-            () -> {
-              Robot.swerveDrive.resetOdometry(
-                  Autos.REVERSE_ONE_TO_A.getTrajectory().getInitialHolonomicPose());
-            }),
-        Slapper.Commands.sendItAndWait(),
-        new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
-        Commands.parallel(
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                Autos.REVERSE_ONE_TO_A.getTrajectory()),
-            Commands.sequence(
-                new WaitCommand(0.5),
-                Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
-                startIntake(),
-                new WaitCommand(0.5),
-                Slapper.Commands.comeBackHome())),
+        // new InstantCommand(
+        //     () -> {
+        //       Robot.swerveDrive.resetOdometry(
+        //           Autos.REVERSE_ONE_TO_A.getTrajectory().getInitialHolonomicPose());
+        //     }),
+        // Slapper.Commands.sendItAndWait(),
+        // new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
+        // Commands.parallel(
+        //     SwerveSubsystem.Commands.stringTrajectoriesTogether(
+        //         Autos.REVERSE_ONE_TO_A.getTrajectory()),
+        //     Commands.sequence(
+        //         new WaitCommand(0.5),
+        //         Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
+        //         startIntake(),
+        //         new WaitCommand(0.5),
+        //         Slapper.Commands.comeBackHome())),
         stopIntake(),
         Commands.parallel(
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),

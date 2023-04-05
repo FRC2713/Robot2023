@@ -6,9 +6,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 
 public class VisionLimelight implements VisionIO {
+  String name;
+
+  public VisionLimelight(String name) {
+    this.name = name;
+  }
 
   private NetworkTable getTable() {
-    return NetworkTableInstance.getDefault().getTable("limelight");
+    return NetworkTableInstance.getDefault().getTable(name);
   }
 
   private NetworkTableEntry getEntry(String entryName) {
@@ -77,5 +82,11 @@ public class VisionLimelight implements VisionIO {
           .getEntry("snapshot")
           .setNumber(mode.value);
     }
+  }
+
+  @Override
+  public String getName() {
+    // TODO Auto-generated method stub
+    return name;
   }
 }
