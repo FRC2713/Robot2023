@@ -31,7 +31,10 @@ public class Slapper extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.velocityRPM - targetangleDeg) < 0.5;
+    if (!usePid) {
+      return Math.abs(inputs.positionDeg - targetangleDeg) < 10;
+    }
+    return Math.abs(inputs.positionDeg - targetangleDeg) < 0.5;
   }
 
   public void setTarget(double angleDeg) {
@@ -48,8 +51,9 @@ public class Slapper extends SubsystemBase {
     if (usePid) {
       effort = controller.calculate(inputs.positionDeg, targetangleDeg);
     } else {
-      effort = targetangleDeg * 10;
+      effort = !isAtTarget() ? (targetangleDeg - inputs.positionDeg) * 0.1 : 0;
     }
+
     effort += FF.calculate(Units.degreesToRadians(inputs.positionDeg), inputs.velocityRPM);
     effort = MathUtil.clamp(effort, -12, 12);
 
@@ -57,14 +61,6 @@ public class Slapper extends SubsystemBase {
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
     Logger.getInstance().recordOutput("Slapper/isAtTarget", isAtTarget());
     Logger.getInstance().recordOutput("Slapper/usingPID", usePid);
-
-    // Logger.getInstance()
-    // .recordOutput("Slapper/Setpoint Velocity",
-    // controller.getSetpoint().velocity);
-
-    // Logger.getInstance()
-    // .recordOutput("Slapper/Setpoint Position",
-    // controller.getSetpoint().position);
 
     IO.setVoltage(effort);
     IO.updateInputs(inputs);
@@ -75,26 +71,26 @@ public class Slapper extends SubsystemBase {
     IO.setCurrentLimit(currentLimit);
   }
 
+  public double getPositionDeg() {
+    return inputs.positionDeg;
+  }
+
   public static class Commands {
-    public static Command sendIt() {
+    public static Command sendItAndWait() {
       return new SequentialCommandGroup(
           new InstantCommand(
               () -> {
                 Robot.slapper.usePid = false;
-                Robot.slapper.setTarget(20);
+                Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
-          new WaitUntilCommand(() -> Robot.slapper.isAtTarget()),
-          new InstantCommand(
-              () -> {
-                Robot.slapper.usePid = true;
-              }));
+          new WaitUntilCommand(() -> Robot.slapper.isAtTarget()));
     }
 
     public static Command comeBackHome() {
       return new InstantCommand(
           () -> {
             Robot.slapper.usePid = true;
-            Robot.slapper.setTarget(90);
+            Robot.slapper.setTarget(Constants.SlapperConstants.RESTING_DEG);
           });
     }
   }

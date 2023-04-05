@@ -156,12 +156,17 @@ public final class Constants {
   @UtilityClass
   public static class SlapperConstants {
     public static final DCMotor MOTOR = DCMotor.getNEO(1);
-    public static final double GEARING = 5;
+    public static final double GEARING = 48;
     public static final double LENGTH_METRES = Units.inchesToMeters(36);
-    public static final PIDFFGains GAINS =
-        PIDFFGains.builder("Slapper Gains").kP(3).kD(0.6).build();
-    public static final double MIN_ANGLE_DEG = 0;
-    public static final double MAX_ANGLE_DEG = 120;
+    public static final PIDFFGains GAINS = PIDFFGains.builder("Slapper Gains").kP(0.5).build();
+
+    // Degrees as measured on Unit Circle
+    public static final double MIN_ANGLE_DEG = Constants.SlapperConstants.FULL_SEND_DEG;
+    public static final double MAX_ANGLE_DEG = Constants.SlapperConstants.RESTING_DEG;
+
+    public static final double FULL_SEND_DEG = 8;
+    public static final double RESTING_DEG = 90 + 15.5;
+
     public static final double MOI = 0.5;
     public static final int CURRENT_LIMIT = 20;
     public static final double POSITION_CONVERSION_FACTOR = 1 / GEARING;
