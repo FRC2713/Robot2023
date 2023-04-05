@@ -32,10 +32,7 @@ public class Slapper extends SubsystemBase {
 
   public boolean isAtTarget() {
     if (!usePid) {
-      if (Math.signum(targetangleDeg) == -1) {
-        return inputs.positionDeg <= targetangleDeg;
-      }
-      return inputs.positionDeg >= targetangleDeg;
+      return Math.abs(inputs.positionDeg - targetangleDeg) < 10;
     }
     return Math.abs(inputs.positionDeg - targetangleDeg) < 0.5;
   }
@@ -76,6 +73,10 @@ public class Slapper extends SubsystemBase {
     IO.setCurrentLimit(currentLimit);
   }
 
+  public double getPositionDeg() {
+    return inputs.positionDeg;
+  }
+
   public static class Commands {
     public static Command sendItAndWait() {
       return new SequentialCommandGroup(
@@ -84,11 +85,7 @@ public class Slapper extends SubsystemBase {
                 Robot.slapper.usePid = false;
                 Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
-          new WaitUntilCommand(() -> Robot.slapper.isAtTarget()),
-          new InstantCommand(
-              () -> {
-                Robot.slapper.usePid = true;
-              }));
+          new WaitUntilCommand(() -> Robot.slapper.isAtTarget()));
     }
 
     public static Command comeBackHome() {

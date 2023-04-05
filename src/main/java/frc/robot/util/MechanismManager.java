@@ -13,18 +13,27 @@ import frc.robot.Robot;
 public class MechanismManager {
   private final Mechanism2d mech;
   private final MechanismRoot2d root;
+  private final MechanismRoot2d slapperRoot;
   private final MechanismLigament2d m_elevator;
+  private final MechanismLigament2d m_slapper;
   private final MechanismLigament2d m_four;
   private final MechanismLigament2d m_front;
   // private final MechanismLigament2d m_four_two;
 
   public MechanismManager() {
     mech = new Mechanism2d(50, 50);
+    slapperRoot = mech.getRoot("slapper", 15, 0);
 
     // Root node
     root = mech.getRoot("climber", 2, 0);
 
     // Subsystems
+
+    // Slapper
+    m_slapper =
+        slapperRoot.append(
+            new MechanismLigament2d("Slapper", 15, 0, 6, new Color8Bit(Color.kAzure)));
+    m_slapper.append(new MechanismLigament2d("CONE", 3, 0, 20, new Color8Bit(Color.kYellow)));
 
     // Elevator
     m_elevator =
@@ -62,5 +71,6 @@ public class MechanismManager {
     // m_four_two.setAngle(Units.radiansToDegrees(Robot.four.getCurrentRads()));
     m_elevator.setLength(Robot.elevator.getCurrentHeight());
     m_front.setAngle(-45 - Robot.fourBar.getCurrentDegs());
+    m_slapper.setAngle(Robot.slapper.getPositionDeg());
   }
 }
