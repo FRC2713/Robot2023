@@ -108,7 +108,7 @@ public class SwerveModule extends SubsystemBase {
         driveController.calculate(
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
 
-    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) < 0.1 || Robot.isSimulation();
+    boolean useMotorEncoder =true;//= Math.abs(inputs.aziEncoderPositionDeg) < 0.1 || Robot.isSimulation();
     boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) < 0.1;
     double feedbackVal;
     if (useMotorEncoder) {
