@@ -282,7 +282,7 @@ public final class Constants {
             .driveCANId(1)
             .aziCANId(2)
             .aziEncoderCANId(zero)
-            .offset(0.317)
+            .offset(0.807)
             .location(FRONT_LEFT_LOCATION)
             .build();
 
@@ -294,7 +294,7 @@ public final class Constants {
             .driveCANId(3)
             .aziCANId(4)
             .aziEncoderCANId(1)
-            .offset(0.527)
+            .offset(0.024)
             .location(FRONT_RIGHT_LOCATION)
             .build();
 
@@ -306,7 +306,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.86)
+            .offset(0.0)
             .location(BACK_LEFT_LOCATION)
             .build();
 
@@ -318,7 +318,7 @@ public final class Constants {
             .driveCANId(5)
             .aziCANId(6)
             .aziEncoderCANId(3)
-            .offset(0.851)
+            .offset(0.352)
             .location(BACK_RIGHT_LOCATION)
             .build();
 
