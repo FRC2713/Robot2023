@@ -306,7 +306,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.0)
+            .offset(0.317)
             .location(BACK_LEFT_LOCATION)
             .build();
 
