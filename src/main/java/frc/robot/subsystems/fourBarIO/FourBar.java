@@ -64,6 +64,7 @@ public class FourBar extends SubsystemBase {
     // voltageController.reset(Units.degreesToRadians(inputs.angleDegreesOne),
     // Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
     this.targetDegs = targetDegs;
+    mode = FourBarMode.CLOSED_LOOP;
   }
 
   public boolean isAtTarget() {
@@ -184,6 +185,7 @@ public class FourBar extends SubsystemBase {
         }
         break;
       case OPEN_LOOP:
+        voltage = -1 * Robot.operator.getLeftX();
         break;
     }
 

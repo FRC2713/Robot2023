@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
+import frc.robot.subsystems.fourBarIO.FourBar.FourBarMode;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -736,6 +738,31 @@ public class Robot extends LoggedRobot {
                 FourBar.Commands.retract()));
 
     operator.start().onTrue(FourBar.Commands.reset());
+
+    operator
+        .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.seed();
+                }));
+
+    operator
+        .axisGreaterThan(XboxController.Axis.kLeftX.value, 0.1)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  fourBar.setMode(FourBarMode.OPEN_LOOP);
+                }));
+
+    operator
+        .axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  elevator.manualControl = true;
+                }));
+
     operator
         .back()
         .onTrue(

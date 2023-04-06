@@ -22,6 +22,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorInputsAutoLogged inputs;
   private final ElevatorIO IO;
   private double targetHeight = 0.0;
+  public boolean manualControl = false;
   private final ElevatorFeedforward feedforward;
 
   public Elevator(ElevatorIO IO) {
@@ -36,6 +37,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setTargetHeight(double targetHeightInches) {
+    manualControl = false;
     if (targetHeightInches > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES)) {
       RedHawkUtil.ErrHandler.getInstance().addError("Target height too high");
       this.targetHeight =
@@ -67,6 +69,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public void periodic() {
+    IO.updateInputs(inputs);
+
+    Logger.getInstance()
+        .recordOutput("Elevator/Left is NaN", Double.isNaN(inputs.heightInchesLeft));
+
     double effortLeft =
         elevatorController.calculate(
             // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
@@ -78,6 +85,11 @@ public class Elevator extends SubsystemBase {
           feedforward.calculate(
               elevatorController.getSetpoint().position, elevatorController.getSetpoint().velocity);
     }
+
+    if (manualControl) {
+      effortLeft = -1 * Robot.operator.getLeftY();
+    }
+
     effortLeft = MathUtil.clamp(effortLeft, -12, 12);
 
     Logger.getInstance()
@@ -85,7 +97,6 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance()
         .recordOutput("Elevator/Setpoint Position", elevatorController.getSetpoint().position);
 
-    IO.updateInputs(inputs);
     IO.setVoltage(effortLeft);
     Logger.getInstance().recordOutput("Elevator/Target Height", targetHeight);
     Logger.getInstance().recordOutput("Elevator/Control Effort", effortLeft);
