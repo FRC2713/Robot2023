@@ -231,10 +231,10 @@ public final class Constants {
     // 1;
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
-    public static final int DRIVE_CURRENT_LIMIT = 30;
+    public static final int DRIVE_CURRENT_LIMIT = 50;
     public static final int AZI_CURRENT_LIMIT = 20;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
@@ -374,8 +374,8 @@ public final class Constants {
 
     public static final SuperstructureConfig INTAKE_SHELF_CONE =
         SuperstructureConfig.builder()
-            .elevatorPosition(40)
-            .fourBarPosition(90)
+            .elevatorPosition(42.875)
+            .fourBarPosition(50)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();

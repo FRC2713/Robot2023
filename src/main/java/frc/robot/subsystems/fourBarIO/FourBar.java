@@ -67,11 +67,11 @@ public class FourBar extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return Math.abs(inputs.angleDegreesOne - targetDegs) < 2;
+    return Math.abs(inputs.absoluteEncoderAdjustedAngle - targetDegs) < 2;
   }
 
   public double getCurrentDegs() {
-    return inputs.angleDegreesOne;
+    return inputs.absoluteEncoderAdjustedAngle;
   }
 
   public void reseed() {
@@ -94,9 +94,9 @@ public class FourBar extends SubsystemBase {
   }
 
   public void reset() {
-    voltageController.reset(
-        Units.degreesToRadians(computeOffsetAngle()),
-        Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
+    // voltageController.reset(
+    //     Units.degreesToRadians(computeOffsetAngle()),
+    //     Units.degreesToRadians(inputs.velocityDegreesPerSecondOne));
   }
 
   public void setMode(FourBarMode newMode) {

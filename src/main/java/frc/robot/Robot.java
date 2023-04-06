@@ -65,6 +65,7 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.Vision.Limelights;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
@@ -323,7 +324,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -423,7 +424,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -470,7 +471,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -730,7 +731,9 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition())),
+                new WaitUntilCommand(() -> intake.hasGamepiece()),
+                FourBar.Commands.retract()));
 
     operator.start().onTrue(FourBar.Commands.reset());
     operator
@@ -757,7 +760,9 @@ public class Robot extends LoggedRobot {
                             SuperstructureConstants.HOLD_CONE.getTopRPM()),
                         Intake.Commands.setBottomVelocityRPM(
                             SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new InstantCommand(),
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(0),
+                        Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece())));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
@@ -865,11 +870,15 @@ public class Robot extends LoggedRobot {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    if (frontfQueue.length > 0 && frontcQueue.length > 0) {
+    if (frontfQueue.length > 0
+        && frontcQueue.length > 0
+        && vision.hasMultipleTargets(Limelights.FRONT)) {
       TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
-    } else if (rearfQueue.length > 0 && rearcQueue.length > 0) {
+    } else if (rearfQueue.length > 0
+        && rearcQueue.length > 0
+        && vision.hasMultipleTargets(Limelights.REAR)) {
       TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);

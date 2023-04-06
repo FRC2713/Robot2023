@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
   private boolean previouslyHadGamePiece = false;
 
   private Timer timer = new Timer();
-  private Debouncer debouncer = new Debouncer(1);
+  private Debouncer debouncer = new Debouncer(0.1);
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.04, 0.02);
   private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.04, 0.02);
 

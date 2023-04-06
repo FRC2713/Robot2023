@@ -298,6 +298,10 @@ public class Vision extends SubsystemBase {
         : new double[] {};
   }
 
+  public boolean hasMultipleTargets(Limelights limelight) {
+    return (limelight == Limelights.FRONT ? frontInputs.numTargets : rearInputs.numTargets) > 1;
+  }
+
   public void periodic() {
     frontIO.updateInputs(frontInputs);
     rearIO.updateInputs(rearInputs);
