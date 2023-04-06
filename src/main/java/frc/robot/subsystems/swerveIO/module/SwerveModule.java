@@ -57,6 +57,10 @@ public class SwerveModule extends SubsystemBase {
     io.seed();
   }
 
+  private void recordOutput(String key, double value) {
+    Logger.getInstance().recordOutput("Swerve/" + information.getName() + '/' + key, value);
+  }
+
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         inputs.driveEncoderPositionMetres, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
@@ -120,8 +124,8 @@ public class SwerveModule extends SubsystemBase {
 
     final double turnOutput = azimuthController.calculate(feedbackVal, state.angle.getDegrees());
 
-    Logger.getInstance().recordOutput("Drive Output", driveOutput);
-    Logger.getInstance().recordOutput("Turn Output", turnOutput);
+    recordOutput("Drive Output", driveOutput);
+    recordOutput("Turn Output", turnOutput);
 
     io.setDriveVoltage(driveOutput);
     io.setAzimuthVoltage(turnOutput);
@@ -133,23 +137,13 @@ public class SwerveModule extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swerve/" + information.getName(), inputs);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Azimuth Error",
-            state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Drive Error",
-            state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Target Speed", state.speedMetersPerSecond);
-    Logger.getInstance()
-        .recordOutput("Swerve/" + information.getName() + "/Angle Speed", state.angle.getDegrees());
-
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Azimuth Encoder Delta",
-            inputs.aziEncoderPositionDeg - inputs.aziAbsoluteEncoderAdjAngleDeg);
+    recordOutput("Azimuth Error", state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
+    recordOutput(
+        "Drive Error", state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
+    recordOutput("Target Speed", state.speedMetersPerSecond);
+    recordOutput("Angle Speed", state.angle.getDegrees());
+    recordOutput(
+        "Azimuth Encoder Delta",
+        inputs.aziEncoderPositionDeg - inputs.aziAbsoluteEncoderAdjAngleDeg);
   }
 }
