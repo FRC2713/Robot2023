@@ -917,7 +917,7 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-    swerveDrive.seed();
+    // swerveDrive.seed();
 
     Robot.motionMode = MotionMode.LOCKDOWN;
 
