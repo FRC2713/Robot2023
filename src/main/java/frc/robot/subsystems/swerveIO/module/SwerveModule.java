@@ -124,8 +124,8 @@ public class SwerveModule extends SubsystemBase {
 
     final double turnOutput = azimuthController.calculate(feedbackVal, state.angle.getDegrees());
 
-    recordOutput("Drive Output", driveOutput);
-    recordOutput("Turn Output", turnOutput);
+    recordOutput("DesiredDriveOutput", driveOutput);
+    recordOutput("DesiredAziOutput", turnOutput);
 
     io.setDriveVoltage(driveOutput);
     io.setAzimuthVoltage(turnOutput);
