@@ -71,7 +71,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
 
     for (int i = 0; i < 30; i++) {
-      seed();
+      // seed();
     }
 
     driver.setCANTimeout(0);
