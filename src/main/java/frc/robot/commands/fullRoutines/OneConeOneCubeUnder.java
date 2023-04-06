@@ -91,9 +91,9 @@ public class OneConeOneCubeUnder extends SequentialCommandGroup {
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
         stopIntake(),
         Commands.parallel(
-            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
+            prepScore(SuperstructureConstants.SCORE_CUBE_LOW),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_EIGHT.getTrajectory())),
-        score(SuperstructureConstants.SCORE_CUBE_HIGH),
+        score(SuperstructureConstants.SCORE_CUBE_LOW),
         stopIntake(),
         Elevator.Commands.setToHeightAndWait(Constants.zero));
   }
