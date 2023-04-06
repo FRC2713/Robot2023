@@ -41,7 +41,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
             this.information.getAziEncoderCANId(), this.information.getOffset());
     driver = new CANSparkMax(this.information.getDriveCANId(), MotorType.kBrushless);
     azimuth = new CANSparkMax(this.information.getAziCANId(), MotorType.kBrushless);
-     
+
     // driver.restoreFactoryDefaults();
     // azimuth.restoreFactoryDefaults();
 
