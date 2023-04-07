@@ -73,12 +73,8 @@ public class FourBarIOSparks implements FourBarIO {
         .enableLimitSwitch(true);
 
     fourBarOne.burnFlash();
-    Timer timer = new Timer();
-    timer.start();
-    while (timer.get() < 0.1) {
-      continue;
+    Thread.sleep(1000, 0);
     }
-  }
 
   @Override
   public void updateInputs(FourBarInputs inputs) {
