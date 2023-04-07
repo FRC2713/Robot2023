@@ -1,7 +1,5 @@
 package frc.robot.subsystems.fourBarIO;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,6 +10,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
@@ -95,12 +94,12 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
-  
-      Logger.getInstance().recordOutput("4Bar/Value changed", absoluteEncoder.getPosition() != inputs.absoluteEncoderVolts);
-  
-   
-  inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
-  inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
+    Logger.getInstance()
+        .recordOutput(
+            "4Bar/Value changed", Math.abs(absoluteEncoder.getPosition() - inputs.absoluteEncoderVolts) > 0.5);
+
+    inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
+    inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
     //     fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
   }
