@@ -740,7 +740,7 @@ public class Robot extends LoggedRobot {
     operator.start().onTrue(FourBar.Commands.reset());
 
     operator
-        .povLeft()
+        .rightStick()
         .onTrue(
             new InstantCommand(
                 () -> {
