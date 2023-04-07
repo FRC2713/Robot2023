@@ -24,6 +24,7 @@ import org.littletonrobotics.junction.Logger;
 
 @UtilityClass
 public final class RedHawkUtil {
+
   /**
    * Checks whether the given REVLibError is actually an error, and then logs it to AdvantageScope
    * and SmartDasboard. SmartDashboard variable logged is "RevLibError" and "RevLibError/name"
