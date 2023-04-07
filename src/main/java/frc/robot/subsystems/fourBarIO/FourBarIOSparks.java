@@ -8,6 +8,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
@@ -72,6 +73,11 @@ public class FourBarIOSparks implements FourBarIO {
         .enableLimitSwitch(true);
 
     fourBarOne.burnFlash();
+    Timer timer = new Timer();
+    while(timer.get() < 2) {
+
+    }
+    
   }
 
   @Override
