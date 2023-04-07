@@ -210,8 +210,8 @@ public class SwerveSubsystem extends SubsystemBase {
                 .getDistance(fPose.getTranslation()));
     Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
     if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-    && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
-    poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
+        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
+      poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
     }
   }
 
