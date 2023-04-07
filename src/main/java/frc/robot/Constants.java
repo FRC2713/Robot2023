@@ -306,7 +306,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.86)
+            .offset(0.852)
             .location(BACK_LEFT_LOCATION)
             .build();
 
@@ -336,7 +336,7 @@ public final class Constants {
           PIDFFGains.builder("Trajectory Controller Y-Axis").kP(7).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
-          PIDFFGains.builder("Trajectory Controller Rotation").kP(2).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(2.5).kD(0.0).build();
     }
 
     public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =
