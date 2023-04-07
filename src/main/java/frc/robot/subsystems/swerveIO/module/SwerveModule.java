@@ -112,8 +112,8 @@ public class SwerveModule extends SubsystemBase {
     boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) < 0.1;
     double feedbackVal;
     // if (useMotorEncoder) {
-      feedbackVal = inputs.aziEncoderPositionDeg;
-      Logger.getInstance().recordOutput("Azimuth feedback source", "motor");
+    feedbackVal = inputs.aziEncoderPositionDeg;
+    Logger.getInstance().recordOutput("Azimuth feedback source", "motor");
     // } else if (useAbsoluteEncoder) {
     //   feedbackVal = inputs.aziAbsoluteEncoderAdjAngleDeg;
     //   Logger.getInstance().recordOutput("Azimuth feedback source", "absolute encoder");
