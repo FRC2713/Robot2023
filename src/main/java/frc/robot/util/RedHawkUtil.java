@@ -228,6 +228,7 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+
   }
 
   // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
@@ -253,6 +254,7 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
@@ -278,6 +280,7 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
