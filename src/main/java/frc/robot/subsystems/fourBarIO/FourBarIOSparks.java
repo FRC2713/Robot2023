@@ -74,10 +74,10 @@ public class FourBarIOSparks implements FourBarIO {
 
     fourBarOne.burnFlash();
     Timer timer = new Timer();
-    while(timer.get() < 2) {
-
+    timer.start();
+    while (timer.get() < 2) {
+      continue;
     }
-    
   }
 
   @Override
