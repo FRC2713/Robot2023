@@ -87,15 +87,14 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
-            Commands.sequence(
-                new WaitCommand(0.5),
-                startIntake())),
+            Commands.sequence(new WaitCommand(0.5), startIntake())),
         stopIntake(),
         Commands.sequence(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.A_TO_TWO.getTrajectory()),
             prepScore(SuperstructureConstants.SCORE_CUBE_HIGH)),
         score(SuperstructureConstants.SCORE_CUBE_HIGH),
-        Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),
+        stopIntake(),
+        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.TWO_TO_B.getTrajectory()),
             Commands.sequence(new WaitCommand(1), startIntake())),
