@@ -754,9 +754,6 @@ public class LimelightHelpers {
         System.err.println("lljson error: " + e.getMessage());
       }
     }
-    else {
-       System.err.println("Empty LLJSON");
-    }
 
     long end = System.nanoTime();
     double millis = (end - start) * .000001;
