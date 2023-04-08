@@ -83,12 +83,12 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
         Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
         score(SuperstructureConstants.SCORE_CONE_HIGH),
         stopIntake(),
+        Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.ONE_TO_A.getTrajectory()),
             new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
             Commands.sequence(
                 new WaitCommand(0.5),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
                 startIntake())),
         stopIntake(),
         Commands.sequence(
