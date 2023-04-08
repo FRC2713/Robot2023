@@ -747,13 +747,14 @@ public class LimelightHelpers {
     }
 
     String jsonDump = getJSONDump(limelightName);
-    if(!jsonDump.isEmpty()) {
-    try {
-      results = mapper.readValue(jsonDump, LimelightResults.class);
-    } catch (JsonProcessingException e) {
-      System.err.println("lljson error: " + e.getMessage());
+    if (!jsonDump.isEmpty()) {
+      try {
+        results = mapper.readValue(jsonDump, LimelightResults.class);
+      } catch (JsonProcessingException e) {
+        System.err.println("lljson error: " + e.getMessage());
+      }
     }
-  }
+    System.err.println("Empty LLJSON")
 
     long end = System.nanoTime();
     double millis = (end - start) * .000001;
