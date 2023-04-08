@@ -31,7 +31,7 @@ public class OneConeTwoCubeOver extends SequentialCommandGroup {
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setToAngle(config.getFourBarPosition()));
+        FourBar.Commands.setAngleDegAndWait(config.getFourBarPosition()));
   }
 
   private Command startIntake() {
