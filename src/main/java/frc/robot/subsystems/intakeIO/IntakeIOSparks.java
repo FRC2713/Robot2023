@@ -49,8 +49,8 @@ public class IntakeIOSparks implements IntakeIO {
     bottomRoller
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
-    // topRoller.burnFlash();
-    // bottomRoller.burnFlash();
+    topRoller.burnFlash();
+    bottomRoller.burnFlash();
   }
 
   @Override

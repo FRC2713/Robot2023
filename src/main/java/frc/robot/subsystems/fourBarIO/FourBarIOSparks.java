@@ -70,7 +70,7 @@ public class FourBarIOSparks implements FourBarIO {
         .getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen)
         .enableLimitSwitch(true);
 
-    // fourBarOne.burnFlash();
+    fourBarOne.burnFlash();
   }
 
   @Override

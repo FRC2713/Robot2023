@@ -244,16 +244,16 @@ public final class RedHawkUtil {
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+    // spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
 
     // alt encoder velocity, alt encoder position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+    // spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
 
     // duty cycle absolute encoder position, duty cycle absolute encoder angle
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+    // spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+    // spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
     configureDefaultTrafficSpark(spark);
   }
 
