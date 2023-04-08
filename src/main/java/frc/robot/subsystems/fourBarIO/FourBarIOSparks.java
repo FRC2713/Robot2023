@@ -72,12 +72,6 @@ public class FourBarIOSparks implements FourBarIO {
         .enableLimitSwitch(true);
 
     fourBarOne.burnFlash();
-    try {
-      Thread.sleep(1000, 0);
-    }
-    catch(Exception e) {
-      
-    }
   }
 
   @Override
@@ -100,12 +94,6 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
-    // Logger.getInstance()
-    //     .recordOutput(
-    //         "4Bar/Value changed",
-    //         Math.abs(absoluteEncoder.getPosition() - inputs.absoluteEncoderVolts) > 0.5);
-    Logger.getInstance()
-        .recordOutput("4Bar/Value changed", Double.isNaN(absoluteEncoder.getPosition()));
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
