@@ -746,11 +746,14 @@ public class LimelightHelpers {
           new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    String jsonDump = getJSONDump(limelightName);
+    if(!jsonDump.isEmpty()) {
     try {
-      results = mapper.readValue(getJSONDump(limelightName), LimelightResults.class);
+      results = mapper.readValue(jsonDump, LimelightResults.class);
     } catch (JsonProcessingException e) {
       System.err.println("lljson error: " + e.getMessage());
     }
+  }
 
     long end = System.nanoTime();
     double millis = (end - start) * .000001;
