@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
 
 public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
-    double setpoint, tolerance;
+    double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
     public double speed = 0.75;
     private double prevError = 0;
@@ -31,17 +32,19 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
 
     double calculate(double measurement) {
       double currentError = measurement - setpoint;
+      double rollSpeed = Math.abs(measurement - lastMeasurement);
       if (Math.signum(prevError) != Math.signum(currentError)) {
         speed *= .9;
       }
       var out = limiter.calculate(speed);
-      if (currentError > tolerance && Robot.swerveDrive.filteredRollVal < 1) {
+      if (currentError > tolerance && rollSpeed < 1) {
         prevError = currentError;
         return -out;
-      } else if (currentError < -tolerance && Robot.swerveDrive.filteredRollVal < 1) {
+      } else if (currentError < -tolerance && rollSpeed < 1) {
         prevError = currentError;
         return out;
       }
+      lastMeasurement = measurement;
       return 0;
     }
   }
@@ -73,6 +76,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
             .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
+            new WaitCommand(0.25),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;

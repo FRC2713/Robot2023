@@ -37,6 +37,7 @@ import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.FastThreeCubeOver;
 import frc.robot.commands.fullRoutines.OneConeBridge;
@@ -1002,7 +1003,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
-    autoChooser.addOption("HamBridge", new HamBridge());
+    autoChooser.addOption("Experimental PID Bridge", new PIDOnBridgeExperimental(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
