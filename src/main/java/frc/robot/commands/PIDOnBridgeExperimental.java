@@ -86,15 +86,6 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
                           0,
                           0,
                           Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
-            }),
-        new InstantCommand(
-            () ->
-                Robot.swerveDrive.setModuleStates(
-                    DriveConstants.KINEMATICS.toSwerveModuleStates(
-                        ChassisSpeeds.fromFieldRelativeSpeeds(
-                            0,
-                            0,
-                            0,
-                            Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))))));
+            }));
   }
 }
