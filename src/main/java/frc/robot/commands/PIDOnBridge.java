@@ -52,9 +52,9 @@ public class PIDOnBridge extends SequentialCommandGroup {
   public PIDOnBridge(boolean gridside) {
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
-      rampSpeed = 1.75;
+      rampSpeed = 2;
     } else {
-      rampSpeed = -1.75;
+      rampSpeed = -2;
     }
 
     addCommands(
