@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
+import frc.robot.commands.HamBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
@@ -1001,6 +1002,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
+    autoChooser.addOption("HamBridge", new HamBridge());
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
