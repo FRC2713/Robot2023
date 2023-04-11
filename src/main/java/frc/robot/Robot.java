@@ -903,7 +903,7 @@ public class Robot extends LoggedRobot {
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
     // Autos.clearAll();
-    AutoPath.Autos.clearAll();
+    //AutoPath.Autos.clearAll();
 
     vision.setCurrentSnapshotMode(SnapshotMode.TWO_PER_SECOND);
   }
