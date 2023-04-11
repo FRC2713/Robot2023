@@ -20,7 +20,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
-    public double speed = 0.75;
+    public double speed = 1.0;
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
