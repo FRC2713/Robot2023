@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
-//if filter roll value changes by more than 1, whether it is above the tolerance level
-
+// if filter roll value changes by more than 1, whether it is above the tolerance level
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -76,7 +75,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
             .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
-            new WaitCommand(0.25),
+        new WaitCommand(0.25),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
