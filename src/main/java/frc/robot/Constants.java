@@ -201,9 +201,9 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(1.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(1.0);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
     public static final int DRIVE_CURRENT_LIMIT = 30;
