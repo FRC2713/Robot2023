@@ -36,10 +36,10 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
         speed *= .9;
       }
       var out = limiter.calculate(speed);
-      if (currentError > tolerance && rollSpeed < 1) {
+      if (currentError > tolerance && rollSpeed < 0.8) {
         prevError = currentError;
         return -out;
-      } else if (currentError < -tolerance && rollSpeed < 1) {
+      } else if (currentError < -tolerance && rollSpeed < 0.8) {
         prevError = currentError;
         return out;
       }
