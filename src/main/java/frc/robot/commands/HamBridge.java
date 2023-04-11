@@ -20,9 +20,9 @@ public class HamBridge extends SequentialCommandGroup {
       new RunCommand(
           () -> {
             double pidOutput =
-                MathUtil.clamp(
-                    balancePID.calculate(Robot.swerveDrive.filteredRollVal, 0), -1.0, 1.0);
+                    balancePID.calculate(Robot.swerveDrive.filteredRollVal, 0);
             Logger.getInstance().recordOutput("HamBridgePIDOutput", pidOutput);
+            pidOutput = MathUtil.clamp(pidOutput, -1.0, 1.0);
             Robot.swerveDrive.setModuleStates(
                 DriveConstants.KINEMATICS.toSwerveModuleStates(
                     ChassisSpeeds.fromFieldRelativeSpeeds(
