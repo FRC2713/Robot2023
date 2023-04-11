@@ -17,7 +17,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance;
     SlewRateLimiter limiter;
-    public double speed = 0.75;
+    public double speed = 0.9;
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
@@ -46,7 +46,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
   double maxRampAngle = 14;
   double rampSpeed = 0;
   double crawlSpeed = 0;
-  BangBang controller = new BangBang(0, 8);
+  BangBang controller = new BangBang(0, 9);
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridge(boolean gridside) {
