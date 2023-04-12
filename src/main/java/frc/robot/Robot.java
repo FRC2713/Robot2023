@@ -179,7 +179,7 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    // fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision =
@@ -189,7 +189,7 @@ public class Robot extends LoggedRobot {
     lights = new LightStrip();
     // slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
 
-    fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
+    // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
     // intake = new Intake(true ? new IntakeIOSim() : new IntakeIOSparks());
     // vision = new Vision(true ? new VisionIOSim() : new VisionLimelight());
