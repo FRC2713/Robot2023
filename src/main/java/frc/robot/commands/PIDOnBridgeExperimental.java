@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
+import org.littletonrobotics.junction.Logger;
 
 public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
@@ -35,15 +34,14 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
         speed *= .9;
       }
       lastMeasurement = measurement;
+      prevError = currentError;
       var out = limiter.calculate(speed);
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.75) {
-        prevError = currentError;
         return -out;
       } else if (currentError < -tolerance && rollSpeed < 0.75) {
-        prevError = currentError;
         return out;
       }
       return 0;
