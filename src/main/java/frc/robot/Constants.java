@@ -170,7 +170,7 @@ public final class Constants {
     public static final double MOI = 0.5;
     public static final int CURRENT_LIMIT = 2;
     public static final double POSITION_CONVERSION_FACTOR = 360 / GEARING;
-    public static final double VELOCITY_CONVERSION_FACTOR = 360 / GEARING;
+    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
   }
 
   @UtilityClass
