@@ -18,13 +18,10 @@ public class Slapper extends SubsystemBase {
   private double targetangleDeg = SlapperConstants.RESTING_DEG;
   public PIDController controller;
   public boolean usePid = true;
-  private final ArmFeedforward FF;
-
   public boolean scoring = false;
 
   public Slapper(SlapperIO IO) {
     this.controller = Constants.SlapperConstants.GAINS.createWpilibController();
-    this.FF = Constants.SlapperConstants.GAINS.createArmFeedforward();
     this.inputs = new SlapperInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
