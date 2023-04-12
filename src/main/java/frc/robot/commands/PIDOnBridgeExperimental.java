@@ -2,8 +2,6 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
-// if filter roll value changes by more than 1, whether it is above the tolerance level
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
