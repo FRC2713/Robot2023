@@ -21,11 +21,11 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     public double speed = 0.75;
     private double prevError = 0;
 
-    public BangBang(double setpoint, double tolerance) {
-      speed = 0.75;
+    public BangBang(double setpoint, double tolerance, double crawlSpeed) {
+      this.speed = crawlSpeed;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
-      limiter = new SlewRateLimiter(speed);
+      this.limiter = new SlewRateLimiter(speed);
     }
 
     double calculate(double measurement) {
@@ -51,16 +51,17 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
 
   double maxRampAngle = 14;
   double rampSpeed = 0;
-  double crawlSpeed = 0;
+  BangBang controller;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridgeExperimental(boolean gridside) {
-    BangBang controller = new BangBang(0, 4.5);
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.75;
+      controller = new BangBang(0, 4.5, 0.75);
     } else {
       rampSpeed = -1.75;
+      controller = new BangBang(0, 4.5, -0.75);
     }
 
     addCommands(
