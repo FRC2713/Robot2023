@@ -1,18 +1,16 @@
 package frc.robot.subsystems.fourBarIO;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne, fourBarTwo;
@@ -57,9 +55,7 @@ public class FourBarIOSparks implements FourBarIO {
 
     absoluteEncoder.setZeroOffset(0);
 
-    Timer.delay(0.2);
-    fourBarOne.burnFlash();
-    Timer.delay(0.2);
+    RedHawkUtil.burnSparkFlash(fourBarOne);
   }
 
   @Override
@@ -86,7 +82,7 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
     //     fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
-    Logger.getInstance().recordOutput("4Bar/isInverted", fourBarOne.getInverted());  
+    Logger.getInstance().recordOutput("4Bar/isInverted", fourBarOne.getInverted());
   }
 
   @Override

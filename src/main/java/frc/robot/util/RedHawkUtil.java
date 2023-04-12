@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -339,6 +340,12 @@ public final class RedHawkUtil {
 
     // accumulated gyro angles
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 10000);
+  }
+
+  public static void burnSparkFlash(CANSparkMax spark){
+    Timer.delay(0.2);
+    spark.burnFlash();
+    Timer.delay(0.2);
   }
 
   public PathPoint pathPointFromHolonomicPose(Pose2d pose) {
