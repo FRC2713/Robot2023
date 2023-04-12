@@ -49,7 +49,7 @@ public class Slapper extends SubsystemBase {
     IO.updateInputs(inputs);
 
     double effort = 0;
-    if (!isAtTarget()) effort = scoring ? 8 : -4;
+    if (!isAtTarget()) effort = scoring ? -8 : 4;
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
