@@ -168,9 +168,9 @@ public final class Constants {
     public static final double RESTING_DEG = 90 + 15.5;
 
     public static final double MOI = 0.5;
-    public static final int CURRENT_LIMIT = 20;
-    public static final double POSITION_CONVERSION_FACTOR = 1 / GEARING;
-    public static final double VELOCITY_CONVERSION_FACTOR = 1 / GEARING;
+    public static final int CURRENT_LIMIT = 2;
+    public static final double POSITION_CONVERSION_FACTOR = 360 / GEARING;
+    public static final double VELOCITY_CONVERSION_FACTOR = 360 / GEARING;
   }
 
   @UtilityClass

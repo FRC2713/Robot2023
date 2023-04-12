@@ -4,8 +4,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.Robot;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Slapper extends SubsystemBase {
@@ -50,7 +56,7 @@ public class Slapper extends SubsystemBase {
     }
 
     effort += FF.calculate(Units.degreesToRadians(inputs.positionDeg), inputs.velocityRPM);
-    effort = MathUtil.clamp(effort, -12, 12);
+    effort = MathUtil.clamp(effort, -1, 1);
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
@@ -70,23 +76,23 @@ public class Slapper extends SubsystemBase {
     return inputs.positionDeg;
   }
 
-  // public static class Commands {
-  //   public static Command sendItAndWait() {
-  //     return new SequentialCommandGroup(
-  //         new InstantCommand(
-  //             () -> {
-  //               Robot.slapper.usePid = false;
-  //               Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
-  //             }),
-  //         new WaitUntilCommand(() -> Robot.slapper.isAtTarget()));
-  //   }
+  public static class Commands {
+    public static Command sendItAndWait() {
+      return new SequentialCommandGroup(
+          new InstantCommand(
+              () -> {
+                Robot.slapper.usePid = false;
+                Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
+              }),
+          new WaitUntilCommand(() -> Robot.slapper.isAtTarget()));
+    }
 
-  //   public static Command comeBackHome() {
-  //     return new InstantCommand(
-  //         () -> {
-  //           Robot.slapper.usePid = true;
-  //           Robot.slapper.setTarget(Constants.SlapperConstants.RESTING_DEG);
-  //         });
-  //   }
-  // }
+    public static Command comeBackHome() {
+      return new InstantCommand(
+          () -> {
+            Robot.slapper.usePid = true;
+            Robot.slapper.setTarget(Constants.SlapperConstants.RESTING_DEG);
+          });
+    }
+  }
 }

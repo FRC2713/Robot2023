@@ -33,6 +33,8 @@ public class SlapperIOSparks implements SlapperIO {
     slapperMotor
         .getEncoder()
         .setVelocityConversionFactor(Constants.SlapperConstants.VELOCITY_CONVERSION_FACTOR);
+
+        slapperMotor.getEncoder().setPosition(Constants.SlapperConstants.MAX_ANGLE_DEG);
   }
 
   @Override
@@ -43,7 +45,7 @@ public class SlapperIOSparks implements SlapperIO {
     inputs.velocityRPM = slapperMotor.getEncoder().getVelocity();
     inputs.tempCelcius = slapperMotor.getMotorTemperature();
     inputs.currentAmps = slapperMotor.getOutputCurrent();
-    inputs.positionDeg = Units.rotationsToDegrees(slapperMotor.getEncoder().getPosition());
+    inputs.positionDeg = slapperMotor.getEncoder().getPosition();
     inputs.encoderPosition = slapperMotor.getAnalog(Mode.kAbsolute).getPosition();
     inputs.encoderVelocity = slapperMotor.getAnalog(Mode.kAbsolute).getVelocity();
     inputs.encoderVoltage = slapperMotor.getAnalog(Mode.kAbsolute).getVoltage();
