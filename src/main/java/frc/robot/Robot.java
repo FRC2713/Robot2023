@@ -114,6 +114,7 @@ public class Robot extends LoggedRobot {
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
   private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.25, 0.02);
+  public boolean slapping = true;
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);
@@ -1043,13 +1044,13 @@ public class Robot extends LoggedRobot {
       // if we are on blue, we are probably facing towards the blue DS, which is -x.
       // that corresponds to a 180 deg heading.
       if (checkedAlliance == Alliance.Blue) {
-        swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+        swerveDrive.resetGyro(Rotation2d.fromDegrees(slapping ? 0 : 180));
       }
 
       // if we are on red, we are probably facing towards the red DS, which is +x.
       // that corresponds to a 0 deg heading.
       if (checkedAlliance == Alliance.Red) {
-        swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+        swerveDrive.resetGyro(Rotation2d.fromDegrees(slapping ? 180 : 0));
       }
 
       goClosestGrid = new GoClosestGrid();
