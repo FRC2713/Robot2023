@@ -86,7 +86,7 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
     //     fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
-    Logger.getInstance().recordOutput('4Bar/isInverted', fourBarOne.getInverted());  
+    Logger.getInstance().recordOutput("4Bar/isInverted", fourBarOne.getInverted());  
   }
 
   @Override
