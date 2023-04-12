@@ -66,6 +66,8 @@ import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
 import frc.robot.subsystems.slapperIO.Slapper;
+import frc.robot.subsystems.slapperIO.SlapperIOSim;
+import frc.robot.subsystems.slapperIO.SlapperIOSparks;
 import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
 import frc.robot.subsystems.swerveIO.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
@@ -104,7 +106,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
-  //   public static Slapper slapper;
+  public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
@@ -184,7 +186,7 @@ public class Robot extends LoggedRobot {
             isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight"),
             isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight-rear"));
     lights = new LightStrip();
-    // slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
+    slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
@@ -798,9 +800,9 @@ public class Robot extends LoggedRobot {
                     () -> intake.hasGamepiece())));
 
     operator.rightTrigger(0.25).onTrue(Slapper.Commands.sendItAndWait());
-        // LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
-    operator.leftTrigger(0.25).onTrue(Slapper.Commands.goBackHome());
-        // LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
+    // LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    operator.leftTrigger(0.25).onTrue(Slapper.Commands.comeBackHome());
+    // LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     // operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
     // operator

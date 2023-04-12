@@ -34,7 +34,7 @@ public class SlapperIOSparks implements SlapperIO {
         .getEncoder()
         .setVelocityConversionFactor(Constants.SlapperConstants.VELOCITY_CONVERSION_FACTOR);
 
-        slapperMotor.getEncoder().setPosition(Constants.SlapperConstants.MAX_ANGLE_DEG);
+    slapperMotor.getEncoder().setPosition(Constants.SlapperConstants.MAX_ANGLE_DEG);
   }
 
   @Override
