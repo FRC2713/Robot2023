@@ -1022,14 +1022,14 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("OneConeOneCubeUnderHigh", new OneConeOneCubeUnderHigh());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
     autoChooser.addOption(
-        "FiveToBridge",
+        "Mobility",
         new SequentialCommandGroup(
             new InstantCommand(
                 () ->
                     swerveDrive.resetOdometry(
-                        AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory().getInitialHolonomicPose())),
+                        AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory())));
+                AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())));
   }
 
   public void checkAlliance() {
