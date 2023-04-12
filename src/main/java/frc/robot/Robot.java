@@ -46,6 +46,8 @@ import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
 import frc.robot.commands.fullRoutines.SimpleCone;
+import frc.robot.commands.fullRoutines.SlapConeCubeConeOver;
+import frc.robot.commands.fullRoutines.SlapConeCubeCubeOver;
 import frc.robot.commands.fullRoutines.ThreeCubeOver;
 import frc.robot.commands.fullRoutines.TwoConeOver;
 import frc.robot.commands.fullRoutines.TwoConeUnder;
@@ -995,7 +997,8 @@ public class Robot extends LoggedRobot {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
-    // autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
+    autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
+    autoChooser.addOption("SlapConeCubeCubeOver", new SlapConeCubeCubeOver());
     autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
