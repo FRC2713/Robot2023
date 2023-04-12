@@ -21,6 +21,7 @@ public class Slapper extends SubsystemBase {
   public PIDController controller;
   public boolean usePid = true;
   private final ArmFeedforward FF;
+
   public boolean scoring = false;
 
   public Slapper(SlapperIO IO) {
@@ -47,16 +48,10 @@ public class Slapper extends SubsystemBase {
   }
 
   public void periodic() {
-    double effort;
+    IO.updateInputs(inputs);
 
-    if (usePid) {
-      effort = controller.calculate(inputs.positionDeg, targetangleDeg);
-    } else {
-      effort = !isAtTarget() ? (targetangleDeg - inputs.positionDeg) * 0.1 : 0;
-    }
-
-    effort += FF.calculate(Units.degreesToRadians(inputs.positionDeg), inputs.velocityRPM);
-    effort = MathUtil.clamp(effort, -8, 8);
+    double effort = 0;
+    if (!isAtTarget()) effort = scoring ? 8 : 4;
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
@@ -64,7 +59,6 @@ public class Slapper extends SubsystemBase {
     Logger.getInstance().recordOutput("Slapper/usingPID", usePid);
 
     IO.setVoltage(effort);
-    IO.updateInputs(inputs);
     Logger.getInstance().processInputs("Slapper", inputs);
   }
 
@@ -81,7 +75,7 @@ public class Slapper extends SubsystemBase {
       return new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                Robot.slapper.usePid = false;
+                Robot.slapper.scoring = true;
                 Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
           new WaitUntilCommand(() -> Robot.slapper.isAtTarget()));
@@ -90,7 +84,7 @@ public class Slapper extends SubsystemBase {
     public static Command comeBackHome() {
       return new InstantCommand(
           () -> {
-            Robot.slapper.usePid = false;
+            Robot.slapper.scoring = false;
             Robot.slapper.setTarget(Constants.SlapperConstants.RESTING_DEG);
           });
     }
