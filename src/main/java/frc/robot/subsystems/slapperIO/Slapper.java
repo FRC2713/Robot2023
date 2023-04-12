@@ -55,7 +55,7 @@ public class Slapper extends SubsystemBase {
     }
 
     effort += FF.calculate(Units.degreesToRadians(inputs.positionDeg), inputs.velocityRPM);
-    effort = MathUtil.clamp(effort, -1, 1);
+    effort = MathUtil.clamp(effort, -2, 2);
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);

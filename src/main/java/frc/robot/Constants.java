@@ -164,11 +164,11 @@ public final class Constants {
     public static final double MIN_ANGLE_DEG = Constants.SlapperConstants.FULL_SEND_DEG;
     public static final double MAX_ANGLE_DEG = Constants.SlapperConstants.RESTING_DEG;
 
-    public static final double FULL_SEND_DEG = 8;
+    public static final double FULL_SEND_DEG = 10;
     public static final double RESTING_DEG = 90 + 15.5;
 
     public static final double MOI = 0.5;
-    public static final int CURRENT_LIMIT = 2;
+    public static final int CURRENT_LIMIT = 4;
     public static final double POSITION_CONVERSION_FACTOR = 360 / GEARING;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
   }
