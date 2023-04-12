@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.SlapperConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Slapper extends SubsystemBase {
   private final SlapperIO IO;
   private final SlapperInputsAutoLogged inputs;
-  private double targetangleDeg = 90.0;
+  private double targetangleDeg = SlapperConstants.RESTING_DEG;
   public PIDController controller;
   public boolean usePid = true;
   private final ArmFeedforward FF;
@@ -55,7 +57,7 @@ public class Slapper extends SubsystemBase {
     }
 
     effort += FF.calculate(Units.degreesToRadians(inputs.positionDeg), inputs.velocityRPM);
-    effort = MathUtil.clamp(effort, -2, 2);
+    effort = MathUtil.clamp(effort, -4, 4);
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
