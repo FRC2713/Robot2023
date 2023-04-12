@@ -90,7 +90,7 @@ public class Slapper extends SubsystemBase {
     public static Command comeBackHome() {
       return new InstantCommand(
           () -> {
-            Robot.slapper.usePid = true;
+            Robot.slapper.usePid = false;
             Robot.slapper.setTarget(Constants.SlapperConstants.RESTING_DEG);
           });
     }
