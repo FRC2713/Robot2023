@@ -32,7 +32,7 @@ public class Slapper extends SubsystemBase {
 
   public boolean isAtTarget() {
     if (!usePid) {
-      return Math.abs(inputs.positionDeg - targetangleDeg) < 10;
+      return Math.abs(inputs.positionDeg - targetangleDeg) < 5;
     }
     return Math.abs(inputs.positionDeg - targetangleDeg) < 0.5;
   }
