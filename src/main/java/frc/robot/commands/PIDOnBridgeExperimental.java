@@ -31,7 +31,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       double currentError = measurement - setpoint;
       double rollSpeed = Math.abs(measurement - lastMeasurement);
       if (Math.signum(prevError) != Math.signum(currentError)) {
-        speed *= .5;
+        speed *= .6;
       }
       lastMeasurement = measurement;
       prevError = currentError;
