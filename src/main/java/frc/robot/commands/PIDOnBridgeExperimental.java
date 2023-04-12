@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 // if filter roll value changes by more than 1, whether it is above the tolerance level
 
 import edu.wpi.first.math.filter.LinearFilter;
@@ -36,6 +38,9 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       }
       lastMeasurement = measurement;
       var out = limiter.calculate(speed);
+      Logger.getInstance().recordOutput("PIDBridge/speed", out);
+      Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
+      Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.75) {
         prevError = currentError;
         return -out;
