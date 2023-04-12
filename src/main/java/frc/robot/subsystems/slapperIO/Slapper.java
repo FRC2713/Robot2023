@@ -1,9 +1,7 @@
 package frc.robot.subsystems.slapperIO;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -51,7 +49,7 @@ public class Slapper extends SubsystemBase {
     IO.updateInputs(inputs);
 
     double effort = 0;
-    if (!isAtTarget()) effort = scoring ? 8 : 4;
+    if (!isAtTarget()) effort = scoring ? 8 : -4;
 
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
