@@ -27,9 +27,8 @@ public class IntakeIOSparks implements IntakeIO {
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
     bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-
-      topRoller.setInverted(true);
-      bottomRoller.setInverted(true);
+    topRoller.setInverted(true);
+    bottomRoller.setInverted(true);
 
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
@@ -47,9 +46,9 @@ public class IntakeIOSparks implements IntakeIO {
     bottomRoller
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
-    
-        RedHawkUtil.burnSparkFlash(bottomRoller);
-        RedHawkUtil.burnSparkFlash(topRoller);
+
+    RedHawkUtil.burnSparkFlash(bottomRoller);
+    RedHawkUtil.burnSparkFlash(topRoller);
   }
 
   @Override

@@ -11,8 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
@@ -342,7 +342,7 @@ public final class RedHawkUtil {
     pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 10000);
   }
 
-  public static void burnSparkFlash(CANSparkMax spark){
+  public static void burnSparkFlash(CANSparkMax spark) {
     Timer.delay(0.2);
     spark.burnFlash();
     Timer.delay(0.2);
