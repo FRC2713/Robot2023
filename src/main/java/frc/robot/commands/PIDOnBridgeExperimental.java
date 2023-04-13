@@ -22,10 +22,13 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
-      speed = 0.8;
+      this.speed = 0.8;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
-      limiter = new SlewRateLimiter(speed);
+      this.limiter = new SlewRateLimiter(speed);
+
+      this.lastMeasurement = 0;
+      this.prevError = 0;
     }
 
     double calculate(double measurement) {
@@ -36,7 +39,8 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       }
       lastMeasurement = measurement;
       prevError = currentError;
-      var out = limiter.calculate(speed);
+      
+      double out = limiter.calculate(speed);
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
@@ -51,7 +55,6 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
 
   double maxRampAngle = 12;
   double rampSpeed = 0;
-  double crawlSpeed = 0;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridgeExperimental(boolean gridside) {
