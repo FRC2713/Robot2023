@@ -22,7 +22,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
-      speed = 0.9;
+      speed = 0.8;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
       limiter = new SlewRateLimiter(speed);
