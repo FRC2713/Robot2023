@@ -52,7 +52,10 @@ public class AutoPath {
     A_TO_BRIDGE("cargoAtobridge"),
     B_TO_BRIDGE("cargoBtobridge"),
     FIVE_ON_BRIDGE("grid5tobridge", Units.feetToMeters(16), Units.feetToMeters(1)),
-    TRAJ_MOBILITY("slap5tomobility", Units.feetToMeters(16), Units.feetToMeters(1));
+    TRAJ_MOBILITY("slap5tomobility", Units.feetToMeters(16), Units.feetToMeters(1)),
+    CARGO_C_TO_MOBILITY("cargoCtomobility"),
+    MOBILITY_TO_CARGO_C("mobilitytocargoC");
+
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {
