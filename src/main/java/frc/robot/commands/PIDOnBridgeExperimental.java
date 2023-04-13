@@ -18,11 +18,11 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
-    public double speed = 0.85;
+    public double speed = 0.9;
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
-      speed = 0.75;
+      speed = 0.9;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
       limiter = new SlewRateLimiter(speed);
