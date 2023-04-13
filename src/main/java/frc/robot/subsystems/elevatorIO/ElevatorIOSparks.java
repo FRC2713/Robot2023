@@ -45,8 +45,8 @@ public class ElevatorIOSparks implements ElevatorIO {
         .setVelocityConversionFactor(
             Constants.ElevatorConstants.ELEVATOR_VELOCITY_CONVERSION_FACTOR);
 
-    left.burnFlash();
-    right.burnFlash();
+    RedHawkUtil.burnSparkFlash(left);
+    RedHawkUtil.burnSparkFlash(right);
   }
 
   public void resetEncoders() {

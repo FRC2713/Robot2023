@@ -78,8 +78,8 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver.setCANTimeout(0);
     azimuth.setCANTimeout(0);
 
-    driver.burnFlash();
-    azimuth.burnFlash();
+    RedHawkUtil.burnSparkFlash(driver);
+    RedHawkUtil.burnSparkFlash(azimuth);
   }
 
   public void seed() {
