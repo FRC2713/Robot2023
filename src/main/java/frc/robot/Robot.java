@@ -78,7 +78,6 @@ import frc.robot.subsystems.visionIO.Vision.Limelights;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
-import frc.robot.util.AutoPath;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -179,7 +178,7 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
+    fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision =
@@ -1025,14 +1024,13 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption(
         "Mobility + Bridge",
         new SequentialCommandGroup(
-            //new InstantCommand(
+            // new InstantCommand(
             //    () ->
             //        swerveDrive.resetOdometry(
             //            AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
-            //SwerveSubsystem.Commands.stringTrajectoriesTogether(
+            // SwerveSubsystem.Commands.stringTrajectoriesTogether(
             //    AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())
-            new PIDOnBridgeExperimental(false)
-            ));
+            new PIDOnBridgeExperimental(false)));
   }
 
   public void checkAlliance() {
