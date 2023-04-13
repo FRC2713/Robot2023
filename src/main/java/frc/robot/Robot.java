@@ -39,6 +39,7 @@ import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.ConeCubeUnder;
 import frc.robot.commands.fullRoutines.ConeCubeUnderHigh;
 import frc.robot.commands.fullRoutines.FastThreeCubeOver;
+import frc.robot.commands.fullRoutines.MobilityBridge;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
@@ -1015,16 +1016,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("ConeCubeUnder", new ConeCubeUnder());
     autoChooser.addOption("ConeCubeUnderHigh", new ConeCubeUnderHigh());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
-    autoChooser.addOption(
-        "Mobility + Bridge",
-        new SequentialCommandGroup(
-            // new InstantCommand(
-            //    () ->
-            //        swerveDrive.resetOdometry(
-            //            AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
-            // SwerveSubsystem.Commands.stringTrajectoriesTogether(
-            //    AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())
-            new PIDOnBridgeExperimental(false)));
+    autoChooser.addOption("Mobility + Bridge",new MobilityBridge());
   }
 
   public void checkAlliance() {
