@@ -54,14 +54,15 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridgeExperimental(boolean gridside) {
+    BangBang controller;
+
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.75;
-      BangBang controller = new BangBang(0, 4.5, 0.75);
+      controller = new BangBang(0, 4.5, 0.75);
     } else {
       rampSpeed = -1.75;
-      BangBang controller = new BangBang(0, 4.5, 0.75);
-
+      controller = new BangBang(0, 4.5, 0.75);
     }
 
     addCommands(
