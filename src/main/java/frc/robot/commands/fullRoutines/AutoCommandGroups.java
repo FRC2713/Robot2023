@@ -1,5 +1,11 @@
 package frc.robot.commands.fullRoutines;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -74,5 +80,17 @@ public class AutoCommandGroups {
         Intake.Commands.setBottomVelocityRPM(holdConfig.getBottomRPM()),
         Intake.Commands.setTopVelocityRPM(holdConfig.getTopRPM()),
         FourBar.Commands.retract());
+  }
+
+  public static Command initializeOdometry(Pose2d initialPose, double allianceOffsetMeters) {
+    return new InstantCommand(
+        () ->
+            Robot.swerveDrive.resetOdometry(
+                initialPose.plus(
+                    DriverStation.getAlliance() == Alliance.Blue
+                        ? new Transform2d(
+                            new Translation2d(0, allianceOffsetMeters), new Rotation2d())
+                        : new Transform2d(
+                            new Translation2d(0, allianceOffsetMeters), new Rotation2d()))));
   }
 }

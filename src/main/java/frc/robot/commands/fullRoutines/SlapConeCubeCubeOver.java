@@ -1,10 +1,5 @@
 package frc.robot.commands.fullRoutines;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,17 +20,8 @@ public class SlapConeCubeCubeOver extends SequentialCommandGroup {
 
   public SlapConeCubeCubeOver() {
     addCommands(
-        new InstantCommand(
-            () -> {
-              Robot.swerveDrive.resetOdometry(
-                  Autos.SLAP_ONE_TO_A
-                      .getTrajectory()
-                      .getInitialHolonomicPose()
-                      .plus(
-                          DriverStation.getAlliance() == Alliance.Blue
-                              ? new Transform2d(new Translation2d(0.3, 0), new Rotation2d())
-                              : new Transform2d(new Translation2d(-0.3, 0), new Rotation2d())));
-            }),
+        AutoCommandGroups.initializeOdometry(
+            Autos.SLAP_ONE_TO_A.getTrajectory().getInitialHolonomicPose(), 0.3),
         Slapper.Commands.sendItAndWait(),
         new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
         Commands.parallel(
