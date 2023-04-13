@@ -58,10 +58,10 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.75;
-      controller = new BangBang(0, 4.5, -0.75);
+      controller = new BangBang(0, 4.5, 0.75);
     } else {
       rampSpeed = -1.75;
-      controller = new BangBang(0, 4.5, 0.75);
+      controller = new BangBang(0, 4.5, -0.75);
     }
 
     addCommands(
