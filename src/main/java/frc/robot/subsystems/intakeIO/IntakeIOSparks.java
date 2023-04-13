@@ -1,7 +1,5 @@
 package frc.robot.subsystems.intakeIO;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -11,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOSparks implements IntakeIO {
 
@@ -29,9 +28,8 @@ public class IntakeIOSparks implements IntakeIO {
     topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
     bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-
-      topRoller.setInverted(true);
-      bottomRoller.setInverted(true);
+    topRoller.setInverted(true);
+    bottomRoller.setInverted(true);
 
     topRoller.setSmartCurrentLimit(Constants.IntakeConstants.TOP_CURRENT_LIMIT);
     bottomRoller.setSmartCurrentLimit(Constants.IntakeConstants.BOTTOM_CURRENT_LIMIT);
@@ -49,9 +47,9 @@ public class IntakeIOSparks implements IntakeIO {
     bottomRoller
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
-    
-        RedHawkUtil.burnSparkFlash(bottomRoller);
-        RedHawkUtil.burnSparkFlash(topRoller);
+
+    RedHawkUtil.burnSparkFlash(bottomRoller);
+    RedHawkUtil.burnSparkFlash(topRoller);
   }
 
   @Override
