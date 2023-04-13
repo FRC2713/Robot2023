@@ -18,7 +18,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
-    public double speed = 0.9;
+    public double speed;
     private double prevError = 0;
 
     public BangBang(double setpoint, double tolerance) {
@@ -40,9 +40,9 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
-      if (currentError > tolerance && rollSpeed < 0.45) {
+      if (currentError > tolerance && rollSpeed < 0.25) {
         return out;
-      } else if (currentError < -tolerance && rollSpeed < 0.45) {
+      } else if (currentError < -tolerance && rollSpeed < 0.25) {
         return -out;
       }
       return 0;
