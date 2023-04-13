@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -24,12 +25,14 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     private double decayRate = 0.65;
 
     public BangBang(double setpoint, double tolerance) {
-      System.out.println("Speed iis being rest");
-      this.speed = 0.8;
+      this.init();
       this.setpoint = setpoint;
       this.tolerance = tolerance;
       this.limiter = new SlewRateLimiter(this.speed);
+    }
 
+    public void init() {
+      this.speed = 0.8;
       this.lastMeasurement = 0;
       this.prevError = 0;
     }
@@ -70,6 +73,10 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     }
 
     addCommands(
+        new InstantCommand(
+            () -> {
+              controller.init();
+            }),
         new RunCommand(
                 () -> {
                   Robot.motionMode = MotionMode.NULL;
