@@ -1006,7 +1006,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
     autoChooser.addOption("TwoCubeOver", new TwoCubeOver());
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
-    autoChooser.addOption("Experimental PID Bridge", new PIDOnBridgeExperimental(false));
+    autoChooser.addOption("Experimental PID Bridge", new PIDOnBridgeExperimental(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
     autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
