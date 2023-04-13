@@ -21,11 +21,14 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     public double speed;
     private double prevError = 0;
 
+    private double decayRate = 0.65;
+
     public BangBang(double setpoint, double tolerance) {
+      System.out.println("Speed iis being rest");
       this.speed = 0.8;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
-      this.limiter = new SlewRateLimiter(speed);
+      this.limiter = new SlewRateLimiter(this.speed);
 
       this.lastMeasurement = 0;
       this.prevError = 0;
@@ -35,11 +38,11 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       double currentError = measurement - setpoint * (Robot.slapping ? 1 : -1);
       double rollSpeed = Math.abs(measurement - lastMeasurement);
       if (Math.signum(prevError) != Math.signum(currentError)) {
-        speed *= .65;
+        speed *= decayRate;
       }
       lastMeasurement = measurement;
       prevError = currentError;
-      
+
       double out = limiter.calculate(speed);
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
