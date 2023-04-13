@@ -176,7 +176,7 @@ public class Robot extends LoggedRobot {
 
     Logger.getInstance().start();
 
-    fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
+    fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
     vision =
@@ -874,7 +874,6 @@ public class Robot extends LoggedRobot {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    
     // swerveDrive.seed();
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(
@@ -1016,7 +1015,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("ConeCubeUnder", new ConeCubeUnder());
     autoChooser.addOption("ConeCubeUnderHigh", new ConeCubeUnderHigh());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
-    autoChooser.addOption("Mobility + Bridge",new MobilityBridge());
+    autoChooser.addOption("Mobility + Bridge", new MobilityBridge());
   }
 
   public void checkAlliance() {
