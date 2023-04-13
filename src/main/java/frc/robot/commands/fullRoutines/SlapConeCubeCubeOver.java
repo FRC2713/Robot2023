@@ -74,13 +74,13 @@ public class SlapConeCubeCubeOver extends SequentialCommandGroup {
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
-                  Autos.REVERSE_ONE_TO_A.getTrajectory().getInitialHolonomicPose());
+                  Autos.SLAP_ONE_TO_A.getTrajectory().getInitialHolonomicPose());
             }),
         Slapper.Commands.sendItAndWait(),
         new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                Autos.REVERSE_ONE_TO_A.getTrajectory()),
+                Autos.SLAP_ONE_TO_A.getTrajectory()),
             Commands.sequence(
                 new WaitCommand(0.5),
                 Elevator.Commands.setToHeight(SuperstructureConstants.INTAKE_CUBE),

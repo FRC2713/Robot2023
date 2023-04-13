@@ -14,13 +14,13 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.AutoPath.Autos;
 
-public class OneConeOneCubeUnder extends SequentialCommandGroup {
+public class ConeCubeUnder extends SequentialCommandGroup {
 
   private double delayAfterScoring = 0.5;
   private boolean waitForFourbarDuringScoring = true;
   private boolean waitForFourbarDuringIntaking = true;
 
-  public OneConeOneCubeUnder() {
+  public ConeCubeUnder() {
     addCommands(
         // Score Preload
         new InstantCommand(

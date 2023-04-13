@@ -20,12 +20,17 @@ public class AutoPath {
     B_TO_FOUR("cargoBtogrid4"),
     D_TO_SEVEN("cargoDtogrid7"),
     ONE_TO_A("grid1tocargoA"),
-    REVERSE_ONE_TO_A("reversegrid1tocargoA"),
     THREE_TO_A("grid3tocargoA"),
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
     SEVEN_TO_D("grid7tocargoD"),
     NINE_TO_D("grid9tocargoD"),
+
+    // Slap Paths (Paths from grids we SCHLAP on)
+    SLAP_ONE_TO_A("slap1tocargoA"),
+    SLAP_THREE_TO_A("slap3tocargoA"),
+    SLAP_SEVEN_TO_D("slap7tocargoD"),
+    SLAP_NINE_TO_D("slap9tocargoD"),
 
     // Cube Paths (Paths to/from grids with cube goals)
     A_TO_TWO("cargoAtogrid2"),
