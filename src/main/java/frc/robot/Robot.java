@@ -873,8 +873,8 @@ public class Robot extends LoggedRobot {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
+    
     // swerveDrive.seed();
-
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(
             elevator.getCurrentDraw()
