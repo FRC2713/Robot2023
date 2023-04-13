@@ -111,7 +111,7 @@ public class Robot extends LoggedRobot {
   private Command autoCommand;
   public static GamePieceMode gamePieceMode = GamePieceMode.CUBE;
   private LinearFilter canUtilizationFilter = LinearFilter.singlePoleIIR(0.25, 0.02);
-  public boolean slapping = true;
+  public static boolean slapping = true;
 
   public static final CommandXboxController driver =
       new CommandXboxController(Constants.RobotMap.DRIVER_PORT);

@@ -21,15 +21,15 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     public double speed = 0.75;
     private double prevError = 0;
 
-    public BangBang(double setpoint, double tolerance, double crawlSpeed) {
-      this.speed = crawlSpeed;
+    public BangBang(double setpoint, double tolerance) {
+      speed = 0.75;
       this.setpoint = setpoint;
       this.tolerance = tolerance;
-      this.limiter = new SlewRateLimiter(speed);
+      limiter = new SlewRateLimiter(speed);
     }
 
     double calculate(double measurement) {
-      double currentError = measurement - setpoint;
+      double currentError = measurement - setpoint * (Robot.slapping ? 1 : -1);
       double rollSpeed = Math.abs(measurement - lastMeasurement);
       if (Math.signum(prevError) != Math.signum(currentError)) {
         speed *= .6;
@@ -37,36 +37,30 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       lastMeasurement = measurement;
       prevError = currentError;
       var out = limiter.calculate(speed);
-
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
-
       if (currentError > tolerance && rollSpeed < 0.55) {
-        return -out;
-      } else if (currentError < -tolerance && rollSpeed < 0.55) {
         return out;
+      } else if (currentError < -tolerance && rollSpeed < 0.55) {
+        return -out;
       }
-
-
       return 0;
     }
   }
 
   double maxRampAngle = 14;
   double rampSpeed = 0;
+  double crawlSpeed = 0;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridgeExperimental(boolean gridside) {
-    BangBang controller;
-
+    BangBang controller = new BangBang(0, 4.5);
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.75;
-      controller = new BangBang(0.0, 4.5, 0.75);
     } else {
       rampSpeed = -1.75;
-      controller = new BangBang(0.0, 4.5, 0.75);
     }
 
     addCommands(
@@ -82,7 +76,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
             .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
-        //new WaitCommand(0.25),
+        new WaitCommand(0.25),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
