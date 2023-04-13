@@ -40,9 +40,9 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
-      if (currentError > tolerance && rollSpeed < 0.55) {
+      if (currentError > tolerance && rollSpeed < 0.45) {
         return out;
-      } else if (currentError < -tolerance && rollSpeed < 0.55) {
+      } else if (currentError < -tolerance && rollSpeed < 0.45) {
         return -out;
       }
       return 0;
