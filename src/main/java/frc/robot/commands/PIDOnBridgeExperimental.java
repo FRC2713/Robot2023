@@ -49,7 +49,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     }
   }
 
-  double maxRampAngle = 14;
+  double maxRampAngle = 12;
   double rampSpeed = 0;
   double crawlSpeed = 0;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
