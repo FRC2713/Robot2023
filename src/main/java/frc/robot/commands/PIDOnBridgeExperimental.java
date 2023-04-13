@@ -41,9 +41,9 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.55) {
-        return out;
-      } else if (currentError < -tolerance && rollSpeed < 0.55) {
         return -out;
+      } else if (currentError < -tolerance && rollSpeed < 0.55) {
+        return out;
       }
       return 0;
     }
@@ -51,17 +51,17 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
 
   double maxRampAngle = 14;
   double rampSpeed = 0;
-  BangBang controller;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
   public PIDOnBridgeExperimental(boolean gridside) {
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
       rampSpeed = 1.75;
-      controller = new BangBang(0, 4.5, 0.75);
+      BangBang controller = new BangBang(0, 4.5, 0.75);
     } else {
       rampSpeed = -1.75;
-      controller = new BangBang(0, 4.5, 0.75);
+      BangBang controller = new BangBang(0, 4.5, 0.75);
+
     }
 
     addCommands(

@@ -1030,8 +1030,9 @@ public class Robot extends LoggedRobot {
                     swerveDrive.resetOdometry(
                         AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                AutoPath.Autos.TRAJ_MOBILITY.getTrajectory()),
-            new PIDOnBridgeExperimental(false)));
+                AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())
+            //new PIDOnBridgeExperimental(false)
+            ));
   }
 
   public void checkAlliance() {
