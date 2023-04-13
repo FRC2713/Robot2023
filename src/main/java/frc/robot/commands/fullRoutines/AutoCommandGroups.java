@@ -91,6 +91,6 @@ public class AutoCommandGroups {
                         ? new Transform2d(
                             new Translation2d(0, allianceOffsetMeters), new Rotation2d())
                         : new Transform2d(
-                            new Translation2d(0, allianceOffsetMeters), new Rotation2d()))));
+                            new Translation2d(0, -allianceOffsetMeters), new Rotation2d()))));
   }
 }
