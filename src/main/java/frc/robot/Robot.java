@@ -1025,13 +1025,13 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption(
         "Mobility + Bridge",
         new SequentialCommandGroup(
-            new InstantCommand(
-                () ->
-                    swerveDrive.resetOdometry(
-                        AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
-            SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())
-            // new PIDOnBridgeExperimental(false)
+            //new InstantCommand(
+            //    () ->
+            //        swerveDrive.resetOdometry(
+            //            AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose())),
+            //SwerveSubsystem.Commands.stringTrajectoriesTogether(
+            //    AutoPath.Autos.TRAJ_MOBILITY.getTrajectory())
+            new PIDOnBridgeExperimental(false)
             ));
   }
 
