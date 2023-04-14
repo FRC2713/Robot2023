@@ -73,7 +73,8 @@ public class Slapper extends SubsystemBase {
                 Robot.slapper.scoring = true;
                 Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
-          new WaitUntilCommand(() -> Robot.slapper.inputs.positionDeg < Constants.SlapperConstants.FULL_SEND_DEG));
+          new WaitUntilCommand(
+              () -> Robot.slapper.inputs.positionDeg < Constants.SlapperConstants.FULL_SEND_DEG));
     }
 
     public static Command comeBackHome() {
