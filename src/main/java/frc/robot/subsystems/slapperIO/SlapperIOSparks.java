@@ -23,7 +23,9 @@ public class SlapperIOSparks implements SlapperIO {
     // analog sensor voltage, analog sensor velocity, analog sensor position
     slapperMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-    slapperMotor.setInverted(true);
+    for (int i = 0; i <= 30; i++) {
+      slapperMotor.setInverted(true);
+    }
 
     slapperMotor.setSmartCurrentLimit(Constants.SlapperConstants.CURRENT_LIMIT);
     slapperMotor.setIdleMode(IdleMode.kBrake);

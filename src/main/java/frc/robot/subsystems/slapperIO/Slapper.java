@@ -16,7 +16,7 @@ public class Slapper extends SubsystemBase {
   private final SlapperInputsAutoLogged inputs;
   private double targetangleDeg = SlapperConstants.RESTING_DEG;
   public PIDController controller;
-  public boolean usePid = true;
+  public boolean usePid = false;
   public boolean scoring = false;
 
   public Slapper(SlapperIO IO) {
@@ -42,7 +42,7 @@ public class Slapper extends SubsystemBase {
   }
 
   public void periodic() {
-    IO.setCurrentLimit(scoring ? 16 : 1);
+    IO.setCurrentLimit(scoring ? 4 : 2);
     IO.updateInputs(inputs);
 
     double effort = 0;
@@ -70,11 +70,12 @@ public class Slapper extends SubsystemBase {
       return new SequentialCommandGroup(
           new InstantCommand(
               () -> {
+                Robot.slapper.usePid = false;
                 Robot.slapper.scoring = true;
                 Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
           new WaitUntilCommand(
-              () -> Robot.slapper.inputs.positionDeg < Constants.SlapperConstants.FULL_SEND_DEG));
+              () -> Robot.slapper.isAtTarget());
     }
 
     public static Command comeBackHome() {
