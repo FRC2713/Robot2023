@@ -103,7 +103,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
-  public static Slapper slapper;
+//   public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
@@ -183,7 +183,7 @@ public class Robot extends LoggedRobot {
             isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight"),
             isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight-rear"));
     lights = new LightStrip();
-    slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
+    // slapper = new Slapper(isSimulation() ? new SlapperIOSim() : new SlapperIOSparks());
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
