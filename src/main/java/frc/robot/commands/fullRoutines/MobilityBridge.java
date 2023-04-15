@@ -13,7 +13,7 @@ public class MobilityBridge extends SequentialCommandGroup {
     addCommands(
         AutoCommandGroups.initializeOdometry(
             AutoPath.Autos.TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose(), 0.3),
-        Slapper.Commands.sendItAndWait(),
+        Slapper.Commands.sendIt(),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
                 AutoPath.Autos.TRAJ_MOBILITY.getTrajectory()),
