@@ -27,8 +27,8 @@ public class Slapper extends SubsystemBase {
 
   public boolean isAtTarget() {
     return Math.abs(inputs.positionDeg - targetangleDeg) < 15
-        || inputs.positionDeg > SlapperConstants.MAX_ANGLE_DEG
-        || inputs.positionDeg < SlapperConstants.MIN_ANGLE_DEG;
+        || (!scoring && inputs.positionDeg > SlapperConstants.MAX_ANGLE_DEG)
+        || (scoring && inputs.positionDeg < SlapperConstants.MIN_ANGLE_DEG);
   }
 
   public void setTarget(double angleDeg) {
