@@ -22,7 +22,7 @@ public class SlapConeCubeCubeOver extends SequentialCommandGroup {
     addCommands(
         AutoCommandGroups.initializeOdometry(
             Autos.SLAP_ONE_TO_A.getTrajectory().getInitialHolonomicPose(), 0.3),
-        Slapper.Commands.sendItAndWait(),
+        Slapper.Commands.sendIt(),
         new InstantCommand(() -> Robot.gamePieceMode = GamePieceMode.CUBE),
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
