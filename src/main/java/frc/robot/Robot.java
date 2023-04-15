@@ -798,10 +798,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece())));
 
-    operator.rightTrigger(0.25).onTrue(Slapper.Commands.sendItAndWait());
-    // LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
-    operator.leftTrigger(0.25).onTrue(Slapper.Commands.comeBackHome());
-    // LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
+    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
     // operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
     // operator
