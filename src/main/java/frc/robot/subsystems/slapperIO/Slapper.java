@@ -40,7 +40,7 @@ public class Slapper extends SubsystemBase {
   }
 
   public void periodic() {
-    IO.setCurrentLimit(scoring ? 4 : 4);
+    IO.setCurrentLimit(scoring ? 20 : 20);
     IO.updateInputs(inputs);
 
     double effort = 0;
