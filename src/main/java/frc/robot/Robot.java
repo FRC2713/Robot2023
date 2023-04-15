@@ -103,7 +103,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
-    public static Slapper slapper;
+  public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
