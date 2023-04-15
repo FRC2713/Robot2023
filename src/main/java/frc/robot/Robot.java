@@ -998,6 +998,7 @@ public class Robot extends LoggedRobot {
 
   public void buildAutoChooser() {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
+    SwerveSubsystem.allianceFlipper *= (slapping ? -1 : 1);
     autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
     autoChooser.addOption("SlapConeCubeCubeOver", new SlapConeCubeCubeOver());
