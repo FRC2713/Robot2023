@@ -78,7 +78,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(0.75).kD(0.0).kG(0.85).build();
+        PIDFFGains.builder("Elevator Controller").kP(1).kD(0.0).kG(0.85).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
