@@ -89,8 +89,8 @@ public class AutoCommandGroups {
                 initialPose.plus(
                     DriverStation.getAlliance() == Alliance.Blue
                         ? new Transform2d(
-                            new Translation2d(0, allianceOffsetMeters), new Rotation2d())
+                            new Translation2d(0, -allianceOffsetMeters), new Rotation2d())
                         : new Transform2d(
-                            new Translation2d(0, -allianceOffsetMeters), new Rotation2d()))));
+                            new Translation2d(0, allianceOffsetMeters), new Rotation2d()))));
   }
 }
