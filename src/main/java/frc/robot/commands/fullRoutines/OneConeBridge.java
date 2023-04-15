@@ -6,6 +6,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.util.AutoPath.Autos;
@@ -35,6 +36,6 @@ public class OneConeBridge extends SequentialCommandGroup {
         // Move to Charge Station
         AutoCommandGroups.stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
         Elevator.Commands.setToHeight(0),
-        new PIDOnBridge(true));
+        new PIDOnBridgeExperimental(true));
   }
 }
