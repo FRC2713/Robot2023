@@ -16,7 +16,6 @@ public class Slapper extends SubsystemBase {
   private final SlapperInputsAutoLogged inputs;
   private double targetangleDeg = SlapperConstants.RESTING_DEG;
   public PIDController controller;
-  public boolean usePid = false;
   public boolean scoring = false;
 
   public Slapper(SlapperIO IO) {
@@ -27,10 +26,9 @@ public class Slapper extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    if (!usePid) {
-      return Math.abs(inputs.positionDeg - targetangleDeg) < 15;
-    }
-    return Math.abs(inputs.positionDeg - targetangleDeg) < 0.5;
+    return Math.abs(inputs.positionDeg - targetangleDeg) < 15
+        || inputs.positionDeg > SlapperConstants.MAX_ANGLE_DEG
+        || inputs.positionDeg < SlapperConstants.MIN_ANGLE_DEG;
   }
 
   public void setTarget(double angleDeg) {
@@ -51,7 +49,6 @@ public class Slapper extends SubsystemBase {
     Logger.getInstance().recordOutput("Slapper/Effort", effort);
     Logger.getInstance().recordOutput("Slapper/Target", targetangleDeg);
     Logger.getInstance().recordOutput("Slapper/isAtTarget", isAtTarget());
-    Logger.getInstance().recordOutput("Slapper/usingPID", usePid);
 
     IO.setVoltage(effort);
     Logger.getInstance().processInputs("Slapper", inputs);
@@ -70,7 +67,6 @@ public class Slapper extends SubsystemBase {
       return new SequentialCommandGroup(
           new InstantCommand(
               () -> {
-                Robot.slapper.usePid = false;
                 Robot.slapper.scoring = true;
                 Robot.slapper.setTarget(Constants.SlapperConstants.FULL_SEND_DEG);
               }),
