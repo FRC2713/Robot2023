@@ -92,9 +92,9 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     // inputs.aziAbsoluteEncoderAdjVoltsReal = getAziEncoder().getPosition();
     // inputs.aziAbsoluteEncoderAdjAngleDegReal = getAziEncoder().getPosition();
 
-    inputs.aziAbsoluteEncoderRawVoltsReal = azimuthEncoder.getUnadjustedVoltage();
-    inputs.aziAbsoluteEncoderAdjVoltsReal = azimuthEncoder.getAdjustedVoltage();
-    inputs.aziAbsoluteEncoderAdjAngleDegReal = azimuthEncoder.getAdjustedRotation2d().getDegrees();
+    inputs.aziAbsoluteEncoderRawVolts = azimuthEncoder.getUnadjustedVoltage();
+    inputs.aziAbsoluteEncoderAdjVolts = azimuthEncoder.getAdjustedVoltage();
+    inputs.aziAbsoluteEncoderAdjAngleDeg = azimuthEncoder.getAdjustedRotation2d().getDegrees();
 
     inputs.aziOutputVolts = azimuth.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.aziTempCelcius = azimuth.getMotorTemperature();
