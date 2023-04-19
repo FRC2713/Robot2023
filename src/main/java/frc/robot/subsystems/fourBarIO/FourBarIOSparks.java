@@ -93,7 +93,7 @@ public class FourBarIOSparks implements FourBarIO {
 
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
-    
+
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
