@@ -9,7 +9,7 @@ public interface SwerveModuleIO {
     public double aziAbsoluteEncoderRawVolts = 0.0;
     public double aziAbsoluteEncoderAdjVolts = 0.0;
     public double aziAbsoluteEncoderAdjAngleDeg = 0.0;
-    
+
     public double aziOutputVolts = 0.0;
     public double aziCurrentDrawAmps = 0.0;
     public double aziEncoderPositionDeg = 0.0;
