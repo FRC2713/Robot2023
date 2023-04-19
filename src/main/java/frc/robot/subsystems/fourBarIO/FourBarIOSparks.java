@@ -63,6 +63,7 @@ public class FourBarIOSparks implements FourBarIO {
     absoluteEncoder.setInverted(false);
 
     absoluteEncoder.setZeroOffset(0);
+    absoluteEncoder.setAverageDepth(2);
     // absoluteEncoder.setZeroOffset(
     //     -Units.radiansToDegrees(FourBarConstants.RETRACTED_ANGLE_RADIANS) + 20);
 
@@ -92,7 +93,7 @@ public class FourBarIOSparks implements FourBarIO {
 
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
-
+    
     inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =

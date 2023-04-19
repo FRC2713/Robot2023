@@ -63,7 +63,7 @@ public class MechanismManager {
         m_four.append(new MechanismLigament2d("Front", 6, -90, 6, new Color8Bit(Color.kBlue)));
 
     // Log to SmartDashboard
-    // SmartDashboard.putData("Mech2d", mech);
+    SmartDashboard.putData("Mech2d", mech);
   }
 
   public void periodic() {
