@@ -918,7 +918,7 @@ public class Robot extends LoggedRobot {
     if (autoCommand != null) {
       autoCommand.cancel();
     }
-    // swerveDrive.seed();
+    swerveDrive.seed();
 
     Robot.motionMode = MotionMode.LOCKDOWN;
 
@@ -929,6 +929,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     checkAlliance();
 
+    swerveDrive.seed();
     elevator.resetController();
     fourBar.reset();
     SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
