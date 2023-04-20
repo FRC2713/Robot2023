@@ -129,8 +129,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-
-    Timer.delay(0.5);
     NetworkTable frontTable =
         NetworkTableInstance.getDefault().getTable(Vision.Limelights.FRONT.table);
     NetworkTable rearTable =

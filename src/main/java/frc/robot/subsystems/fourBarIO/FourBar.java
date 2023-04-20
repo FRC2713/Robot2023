@@ -49,8 +49,8 @@ public class FourBar extends SubsystemBase {
     this.currentController =
         Constants.FourBarConstants.FOUR_BAR_CURRENT_GAINS.createWpilibController();
     this.inputs = new FourBarInputsAutoLogged();
-    IO.updateInputs(inputs);
     this.IO = IO;
+    this.IO.updateInputs(inputs);
     // setMode(FourBarMode.HOMING);
     setMode(FourBarMode.CLOSED_LOOP);
     reseed();

@@ -12,7 +12,7 @@ import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
 
 public class FourBarIOSparks implements FourBarIO {
-  private CANSparkMax fourBarOne, fourBarTwo;
+  private CANSparkMax fourBarOne;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
 
   private static double offset = 173.95;
