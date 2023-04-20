@@ -22,10 +22,12 @@ public class GetOnBridge extends SequentialCommandGroup {
 
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
-      rampSpeed = 2;
+      rampSpeed = 2.5;
+      //   rampSpeed = 2;
       crawlSpeed = 0.4;
     } else {
-      rampSpeed = -2;
+      rampSpeed = -2.5;
+      //   rampSpeed = -2;
       crawlSpeed = -0.4;
     }
 

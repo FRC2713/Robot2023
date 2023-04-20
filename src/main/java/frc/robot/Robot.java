@@ -38,6 +38,7 @@ import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.FastThreeCubeOver;
+import frc.robot.commands.fullRoutines.MobilityBridge;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
 import frc.robot.commands.fullRoutines.OneConeOneCubeUnderHigh;
@@ -1003,6 +1004,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("MobilityBridge", new MobilityBridge());
     autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));

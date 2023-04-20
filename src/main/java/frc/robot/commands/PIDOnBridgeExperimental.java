@@ -9,59 +9,75 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
+import org.littletonrobotics.junction.Logger;
 
-public class PIDOnBridge extends SequentialCommandGroup {
+public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   class BangBang {
-    double setpoint, tolerance;
+    double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
-    public double speed = 0.9;
-    // public double speed = 0.75;
+    public double speed;
     private double prevError = 0;
 
+    private double decayRate = 0.65;
+
     public BangBang(double setpoint, double tolerance) {
+      this.init();
       this.setpoint = setpoint;
       this.tolerance = tolerance;
-      limiter = new SlewRateLimiter(speed);
+      this.limiter = new SlewRateLimiter(this.speed);
+    }
+
+    public void init() {
+      this.speed = 0.8;
+      this.lastMeasurement = 0;
+      this.prevError = 0;
     }
 
     double calculate(double measurement) {
-      double currentError = measurement - setpoint;
+      //                                              Robot.slapping
+      double currentError = measurement - setpoint * (false ? 1 : -1);
+      double rollSpeed = Math.abs(measurement - lastMeasurement);
       if (Math.signum(prevError) != Math.signum(currentError)) {
-        speed *= .9;
+        speed *= decayRate;
       }
-      var out = limiter.calculate(speed);
-      if (currentError > tolerance) {
-        prevError = currentError;
-        return -out;
-      } else if (currentError < -tolerance) {
-        prevError = currentError;
+      lastMeasurement = measurement;
+      prevError = currentError;
+
+      double out = limiter.calculate(speed);
+      Logger.getInstance().recordOutput("PIDBridge/speed", out);
+      Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
+      Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
+      if (currentError > tolerance && rollSpeed < 0.25) {
         return out;
+      } else if (currentError < -tolerance && rollSpeed < 0.25) {
+        return -out;
       }
       return 0;
     }
   }
 
-  double maxRampAngle = 14;
+  double maxRampAngle = 12;
   double rampSpeed = 0;
-  double crawlSpeed = 0;
-  BangBang controller = new BangBang(0, 4.5);
-  // BangBang controller = new BangBang(0, 8);
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
-  public PIDOnBridge(boolean gridside) {
+  public PIDOnBridgeExperimental(boolean gridside) {
+    BangBang controller = new BangBang(0, 4.5);
     if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
         || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
-      rampSpeed = 2;
-      // rampSpeed = 1.75;
+      rampSpeed = 1.75;
     } else {
-      rampSpeed = -2;
-      // rampSpeed = -1.75;
+      rampSpeed = -1.75;
     }
 
     addCommands(
+        new InstantCommand(
+            () -> {
+              controller.init();
+            }),
         new RunCommand(
                 () -> {
                   Robot.motionMode = MotionMode.NULL;
@@ -74,6 +90,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
                               Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
                 })
             .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
+        new WaitCommand(0.25),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
@@ -84,15 +101,6 @@ public class PIDOnBridge extends SequentialCommandGroup {
                           0,
                           0,
                           Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
-            }),
-        new InstantCommand(
-            () ->
-                Robot.swerveDrive.setModuleStates(
-                    DriveConstants.KINEMATICS.toSwerveModuleStates(
-                        ChassisSpeeds.fromFieldRelativeSpeeds(
-                            0,
-                            0,
-                            0,
-                            Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))))));
+            }));
   }
 }
