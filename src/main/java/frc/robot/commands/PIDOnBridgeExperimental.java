@@ -73,6 +73,8 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       rampSpeed = -1.75;
     }
 
+    Logger.getInstance().recordOutput("PIDBridge/rampSpeed", rampSpeed);
+
     addCommands(
         new InstantCommand(
             () -> {
