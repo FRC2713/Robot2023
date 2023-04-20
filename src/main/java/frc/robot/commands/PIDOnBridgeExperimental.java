@@ -22,7 +22,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     public double speed;
     private double prevError = 0;
 
-    private double decayRate = 0.8;
+    private double decayRate = 0.5;
 
     public BangBang(double setpoint, double tolerance) {
       this.init();
