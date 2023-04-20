@@ -52,9 +52,10 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.25) {
-        return out;
+
+        return DriverStation.getAlliance() == Alliance.Red ? out : -out;
       } else if (currentError < -tolerance && rollSpeed < 0.25) {
-        return -out;
+        return DriverStation.getAlliance() == Alliance.Red ? -out : out;
       }
       return 0;
     }
