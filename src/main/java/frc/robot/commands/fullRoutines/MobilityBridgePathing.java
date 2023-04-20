@@ -125,7 +125,8 @@ public class MobilityBridgePathing extends SequentialCommandGroup {
 
             //       ,
             //   Commands.sequence(Commands.waitSeconds(0.5), Slapper.Commands.comeBackHome())
-            ),
-        new PIDOnBridgeExperimental(false));
+            )
+        //new PIDOnBridgeExperimental(false)
+        );
   }
 }
