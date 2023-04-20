@@ -41,23 +41,26 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       //                                              Robot.slapping
       double currentError = measurement - setpoint * (false ? 1 : -1);
       double rollSpeed = Math.abs(measurement - lastMeasurement);
-      if (Math.signum(prevError) != Math.signum(currentError)) {
+      if ((Math.signum(prevError) != Math.signum(currentError)) && prevError != 0) {
         speed *= decayRate;
       }
       lastMeasurement = measurement;
       prevError = currentError;
 
       double out = limiter.calculate(speed);
-      Logger.getInstance().recordOutput("PIDBridge/speed", out);
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.25) {
-
-        return DriverStation.getAlliance() == Alliance.Red ? out : -out;
+        out = DriverStation.getAlliance() == Alliance.Red ? out : -out;
       } else if (currentError < -tolerance && rollSpeed < 0.25) {
-        return DriverStation.getAlliance() == Alliance.Red ? -out : out;
+        out = DriverStation.getAlliance() == Alliance.Red ? -out : out;
       }
-      return 0;
+      else {
+        out = 0;
+      }
+      Logger.getInstance().recordOutput("PIDBridge/speed", out);
+
+      return out;
     }
   }
 
