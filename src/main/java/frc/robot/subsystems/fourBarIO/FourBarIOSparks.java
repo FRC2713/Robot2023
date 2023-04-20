@@ -14,7 +14,7 @@ public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne;
   private SparkMaxAbsoluteEncoder absoluteEncoder;
 
-  private static double offset = 213.95;
+  private static double offset = 97.25;
 
   public FourBarIOSparks() {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
