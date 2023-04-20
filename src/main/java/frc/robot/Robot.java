@@ -174,8 +174,6 @@ public class Robot extends LoggedRobot {
       Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
 
-
-
     Logger.getInstance().start();
 
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
