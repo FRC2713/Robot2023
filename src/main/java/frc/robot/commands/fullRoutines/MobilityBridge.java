@@ -19,7 +19,6 @@ import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
-import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.SuperstructureConfig;
 
@@ -112,7 +111,6 @@ public class MobilityBridge extends SequentialCommandGroup {
         //     waitForFourbarDuringScoring),
         // // Slapper.Commands.sendIt(),
         // stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
-
 
         // new WaitCommand(0.5),
 

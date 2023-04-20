@@ -32,7 +32,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     }
 
     public void init() {
-      this.speed = 0.9;
+      this.speed = 0.8;
       this.lastMeasurement = 0;
       this.prevError = 0;
     }
@@ -54,8 +54,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
         out = DriverStation.getAlliance() == Alliance.Red ? out : -out;
       } else if (currentError < -tolerance && rollSpeed < 0.25) {
         out = DriverStation.getAlliance() == Alliance.Red ? -out : out;
-      }
-      else {
+      } else {
         out = 0;
       }
       Logger.getInstance().recordOutput("PIDBridge/speed", out);
