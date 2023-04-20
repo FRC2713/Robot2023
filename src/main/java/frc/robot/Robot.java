@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -128,6 +129,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
+
+    Timer.delay(0.5);
     NetworkTable frontTable =
         NetworkTableInstance.getDefault().getTable(Vision.Limelights.FRONT.table);
     NetworkTable rearTable =
@@ -170,6 +173,8 @@ public class Robot extends LoggedRobot {
     } else {
       Logger.getInstance().recordOutput("isLoggingToUsb", false);
     }
+
+
 
     Logger.getInstance().start();
 

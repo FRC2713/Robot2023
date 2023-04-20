@@ -37,6 +37,11 @@
       "/SmartDashboard/Telescope Mech2D": "Mechanism2d"
     },
     "windows": {
+      "/SmartDashboard/Autonomous Routine": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Mech2d": {
         "window": {
           "visible": true
