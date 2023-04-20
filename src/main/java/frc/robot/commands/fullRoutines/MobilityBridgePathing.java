@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
-import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -125,8 +124,8 @@ public class MobilityBridgePathing extends SequentialCommandGroup {
 
             //       ,
             //   Commands.sequence(Commands.waitSeconds(0.5), Slapper.Commands.comeBackHome())
-            )
-        //new PIDOnBridgeExperimental(false)
+            ),
+         new PIDOnBridgeExperimental(false)
         );
   }
 }
