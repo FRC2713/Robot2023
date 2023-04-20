@@ -19,6 +19,7 @@ import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
+import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.SuperstructureConfig;
 
@@ -99,29 +100,29 @@ public class MobilityBridge extends SequentialCommandGroup {
 
         // Score preload
 
-        // new InstantCommand(
-        //     () -> {
-        //       Robot.gamePieceMode = GamePieceMode.CONE;
-        //     }),
-        // Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
-        // Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-        // score(
-        //     SuperstructureConstants.SCORE_CONE_HIGH,
-        //     delayAfterScoring,
-        //     waitForFourbarDuringScoring),
-        // // Slapper.Commands.sendIt(),
-        // stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
+        new InstantCommand(
+            () -> {
+              Robot.gamePieceMode = GamePieceMode.CONE;
+            }),
+        Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
+        Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
+        score(
+            SuperstructureConstants.SCORE_CONE_HIGH,
+            delayAfterScoring,
+            waitForFourbarDuringScoring),
+        // Slapper.Commands.sendIt(),
+        stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
 
         // new WaitCommand(0.5),
 
         // new ParallelCommandGroup(null)
 
         Commands.parallel(
-            // SwerveSubsystem.Commands.stringTrajectoriesTogether(
-            //     AutoPath.Autos.NO_SLAP_TRAJ_MOBILITY.getTrajectory()),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(
+                AutoPath.Autos.NO_SLAP_TRAJ_MOBILITY.getTrajectory()),
 
             // Score preload
-            // Commands.sequence(new WaitCommand(0.5), Elevator.Commands.setToHeight(0))
+            Commands.sequence(new WaitCommand(0.5), Elevator.Commands.setToHeight(0))
 
             //       ,
             //   Commands.sequence(Commands.waitSeconds(0.5), Slapper.Commands.comeBackHome())
