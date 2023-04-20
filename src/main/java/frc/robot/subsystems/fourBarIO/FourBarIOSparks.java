@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import org.littletonrobotics.junction.Logger;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne;
@@ -76,6 +77,8 @@ public class FourBarIOSparks implements FourBarIO {
 
   @Override
   public void updateInputs(FourBarInputs inputs) {
+    double absoluteFourBarAngle = absoluteEncoder.getPosition();
+
     inputs.outputVoltage = (fourBarOne.getAppliedOutput() * RobotController.getBatteryVoltage());
 
     inputs.angleDegreesOne = fourBarOne.getEncoder().getPosition();
@@ -94,7 +97,9 @@ public class FourBarIOSparks implements FourBarIO {
     inputs.currentDrawOne = fourBarOne.getOutputCurrent();
     // inputs.currentDrawTwo = fourBarTwo.getOutputCurrent();
 
-    inputs.absoluteEncoderVolts = absoluteEncoder.getPosition();
+    Logger.getInstance().recordOutput("ABSOLUTEFOURBARANGLE", absoluteFourBarAngle);
+
+    inputs.absoluteEncoderVolts = absoluteFourBarAngle;
     inputs.absoluteEncoderAdjustedAngle = inputs.absoluteEncoderVolts - (offset);
     // inputs.limSwitch =
     //     fourBarOne.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
