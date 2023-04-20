@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intakeIO;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
@@ -13,6 +14,7 @@ import frc.robot.util.RedHawkUtil;
 public class IntakeIOSparks implements IntakeIO {
 
   private CANSparkMax topRoller, bottomRoller;
+  private SparkMaxAnalogSensor cubeSensor, coneSensor;
 
   public IntakeIOSparks() {
     topRoller = new CANSparkMax(Constants.RobotMap.TOP_INTAKE_ROLLER, MotorType.kBrushless);
@@ -49,6 +51,9 @@ public class IntakeIOSparks implements IntakeIO {
     bottomRoller
         .getEncoder()
         .setVelocityConversionFactor(Constants.IntakeConstants.BOTTOM_VELOCITY_CONVERSION_FACTOR);
+
+    this.cubeSensor = topRoller.getAnalog(Mode.kAbsolute);
+    this.coneSensor = bottomRoller.getAnalog(Mode.kAbsolute);
     topRoller.burnFlash();
     bottomRoller.burnFlash();
   }
@@ -71,13 +76,13 @@ public class IntakeIOSparks implements IntakeIO {
         Units.rotationsPerMinuteToRadiansPerSecond(topRoller.getEncoder().getPosition());
     inputs.bottomPositionRad =
         Units.rotationsPerMinuteToRadiansPerSecond(bottomRoller.getEncoder().getPosition());
-    inputs.encoderPositionRight = topRoller.getAnalog(Mode.kAbsolute).getPosition();
-    inputs.encoderVelocityRight = topRoller.getAnalog(Mode.kAbsolute).getVelocity();
-    inputs.encoderVoltageRight = topRoller.getAnalog(Mode.kAbsolute).getVoltage();
+    inputs.encoderPositionRight = cubeSensor.getPosition();
+    inputs.encoderVelocityRight = cubeSensor.getVelocity();
+    inputs.encoderVoltageRight = cubeSensor.getVoltage();
 
-    inputs.encoderPositionLeft = bottomRoller.getAnalog(Mode.kAbsolute).getPosition();
-    inputs.encoderVelocityLeft = bottomRoller.getAnalog(Mode.kAbsolute).getVelocity();
-    inputs.encoderVoltageLeft = bottomRoller.getAnalog(Mode.kAbsolute).getVoltage();
+    inputs.encoderPositionLeft = coneSensor.getPosition();
+    inputs.encoderVelocityLeft = coneSensor.getVelocity();
+    inputs.encoderVoltageLeft = coneSensor.getVoltage();
   }
 
   @Override
