@@ -23,7 +23,7 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.util.AutoPath;
 import frc.robot.util.SuperstructureConfig;
 
-public class MobilityBridge extends SequentialCommandGroup {
+public class MobilityBridgePathing extends SequentialCommandGroup {
 
   private double delayAfterScoring = 0.5;
   private boolean waitForFourbarDuringScoring = true;
@@ -93,7 +93,7 @@ public class MobilityBridge extends SequentialCommandGroup {
         FourBar.Commands.retract());
   }
 
-  public MobilityBridge() {
+  public MobilityBridgePathing() {
     addCommands(
         initializeOdometry(
             AutoPath.Autos.NO_SLAP_TRAJ_MOBILITY.getTrajectory().getInitialHolonomicPose(), 0),
@@ -119,7 +119,8 @@ public class MobilityBridge extends SequentialCommandGroup {
 
         Commands.parallel(
             SwerveSubsystem.Commands.stringTrajectoriesTogether(
-                AutoPath.Autos.NO_SLAP_TRAJ_MOBILITY.getTrajectory()),
+                AutoPath.Autos.NO_SLAP_TRAJ_MOBILITY.getTrajectory(),
+                AutoPath.Autos.MOBILITY_TO_CHARGE.getTrajectory()),
             Commands.sequence(new WaitCommand(0.5), Elevator.Commands.setToHeight(0))
 
             //       ,

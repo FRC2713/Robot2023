@@ -9,13 +9,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.util.MotionHandler.MotionMode;
 import org.littletonrobotics.junction.Logger;
 
-public class PIDOnBridgeExperimental extends SequentialCommandGroup {
+public class PIDOnTopOfBringe extends SequentialCommandGroup {
   class BangBang {
     double setpoint, tolerance, lastMeasurement;
     SlewRateLimiter limiter;
@@ -23,6 +22,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     private double prevError = 0;
 
     private double decayRate = 0.65;
+    private DriverStation.Alliance alliance;
 
     public BangBang(double setpoint, double tolerance) {
       this.init();
@@ -32,9 +32,10 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     }
 
     public void init() {
-      this.speed = 0.8;
+      this.speed = 0.5;
       this.lastMeasurement = 0;
       this.prevError = 0;
+      this.alliance = DriverStation.getAlliance();
     }
 
     double calculate(double measurement) {
@@ -51,9 +52,9 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
       Logger.getInstance().recordOutput("PIDBridge/currentError", currentError);
       Logger.getInstance().recordOutput("PIDBridge/rollspeed", rollSpeed);
       if (currentError > tolerance && rollSpeed < 0.25) {
-        out = DriverStation.getAlliance() == Alliance.Red ? out : -out;
+        out = this.alliance == Alliance.Red ? out : -out;
       } else if (currentError < -tolerance && rollSpeed < 0.25) {
-        out = DriverStation.getAlliance() == Alliance.Red ? -out : out;
+        out = this.alliance == Alliance.Red ? -out : out;
       } else {
         out = 0;
       }
@@ -64,38 +65,16 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
   }
 
   double maxRampAngle = 12;
-  double rampSpeed = 0;
   LinearFilter filter = LinearFilter.singlePoleIIR(0., 0.02);
 
-  public PIDOnBridgeExperimental(boolean gridside) {
+  public PIDOnTopOfBringe(boolean gridside) {
     BangBang controller = new BangBang(0, 4.5);
-    if ((gridside && DriverStation.getAlliance() == Alliance.Blue)
-        || (!gridside && DriverStation.getAlliance() == Alliance.Red)) {
-      rampSpeed = 1.75;
-    } else {
-      rampSpeed = -1.75;
-    }
-
-    Logger.getInstance().recordOutput("PIDBridge/rampSpeed", rampSpeed);
 
     addCommands(
         new InstantCommand(
             () -> {
               controller.init();
             }),
-        new RunCommand(
-                () -> {
-                  Robot.motionMode = MotionMode.NULL;
-                  Robot.swerveDrive.setModuleStates(
-                      DriveConstants.KINEMATICS.toSwerveModuleStates(
-                          ChassisSpeeds.fromFieldRelativeSpeeds(
-                              rampSpeed,
-                              0,
-                              0,
-                              Rotation2d.fromDegrees(Robot.swerveDrive.inputs.gyroYawPosition))));
-                })
-            .until(() -> Math.abs(Robot.swerveDrive.filteredRollVal) >= maxRampAngle),
-        new WaitCommand(0.25),
         new RunCommand(
             () -> {
               Robot.motionMode = MotionMode.NULL;
