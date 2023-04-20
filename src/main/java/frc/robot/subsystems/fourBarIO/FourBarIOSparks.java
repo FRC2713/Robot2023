@@ -18,25 +18,25 @@ public class FourBarIOSparks implements FourBarIO {
   private static double offset = 173.95;
 
   public FourBarIOSparks() {
-    // fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
-    // // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
-    // fourBarOne.restoreFactoryDefaults();
-    // // fourBarTwo.restoreFactoryDefaults();
+    fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
+    // fourBarTwo = new CANSparkMax(Constants.RobotMap.FOURBAR_TWO_CANID, MotorType.kBrushless);
+    fourBarOne.restoreFactoryDefaults();
+    // fourBarTwo.restoreFactoryDefaults();
 
-    // RedHawkUtil.configureHighTrafficSpark(fourBarOne);
-    // // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
-    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 20);
-    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
-    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
-    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
+    RedHawkUtil.configureHighTrafficSpark(fourBarOne);
+    // RedHawkUtil.configureHighTrafficSpark(fourBarTwo);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 20);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
-    // fourBarOne.setIdleMode(IdleMode.kBrake);
+    fourBarOne.setIdleMode(IdleMode.kBrake);
 
-    // for (int i = 0; i < 30; i++) {
-    //   fourBarOne.setInverted(true);
-    // }
-    // // fourBarTwo.setInverted(true); // subject to change
-    // fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_BASE_CURRENT);
+    for (int i = 0; i < 30; i++) {
+      fourBarOne.setInverted(true);
+    }
+    // fourBarTwo.setInverted(true); // subject to change
+    fourBarOne.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_BASE_CURRENT);
     // fourBarTwo.setSmartCurrentLimit(Constants.FourBarConstants.FOUR_BAR_CURRENT_LIMIT);
     fourBarOne
         .getEncoder()
