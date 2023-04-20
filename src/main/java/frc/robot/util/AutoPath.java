@@ -22,6 +22,7 @@ public class AutoPath {
     ONE_TO_A("grid1tocargoA"),
     REVERSE_ONE_TO_A("reversegrid1tocargoA"),
     TRAJ_MOBILITY("slap6tomobility", Units.feetToMeters(16), Units.feetToMeters(3)),
+    NO_SLAP_TRAJ_MOBILITY("grid6tomobility", Units.feetToMeters(16), Units.feetToMeters(3)),
     THREE_TO_A("grid3tocargoA"),
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
