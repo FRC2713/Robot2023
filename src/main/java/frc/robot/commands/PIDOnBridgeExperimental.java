@@ -32,7 +32,7 @@ public class PIDOnBridgeExperimental extends SequentialCommandGroup {
     }
 
     public void init() {
-      this.speed = 0.8;
+      this.speed = 0.9;
       this.lastMeasurement = 0;
       this.prevError = 0;
     }
