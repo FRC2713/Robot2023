@@ -723,6 +723,8 @@ public class Robot extends LoggedRobot {
 
     operator
         .povUp()
+        .or(operator.povUpLeft())
+        .or(operator.povUpRight())
         .onTrue(
             new SequentialCommandGroup(
                 new InstantCommand(
@@ -773,8 +775,11 @@ public class Robot extends LoggedRobot {
                 () -> {
                   fourBar.reseed();
                 }));
+
     operator
         .povDown()
+        .or(operator.povDownLeft())
+        .or(operator.povDownRight())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(0),
