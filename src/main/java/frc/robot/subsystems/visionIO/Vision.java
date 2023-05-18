@@ -299,7 +299,8 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean hasMultipleTargets(Limelights limelight) {
-    return (limelight == Limelights.FRONT ? frontInputs.numTargets : rearInputs.numTargets) > 0;
+    // return (limelight == Limelights.FRONT ? frontInputs.numTargets : rearInputs.numTargets) > 0;
+    return true;
   }
 
   public void periodic() {
