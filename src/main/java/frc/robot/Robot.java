@@ -70,7 +70,6 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
-import frc.robot.subsystems.visionIO.Vision.Limelights;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
@@ -905,17 +904,15 @@ public class Robot extends LoggedRobot {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    if (frontfQueue.length > 0
-        && frontcQueue.length > 0
-        // && vision.hasMultipleTargets(Limelights.FRONT)
-        ) {
+    if (frontfQueue.length > 0 && frontcQueue.length > 0
+    // && vision.hasMultipleTargets(Limelights.FRONT)
+    ) {
       TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
-    } else if (rearfQueue.length > 0
-        && rearcQueue.length > 0
-        // && vision.hasMultipleTargets(Limelights.REAR)
-        ) {
+    } else if (rearfQueue.length > 0 && rearcQueue.length > 0
+    // && vision.hasMultipleTargets(Limelights.REAR)
+    ) {
       TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
