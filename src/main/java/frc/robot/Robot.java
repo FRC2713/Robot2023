@@ -907,13 +907,15 @@ public class Robot extends LoggedRobot {
 
     if (frontfQueue.length > 0
         && frontcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.FRONT)) {
+        // && vision.hasMultipleTargets(Limelights.FRONT)
+        ) {
       TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
     } else if (rearfQueue.length > 0
         && rearcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.REAR)) {
+        // && vision.hasMultipleTargets(Limelights.REAR)
+        ) {
       TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
