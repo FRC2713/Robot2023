@@ -50,7 +50,7 @@ public final class Constants {
     public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
     public static double VISION_STD_DEVI_POSITION_IN_METERS = 0.9;
     public static double VISION_STD_DEVI_ROTATION_IN_RADIANS = Units.degreesToRadians(5);
-    public static double MAX_POSE_JUMP_IN_INCHES = 1800;
+    public static double MAX_POSE_JUMP_IN_INCHES = 6 * 12;
   }
 
   @UtilityClass
@@ -229,7 +229,7 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(12.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);

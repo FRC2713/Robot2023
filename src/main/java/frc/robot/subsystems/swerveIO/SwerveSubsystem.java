@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -47,6 +48,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public static double allianceFlipper = 1;
   public static Rotation2d resetGyroVal = null;
+
+  private double numIgnoredJumps;
 
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
@@ -210,9 +213,13 @@ public class SwerveSubsystem extends SubsystemBase {
                 .getDistance(fPose.getTranslation()));
     Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
     if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-        && jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES) {
+        && ((!DriverStation.isEnabled())
+            || jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES)) {
       poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
+    } else {
+      numIgnoredJumps++;
     }
+    Logger.getInstance().recordOutput("Vision/numIgnoredJumps", numIgnoredJumps);
   }
 
   /**
