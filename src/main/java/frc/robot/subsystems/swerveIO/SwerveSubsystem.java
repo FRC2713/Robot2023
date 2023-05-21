@@ -25,8 +25,13 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerveIO.module.SwerveModule;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
+import frc.robot.util.CircularBuffer;
 import frc.robot.util.MotionHandler;
 import frc.robot.util.TrajectoryController;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -38,6 +43,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule frontRight;
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
+  private CircularBuffer<Pose2d> ignoredJumps = new CircularBuffer<>(5);
 
   private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
@@ -54,13 +60,16 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Creates a new SwerveSubsystem (swerve drive) object.
    *
-   * @param swerveIO The IO layer of the swerve drive. Change this to change which gyro you're using
-   *     (SwerveModuleIOPigeon2 vs SwerveModuleIOSim)
-   * @param frontLeft The IO layer for the front left swerve module. Change this to change which
-   *     motor controller you're using (SwerveModuleIOSim vs SwerveModuleIOSparkMAX)
+   * @param swerveIO   The IO layer of the swerve drive. Change this to change
+   *                   which gyro you're using
+   *                   (SwerveModuleIOPigeon2 vs SwerveModuleIOSim)
+   * @param frontLeft  The IO layer for the front left swerve module. Change this
+   *                   to change which
+   *                   motor controller you're using (SwerveModuleIOSim vs
+   *                   SwerveModuleIOSparkMAX)
    * @param frontRight The IO layer for the front right swerve module.
-   * @param backLeft The IO layer for the back left swerve module.
-   * @param backRight The IO layer for the back left swerve module.
+   * @param backLeft   The IO layer for the back left swerve module.
+   * @param backRight  The IO layer for the back left swerve module.
    */
   public SwerveSubsystem(
       SwerveIO swerveIO,
@@ -75,35 +84,33 @@ public class SwerveSubsystem extends SubsystemBase {
     io = swerveIO;
     io.updateInputs(inputs);
 
-    odometry =
-        new SwerveDriveOdometry(
-            DriveConstants.KINEMATICS,
-            Rotation2d.fromDegrees(inputs.gyroYawPosition),
-            new SwerveModulePosition[] {
-              this.frontLeft.getPosition(),
-              this.frontRight.getPosition(),
-              this.backLeft.getPosition(),
-              this.backRight.getPosition()
-            },
-            new Pose2d());
+    odometry = new SwerveDriveOdometry(
+        DriveConstants.KINEMATICS,
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        new SwerveModulePosition[] {
+            this.frontLeft.getPosition(),
+            this.frontRight.getPosition(),
+            this.backLeft.getPosition(),
+            this.backRight.getPosition()
+        },
+        new Pose2d());
 
-    poseEstimator =
-        new SwerveDrivePoseEstimator(
-            DriveConstants.KINEMATICS,
-            Rotation2d.fromDegrees(inputs.gyroYawPosition),
-            new SwerveModulePosition[] {
-              this.frontLeft.getPosition(),
-              this.frontRight.getPosition(),
-              this.backLeft.getPosition(),
-              this.backRight.getPosition()
-            },
-            new Pose2d(),
-            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.1),
-            new MatBuilder<>(Nat.N3(), Nat.N1())
-                .fill(
-                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
-                    Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
-                    Constants.LimeLightConstants.VISION_STD_DEVI_ROTATION_IN_RADIANS));
+    poseEstimator = new SwerveDrivePoseEstimator(
+        DriveConstants.KINEMATICS,
+        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        new SwerveModulePosition[] {
+            this.frontLeft.getPosition(),
+            this.frontRight.getPosition(),
+            this.backLeft.getPosition(),
+            this.backRight.getPosition()
+        },
+        new Pose2d(),
+        new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.1),
+        new MatBuilder<>(Nat.N3(), Nat.N1())
+            .fill(
+                Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
+                Constants.LimeLightConstants.VISION_STD_DEVI_ROTATION_IN_RADIANS));
 
     simOdometryPose = odometry.getPoseMeters();
   }
@@ -131,20 +138,20 @@ public class SwerveSubsystem extends SubsystemBase {
     odometry.resetPosition(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
-          frontLeft.getPosition(),
-          frontRight.getPosition(),
-          backLeft.getPosition(),
-          backRight.getPosition()
+            frontLeft.getPosition(),
+            frontRight.getPosition(),
+            backLeft.getPosition(),
+            backRight.getPosition()
         },
         pose);
 
     poseEstimator.resetPosition(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
-          this.frontLeft.getPosition(),
-          this.frontRight.getPosition(),
-          this.backLeft.getPosition(),
-          this.backRight.getPosition()
+            this.frontLeft.getPosition(),
+            this.frontRight.getPosition(),
+            this.backLeft.getPosition(),
+            this.backRight.getPosition()
         },
         pose);
     simOdometryPose = pose;
@@ -205,19 +212,36 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     Logger.getInstance().recordOutput("Vision/Got empty field pose", false);
 
-    double jump_distance =
-        Units.metersToInches(
-            poseEstimator
-                .getEstimatedPosition()
-                .getTranslation()
-                .getDistance(fPose.getTranslation()));
-    Logger.getInstance().recordOutput("Vision/jump_distance", jump_distance);
-    if (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-        && ((!DriverStation.isEnabled())
-            || jump_distance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES)) {
+    double jumpDistance = Units.metersToInches(
+        poseEstimator
+            .getEstimatedPosition()
+            .getTranslation()
+            .getDistance(fPose.getTranslation()));
+    Logger.getInstance().recordOutput("Vision/jump_distance", jumpDistance);
+
+    boolean consistentlyIgnored = false;
+    if (ignoredJumps.realSize() > Constants.LimeLightConstants.MIN_TO_BE_CONSISTENT) {
+      consistentlyIgnored = true;
+      for (int i = 1; i < ignoredJumps.realSize(); i++) {
+        Pose2d currentPose = ignoredJumps.get(i);
+        Pose2d previousPose = ignoredJumps.get(i - 1);
+
+        double distance = currentPose.getTranslation().getDistance(previousPose.getTranslation());
+
+        if (distance > Constants.LimeLightConstants.MAX_POSE_JUMP_BEFORE_INCONSISTENT) {
+          consistentlyIgnored = false;
+        }
+      }
+    }
+
+    if (consistentlyIgnored ||
+        (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+            && ((!DriverStation.isEnabled())
+                || jumpDistance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES))) {
       poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
     } else {
       numIgnoredJumps++;
+      ignoredJumps.push(fPose);
     }
     Logger.getInstance().recordOutput("Vision/numIgnoredJumps", numIgnoredJumps);
   }
@@ -225,8 +249,10 @@ public class SwerveSubsystem extends SubsystemBase {
   /**
    * Sets the desired states of the swerve modules.
    *
-   * @param swerveModuleStates The array of desired swerveModuleStates. Ensure they are ordered the
-   *     same way in this array as they are instantiated into SwerveDriveKinematics.
+   * @param swerveModuleStates The array of desired swerveModuleStates. Ensure
+   *                           they are ordered the
+   *                           same way in this array as they are instantiated
+   *                           into SwerveDriveKinematics.
    */
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -246,9 +272,9 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public double getAverageVelocity() {
     return (frontLeft.getMeasuredState().speedMetersPerSecond
-            + frontRight.getMeasuredState().speedMetersPerSecond
-            + backLeft.getMeasuredState().speedMetersPerSecond
-            + backRight.getMeasuredState().speedMetersPerSecond)
+        + frontRight.getMeasuredState().speedMetersPerSecond
+        + backLeft.getMeasuredState().speedMetersPerSecond
+        + backRight.getMeasuredState().speedMetersPerSecond)
         / 4;
   }
 
@@ -261,7 +287,8 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Updates the odometry of the robot using the swerve module states and the gyro reading. Should
+   * Updates the odometry of the robot using the swerve module states and the gyro
+   * reading. Should
    * be run in periodic() or during every code loop to maintain accuracy.
    */
   public void updateOdometry() {
@@ -269,37 +296,35 @@ public class SwerveSubsystem extends SubsystemBase {
     odometry.update(
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
-          frontLeft.getPosition(),
-          frontRight.getPosition(),
-          backLeft.getPosition(),
-          backRight.getPosition()
+            frontLeft.getPosition(),
+            frontRight.getPosition(),
+            backLeft.getPosition(),
+            backRight.getPosition()
         });
 
     poseEstimator.updateWithTime(
         Timer.getFPGATimestamp(),
         Rotation2d.fromDegrees(inputs.gyroYawPosition),
         new SwerveModulePosition[] {
-          frontLeft.getPosition(),
-          frontRight.getPosition(),
-          backLeft.getPosition(),
-          backRight.getPosition()
+            frontLeft.getPosition(),
+            frontRight.getPosition(),
+            backLeft.getPosition(),
+            backRight.getPosition()
         });
 
     if (Robot.isSimulation()) {
-      SwerveModuleState[] measuredStates =
-          new SwerveModuleState[] {
-            frontLeft.getMeasuredState(),
-            frontRight.getMeasuredState(),
-            backLeft.getMeasuredState(),
-            backRight.getMeasuredState()
-          };
+      SwerveModuleState[] measuredStates = new SwerveModuleState[] {
+          frontLeft.getMeasuredState(),
+          frontRight.getMeasuredState(),
+          backLeft.getMeasuredState(),
+          backRight.getMeasuredState()
+      };
       ChassisSpeeds speeds = Constants.DriveConstants.KINEMATICS.toChassisSpeeds(measuredStates);
-      simOdometryPose =
-          simOdometryPose.exp(
-              new Twist2d(
-                  speeds.vxMetersPerSecond * .02,
-                  speeds.vyMetersPerSecond * .02,
-                  speeds.omegaRadiansPerSecond * .02));
+      simOdometryPose = simOdometryPose.exp(
+          new Twist2d(
+              speeds.vxMetersPerSecond * .02,
+              speeds.vyMetersPerSecond * .02,
+              speeds.omegaRadiansPerSecond * .02));
 
       inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
     }
@@ -336,20 +361,18 @@ public class SwerveSubsystem extends SubsystemBase {
         break;
     }
 
-    SwerveModuleState[] measuredModuleStates =
-        new SwerveModuleState[] {
-          frontLeft.getMeasuredState(),
-          frontRight.getMeasuredState(),
-          backLeft.getMeasuredState(),
-          backRight.getMeasuredState()
-        };
-    SwerveModuleState[] desiredModuleStates =
-        new SwerveModuleState[] {
-          frontLeft.getDesiredState(),
-          frontRight.getDesiredState(),
-          backLeft.getDesiredState(),
-          backRight.getDesiredState()
-        };
+    SwerveModuleState[] measuredModuleStates = new SwerveModuleState[] {
+        frontLeft.getMeasuredState(),
+        frontRight.getMeasuredState(),
+        backLeft.getMeasuredState(),
+        backRight.getMeasuredState()
+    };
+    SwerveModuleState[] desiredModuleStates = new SwerveModuleState[] {
+        frontLeft.getDesiredState(),
+        frontRight.getDesiredState(),
+        backLeft.getDesiredState(),
+        backRight.getDesiredState()
+    };
 
     Logger.getInstance().recordOutput("Swerve/Measured Module States", measuredModuleStates);
     Logger.getInstance().recordOutput("Swerve/Desired Module States", desiredModuleStates);
@@ -359,24 +382,22 @@ public class SwerveSubsystem extends SubsystemBase {
         .recordOutput(
             "Swerve/Odometry Pose",
             new double[] {
-              getRegularPose().getX(),
-              getRegularPose().getY(),
-              getRegularPose().getRotation().getDegrees()
+                getRegularPose().getX(),
+                getRegularPose().getY(),
+                getRegularPose().getRotation().getDegrees()
             });
     Logger.getInstance()
         .recordOutput(
             "Swerve/PoseEstimator Pose",
             new double[] {
-              getEstimatedPose().getX(),
-              getEstimatedPose().getY(),
-              getEstimatedPose().getRotation().getDegrees()
+                getEstimatedPose().getX(),
+                getEstimatedPose().getY(),
+                getEstimatedPose().getRotation().getDegrees()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
 
-    ChassisSpeeds currentChassisSpeeds =
-        DriveConstants.KINEMATICS.toChassisSpeeds(measuredModuleStates);
-    ChassisSpeeds targetChassisSpeeds =
-        DriveConstants.KINEMATICS.toChassisSpeeds(desiredModuleStates);
+    ChassisSpeeds currentChassisSpeeds = DriveConstants.KINEMATICS.toChassisSpeeds(measuredModuleStates);
+    ChassisSpeeds targetChassisSpeeds = DriveConstants.KINEMATICS.toChassisSpeeds(desiredModuleStates);
 
     Logger.getInstance()
         .recordOutput(
@@ -407,24 +428,22 @@ public class SwerveSubsystem extends SubsystemBase {
     public static SequentialCommandGroup fallBack() {
       return new SequentialCommandGroup(
           new InstantCommand(
-                  () ->
-                      Robot.swerveDrive.setModuleStates(
-                          DriveConstants.KINEMATICS.toSwerveModuleStates(
-                              ChassisSpeeds.fromFieldRelativeSpeeds(
-                                  3,
-                                  0,
-                                  0,
-                                  Rotation2d.fromDegrees(
-                                      Robot.swerveDrive.inputs.gyroYawPosition)))))
+              () -> Robot.swerveDrive.setModuleStates(
+                  DriveConstants.KINEMATICS.toSwerveModuleStates(
+                      ChassisSpeeds.fromFieldRelativeSpeeds(
+                          3,
+                          0,
+                          0,
+                          Rotation2d.fromDegrees(
+                              Robot.swerveDrive.inputs.gyroYawPosition)))))
               .until(() -> Robot.fourBar.getLimitSwitch()));
     }
 
     public static SequentialCommandGroup stringTrajectoriesTogether(
         PathPlannerTrajectory... trajectories) {
-      SequentialCommandGroup masterTrajectory =
-          new SequentialCommandGroup(
-              new InstantCommand(
-                  () -> TrajectoryController.getInstance().changePath(trajectories[0])));
+      SequentialCommandGroup masterTrajectory = new SequentialCommandGroup(
+          new InstantCommand(
+              () -> TrajectoryController.getInstance().changePath(trajectories[0])));
 
       for (PathPlannerTrajectory t : trajectories) {
         masterTrajectory.addCommands(followTAndWait(t));
