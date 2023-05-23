@@ -216,7 +216,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Logger.getInstance().recordOutput("Vision/jump_distance", jumpDistance);
 
     boolean consistentlyIgnored = false;
-    if (ignoredJumps.realSize() > Constants.LimeLightConstants.MIN_TO_BE_CONSISTENT) {
+    if (ignoredJumps.realSize() >= Constants.LimeLightConstants.MIN_TO_BE_CONSISTENT) {
       consistentlyIgnored = true;
       for (int i = 1; i < ignoredJumps.realSize(); i++) {
         Pose2d currentPose = ignoredJumps.get(i);
@@ -228,17 +228,35 @@ public class SwerveSubsystem extends SubsystemBase {
           consistentlyIgnored = false;
         }
       }
+      // double distance = (ignoredJumps.get(ignoredJumps.realSize() -
+      // 1)).getTranslation().getDistance(fPose.getTranslation());
+      // if(distance > Constants.LimeLightConstants.MAX_POSE_JUMP_BEFORE_INCONSISTENT) {
+
+      // }
     }
 
-    if (consistentlyIgnored
-        || (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
-            && ((!DriverStation.isEnabled())
-                || jumpDistance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES))) {
+    boolean addPose = distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES;
+    addPose =
+        addPose
+            && (!DriverStation.isEnabled()
+                || (consistentlyIgnored
+                    || jumpDistance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES));
+
+    if
+    // (consistentlyIgnored
+    //     || (distCamToTag < Constants.LimeLightConstants.CAMERA_TO_TAG_MAX_DIST_INCHES
+    //         && ((!DriverStation.isEnabled())
+    //             || jumpDistance < Constants.LimeLightConstants.MAX_POSE_JUMP_IN_INCHES)))
+    (addPose) {
       poseEstimator.addVisionMeasurement(fPose, Timer.getFPGATimestamp() - (fVal[6] / 1000.0));
+      ignoredJumps.clear();
     } else {
       numIgnoredJumps++;
       ignoredJumps.push(fPose);
     }
+
+    Logger.getInstance().recordOutput("Vision/consistentlyIgnored", consistentlyIgnored);
+    Logger.getInstance().recordOutput("Vision/ignoredJumpsSize", ignoredJumps.realSize());
     Logger.getInstance().recordOutput("Vision/numIgnoredJumps", numIgnoredJumps);
   }
 

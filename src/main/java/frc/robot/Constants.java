@@ -50,9 +50,9 @@ public final class Constants {
     public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
     public static double VISION_STD_DEVI_POSITION_IN_METERS = 0.9;
     public static double VISION_STD_DEVI_ROTATION_IN_RADIANS = Units.degreesToRadians(5);
-    public static double MAX_POSE_JUMP_IN_INCHES = 6 * 12;
-    public static double MAX_POSE_JUMP_BEFORE_INCONSISTENT = MAX_POSE_JUMP_IN_INCHES;
-    public static int MIN_TO_BE_CONSISTENT = 1;
+    public static double MAX_POSE_JUMP_IN_INCHES = 3 * 12;
+    public static double MAX_POSE_JUMP_BEFORE_INCONSISTENT = 8;
+    public static int MIN_TO_BE_CONSISTENT = 5;
   }
 
   @UtilityClass

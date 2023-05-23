@@ -5,7 +5,7 @@ import lombok.Getter;
 
 public class CircularBuffer<T> {
   @Getter private final int size;
-  private final ArrayList<T> list;
+  private ArrayList<T> list;
 
   public CircularBuffer(int size) {
     if (size < 1) {
@@ -40,5 +40,9 @@ public class CircularBuffer<T> {
 
   public T get(int index) {
     return list.get(index);
+  }
+
+  public void clear() {
+    list = new ArrayList<>();
   }
 }
