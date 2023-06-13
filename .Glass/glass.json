@@ -3,6 +3,9 @@
     "Persistent Values": {
       "open": false
     },
+    "Transitory Values": {
+      "open": false
+    },
     "transitory": {
       "AdvantageKit": {
         "open": true
@@ -29,10 +32,16 @@
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Autonomous Routine": "String Chooser",
       "/SmartDashboard/Mech2d": "Mechanism2d",
       "/SmartDashboard/Telescope Mech2D": "Mechanism2d"
     },
     "windows": {
+      "/SmartDashboard/Autonomous Routine": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Mech2d": {
         "window": {
           "visible": true
@@ -42,6 +51,6 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "localhost"
+    "serverTeam": "2713"
   }
 }

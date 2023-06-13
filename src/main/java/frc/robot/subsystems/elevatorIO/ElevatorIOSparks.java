@@ -24,10 +24,10 @@ public class ElevatorIOSparks implements ElevatorIO {
     right.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
     for (int i = 0; i < 30; i++) {
-
       left.setInverted(true);
-      right.setInverted(false); // might be reversed, idk
+      right.setInverted(false);
     }
+
     left.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     right.setSmartCurrentLimit(Constants.ElevatorConstants.ELEVATOR_CURRENT_LIMIT);
     left.getEncoder()
@@ -52,6 +52,10 @@ public class ElevatorIOSparks implements ElevatorIO {
   public void resetEncoders() {
     left.getEncoder().setPosition(0);
     right.getEncoder().setPosition(0);
+  }
+
+  public boolean shouldApplyFF() {
+    return right.getEncoder().getPosition() > 28.25;
   }
 
   @Override

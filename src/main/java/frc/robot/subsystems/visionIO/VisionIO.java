@@ -34,7 +34,10 @@ public interface VisionIO {
     public long stream = 0;
     public boolean snapshot = false; // IO layer
     public double[] crop = new double[] {};
+    public double numTargets = 0;
   }
+
+  public String getName();
 
   public void updateInputs(VisionInputs inputs);
 

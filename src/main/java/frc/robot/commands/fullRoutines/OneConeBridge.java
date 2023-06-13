@@ -2,16 +2,14 @@ package frc.robot.commands.fullRoutines;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
-import frc.robot.commands.PIDOnBridge;
+import frc.robot.commands.PIDOnBridgeExperimental;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.fourBarIO.FourBar;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -20,58 +18,41 @@ import frc.robot.util.SuperstructureConfig;
 
 public class OneConeBridge extends SequentialCommandGroup {
 
-  private Command score(SuperstructureConfig config) {
-    return Commands.sequence(
-        new InstantCommand(() -> Robot.intake.setScoring(true)),
-        prepScore(config),
-        Intake.Commands.score(),
-        new WaitCommand(0.5));
-  }
+  private double delayAfterScoring = 0.5;
+  private boolean waitForFourbarDuringScoring = true;
 
-  private Command prepScore(SuperstructureConfig config) {
+  public Command prepScore(SuperstructureConfig config, boolean waitForFourbar) {
     return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setAngleDegAndWait(config.getFourBarPosition()));
+        waitForFourbar
+            ? FourBar.Commands.setAngleDegAndWait(config)
+            : FourBar.Commands.setToAngle(config));
   }
 
-  private Command startIntake() {
-    return new ConditionalCommand(
-        new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(false)),
-            FourBar.Commands.setToAngle(
-                Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-            Intake.Commands.setBottomVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
-            Intake.Commands.setTopVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_CUBE.getTopRPM())),
-        new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(false)),
-            FourBar.Commands.setToAngle(
-                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
-            Intake.Commands.setBottomVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
-            Intake.Commands.setTopVelocityRPM(
-                Constants.SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM())),
-        () -> Robot.gamePieceMode == GamePieceMode.CUBE);
+  public Command score(SuperstructureConfig config, double waitAtEnd, boolean waitForFourbar) {
+    return Commands.sequence(
+        new InstantCommand(() -> Robot.intake.setScoring(true)),
+        prepScore(config, waitForFourbar),
+        Intake.Commands.score(),
+        new WaitCommand(waitAtEnd));
   }
 
-  private Command stopIntake() {
-    return new ConditionalCommand(
-        new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(false)),
-            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CUBE.getBottomRPM()),
-            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CUBE.getTopRPM()),
-            FourBar.Commands.retract()),
-        new ParallelCommandGroup(
-            new InstantCommand(() -> Robot.intake.setScoring(false)),
-            Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
-            Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-            FourBar.Commands.retract()),
-        () -> Robot.gamePieceMode == GamePieceMode.CUBE);
+  public static Command stopIntake() {
+    SuperstructureConfig holdConfig =
+        Robot.gamePieceMode == GamePieceMode.CUBE
+            ? SuperstructureConstants.HOLD_CUBE
+            : SuperstructureConstants.HOLD_CONE;
+
+    return new ParallelCommandGroup(
+        new InstantCommand(() -> Robot.intake.setScoring(false)),
+        Intake.Commands.setBottomVelocityRPM(holdConfig.getBottomRPM()),
+        Intake.Commands.setTopVelocityRPM(holdConfig.getTopRPM()),
+        FourBar.Commands.retract());
   }
 
   public OneConeBridge() {
     addCommands(
+        // Score preload
         new InstantCommand(
             () -> {
               Robot.swerveDrive.resetOdometry(
@@ -81,9 +62,14 @@ public class OneConeBridge extends SequentialCommandGroup {
             }),
         Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
         Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
-        score(SuperstructureConstants.SCORE_CONE_HIGH),
+        score(
+            SuperstructureConstants.SCORE_CONE_HIGH,
+            delayAfterScoring,
+            waitForFourbarDuringScoring),
+
+        // Move to Charge Station
         stopIntake().repeatedly().until(() -> Robot.fourBar.isAtTarget()),
         Elevator.Commands.setToHeight(0),
-        new PIDOnBridge(true));
+        new PIDOnBridgeExperimental(true));
   }
 }

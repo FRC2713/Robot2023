@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.util.PIDFFController;
 import org.littletonrobotics.junction.Logger;
 
@@ -56,6 +57,10 @@ public class SwerveModule extends SubsystemBase {
     io.seed();
   }
 
+  private void recordOutput(String key, double value) {
+    Logger.getInstance().recordOutput("Swerve/" + information.getName() + '/' + key, value);
+  }
+
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         inputs.driveEncoderPositionMetres, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
@@ -103,8 +108,8 @@ public class SwerveModule extends SubsystemBase {
         driveController.calculate(
             inputs.driveEncoderVelocityMetresPerSecond, state.speedMetersPerSecond);
 
-    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) < 0.1;
-    boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) < 0.1;
+    boolean useMotorEncoder = Math.abs(inputs.aziEncoderPositionDeg) > 0.1 || Robot.isSimulation();
+    boolean useAbsoluteEncoder = Math.abs(inputs.aziAbsoluteEncoderRawVolts) > 0.1;
     double feedbackVal;
     if (useMotorEncoder) {
       feedbackVal = inputs.aziEncoderPositionDeg;
@@ -119,8 +124,8 @@ public class SwerveModule extends SubsystemBase {
 
     final double turnOutput = azimuthController.calculate(feedbackVal, state.angle.getDegrees());
 
-    Logger.getInstance().recordOutput("Drive Output", driveOutput);
-    Logger.getInstance().recordOutput("Turn Output", turnOutput);
+    recordOutput("Desired Drive Volts", driveOutput);
+    recordOutput("Desired Azi Volts", turnOutput);
 
     io.setDriveVoltage(driveOutput);
     io.setAzimuthVoltage(turnOutput);
@@ -132,23 +137,13 @@ public class SwerveModule extends SubsystemBase {
 
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swerve/" + information.getName(), inputs);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Azimuth Error",
-            state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Drive Error",
-            state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Target Speed", state.speedMetersPerSecond);
-    Logger.getInstance()
-        .recordOutput("Swerve/" + information.getName() + "/Angle Speed", state.angle.getDegrees());
-
-    Logger.getInstance()
-        .recordOutput(
-            "Swerve/" + information.getName() + "/Azimuth Encoder Delta",
-            inputs.aziEncoderPositionDeg - inputs.aziAbsoluteEncoderAdjAngleDeg);
+    recordOutput("Azimuth Error", state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
+    recordOutput(
+        "Drive Error", state.speedMetersPerSecond - inputs.driveEncoderVelocityMetresPerSecond);
+    recordOutput("Target Speed", state.speedMetersPerSecond);
+    recordOutput("Angle Speed", state.angle.getDegrees());
+    recordOutput(
+        "Azimuth Encoder Delta",
+        inputs.aziEncoderPositionDeg - inputs.aziAbsoluteEncoderAdjAngleDeg);
   }
 }

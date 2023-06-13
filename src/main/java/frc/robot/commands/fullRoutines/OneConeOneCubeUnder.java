@@ -32,14 +32,14 @@ public class OneConeOneCubeUnder extends SequentialCommandGroup {
   private Command prepScore(SuperstructureConfig config) {
     return Commands.sequence(
         Elevator.Commands.setToHeightAndWait(config),
-        FourBar.Commands.setToAngle(config.getFourBarPosition()));
+        FourBar.Commands.setAngleDegAndWait(config.getFourBarPosition()));
   }
 
   private Command startIntake() {
     return new ConditionalCommand(
         new ParallelCommandGroup(
             new InstantCommand(() -> Robot.intake.setScoring(false)),
-            FourBar.Commands.setToAngle(
+            FourBar.Commands.setAngleDegAndWait(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
             Intake.Commands.setBottomVelocityRPM(
                 Constants.SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
@@ -78,7 +78,7 @@ public class OneConeOneCubeUnder extends SequentialCommandGroup {
               Robot.swerveDrive.resetOdometry(
                   AutoPath.Autos.NINE_TO_D.getTrajectory().getInitialHolonomicPose());
               Robot.gamePieceMode = GamePieceMode.CONE;
-              Robot.fourBar.reseed();
+              //   Robot.fourBar.reseed();
             }),
         Intake.Commands.setBottomVelocityRPM(SuperstructureConstants.HOLD_CONE.getBottomRPM()),
         Intake.Commands.setTopVelocityRPM(SuperstructureConstants.HOLD_CONE.getTopRPM()),
@@ -91,9 +91,9 @@ public class OneConeOneCubeUnder extends SequentialCommandGroup {
         SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.NINE_TO_D.getTrajectory()),
         stopIntake(),
         Commands.parallel(
-            prepScore(SuperstructureConstants.SCORE_CUBE_HIGH),
+            prepScore(SuperstructureConstants.SCORE_CUBE_LOW),
             SwerveSubsystem.Commands.stringTrajectoriesTogether(Autos.D_TO_EIGHT.getTrajectory())),
-        score(SuperstructureConstants.SCORE_CUBE_HIGH),
+        score(SuperstructureConstants.SCORE_CUBE_LOW),
         stopIntake(),
         Elevator.Commands.setToHeightAndWait(Constants.zero));
   }

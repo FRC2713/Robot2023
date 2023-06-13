@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-// import static frc.robot.subsystems.LightStrip.Pattern.RedOrange;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -17,6 +15,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,8 +38,11 @@ import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
 import frc.robot.commands.fullRoutines.ConeCubeConeOver;
 import frc.robot.commands.fullRoutines.FastThreeCubeOver;
+import frc.robot.commands.fullRoutines.MobilityBridge;
+import frc.robot.commands.fullRoutines.MobilityBridgePathing;
 import frc.robot.commands.fullRoutines.OneConeBridge;
 import frc.robot.commands.fullRoutines.OneConeOneCubeUnder;
+import frc.robot.commands.fullRoutines.OneConeOneCubeUnderHigh;
 import frc.robot.commands.fullRoutines.OneConeTwoCubeOver;
 import frc.robot.commands.fullRoutines.OneCubeOverBridge;
 import frc.robot.commands.fullRoutines.ScoreCommunityUnder;
@@ -56,6 +58,7 @@ import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
+import frc.robot.subsystems.fourBarIO.FourBar.FourBarMode;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -67,6 +70,7 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
+import frc.robot.subsystems.visionIO.Vision.Limelights;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
@@ -98,6 +102,7 @@ public class Robot extends LoggedRobot {
   public static Elevator elevator;
   public static Intake intake;
   public static Vision vision;
+  //   public static Slapper slapper;
   public static SwerveSubsystem swerveDrive;
   public GoClosestGrid goClosestGrid;
   public GoHumanPlayer goHumanPlayer;
@@ -115,16 +120,25 @@ public class Robot extends LoggedRobot {
       new LoggedDashboardChooser<>("Autonomous Routine");
 
   public static double[] poseValue;
-  DoubleArraySubscriber visionPose;
+  DoubleArraySubscriber frontVisionPose;
+  DoubleArraySubscriber rearVisionPose;
 
   Alliance currentAlliance = Alliance.Invalid;
-  DoubleArraySubscriber camera2TagPose;
+  DoubleArraySubscriber frontCamera2TagPose;
+  DoubleArraySubscriber rearCamera2TagPose;
 
   @Override
   public void robotInit() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    visionPose = table.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
-    camera2TagPose = table.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
+    NetworkTable frontTable =
+        NetworkTableInstance.getDefault().getTable(Vision.Limelights.FRONT.table);
+    NetworkTable rearTable =
+        NetworkTableInstance.getDefault().getTable(Vision.Limelights.REAR.table);
+    frontVisionPose = frontTable.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    frontCamera2TagPose =
+        frontTable.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
+    rearVisionPose = rearTable.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
+    rearCamera2TagPose =
+        rearTable.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
     Logger.getInstance().addDataReceiver(new NT4Publisher());
     Logger.getInstance().recordMetadata("GitRevision", Integer.toString(GVersion.GIT_REVISION));
     Logger.getInstance().recordMetadata("GitSHA", GVersion.GIT_SHA);
@@ -163,8 +177,12 @@ public class Robot extends LoggedRobot {
     fourBar = new FourBar(isSimulation() ? new FourBarIOSim() : new FourBarIOSparks());
     elevator = new Elevator(isSimulation() ? new ElevatorIOSim() : new ElevatorIOSparks());
     intake = new Intake(isSimulation() ? new IntakeIOSim() : new IntakeIOSparks());
-    vision = new Vision(isSimulation() ? new VisionIOSim() : new VisionLimelight());
+    vision =
+        new Vision(
+            isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight"),
+            isSimulation() ? new VisionIOSim() : new VisionLimelight("limelight-rear"));
     lights = new LightStrip();
+    // slapper = new Slapper(true ? new SlapperIOSim() : new SlapperIOSparks());
 
     // fourBar = new FourBar(true ? new FourBarIOSim() : new FourBarIOSparks());
     // elevator = new Elevator(true ? new ElevatorIOSim() : new ElevatorIOSparks());
@@ -193,22 +211,6 @@ public class Robot extends LoggedRobot {
 
     checkAlliance();
     buildAutoChooser();
-
-    // elevator.setDefaultCommand(
-    // new InstantCommand(
-    // () ->
-    // elevator.setTargetHeight(
-    // MathUtil.clamp(
-    // elevator.getTargetHeight()
-    // + (MathUtil.applyDeadband(
-    // -operator.getRightY(),
-    // Constants.DriveConstants.K_JOYSTICK_TURN_DEADZONE)
-    // / 10),
-    // Constants.zero,
-    // Units.metersToFeet(ElevatorConstants.ELEVATOR_MAX_HEIGHT_METERS))),
-    // elevator));
-
-    // lights.setDefaultCommand(LightStrip.Commands.defaultColorPattern());
 
     // Driver Controls
     if (Constants.DEBUG_MODE == DebugMode.MATCH) {
@@ -308,6 +310,7 @@ public class Robot extends LoggedRobot {
                   swerveDrive));
     }
 
+    // cube: LeftBumper(5), tipped cone: RightTrigger(Axis 3), upright cone: RightBumper(6)
     driver
         .leftBumper()
         .onTrue(
@@ -326,7 +329,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -352,7 +355,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     //      driver
     //              .leftTrigger(0.25)
@@ -425,7 +429,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -451,7 +455,8 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .rightBumper()
@@ -471,7 +476,7 @@ public class Robot extends LoggedRobot {
                         SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
                     LightStrip.Commands.setColorPattern(Pattern.Yellow)),
                 new WaitUntilCommand(() -> intake.hasGamepiece()),
-                // FourBar.Commands.retract(),
+                FourBar.Commands.retract(),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
                             .repeatedly(),
@@ -497,12 +502,18 @@ public class Robot extends LoggedRobot {
                         Intake.Commands.setTopVelocityRPM(0),
                         Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .b()
-        .onTrue(FourBar.Commands.setAngleDegAndWait(15))
-        .onFalse(new SequentialCommandGroup(new WaitCommand(0.0), FourBar.Commands.retract()));
+        .onTrue(FourBar.Commands.setAngleDegAndWait(-15))
+        .onFalse(
+            new SequentialCommandGroup(
+                new WaitCommand(0.0),
+                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+                FourBar.Commands.setAngleDegAndWait(
+                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
 
     driver
         .a()
@@ -576,9 +587,25 @@ public class Robot extends LoggedRobot {
                 // LightStrip.Commands.setColorPattern(DarkGreen)
                 ));
 
-    // Operator Buttons
+    driver
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+                }));
 
-    // y high, b mid, a low
+    driver
+        .back()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+                }));
+
+    // Operator Buttons
+    // high: Y(4), mid B(2):, low: A(1), home 4bar: START(8)
+
     operator
         .y()
         .onTrue(
@@ -696,6 +723,8 @@ public class Robot extends LoggedRobot {
 
     operator
         .povUp()
+        .or(operator.povUpLeft())
+        .or(operator.povUpRight())
         .onTrue(
             new SequentialCommandGroup(
                 new InstantCommand(
@@ -709,19 +738,48 @@ public class Robot extends LoggedRobot {
                     Intake.Commands.setBottomVelocityRPM(
                         SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
                     FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition())),
+                new WaitUntilCommand(() -> intake.hasGamepiece()),
+                FourBar.Commands.retract()));
+
+    operator.start().onTrue(FourBar.Commands.reset());
 
     operator
-        .start()
+        .rightStick()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  //   swerveDrive.seed();
+                }));
+
+    operator
+        .axisGreaterThan(XboxController.Axis.kLeftX.value, 0.1)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  fourBar.setMode(FourBarMode.OPEN_LOOP);
+                }));
+
+    operator
+        .axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1)
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  elevator.manualControl = true;
+                }));
+
+    operator
+        .back()
         .onTrue(
             new InstantCommand(
                 () -> {
                   fourBar.reseed();
                 }));
-    operator.back().onTrue(FourBar.Commands.reset());
 
     operator
         .povDown()
+        .or(operator.povDownLeft())
+        .or(operator.povDownRight())
         .onTrue(
             new ParallelCommandGroup(
                 Elevator.Commands.setToHeightAndWait(0),
@@ -737,12 +795,15 @@ public class Robot extends LoggedRobot {
                             SuperstructureConstants.HOLD_CONE.getTopRPM()),
                         Intake.Commands.setBottomVelocityRPM(
                             SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new InstantCommand(),
+                    new ParallelCommandGroup(
+                        Intake.Commands.setTopVelocityRPM(0),
+                        Intake.Commands.setBottomVelocityRPM(0)),
                     () -> intake.hasGamepiece())));
 
     operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
     operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
+    // operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
     // operator
     //     .axisLessThan(1, -0.1)
     //     .whileTrue(
@@ -798,21 +859,6 @@ public class Robot extends LoggedRobot {
     //                   }
     //                 })));
 
-    driver
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
-                }));
-    driver
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
-                }));
-
     if (!Robot.isReal()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
@@ -842,17 +888,36 @@ public class Robot extends LoggedRobot {
         .recordOutput(
             "Filtered CAN Utilization",
             canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+    Logger.getInstance()
+        .recordOutput(
+            "Memory Usage",
+            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+                / 1024.0
+                / 1024.0);
 
-    TimestampedDoubleArray[] fQueue = visionPose.readQueue();
-    TimestampedDoubleArray[] cQueue = camera2TagPose.readQueue();
+    TimestampedDoubleArray[] frontfQueue = frontVisionPose.readQueue();
+    TimestampedDoubleArray[] frontcQueue = frontCamera2TagPose.readQueue();
+
+    TimestampedDoubleArray[] rearfQueue = rearVisionPose.readQueue();
+    TimestampedDoubleArray[] rearcQueue = rearCamera2TagPose.readQueue();
 
     if (driver.getRightX() > 0.5) {
       motionMode = MotionMode.FULL_DRIVE;
     }
 
-    if (fQueue.length > 0 && cQueue.length > 0) {
-      TimestampedDoubleArray fLastCameraReading = fQueue[fQueue.length - 1];
-      TimestampedDoubleArray cLastCameraReading = cQueue[cQueue.length - 1];
+    if (frontfQueue.length > 0
+        && frontcQueue.length > 0
+        && vision.hasMultipleTargets(Limelights.FRONT)
+        ) {
+      TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
+      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
+    } else if (rearfQueue.length > 0
+        && rearcQueue.length > 0
+        && vision.hasMultipleTargets(Limelights.REAR)
+        ) {
+      TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
+      TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
     }
   }
@@ -872,6 +937,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     checkAlliance();
+
+    swerveDrive.seed();
+    elevator.resetController();
+    fourBar.reset();
     SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
     SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));
   }
@@ -903,7 +972,7 @@ public class Robot extends LoggedRobot {
     }
     Robot.motionMode = MotionMode.FULL_DRIVE;
     // Autos.clearAll();
-    AutoPath.Autos.clearAll();
+    // AutoPath.Autos.clearAll();
 
     vision.setCurrentSnapshotMode(SnapshotMode.TWO_PER_SECOND);
   }
@@ -935,6 +1004,7 @@ public class Robot extends LoggedRobot {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
     autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
+    // autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
     autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
     autoChooser.addOption("OneConeTwoCubeOver", new OneConeTwoCubeOver());
     autoChooser.addOption("TwoConeOver", new TwoConeOver());
@@ -942,13 +1012,25 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("Bridge", new GetOnBridge(true));
     autoChooser.addOption("PID Bridge", new PIDOnBridge(true));
     autoChooser.addOption("OneCubeOverBridge", new OneCubeOverBridge());
+    autoChooser.addOption("MobilityBridge", new MobilityBridge());
+    autoChooser.addOption("MobilityBridgePathing", new MobilityBridgePathing());
     autoChooser.addOption("TwoCubeOverBridge", new TwoCubeOverBridge());
     autoChooser.addOption("OneConeBridge", new OneConeBridge());
     autoChooser.addOption("ChargeTestCommand", new OnBridgeUntilMovement(true));
     autoChooser.addOption("TwoConeUnder", new TwoConeUnder());
     autoChooser.addOption("CommunityScoring", new ScoreCommunityUnder());
     autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
+    autoChooser.addOption("OneConeOneCubeUnderHigh", new OneConeOneCubeUnderHigh());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
+    autoChooser.addOption(
+        "FiveToBridge",
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () ->
+                    swerveDrive.resetOdometry(
+                        AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory().getInitialHolonomicPose())),
+            SwerveSubsystem.Commands.stringTrajectoriesTogether(
+                AutoPath.Autos.FIVE_ON_BRIDGE.getTrajectory())));
   }
 
   public void checkAlliance() {

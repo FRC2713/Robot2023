@@ -20,6 +20,10 @@ public class AutoPath {
     B_TO_FOUR("cargoBtogrid4"),
     D_TO_SEVEN("cargoDtogrid7"),
     ONE_TO_A("grid1tocargoA"),
+    REVERSE_ONE_TO_A("reversegrid1tocargoA"),
+    TRAJ_MOBILITY("slap6tomobility", Units.feetToMeters(16), Units.feetToMeters(3)),
+    NO_SLAP_TRAJ_MOBILITY("grid6tomobility", Units.feetToMeters(16), Units.feetToMeters(3)),
+    MOBILITY_TO_CHARGE("mobilitytocharge", Units.feetToMeters(16), Units.feetToMeters(3)),
     THREE_TO_A("grid3tocargoA"),
     THREE_TO_B("grid3tocargoB"),
     FOUR_TO_B("grid4tocargoB"),
@@ -44,7 +48,8 @@ public class AutoPath {
 
     // Misc Paths (look man I can only make so many categories)
     A_TO_BRIDGE("cargoAtobridge"),
-    B_TO_BRIDGE("cargoBtobridge");
+    B_TO_BRIDGE("cargoBtobridge"),
+    FIVE_ON_BRIDGE("grid5tobridge", Units.feetToMeters(16), Units.feetToMeters(1));
     private PathPlannerTrajectory blueTrajectory, redTrajectory;
 
     private Autos(String filename, double maxVel, double maxAccel) {

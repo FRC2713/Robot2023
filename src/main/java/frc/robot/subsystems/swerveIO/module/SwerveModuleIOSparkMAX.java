@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
@@ -71,7 +72,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     cOk(getAziEncoder().setVelocityConversionFactor(7.0 / 150.0 * 360.0));
 
     for (int i = 0; i < 30; i++) {
-      seed();
+      // seed();
     }
 
     driver.setCANTimeout(0);
@@ -87,14 +88,23 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
   @Override
   public void updateInputs(SwerveModuleInputs inputs) {
+    // inputs.aziAbsoluteEncoderRawVoltsReal = getAziEncoder().getPosition();
+    // inputs.aziAbsoluteEncoderAdjVoltsReal = getAziEncoder().getPosition();
+    // inputs.aziAbsoluteEncoderAdjAngleDegReal = getAziEncoder().getPosition();
+
     inputs.aziAbsoluteEncoderRawVolts = azimuthEncoder.getUnadjustedVoltage();
     inputs.aziAbsoluteEncoderAdjVolts = azimuthEncoder.getAdjustedVoltage();
     inputs.aziAbsoluteEncoderAdjAngleDeg = azimuthEncoder.getAdjustedRotation2d().getDegrees();
+
     inputs.aziOutputVolts = azimuth.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.aziTempCelcius = azimuth.getMotorTemperature();
     inputs.aziCurrentDrawAmps = azimuth.getOutputCurrent();
     inputs.aziEncoderPositionDeg = getAziEncoder().getPosition();
     inputs.aziEncoderVelocityDegPerSecond = getAziEncoder().getVelocity();
+    inputs.aziEncoderSimplifiedPositionDeg =
+        OffsetAbsoluteAnalogEncoder.simplifyRotation2d(
+                Rotation2d.fromDegrees(getAziEncoder().getPosition()))
+            .getDegrees();
 
     inputs.driveEncoderPositionMetres = getDriveEncoder().getPosition();
     inputs.driveEncoderVelocityMetresPerSecond = getDriveEncoder().getVelocity();

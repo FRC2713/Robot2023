@@ -24,6 +24,7 @@ import org.littletonrobotics.junction.Logger;
 
 @UtilityClass
 public final class RedHawkUtil {
+
   /**
    * Checks whether the given REVLibError is actually an error, and then logs it to AdvantageScope
    * and SmartDasboard. SmartDashboard variable logged is "RevLibError" and "RevLibError/name"
@@ -253,6 +254,7 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
@@ -278,6 +280,7 @@ public final class RedHawkUtil {
 
     // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
     spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+    configureDefaultTrafficSpark(spark);
   }
 
   // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html

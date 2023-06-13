@@ -34,4 +34,6 @@ public interface FourBarIO {
   public void setVoltage(double volts);
 
   public void setPosition(double angleDeg);
+
+  public void setCurrentLimit(int currentLimit);
 }

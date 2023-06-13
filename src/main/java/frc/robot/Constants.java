@@ -50,7 +50,7 @@ public final class Constants {
     public static double CAMERA_TO_TAG_MAX_DIST_INCHES = 120;
     public static double VISION_STD_DEVI_POSITION_IN_METERS = 0.9;
     public static double VISION_STD_DEVI_ROTATION_IN_RADIANS = Units.degreesToRadians(5);
-    public static double MAX_POSE_JUMP_IN_INCHES = 18;
+    public static double MAX_POSE_JUMP_IN_INCHES = 6 * 12;
   }
 
   @UtilityClass
@@ -62,6 +62,9 @@ public final class Constants {
 
     public static final int TOP_INTAKE_ROLLER = 12;
     public static final int BOTTOM_INTAKE_ROLLER = 11;
+
+    // TODO: MAKE REAL!!!
+    public static final int CONE_SLAPPER_MOTOR = 15;
 
     public static final int FOURBAR_ONE_CANID = 13;
     public static final int FOURBAR_TWO_CANID = 14;
@@ -75,7 +78,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(1).kD(0.0).kG(0.54).build();
+        PIDFFGains.builder("Elevator Controller").kP(0.75).kD(0.0).kG(0.85).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -85,12 +88,13 @@ public final class Constants {
     public static final double ELEVATOR_PULLEY_DIAMETER = 2.0;
     public static final double ELEVATOR_GEAR_RATIO = 5.0;
 
-    /* manual calculations
-       12 / 9.166701316833496 = 1.30908
-       24 / 18.452327728271484 = 1.30064
-       36 / 27.714082717895508 = 1.29897
-       48 / 36.9520263671875 = 1.29898
-    */
+    /*
+     * manual calculations
+     * 12 / 9.166701316833496 = 1.30908
+     * 24 / 18.452327728271484 = 1.30064
+     * 36 / 27.714082717895508 = 1.29897
+     * 48 / 36.9520263671875 = 1.29898
+     */
     public static final double ELEVATOR_POSITION_CONVERSION_FACTOR = 1.3019175;
     // (1.0 / ELEVATOR_GEAR_RATIO) * (Math.PI * ELEVATOR_PULLEY_DIAMETER);
 
@@ -113,16 +117,20 @@ public final class Constants {
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
     public static final double RETRACTED_ANGLE_DEGREES = 116.5;
-    public static final double MAX_VELOCITY = 1600;
-    public static final double MAX_ACCELERATION = 5000;
+    public static final double MAX_VELOCITY = 25;
+    public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
     public static final double GEARING = 5 * 5 * 2.5;
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
-    public static final int FOUR_BAR_CURRENT_LIMIT = 30;
+    public static final int FOUR_BAR_BASE_CURRENT = 5;
+    public static final PIDFFGains FOUR_BAR_CURRENT_GAINS =
+        PIDFFGains.builder("4Bar Current Gains").kP(0.0).build();
+    public static final int FOUR_BAR_MAX_CURRENT = 30;
     public static final double LENGTH_METRES = Units.inchesToMeters(10);
-    public static final PIDFFGains FOUR_BAR_GAINS =
-        PIDFFGains.builder("4Bar Controller").kP(0.25).kG(0.3).build();
+    public static final double HOMING_VOLTAGE = 0.25;
+    public static final PIDFFGains FOUR_BAR_VOLTAGE_GAINS =
+        PIDFFGains.builder("4Bar Controller").kP(10).kG(0.25).build();
   }
 
   @UtilityClass
@@ -143,6 +151,26 @@ public final class Constants {
     public static final double BOTTOM_POSITION_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
     public static final double TOP_VELOCITY_CONVERSION_FACTOR = 1 / TOP_GEARING;
     public static final double BOTTOM_VELOCITY_CONVERSION_FACTOR = 1 / BOTTOM_GEARING;
+  }
+
+  @UtilityClass
+  public static class SlapperConstants {
+    public static final DCMotor MOTOR = DCMotor.getNEO(1);
+    public static final double GEARING = 48;
+    public static final double LENGTH_METRES = Units.inchesToMeters(36);
+    public static final PIDFFGains GAINS = PIDFFGains.builder("Slapper Gains").kP(0.5).build();
+
+    // Degrees as measured on Unit Circle
+    public static final double MIN_ANGLE_DEG = Constants.SlapperConstants.FULL_SEND_DEG;
+    public static final double MAX_ANGLE_DEG = Constants.SlapperConstants.RESTING_DEG;
+
+    public static final double FULL_SEND_DEG = 8;
+    public static final double RESTING_DEG = 90 + 15.5;
+
+    public static final double MOI = 0.5;
+    public static final int CURRENT_LIMIT = 20;
+    public static final double POSITION_CONVERSION_FACTOR = 1 / GEARING;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1 / GEARING;
   }
 
   @UtilityClass
@@ -203,10 +231,10 @@ public final class Constants {
     // 1;
     public static final double MAX_SWERVE_VEL = Units.feetToMeters(16.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
-    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(7);
+    public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);
 
-    public static final int DRIVE_CURRENT_LIMIT = 30;
+    public static final int DRIVE_CURRENT_LIMIT = 50;
     public static final int AZI_CURRENT_LIMIT = 20;
 
     public static final double K_MODULE_DISTANCE_FROM_CENTER = Units.inchesToMeters(20.75 / 2);
@@ -254,7 +282,7 @@ public final class Constants {
             .driveCANId(1)
             .aziCANId(2)
             .aziEncoderCANId(zero)
-            .offset(0.317)
+            .offset(0.312)
             .location(FRONT_LEFT_LOCATION)
             .build();
 
@@ -278,7 +306,7 @@ public final class Constants {
             .driveCANId(10)
             .aziCANId(9)
             .aziEncoderCANId(2)
-            .offset(0.86)
+            .offset(0.857)
             .location(BACK_LEFT_LOCATION)
             .build();
 
@@ -308,7 +336,7 @@ public final class Constants {
           PIDFFGains.builder("Trajectory Controller Y-Axis").kP(7).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
-          PIDFFGains.builder("Trajectory Controller Rotation").kP(1.1).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(2.5).kD(0.0).build();
     }
 
     public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =
@@ -332,22 +360,22 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(-18)
+            .fourBarPosition(-22)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
     public static final SuperstructureConfig INTAKE_UPRIGHT_CONE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(32)
+            .fourBarPosition(29)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
 
     public static final SuperstructureConfig INTAKE_SHELF_CONE =
         SuperstructureConfig.builder()
-            .elevatorPosition(40)
-            .fourBarPosition(90)
+            .elevatorPosition(42.875)
+            .fourBarPosition(50)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
@@ -355,7 +383,7 @@ public final class Constants {
     public static final SuperstructureConfig INTAKE_CUBE =
         SuperstructureConfig.builder()
             .elevatorPosition(0)
-            .fourBarPosition(24)
+            .fourBarPosition(17)
             .topRPM(1_500)
             .bottomRPM(1_500)
             .build();
@@ -403,7 +431,7 @@ public final class Constants {
     public static final SuperstructureConfig SCORE_CONE_MID =
         SuperstructureConfig.builder()
             .elevatorPosition(28)
-            .fourBarPosition(90)
+            .fourBarPosition(80)
             .topRPM(-500)
             .bottomRPM(500)
             .build();
