@@ -3,12 +3,10 @@ package frc.robot.subsystems.fourBarIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
-import frc.robot.util.RedHawkUtil;
 
 public class FourBarIOSparks implements FourBarIO {
   private CANSparkMax fourBarOne;
@@ -20,11 +18,11 @@ public class FourBarIOSparks implements FourBarIO {
     fourBarOne = new CANSparkMax(Constants.RobotMap.FOURBAR_ONE_CANID, MotorType.kBrushless);
     fourBarOne.restoreFactoryDefaults();
 
-    RedHawkUtil.configureHighTrafficSpark(fourBarOne);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 20);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
-    fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
+    // RedHawkUtil.configureHighTrafficSpark(fourBarOne);
+    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 20);
+    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
+    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10);
+    // fourBarOne.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10);
 
     fourBarOne.setIdleMode(IdleMode.kBrake);
 

@@ -6,31 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.GetOnBridge;
 import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
@@ -53,12 +38,10 @@ import frc.robot.commands.fullRoutines.TwoConeUnder;
 import frc.robot.commands.fullRoutines.TwoCubeOver;
 import frc.robot.commands.fullRoutines.TwoCubeOverBridge;
 import frc.robot.subsystems.LightStrip;
-import frc.robot.subsystems.LightStrip.Pattern;
 import frc.robot.subsystems.elevatorIO.Elevator;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSim;
 import frc.robot.subsystems.elevatorIO.ElevatorIOSparks;
 import frc.robot.subsystems.fourBarIO.FourBar;
-import frc.robot.subsystems.fourBarIO.FourBar.FourBarMode;
 import frc.robot.subsystems.fourBarIO.FourBarIOSim;
 import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
@@ -70,19 +53,13 @@ import frc.robot.subsystems.swerveIO.SwerveSubsystem;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
-import frc.robot.subsystems.visionIO.Vision.Limelights;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.AutoPath;
-import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
 import frc.robot.util.RedHawkUtil;
-import frc.robot.util.RedHawkUtil.ErrHandler;
-import frc.robot.util.RumbleManager;
-import frc.robot.util.SwerveHeadingController;
-import frc.robot.util.TrajectoryController;
 import java.io.File;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -205,744 +182,754 @@ public class Robot extends LoggedRobot {
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
 
-    mechManager = new MechanismManager();
-    goClosestGrid = new GoClosestGrid();
-    goHumanPlayer = new GoHumanPlayer();
+    // mechManager = new MechanismManager();
+    // goClosestGrid = new GoClosestGrid();
+    // goHumanPlayer = new GoHumanPlayer();
 
-    checkAlliance();
-    buildAutoChooser();
+    // checkAlliance();
+    // buildAutoChooser();
 
-    // Driver Controls
-    if (Constants.DEBUG_MODE == DebugMode.MATCH) {
-      driver
-          .povUp()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.HEADING_CONTROLLER;
-                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
-                  }));
+    // // Driver Controls
+    // if (Constants.DEBUG_MODE == DebugMode.MATCH) {
+    //   driver
+    //       .povUp()
+    //       .onTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.HEADING_CONTROLLER;
+    //                 SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(0));
+    //               }));
 
-      driver
-          .povLeft()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.HEADING_CONTROLLER;
-                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
-                  }));
-
-      driver
-          .povDown()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.HEADING_CONTROLLER;
-                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
-                  }));
-
-      driver
-          .povRight()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.HEADING_CONTROLLER;
-                    SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
-                  }));
-    } else if (Constants.DEBUG_MODE == DebugMode.TUNE_MODULES) {
-      driver
-          .povUp()
-          .whileTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.NULL;
-                    swerveDrive.setModuleStates(
-                        new SwerveModuleState[] {
-                          new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(0)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(0)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(0)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(0))
-                        });
-                  },
-                  swerveDrive))
-          .onFalse(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.FULL_DRIVE;
-                  },
-                  swerveDrive));
-      driver
-          .povDown()
-          .whileTrue(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.NULL;
-                    swerveDrive.setModuleStates(
-                        new SwerveModuleState[] {
-                          new SwerveModuleState(
-                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(90)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(90)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(90)),
-                          new SwerveModuleState(
-                              Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
-                              Rotation2d.fromDegrees(90))
-                        });
-                  },
-                  swerveDrive))
-          .onFalse(
-              new InstantCommand(
-                  () -> {
-                    motionMode = MotionMode.FULL_DRIVE;
-                  },
-                  swerveDrive));
-    }
-
-    // cube: LeftBumper(5), tipped cone: RightTrigger(Axis 3), upright cone: RightBumper(6)
-    driver
-        .leftBumper()
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CUBE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_CUBE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                            .repeatedly(),
-                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                    .until(() -> fourBar.isAtTarget()),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    new SequentialCommandGroup(
-                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                        new WaitCommand(2.0),
-                        LightStrip.Commands.defaultColorPattern()),
-                    () -> intake.hasGamepiece())))
-        .onFalse(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                new ConditionalCommand(
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(
-                            SuperstructureConstants.HOLD_CUBE.getTopRPM()),
-                        Intake.Commands.setBottomVelocityRPM(
-                            SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(0),
-                        Intake.Commands.setBottomVelocityRPM(0)),
-                    () -> intake.hasGamepiece()),
-                FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
-
-    //      driver
-    //              .leftTrigger(0.25)
-    //              .onTrue(
-    //                      new SequentialCommandGroup(
-    //                              new InstantCommand(
-    //                                      () -> {
-    //                                          gamePieceMode = GamePieceMode.CUBE;
-    //                                      }),
+    //   driver
+    //       .povLeft()
+    //       .onTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.HEADING_CONTROLLER;
     //
-    // Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE_DEFLATED),
-    //                              new ParallelCommandGroup(
-    //                                      Intake.Commands.setTopVelocityRPM(
+    // SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(90));
+    //               }));
+
+    //   driver
+    //       .povDown()
+    //       .onTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.HEADING_CONTROLLER;
     //
-    // SuperstructureConstants.INTAKE_CUBE_DEFLATED.getTopRPM()),
-    //                                      Intake.Commands.setBottomVelocityRPM(
+    // SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(180));
+    //               }));
+
+    //   driver
+    //       .povRight()
+    //       .onTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.HEADING_CONTROLLER;
     //
-    // SuperstructureConstants.INTAKE_CUBE_DEFLATED.getBottomRPM()),
-    //                                      FourBar.Commands.setAngleDegAndWait(
-    //                                              SuperstructureConstants.INTAKE_CUBE_DEFLATED
-    // .getFourBarPosition()),
-    //                                      LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-    //                              new WaitUntilCommand(() -> intake.hasGamepiece()),
-    //                              FourBar.Commands.retract(),
-    //                              new ParallelCommandGroup(
-    //                                      new InstantCommand(() ->
-    // RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
+    // SwerveHeadingController.getInstance().setSetpoint(Rotation2d.fromDegrees(270));
+    //               }));
+    // } else if (Constants.DEBUG_MODE == DebugMode.TUNE_MODULES) {
+    //   driver
+    //       .povUp()
+    //       .whileTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.NULL;
+    //                 swerveDrive.setModuleStates(
+    //                     new SwerveModuleState[] {
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(0)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(0)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(0)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(0))
+    //                     });
+    //               },
+    //               swerveDrive))
+    //       .onFalse(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.FULL_DRIVE;
+    //               },
+    //               swerveDrive));
+    //   driver
+    //       .povDown()
+    //       .whileTrue(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.NULL;
+    //                 swerveDrive.setModuleStates(
+    //                     new SwerveModuleState[] {
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(90)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(90)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(90)),
+    //                       new SwerveModuleState(
+    //                           Units.feetToMeters(-Constants.TUNE_MODULES_DRIVE_SPEED),
+    //                           Rotation2d.fromDegrees(90))
+    //                     });
+    //               },
+    //               swerveDrive))
+    //       .onFalse(
+    //           new InstantCommand(
+    //               () -> {
+    //                 motionMode = MotionMode.FULL_DRIVE;
+    //               },
+    //               swerveDrive));
+    // }
+
+    // // cube: LeftBumper(5), tipped cone: RightTrigger(Axis 3), upright cone: RightBumper(6)
+    // driver
+    //     .leftBumper()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   gamePieceMode = GamePieceMode.CUBE;
+    //                 }),
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE),
+    //             new ParallelCommandGroup(
+    //                 Intake.Commands.setTopVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_CUBE.getTopRPM()),
+    //                 Intake.Commands.setBottomVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_CUBE.getBottomRPM()),
+    //                 FourBar.Commands.setAngleDegAndWait(
+    //                     SuperstructureConstants.INTAKE_CUBE.getFourBarPosition()),
+    //                 LightStrip.Commands.setColorPattern(Pattern.Yellow)),
+    //             new WaitUntilCommand(() -> intake.hasGamepiece()),
+    //             FourBar.Commands.retract(),
+    //             new ParallelCommandGroup(
+    //                     new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+    //                         .repeatedly(),
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+    //                 .until(() -> fourBar.isAtTarget()),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 new SequentialCommandGroup(
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+    //                     new WaitCommand(2.0),
+    //                     LightStrip.Commands.defaultColorPattern()),
+    //                 () -> intake.hasGamepiece())))
+    //     .onFalse(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.elevatorCurrentHeight(),
+    //             new ConditionalCommand(
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CUBE.getTopRPM()),
+    //                     Intake.Commands.setBottomVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(0),
+    //                     Intake.Commands.setBottomVelocityRPM(0)),
+    //                 () -> intake.hasGamepiece()),
+    //             FourBar.Commands.setAngleDegAndWait(
+    //                 Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+
+    // //      driver
+    // //              .leftTrigger(0.25)
+    // //              .onTrue(
+    // //                      new SequentialCommandGroup(
+    // //                              new InstantCommand(
+    // //                                      () -> {
+    // //                                          gamePieceMode = GamePieceMode.CUBE;
+    // //                                      }),
+    // //
+    // // Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_CUBE_DEFLATED),
+    // //                              new ParallelCommandGroup(
+    // //                                      Intake.Commands.setTopVelocityRPM(
+    // //
+    // // SuperstructureConstants.INTAKE_CUBE_DEFLATED.getTopRPM()),
+    // //                                      Intake.Commands.setBottomVelocityRPM(
+    // //
+    // // SuperstructureConstants.INTAKE_CUBE_DEFLATED.getBottomRPM()),
+    // //                                      FourBar.Commands.setAngleDegAndWait(
+    // //                                              SuperstructureConstants.INTAKE_CUBE_DEFLATED
+    // // .getFourBarPosition()),
+    // //                                      LightStrip.Commands.setColorPattern(Pattern.Yellow)),
+    // //                              new WaitUntilCommand(() -> intake.hasGamepiece()),
+    // //                              FourBar.Commands.retract(),
+    // //                              new ParallelCommandGroup(
+    // //                                      new InstantCommand(() ->
+    // // RumbleManager.getInstance().setDriver(1, 0.02)).repeatedly(),
+    // //
+    // // LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen)).until(() -> fourBar.isAtTarget()),
+    // //                              new ConditionalCommand(
+    // //
+    // LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    // //                                      new SequentialCommandGroup(
+    // //
+    // // LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+    // //                                              new WaitCommand(2.0),
+    // //                                              LightStrip.Commands.defaultColorPattern()),
+    // //                                      () ->intake.hasGamepiece())))
+    // //              .onFalse(
+    // //                      new SequentialCommandGroup(
+    // //                              Elevator.Commands.elevatorCurrentHeight(),
+    // //                              new ConditionalCommand(
+    // //                                      new ParallelCommandGroup(
+    // //                                              Intake.Commands.setTopVelocityRPM(
+    // //
+    // // SuperstructureConstants.HOLD_CUBE.getTopRPM()),
+    // //                                              Intake.Commands.setBottomVelocityRPM(
+    // //
+    // // SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
+    // //                                      new ParallelCommandGroup(
+    // //                                              Intake.Commands.setTopVelocityRPM(0),
+    // //                                              Intake.Commands.setBottomVelocityRPM(0)),
+    // //                                      () -> intake.hasGamepiece()),
+    // //                              FourBar.Commands.retract()));
+
+    // driver
+    //     .rightTrigger(0.25)
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   gamePieceMode = GamePieceMode.CONE;
+    //                 }),
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
+    //             new ParallelCommandGroup(
+    //                 Intake.Commands.setTopVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
+    //                 Intake.Commands.setBottomVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
+    //                 FourBar.Commands.setAngleDegAndWait(
+    //                     SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
+    //                 LightStrip.Commands.setColorPattern(Pattern.Yellow)),
+    //             new WaitUntilCommand(() -> intake.hasGamepiece()),
+    //             FourBar.Commands.retract(),
+    //             new ParallelCommandGroup(
+    //                     new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+    //                         .repeatedly(),
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+    //                 .until(() -> fourBar.isAtTarget()),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 new SequentialCommandGroup(
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+    //                     new WaitCommand(2.0),
+    //                     LightStrip.Commands.defaultColorPattern()),
+    //                 () -> intake.hasGamepiece())))
+    //     .onFalse(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.elevatorCurrentHeight(),
+    //             new ConditionalCommand(
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getTopRPM()),
+    //                     Intake.Commands.setBottomVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(0),
+    //                     Intake.Commands.setBottomVelocityRPM(0)),
+    //                 () -> intake.hasGamepiece()),
+    //             FourBar.Commands.setAngleDegAndWait(
+    //                 Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+
+    // driver
+    //     .rightBumper()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   gamePieceMode = GamePieceMode.CONE;
+    //                 }),
     //
-    // LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen)).until(() -> fourBar.isAtTarget()),
-    //                              new ConditionalCommand(
-    //                                      LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-    //                                      new SequentialCommandGroup(
+    // Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
+    //             new ParallelCommandGroup(
+    //                 Intake.Commands.setTopVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_UPRIGHT_CONE.getTopRPM()),
+    //                 Intake.Commands.setBottomVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
+    //                 FourBar.Commands.setAngleDegAndWait(
+    //                     SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
+    //                 LightStrip.Commands.setColorPattern(Pattern.Yellow)),
+    //             new WaitUntilCommand(() -> intake.hasGamepiece()),
+    //             FourBar.Commands.retract(),
+    //             new ParallelCommandGroup(
+    //                     new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
+    //                         .repeatedly(),
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
+    //                 .until(() -> fourBar.isAtTarget()),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 new SequentialCommandGroup(
+    //                     LightStrip.Commands.blinkAnyPattern(Pattern.Red),
+    //                     new WaitCommand(2.0),
+    //                     LightStrip.Commands.defaultColorPattern()),
+    //                 () -> intake.hasGamepiece())))
+    //     .onFalse(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.elevatorCurrentHeight(),
+    //             new ConditionalCommand(
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getTopRPM()),
+    //                     Intake.Commands.setBottomVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(0),
+    //                     Intake.Commands.setBottomVelocityRPM(0)),
+    //                 () -> intake.hasGamepiece()),
+    //             FourBar.Commands.setAngleDegAndWait(
+    //                 Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+
+    // driver
+    //     .b()
+    //     .onTrue(FourBar.Commands.setAngleDegAndWait(-15))
+    //     .onFalse(
+    //         new SequentialCommandGroup(
+    //             new WaitCommand(0.0),
+    //             FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
+    //             FourBar.Commands.setAngleDegAndWait(
+    //                 Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+
+    // driver
+    //     .a()
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             // Past mid point
+    //             new InstantCommand(
+    //                 () -> {
+    //                   motionMode = MotionMode.TRAJECTORY;
+    //                   goHumanPlayer.regenerateTrajectory();
     //
-    // LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-    //                                              new WaitCommand(2.0),
-    //                                              LightStrip.Commands.defaultColorPattern()),
-    //                                      () ->intake.hasGamepiece())))
-    //              .onFalse(
-    //                      new SequentialCommandGroup(
-    //                              Elevator.Commands.elevatorCurrentHeight(),
-    //                              new ConditionalCommand(
-    //                                      new ParallelCommandGroup(
-    //                                              Intake.Commands.setTopVelocityRPM(
+    // TrajectoryController.getInstance().changePath(goHumanPlayer.getTrajectory());
+    //                 }),
+    //             // Mid point interior
+    //             new InstantCommand(
+    //                 () -> {
+    //                   motionMode = MotionMode.TRAJECTORY;
+    //                   goClosestGrid.changingPath();
+    //                   goClosestGrid.regenerateTrajectory();
     //
-    // SuperstructureConstants.HOLD_CUBE.getTopRPM()),
-    //                                              Intake.Commands.setBottomVelocityRPM(
-    //
-    // SuperstructureConstants.HOLD_CUBE.getBottomRPM())),
-    //                                      new ParallelCommandGroup(
-    //                                              Intake.Commands.setTopVelocityRPM(0),
-    //                                              Intake.Commands.setBottomVelocityRPM(0)),
-    //                                      () -> intake.hasGamepiece()),
-    //                              FourBar.Commands.retract()));
+    // TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
+    //                 }),
+    //             () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
+    //     .whileTrue(
+    //         new ConditionalCommand(
+    //             // Past mid point
+    //             new RepeatCommand(
+    //                 new InstantCommand(
+    //                     () -> {
+    //                       if (goHumanPlayer.hasElapsed()) {
+    //                         TrajectoryController.getInstance()
+    //                             .changePath(goHumanPlayer.getTrajectory());
+    //                       }
+    //                     })),
 
-    driver
-        .rightTrigger(0.25)
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                            .repeatedly(),
-                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                    .until(() -> fourBar.isAtTarget()),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    new SequentialCommandGroup(
-                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                        new WaitCommand(2.0),
-                        LightStrip.Commands.defaultColorPattern()),
-                    () -> intake.hasGamepiece())))
-        .onFalse(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                new ConditionalCommand(
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                        Intake.Commands.setBottomVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(0),
-                        Intake.Commands.setBottomVelocityRPM(0)),
-                    () -> intake.hasGamepiece()),
-                FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+    //             // Mid point interior
+    //             new RepeatCommand(
+    //                 new InstantCommand(
+    //                     () -> {
+    //                       if (goClosestGrid.hasElapsed()) {
+    //                         TrajectoryController.getInstance()
+    //                             .changePath(goClosestGrid.getTrajectory());
+    //                       }
+    //                     })),
+    //             () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
+    //     .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
 
-    driver
-        .rightBumper()
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_UPRIGHT_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_UPRIGHT_CONE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                            .repeatedly(),
-                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                    .until(() -> fourBar.isAtTarget()),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    new SequentialCommandGroup(
-                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                        new WaitCommand(2.0),
-                        LightStrip.Commands.defaultColorPattern()),
-                    () -> intake.hasGamepiece())))
-        .onFalse(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                new ConditionalCommand(
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                        Intake.Commands.setBottomVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(0),
-                        Intake.Commands.setBottomVelocityRPM(0)),
-                    () -> intake.hasGamepiece()),
-                FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+    // driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
 
-    driver
-        .b()
-        .onTrue(FourBar.Commands.setAngleDegAndWait(-15))
-        .onFalse(
-            new SequentialCommandGroup(
-                new WaitCommand(0.0),
-                FourBar.Commands.setDrawVolts(3).until(() -> fourBar.getLimitSwitch()),
-                FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+    // driver
+    //     .y()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   intake.setScoring(true);
+    //                 }),
+    //             Intake.Commands.score()))
+    //     .onFalse(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   intake.setScoring(false);
+    //                 }),
+    //             Intake.Commands.setTopVelocityRPM(Constants.zero),
+    //             Intake.Commands.setBottomVelocityRPM(Constants.zero),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece()),
+    //             new WaitCommand(0.5)
+    //             // Elevator.Commands.setTargetHeightAndWait(0),
+    //             // LightStrip.Commands.setColorPattern(DarkGreen)
+    //             ));
 
-    driver
-        .a()
-        .onTrue(
-            new ConditionalCommand(
-                // Past mid point
-                new InstantCommand(
-                    () -> {
-                      motionMode = MotionMode.TRAJECTORY;
-                      goHumanPlayer.regenerateTrajectory();
-                      TrajectoryController.getInstance().changePath(goHumanPlayer.getTrajectory());
-                    }),
-                // Mid point interior
-                new InstantCommand(
-                    () -> {
-                      motionMode = MotionMode.TRAJECTORY;
-                      goClosestGrid.changingPath();
-                      goClosestGrid.regenerateTrajectory();
-                      TrajectoryController.getInstance().changePath(goClosestGrid.getTrajectory());
-                    }),
-                () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
-        .whileTrue(
-            new ConditionalCommand(
-                // Past mid point
-                new RepeatCommand(
-                    new InstantCommand(
-                        () -> {
-                          if (goHumanPlayer.hasElapsed()) {
-                            TrajectoryController.getInstance()
-                                .changePath(goHumanPlayer.getTrajectory());
-                          }
-                        })),
+    // driver
+    //     .start()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
+    //             }));
 
-                // Mid point interior
-                new RepeatCommand(
-                    new InstantCommand(
-                        () -> {
-                          if (goClosestGrid.hasElapsed()) {
-                            TrajectoryController.getInstance()
-                                .changePath(goClosestGrid.getTrajectory());
-                          }
-                        })),
-                () -> RedHawkUtil.pastMidPoint(swerveDrive.getUsablePose())))
-        .onFalse(new InstantCommand(() -> motionMode = MotionMode.FULL_DRIVE));
+    // driver
+    //     .back()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
+    //             }));
 
-    driver.x().onTrue(new InstantCommand(() -> motionMode = MotionMode.LOCKDOWN));
+    // // Operator Buttons
+    // // high: Y(4), mid B(2):, low: A(1), home 4bar: START(8)
 
-    driver
-        .y()
-        .whileTrue(
-            Commands.sequence(
-                new InstantCommand(
-                    () -> {
-                      intake.setScoring(true);
-                    }),
-                Intake.Commands.score()))
-        .onFalse(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      intake.setScoring(false);
-                    }),
-                Intake.Commands.setTopVelocityRPM(Constants.zero),
-                Intake.Commands.setBottomVelocityRPM(Constants.zero),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece()),
-                new WaitCommand(0.5)
-                // Elevator.Commands.setTargetHeightAndWait(0),
-                // LightStrip.Commands.setColorPattern(DarkGreen)
-                ));
+    // operator
+    //     .y()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.conditionalElevatorHigh(),
+    //             FourBar.Commands.conditionalFourbarHigh(),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
 
-    driver
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(0));
-                }));
+    // operator
+    //     .b()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.conditionalElevatorMid(),
+    //             FourBar.Commands.conditionalFourbarMid(),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .a()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.conditionalElevatorLow(),
+    //             FourBar.Commands.conditionalFourbarLow(),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .rightBumper()
+    //     .and(operator.y())
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .rightBumper()
+    //     .and(operator.b())
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .rightBumper()
+    //     .and(operator.a())
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .leftBumper()
+    //     .and(operator.y())
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .leftBumper()
+    //     .and(operator.b())
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .leftBumper()
+    //     .and(operator.a())
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
+    //             FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece())));
+    // operator
+    //     .rightBumper()
+    //     .and(operator.x())
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   gamePieceMode = GamePieceMode.CONE;
+    //                 }),
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+    //             new ParallelCommandGroup(
+    //                 Intake.Commands.setTopVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+    //                 Intake.Commands.setBottomVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+    //                 FourBar.Commands.setAngleDegAndWait(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
 
-    driver
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  swerveDrive.resetGyro(Rotation2d.fromDegrees(180));
-                }));
+    // operator
+    //     .povUp()
+    //     .or(operator.povUpLeft())
+    //     .or(operator.povUpRight())
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new InstantCommand(
+    //                 () -> {
+    //                   gamePieceMode = GamePieceMode.CONE;
+    //                 }),
+    //             Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
+    //             new ParallelCommandGroup(
+    //                 Intake.Commands.setTopVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
+    //                 Intake.Commands.setBottomVelocityRPM(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
+    //                 FourBar.Commands.setAngleDegAndWait(
+    //                     SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition())),
+    //             new WaitUntilCommand(() -> intake.hasGamepiece()),
+    //             FourBar.Commands.retract()));
 
-    // Operator Buttons
-    // high: Y(4), mid B(2):, low: A(1), home 4bar: START(8)
+    // operator.start().onTrue(FourBar.Commands.reset());
 
-    operator
-        .y()
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.conditionalElevatorHigh(),
-                FourBar.Commands.conditionalFourbarHigh(),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
+    // operator
+    //     .rightStick()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               //   swerveDrive.seed();
+    //             }));
 
-    operator
-        .b()
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.conditionalElevatorMid(),
-                FourBar.Commands.conditionalFourbarMid(),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .a()
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.conditionalElevatorLow(),
-                FourBar.Commands.conditionalFourbarLow(),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .rightBumper()
-        .and(operator.y())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_HIGH),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .rightBumper()
-        .and(operator.b())
-        .onTrue(
-            new SequentialCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_MID),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .rightBumper()
-        .and(operator.a())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CONE_LOW),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .leftBumper()
-        .and(operator.y())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_HIGH),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .leftBumper()
-        .and(operator.b())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_MID),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .leftBumper()
-        .and(operator.a())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                FourBar.Commands.setAngleDegAndWait(SuperstructureConstants.SCORE_CUBE_LOW),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece())));
-    operator
-        .rightBumper()
-        .and(operator.x())
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition()))));
+    // operator
+    //     .axisGreaterThan(XboxController.Axis.kLeftX.value, 0.1)
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               fourBar.setMode(FourBarMode.OPEN_LOOP);
+    //             }));
 
-    operator
-        .povUp()
-        .or(operator.povUpLeft())
-        .or(operator.povUpRight())
-        .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_SHELF_CONE.getFourBarPosition())),
-                new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract()));
+    // operator
+    //     .axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1)
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               elevator.manualControl = true;
+    //             }));
 
-    operator.start().onTrue(FourBar.Commands.reset());
+    // operator
+    //     .back()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               fourBar.reseed();
+    //             }));
 
-    operator
-        .rightStick()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  //   swerveDrive.seed();
-                }));
+    // operator
+    //     .povDown()
+    //     .or(operator.povDownLeft())
+    //     .or(operator.povDownRight())
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             Elevator.Commands.setToHeightAndWait(0),
+    //             FourBar.Commands.retract(),
+    //             LightStrip.Commands.defaultColorPattern(),
+    //             new ConditionalCommand(
+    //                 LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
+    //                 LightStrip.Commands.defaultColorPattern(),
+    //                 () -> intake.hasGamepiece()),
+    //             new ConditionalCommand(
+    //                 Commands.parallel(
+    //                     Intake.Commands.setTopVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getTopRPM()),
+    //                     Intake.Commands.setBottomVelocityRPM(
+    //                         SuperstructureConstants.HOLD_CONE.getBottomRPM())),
+    //                 new ParallelCommandGroup(
+    //                     Intake.Commands.setTopVelocityRPM(0),
+    //                     Intake.Commands.setBottomVelocityRPM(0)),
+    //                 () -> intake.hasGamepiece())));
 
-    operator
-        .axisGreaterThan(XboxController.Axis.kLeftX.value, 0.1)
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  fourBar.setMode(FourBarMode.OPEN_LOOP);
-                }));
+    // operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
+    // operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
 
-    operator
-        .axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1)
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  elevator.manualControl = true;
-                }));
-
-    operator
-        .back()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  fourBar.reseed();
-                }));
-
-    operator
-        .povDown()
-        .or(operator.povDownLeft())
-        .or(operator.povDownRight())
-        .onTrue(
-            new ParallelCommandGroup(
-                Elevator.Commands.setToHeightAndWait(0),
-                FourBar.Commands.retract(),
-                LightStrip.Commands.defaultColorPattern(),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    LightStrip.Commands.defaultColorPattern(),
-                    () -> intake.hasGamepiece()),
-                new ConditionalCommand(
-                    Commands.parallel(
-                        Intake.Commands.setTopVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                        Intake.Commands.setBottomVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(0),
-                        Intake.Commands.setBottomVelocityRPM(0)),
-                    () -> intake.hasGamepiece())));
-
-    operator.rightTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeGold));
-    operator.leftTrigger(0.25).onTrue(LightStrip.Commands.setColorPattern(Pattern.StrobeBlue));
-
+    // //
     // operator.start().onTrue(Slapper.Commands.sendIt()).onFalse(Slapper.Commands.comeBackHome());
-    // operator
-    //     .axisLessThan(1, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() + (10 * ((-1) * operator.getRawAxis(1)));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
+    // // operator
+    // //     .axisLessThan(1, -0.1)
+    // //     .whileTrue(
+    // //         new RepeatCommand(
+    // //             new InstantCommand(
+    // //                 () -> {
+    // //                   double targetHeightInches =
+    // //                       elevator.getCurrentHeight() + (10 * ((-1) *
+    // operator.getRawAxis(1)));
+    // //                   if (!(targetHeightInches
+    // //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    // //                     elevator.setTargetHeight(targetHeightInches);
+    // //                   }
+    // //                 })));
 
-    // operator
-    //     .axisGreaterThan(1, 0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             new InstantCommand(
-    //                 () -> {
-    //                   double targetHeightInches =
-    //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
-    //                   if (!(targetHeightInches
-    //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
-    //                     elevator.setTargetHeight(targetHeightInches);
-    //                   }
-    //                 })));
+    // // operator
+    // //     .axisGreaterThan(1, 0.1)
+    // //     .whileTrue(
+    // //         new RepeatCommand(
+    // //             new InstantCommand(
+    // //                 () -> {
+    // //                   double targetHeightInches =
+    // //                       elevator.getCurrentHeight() - (10 * operator.getRawAxis(1));
+    // //                   if (!(targetHeightInches
+    // //                       > (Constants.ElevatorConstants.ELEVATOR_MAX_HEIGHT_INCHES))) {
+    // //                     elevator.setTargetHeight(targetHeightInches);
+    // //                   }
+    // //                 })));
 
-    // operator
-    //     .axisLessThan(5, -0.1)
-    //     .whileTrue(
-    //         new RepeatCommand(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
-    // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 }))));
+    // // operator
+    // //     .axisLessThan(5, -0.1)
+    // //     .whileTrue(
+    // //         new RepeatCommand(
+    // //             (new InstantCommand(
+    // //                 () -> {
+    // //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // // operator.getRawAxis(5));
+    // //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    // //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES))
+    // {
+    // //                     fourBar.setAngleDeg(targetDegs);
+    // //                   }
+    // //                 }))));
 
-    // operator
-    //     .axisGreaterThan(5, 0.1)
-    //     .whileTrue(
-    //             (new InstantCommand(
-    //                 () -> {
-    //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
-    // operator.getRawAxis(5));
-    //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
-    //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES)) {
-    //                     fourBar.setAngleDeg(targetDegs);
-    //                   }
-    //                 })));
+    // // operator
+    // //     .axisGreaterThan(5, 0.1)
+    // //     .whileTrue(
+    // //             (new InstantCommand(
+    // //                 () -> {
+    // //                   double targetDegs = fourBar.getCurrentDegs() + (20 *
+    // // operator.getRawAxis(5));
+    // //                   if (!(targetDegs < Constants.FourBarConstants.EXTENDED_ANGLE_DEGREES
+    // //                       || targetDegs > Constants.FourBarConstants.RETRACTED_ANGLE_DEGREES))
+    // {
+    // //                     fourBar.setAngleDeg(targetDegs);
+    // //                   }
+    // //                 })));
 
-    if (!Robot.isReal()) {
-      DriverStation.silenceJoystickConnectionWarning(true);
-    }
+    // if (!Robot.isReal()) {
+    //   DriverStation.silenceJoystickConnectionWarning(true);
+    // }
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    ErrHandler.getInstance().log();
-    RumbleManager.getInstance().periodic();
-    mechManager.periodic();
-    if (Math.abs(driver.getRightX()) > 0.25) {
-      motionMode = MotionMode.FULL_DRIVE;
-    }
+    // ErrHandler.getInstance().log();
+    // RumbleManager.getInstance().periodic();
+    // // mechManager.periodic();
+    // if (Math.abs(driver.getRightX()) > 0.25) {
+    //   motionMode = MotionMode.FULL_DRIVE;
+    // }
 
-    // swerveDrive.seed();
+    // // swerveDrive.seed();
 
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(
-            elevator.getCurrentDraw()
-                + fourBar.getCurrentDraw()
-                + intake.getCurrentDraw()
-                + swerveDrive.getTotalCurrentDraw()));
+    // RoboRioSim.setVInVoltage(
+    //     BatterySim.calculateDefaultBatteryLoadedVoltage(
+    //         elevator.getCurrentDraw()
+    //             + fourBar.getCurrentDraw()
+    //             + intake.getCurrentDraw()
+    //             + swerveDrive.getTotalCurrentDraw()));
 
-    Logger.getInstance().recordOutput("Game piece mode", gamePieceMode.name());
-    Logger.getInstance()
-        .recordOutput(
-            "Filtered CAN Utilization",
-            canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
-    Logger.getInstance()
-        .recordOutput(
-            "Memory Usage",
-            (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
-                / 1024.0
-                / 1024.0);
+    // Logger.getInstance().recordOutput("Game piece mode", gamePieceMode.name());
+    // Logger.getInstance()
+    //     .recordOutput(
+    //         "Filtered CAN Utilization",
+    //
+    // canUtilizationFilter.calculate(RobotController.getCANStatus().percentBusUtilization));
+    // Logger.getInstance()
+    //     .recordOutput(
+    //         "Memory Usage",
+    //         (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+    //             / 1024.0
+    //             / 1024.0);
 
-    TimestampedDoubleArray[] frontfQueue = frontVisionPose.readQueue();
-    TimestampedDoubleArray[] frontcQueue = frontCamera2TagPose.readQueue();
+    // TimestampedDoubleArray[] frontfQueue = frontVisionPose.readQueue();
+    // TimestampedDoubleArray[] frontcQueue = frontCamera2TagPose.readQueue();
 
-    TimestampedDoubleArray[] rearfQueue = rearVisionPose.readQueue();
-    TimestampedDoubleArray[] rearcQueue = rearCamera2TagPose.readQueue();
+    // TimestampedDoubleArray[] rearfQueue = rearVisionPose.readQueue();
+    // TimestampedDoubleArray[] rearcQueue = rearCamera2TagPose.readQueue();
 
-    if (driver.getRightX() > 0.5) {
-      motionMode = MotionMode.FULL_DRIVE;
-    }
+    // if (driver.getRightX() > 0.5) {
+    //   motionMode = MotionMode.FULL_DRIVE;
+    // }
 
-    if (frontfQueue.length > 0
-        && frontcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.FRONT)
-        ) {
-      TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
-      TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
-      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
-    } else if (rearfQueue.length > 0
-        && rearcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.REAR)
-        ) {
-      TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
-      TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
-      swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
-    }
+    // if (frontfQueue.length > 0
+    //     && frontcQueue.length > 0
+    //     && vision.hasMultipleTargets(Limelights.FRONT)) {
+    //   TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
+    //   TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
+    //   swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
+    // } else if (rearfQueue.length > 0
+    //     && rearcQueue.length > 0
+    //     && vision.hasMultipleTargets(Limelights.REAR)) {
+    //   TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
+    //   TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
+    //   swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
+    // }
   }
 
   @Override
   public void disabledInit() {
-    if (autoCommand != null) {
-      autoCommand.cancel();
-    }
-    swerveDrive.seed();
+    // if (autoCommand != null) {
+    //   autoCommand.cancel();
+    // }
+    // swerveDrive.seed();
 
-    Robot.motionMode = MotionMode.LOCKDOWN;
+    // Robot.motionMode = MotionMode.LOCKDOWN;
 
-    vision.setCurrentSnapshotMode(SnapshotMode.OFF);
+    // vision.setCurrentSnapshotMode(SnapshotMode.OFF);
   }
 
   @Override
   public void disabledPeriodic() {
-    checkAlliance();
+    // checkAlliance();
 
-    swerveDrive.seed();
-    elevator.resetController();
-    fourBar.reset();
-    SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
-    SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));
+    // swerveDrive.seed();
+    // elevator.resetController();
+    // fourBar.reset();
+    // SmartDashboard.putBoolean("Driver Controller OK", DriverStation.getJoystickIsXbox(0));
+    // SmartDashboard.putBoolean("Operator Controller OK", DriverStation.getJoystickIsXbox(1));
   }
 
   @Override
