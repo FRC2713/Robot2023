@@ -144,7 +144,7 @@ public final class Constants {
             / BOTTOM_GEARING;
     public static final double MAX_TOP_RPM =
         Units.radiansPerSecondToRotationsPerMinute(INTAKE_MOTOR.freeSpeedRadPerSec) / TOP_GEARING;
-    public static final double MOI = 0.1;
+    public static final double MOI = 0.00005;
     public static final int TOP_CURRENT_LIMIT = 20;
     public static final int BOTTOM_CURRENT_LIMIT = 20;
     public static final double TOP_POSITION_CONVERSION_FACTOR = 1 / TOP_GEARING;

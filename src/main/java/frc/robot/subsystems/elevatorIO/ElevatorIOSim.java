@@ -37,12 +37,12 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.heightInchesLeft = Units.metersToInches(sim.getPositionMeters());
     inputs.velocityInchesPerSecondLeft = Units.metersToInches(sim.getVelocityMetersPerSecond());
     inputs.tempCelsiusLeft = 0.0;
-    inputs.currentDrawAmpsLeft = sim.getCurrentDrawAmps();
+    inputs.currentDrawAmpsLeft = sim.getCurrentDrawAmps() / 2.0;
     inputs.outputVoltageRight = MathUtil.clamp(sim.getOutput(0), -12.0, 12.0);
     inputs.heightInchesRight = Units.metersToInches(sim.getPositionMeters());
     inputs.velocityInchesPerSecondRight = Units.metersToInches(sim.getVelocityMetersPerSecond());
     inputs.tempCelsiusRight = 0.0;
-    inputs.currentDrawAmpsRight = sim.getCurrentDrawAmps();
+    inputs.currentDrawAmpsRight = sim.getCurrentDrawAmps() / 2.0;
   }
 
   public boolean shouldApplyFF() {

@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,6 +19,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.FourBarConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
+import frc.robot.util.LoggableMotor;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
@@ -40,6 +42,7 @@ public class FourBar extends SubsystemBase {
   private final ArmFeedforward ff;
   private Timer timer = new Timer();
   private double absOffset = 0;
+  private LoggableMotor motor = new LoggableMotor("FourBar", DCMotor.getNEO(1));
 
   public FourBar(FourBarIO IO) {
     this.ff = Constants.FourBarConstants.FOUR_BAR_VOLTAGE_GAINS.createArmFeedforward();
@@ -122,6 +125,7 @@ public class FourBar extends SubsystemBase {
   public void periodic() {
     IO.updateInputs(inputs);
     Logger.getInstance().processInputs("4Bar", inputs);
+    motor.log(inputs.currentDrawOne, inputs.outputVoltage);
 
     double voltage = 0;
     switch (mode) {
