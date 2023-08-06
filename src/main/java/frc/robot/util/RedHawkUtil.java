@@ -213,7 +213,7 @@ public final class RedHawkUtil {
     config.forEach(
         (frame, ms) -> {
           for (CANSparkMax spark : sparks) {
-            spark.setPeriodicFramePeriod(frame, ms);
+            cOk(spark.setPeriodicFramePeriod(frame, ms));
           }
         });
   }
