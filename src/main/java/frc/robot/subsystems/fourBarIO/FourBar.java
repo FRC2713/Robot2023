@@ -53,7 +53,7 @@ public class FourBar extends SubsystemBase {
     this.IO.updateInputs(inputs);
     // setMode(FourBarMode.HOMING);
     setMode(FourBarMode.CLOSED_LOOP);
-    reseed();
+    // reseed();
   }
 
   public void setAngleDeg(double targetDegs) {

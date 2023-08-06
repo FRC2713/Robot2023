@@ -5,12 +5,14 @@ import static frc.robot.util.RedHawkUtil.cOk;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
 import frc.robot.util.RedHawkUtil;
+import java.util.HashMap;
 
 public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
@@ -43,14 +45,26 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     driver = new CANSparkMax(this.information.getDriveCANId(), MotorType.kBrushless);
     azimuth = new CANSparkMax(this.information.getAziCANId(), MotorType.kBrushless);
 
-    // driver.restoreFactoryDefaults();
-    // azimuth.restoreFactoryDefaults();
+    driver.restoreFactoryDefaults();
+    azimuth.restoreFactoryDefaults();
 
     driver.setCANTimeout(Constants.CAN_TIMEOUT_MS);
     azimuth.setCANTimeout(Constants.CAN_TIMEOUT_MS);
 
-    RedHawkUtil.configureHighTrafficSpark(azimuth);
-    RedHawkUtil.configureHighTrafficSpark(driver);
+    RedHawkUtil.configureCANSparkMAXStatusFrames(
+        new HashMap<>() {
+          {
+            put(PeriodicFrame.kStatus0, 60);
+            put(PeriodicFrame.kStatus1, 20);
+            put(PeriodicFrame.kStatus2, 20);
+            put(PeriodicFrame.kStatus3, 65535);
+            put(PeriodicFrame.kStatus4, 65535);
+            put(PeriodicFrame.kStatus5, 65535);
+            put(PeriodicFrame.kStatus6, 65535);
+          }
+        },
+        driver,
+        azimuth);
 
     driver.setSmartCurrentLimit(Constants.DriveConstants.DRIVE_CURRENT_LIMIT);
     azimuth.setSmartCurrentLimit(Constants.DriveConstants.AZI_CURRENT_LIMIT);

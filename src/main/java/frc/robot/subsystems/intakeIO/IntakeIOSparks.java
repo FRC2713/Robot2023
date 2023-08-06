@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import java.util.HashMap;
 
 public class IntakeIOSparks implements IntakeIO {
 
@@ -19,15 +20,24 @@ public class IntakeIOSparks implements IntakeIO {
   public IntakeIOSparks() {
     topRoller = new CANSparkMax(Constants.RobotMap.TOP_INTAKE_ROLLER, MotorType.kBrushless);
     bottomRoller = new CANSparkMax(Constants.RobotMap.BOTTOM_INTAKE_ROLLER, MotorType.kBrushless);
-    // topRoller.restoreFactoryDefaults();
-    // bottomRoller.restoreFactoryDefaults();
+    topRoller.restoreFactoryDefaults();
+    bottomRoller.restoreFactoryDefaults();
 
-    RedHawkUtil.configureLowTrafficSpark(topRoller);
-    RedHawkUtil.configureLowTrafficSpark(bottomRoller);
-
-    // analog sensor voltage, analog sensor velocity, analog sensor position
-    topRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
-    bottomRoller.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
+    RedHawkUtil.configureCANSparkMAXStatusFrames(
+        new HashMap<>() {
+          {
+            put(PeriodicFrame.kStatus0, 60);
+            put(PeriodicFrame.kStatus1, 60);
+            put(PeriodicFrame.kStatus2, 60);
+            put(PeriodicFrame.kStatus3, 20);
+            put(PeriodicFrame.kStatus4, 65535);
+            put(PeriodicFrame.kStatus5, 65535);
+            put(PeriodicFrame.kStatus6, 65535);
+          }
+        },
+        topRoller,
+        bottomRoller);
+    ;
 
     for (int i = 0; i < 30; i++) {
 

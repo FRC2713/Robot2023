@@ -116,7 +116,7 @@ public final class Constants {
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
-    public static final double RETRACTED_ANGLE_DEGREES = 116.5;
+    public static final double RETRACTED_ANGLE_DEGREES = 100;
     public static final double MAX_VELOCITY = 25;
     public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
