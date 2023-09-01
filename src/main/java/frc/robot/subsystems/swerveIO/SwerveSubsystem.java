@@ -7,7 +7,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.swerveIO.gyro.OdometryToGyroAdapter;
 import frc.robot.subsystems.swerveIO.module.SwerveModule;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIO;
 import frc.robot.util.MotionHandler;
@@ -41,13 +41,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final SwerveDriveOdometry odometry;
   private final SwerveDrivePoseEstimator poseEstimator;
-  private Pose2d simOdometryPose;
 
   private LinearFilter filteredRoll = LinearFilter.singlePoleIIR(0.08, 0.02);
   public double filteredRollVal = 0;
 
   public static double allianceFlipper = 1;
-  public static Rotation2d resetGyroVal = null;
+
+  public static OdometryToGyroAdapter gyro = new OdometryToGyroAdapter();
 
   private double numIgnoredJumps;
 
@@ -104,8 +104,6 @@ public class SwerveSubsystem extends SubsystemBase {
                     Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
                     Constants.LimeLightConstants.VISION_STD_DEVI_POSITION_IN_METERS,
                     Constants.LimeLightConstants.VISION_STD_DEVI_ROTATION_IN_RADIANS));
-
-    simOdometryPose = odometry.getPoseMeters();
   }
 
   public void zeroGyro() {
@@ -147,7 +145,6 @@ public class SwerveSubsystem extends SubsystemBase {
           this.backRight.getPosition()
         },
         pose);
-    simOdometryPose = pose;
   }
 
   /**
@@ -156,11 +153,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return The position of the robot on the field.
    */
   private Pose2d getEstimatedPose() {
-    if (Robot.isReal()) {
-      return poseEstimator.getEstimatedPosition();
-    } else {
-      return simOdometryPose;
-    }
+    return poseEstimator.getEstimatedPosition();
   }
 
   public Pose2d getUsablePose() {
@@ -175,12 +168,16 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(inputs.gyroYawPosition);
   }
 
+  public SwerveDriveOdometry getOdometry() {
+    return this.odometry;
+  }
+
+  public SwerveModule[] getModules() {
+    return new SwerveModule[] {frontLeft, frontRight, backLeft, backRight};
+  }
+
   private Pose2d getRegularPose() {
-    if (Robot.isReal()) {
-      return odometry.getPoseMeters();
-    } else {
-      return simOdometryPose;
-    }
+    return odometry.getPoseMeters();
   }
 
   public double getTotalCurrentDraw() {
@@ -284,25 +281,6 @@ public class SwerveSubsystem extends SubsystemBase {
           backLeft.getPosition(),
           backRight.getPosition()
         });
-
-    if (Robot.isSimulation()) {
-      SwerveModuleState[] measuredStates =
-          new SwerveModuleState[] {
-            frontLeft.getMeasuredState(),
-            frontRight.getMeasuredState(),
-            backLeft.getMeasuredState(),
-            backRight.getMeasuredState()
-          };
-      ChassisSpeeds speeds = Constants.DriveConstants.KINEMATICS.toChassisSpeeds(measuredStates);
-      simOdometryPose =
-          simOdometryPose.exp(
-              new Twist2d(
-                  speeds.vxMetersPerSecond * .02,
-                  speeds.vyMetersPerSecond * .02,
-                  speeds.omegaRadiansPerSecond * .02));
-
-      inputs.gyroYawPosition = simOdometryPose.getRotation().getDegrees();
-    }
   }
 
   public void seed() {

@@ -22,6 +22,11 @@ public interface SwerveIO {
   public void updateInputs(SwerveInputs inputs);
 
   /**
+   * initalize the source of this gyro IO
+   */
+  public void initalizeGyroSource();
+
+  /**
    * Sets the gyro to the given rotation.
    *
    * @param rotation2d The desired rotation

@@ -1,8 +1,9 @@
-package frc.robot.subsystems.swerveIO;
+package frc.robot.subsystems.swerveIO.gyro;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.RobotMap;
+import frc.robot.subsystems.swerveIO.SwerveIO;
 import frc.robot.util.RedHawkUtil;
 import org.littletonrobotics.junction.Logger;
 
@@ -36,5 +37,10 @@ public class SwerveIOPigeon2 implements SwerveIO {
     Logger.getInstance().recordOutput("Reset gyro to", 0);
     gyro.zeroGyroBiasNow();
     gyro.setYaw(0);
+  }
+
+  @Override
+  public void initalizeGyroSource() {
+    return;
   }
 }

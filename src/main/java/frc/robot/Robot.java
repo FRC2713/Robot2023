@@ -64,9 +64,10 @@ import frc.robot.subsystems.fourBarIO.FourBarIOSparks;
 import frc.robot.subsystems.intakeIO.Intake;
 import frc.robot.subsystems.intakeIO.IntakeIOSim;
 import frc.robot.subsystems.intakeIO.IntakeIOSparks;
-import frc.robot.subsystems.swerveIO.SwerveIOPigeon2;
-import frc.robot.subsystems.swerveIO.SwerveIOSim;
+import frc.robot.subsystems.swerveIO.SwerveIO;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
+import frc.robot.subsystems.swerveIO.gyro.SwerveIOPigeon2;
+import frc.robot.subsystems.swerveIO.gyro.SwerveIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSim;
 import frc.robot.subsystems.swerveIO.module.SwerveModuleIOSparkMAX;
 import frc.robot.subsystems.visionIO.Vision;
@@ -189,21 +190,23 @@ public class Robot extends LoggedRobot {
     // intake = new Intake(true ? new IntakeIOSim() : new IntakeIOSparks());
     // vision = new Vision(true ? new VisionIOSim() : new VisionLimelight());
 
+    SwerveIO swerveDriveIO = isSimulation() ? new SwerveIOSim() : new SwerveIOPigeon2();
     swerveDrive =
         isSimulation()
             // true
             ? new SwerveSubsystem(
-                new SwerveIOSim(),
+                swerveDriveIO,
                 new SwerveModuleIOSim(Constants.DriveConstants.FRONT_LEFT),
                 new SwerveModuleIOSim(Constants.DriveConstants.FRONT_RIGHT),
                 new SwerveModuleIOSim(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSim(Constants.DriveConstants.BACK_RIGHT))
             : new SwerveSubsystem(
-                new SwerveIOPigeon2(),
+                swerveDriveIO,
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.FRONT_RIGHT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_LEFT),
                 new SwerveModuleIOSparkMAX(Constants.DriveConstants.BACK_RIGHT));
+    swerveDriveIO.initalizeGyroSource();
 
     mechManager = new MechanismManager();
     goClosestGrid = new GoClosestGrid();
@@ -907,15 +910,13 @@ public class Robot extends LoggedRobot {
 
     if (frontfQueue.length > 0
         && frontcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.FRONT)
-        ) {
+        && vision.hasMultipleTargets(Limelights.FRONT)) {
       TimestampedDoubleArray fLastCameraReading = frontfQueue[frontfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = frontcQueue[frontcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
     } else if (rearfQueue.length > 0
         && rearcQueue.length > 0
-        && vision.hasMultipleTargets(Limelights.REAR)
-        ) {
+        && vision.hasMultipleTargets(Limelights.REAR)) {
       TimestampedDoubleArray fLastCameraReading = rearfQueue[rearfQueue.length - 1];
       TimestampedDoubleArray cLastCameraReading = rearcQueue[rearcQueue.length - 1];
       swerveDrive.updateVisionPose(fLastCameraReading, cLastCameraReading);
