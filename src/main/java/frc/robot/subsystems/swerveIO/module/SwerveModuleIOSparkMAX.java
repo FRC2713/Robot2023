@@ -3,14 +3,18 @@ package frc.robot.subsystems.swerveIO.module;
 import static frc.robot.util.RedHawkUtil.cOk;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.OffsetAbsoluteAnalogEncoder;
+import frc.robot.util.PIDFFGains;
 import frc.robot.util.RedHawkUtil;
 import java.util.HashMap;
 
@@ -20,6 +24,14 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
   CANSparkMax driver;
   CANSparkMax azimuth;
   private final ModuleInfo information;
+  PIDFFGains aziGains;
+  PIDFFGains driveGains;
+  SparkMaxPIDController azController;
+  SparkMaxPIDController driveController;
+  private double aziSetpointDeg;
+  private double driveSetpointMPS;
+  private SimpleMotorFeedforward aziFF;
+  private SimpleMotorFeedforward driveFF;
 
   private RelativeEncoder getDriveEncoder() {
     return driver.getEncoder();
@@ -94,6 +106,23 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
     driver.burnFlash();
     azimuth.burnFlash();
+
+    azController = azimuth.getPIDController();
+    driveController = driver.getPIDController();
+
+    this.aziGains = information.getAzimuthGains();
+    this.aziFF = aziGains.createWpilibFeedforward();
+    RedHawkUtil.errorHandleSparkMAX(azimuth.getPIDController().setP(aziGains.kP.get()));
+    RedHawkUtil.errorHandleSparkMAX(azimuth.getPIDController().setI(aziGains.kI.get()));
+    RedHawkUtil.errorHandleSparkMAX(azimuth.getPIDController().setD(aziGains.kD.get()));
+    azimuth.getPIDController().setPositionPIDWrappingEnabled(true);
+
+    this.driveGains = information.getDriveGains();
+    this.driveFF = driveGains.createWpilibFeedforward();
+    RedHawkUtil.errorHandleSparkMAX(driver.getPIDController().setP(driveGains.kP.get()));
+    RedHawkUtil.errorHandleSparkMAX(driver.getPIDController().setI(driveGains.kI.get()));
+    RedHawkUtil.errorHandleSparkMAX(driver.getPIDController().setD(driveGains.kD.get()));
+    driver.getPIDController().setPositionPIDWrappingEnabled(true);
   }
 
   public void seed() {
@@ -125,6 +154,17 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     inputs.driveOutputVolts = driver.getAppliedOutput() * RobotController.getBatteryVoltage();
     inputs.driveCurrentDrawAmps = driver.getOutputCurrent();
     inputs.driveTempCelcius = driver.getMotorTemperature();
+
+    azController.setReference(
+        aziSetpointDeg,
+        ControlType.kPosition,
+        0,
+        aziFF.calculate(inputs.aziEncoderVelocityDegPerSecond));
+    driveController.setReference(
+        driveSetpointMPS,
+        ControlType.kVelocity,
+        0,
+        driveFF.calculate(inputs.driveEncoderVelocityMetresPerSecond));
   }
 
   @Override
@@ -135,5 +175,17 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
   @Override
   public void setDriveVoltage(double driveVolts) {
     driver.setVoltage(driveVolts);
+  }
+
+  @Override
+  public void setDrivePIDSetpoint(double driveSetpointMPS) {
+    this.driveSetpointMPS = driveSetpointMPS;
+    azController.setReference(driveSetpointMPS, ControlType.kVelocity);
+  }
+
+  @Override
+  public void setAziPIDSetpoint(double aziSetpointDeg) {
+    this.aziSetpointDeg = aziSetpointDeg;
+    driveController.setReference(aziSetpointDeg, ControlType.kPosition);
   }
 }

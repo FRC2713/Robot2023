@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerveIO.module;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface SwerveModuleIO {
-
   @AutoLog
   public class SwerveModuleInputs {
     public double aziAbsoluteEncoderRawVolts = 0.0;
@@ -45,4 +44,8 @@ public interface SwerveModuleIO {
   public void setDriveVoltage(double driveVolts);
 
   public void seed();
+
+  public void setAziPIDSetpoint(double aziSetpointDegs);
+
+  public void setDrivePIDSetpoint(double driveSetpointMPS);
 }

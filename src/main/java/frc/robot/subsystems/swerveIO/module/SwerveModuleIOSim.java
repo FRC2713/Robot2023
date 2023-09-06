@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerveIO.module;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -13,10 +15,20 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   double theAziVolts = 0;
   double theDriveVolts = 0;
 
-  private final ModuleInfo information;
+  double setpoint;
+  private SimpleMotorFeedforward aziFF;
+  private SimpleMotorFeedforward driveFF;
+  PIDController aziController;
+  PIDController driveController;
+  private double driveSetpointMPS;
+  private double aziSetpointDegs;
 
   public SwerveModuleIOSim(ModuleInfo information) {
-    this.information = information;
+    aziController = information.getAzimuthGains().createWpilibController();
+    aziController.enableContinuousInput(-180, 180);
+    driveController = information.getDriveGains().createWpilibController();
+    aziFF = information.getAzimuthGains().createWpilibFeedforward();
+    driveFF = information.getAzimuthGains().createWpilibFeedforward();
   }
 
   @Override
@@ -43,6 +55,13 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     inputs.driveOutputVolts = MathUtil.clamp(driveSim.getOutput(0), -12.0, 12.0);
     inputs.driveCurrentDrawAmps = driveSim.getCurrentDrawAmps();
     inputs.driveTempCelcius = 0.0;
+
+    setAzimuthVoltage(
+        aziController.calculate(inputs.aziEncoderPositionDeg, aziSetpointDegs)
+            + aziFF.calculate(inputs.aziEncoderVelocityDegPerSecond));
+    setDriveVoltage(
+        driveController.calculate(inputs.driveEncoderVelocityMetresPerSecond, driveSetpointMPS)
+            + driveFF.calculate(inputs.driveEncoderVelocityMetresPerSecond));
   }
 
   @Override
@@ -58,4 +77,16 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   }
 
   public void seed() {}
+
+  @Override
+  public void setDrivePIDSetpoint(double driveSetpointMPS) {
+    this.driveSetpointMPS = driveSetpointMPS;
+    driveController.setSetpoint(driveSetpointMPS);
+  }
+
+  @Override
+  public void setAziPIDSetpoint(double aziSetpointDegs) {
+    this.aziSetpointDegs = aziSetpointDegs;
+    aziController.setSetpoint(aziSetpointDegs);
+  }
 }

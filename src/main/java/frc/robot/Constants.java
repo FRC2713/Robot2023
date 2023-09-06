@@ -325,9 +325,9 @@ public final class Constants {
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12).tolerance(0.75).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(1000.12).tolerance(0.75).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
-          PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
+          PIDFFGains.builder("BackRight/Default Driving").kP(1000.0).kS(0.15).kV(2).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
           PIDFFGains.builder("Trajectory Controller X-Axis").kP(7).kD(0.0).build();
