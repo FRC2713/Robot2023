@@ -89,11 +89,17 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance()
         .recordOutput("Elevator/Left is NaN", Double.isNaN(inputs.heightInchesLeft));
 
-    double effortLeft =
-        elevatorController.calculate(
-            // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
-            // returns 0 for a cycle sometimes
-            inputs.heightInchesRight, targetHeight);
+    double effortLeft = 0;
+    /*elevatorController.calculate(
+    // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
+    // returns 0 for a cycle sometimes
+    inputs.heightInchesRight, targetHeight);*/
+
+    IO.goToSetpoint(
+        // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
+        // returns 0 for a cycle sometimes
+        inputs.heightInchesRight, targetHeight);
+
     // double ffEffort = feedforward.calculate(0);
     if (IO.shouldApplyFF()) {
       effortLeft +=

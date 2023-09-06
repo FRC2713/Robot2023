@@ -57,4 +57,6 @@ public class ElevatorIOSim implements ElevatorIO {
   public void setVoltage(double volts) {
     sim.setInputVoltage(volts);
   }
+
+  public void goToSetpoint(double heightInchesRight, double targetHeight) {}
 }
