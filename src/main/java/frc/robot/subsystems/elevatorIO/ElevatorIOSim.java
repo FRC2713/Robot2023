@@ -1,13 +1,26 @@
 package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOSim implements ElevatorIO {
+  private final ProfiledPIDController elevatorController;
+  private final ElevatorFeedforward feedforward;
+
+  public ElevatorIOSim() {
+    this.elevatorController =
+        Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
+            new Constraints(100, 200));
+    this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
+  }
 
   private final AngledElevatorSim sim =
       new AngledElevatorSim(
@@ -54,9 +67,26 @@ public class ElevatorIOSim implements ElevatorIO {
    * @param volts the voltage to set it to
    */
   @Override
-  public void setVoltage(double volts) {
-    sim.setInputVoltage(volts);
+  public void setPIDFF() {
+    elevatorController.setP(Constants.ElevatorConstants.ELEVATOR_GAINS.kP.get());
+    elevatorController.setI(Constants.ElevatorConstants.ELEVATOR_GAINS.kI.get());
+    elevatorController.setD(Constants.ElevatorConstants.ELEVATOR_GAINS.kD.get());
+    elevatorController.setConstraints(new Constraints(100, 200));
   }
 
-  public void goToSetpoint(double heightInchesRight, double targetHeight) {}
+  @Override
+  public void goToSetpoint(double heightInchesRight, double targetHeight) {
+
+    double targetVoltage = elevatorController.calculate(heightInchesRight, targetHeight);
+
+    if (shouldApplyFF()) {
+      targetVoltage +=
+          feedforward.calculate(
+              elevatorController.getSetpoint().position, elevatorController.getSetpoint().velocity);
+    }
+
+    targetVoltage = MathUtil.clamp(targetVoltage, -12, 12);
+    sim.setInputVoltage(targetVoltage);
+    Logger.getInstance().recordOutput("Elevator/Control Voltage", targetVoltage);
+  }
 }

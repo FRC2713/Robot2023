@@ -16,7 +16,6 @@ public class ElevatorIOSparks implements ElevatorIO {
   private SimpleMotorFeedforward leftFF, rightFF;
   private double currentLeftFF;
   private double currentRightFF;
-  
 
   public ElevatorIOSparks() {
     left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
@@ -99,12 +98,6 @@ public class ElevatorIOSparks implements ElevatorIO {
     currentRightFF = rightFF.calculate(inputs.velocityInchesPerSecondRight);
   }
 
-  @Override
-  public void setVoltage(double volts) {
-    left.setVoltage(volts);
-    right.setVoltage(volts);
-  }
-
   public void setPIDFF() {
     SparkMaxPIDController leftController = left.getPIDController();
     SparkMaxPIDController rightController = right.getPIDController();
@@ -119,11 +112,17 @@ public class ElevatorIOSparks implements ElevatorIO {
     rightController.setFF(Constants.ElevatorConstants.ELEVATOR_GAINS.kG.get());
   }
 
-  public void goToSetpoint(double targetHeight) {
-    left.getPIDController()
-        .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentLeftFF);
-    right
-        .getPIDController()
-        .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentRightFF);
+  public void goToSetpoint(double heightInchesRight, double targetHeight) {
+
+    if (shouldApplyFF()) {
+      left.getPIDController()
+          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentLeftFF);
+      right
+          .getPIDController()
+          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentRightFF);
+    } else {
+      left.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
+      right.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
+    }
   }
 }
