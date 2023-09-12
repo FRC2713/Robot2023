@@ -6,6 +6,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggableMotor;
+import frc.robot.Robot;
+import frc.robot.util.PIDFFController;
 import org.littletonrobotics.junction.Logger;
 
 public class SwerveModule extends SubsystemBase {

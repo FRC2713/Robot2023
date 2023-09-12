@@ -3,7 +3,9 @@ package frc.robot.subsystems.elevatorIO;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -12,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
-// import frc.robot.util.AccelerationCalc;
-// import frc.robot.util.LoggableMotor;
+import frc.robot.util.AccelerationCalc;
+import frc.robot.util.LoggableMotor;
 import frc.robot.util.RedHawkUtil;
 import frc.robot.util.SuperstructureConfig;
 import org.littletonrobotics.junction.Logger;
@@ -26,8 +28,8 @@ public class Elevator extends SubsystemBase {
   private double targetHeight = 0.0;
   private final ElevatorFeedforward feedforward;
   private boolean inManualControl;
-  // private LoggableMotor leftMotor, rightMotor;
-  // private AccelerationCalc accelCalc;
+  private LoggableMotor leftMotor, rightMotor;
+  private AccelerationCalc accelCalc;
 
   public Elevator(ElevatorIO IO) {
     this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
@@ -39,9 +41,9 @@ public class Elevator extends SubsystemBase {
     IO.updateInputs(inputs);
     this.IO = IO;
 
-    /*leftMotor = new LoggableMotor("Elevator Left", DCMotor.getNEO(1));
+    leftMotor = new LoggableMotor("Elevator Left", DCMotor.getNEO(1));
     rightMotor = new LoggableMotor("Elevator Right", DCMotor.getNEO(1));
-    accelCalc = new AccelerationCalc(5);*/
+    accelCalc = new AccelerationCalc(5);
   }
 
   public void setTargetHeight(double targetHeightInches) {
@@ -77,12 +79,14 @@ public class Elevator extends SubsystemBase {
 
   public void periodic() {
     IO.updateInputs(inputs);
-    /*leftMotor.log(inputs.currentDrawAmpsLeft, inputs.outputVoltageLeft);
+    leftMotor.log(inputs.currentDrawAmpsLeft, inputs.outputVoltageLeft);
+
     rightMotor.log(inputs.currentDrawAmpsRight, inputs.outputVoltageRight);
     Logger.getInstance()
         .recordOutput(
             "Elevator/Acceleration",
-            accelCalc.calculate(inputs.velocityInchesPerSecondLeft, Timer.getFPGATimestamp()));*/
+
+            accelCalc.calculate(inputs.velocityInchesPerSecondLeft, Timer.getFPGATimestamp()));
 
     Logger.getInstance()
         .recordOutput("Elevator/Left is NaN", Double.isNaN(inputs.heightInchesLeft));
