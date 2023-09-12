@@ -85,7 +85,6 @@ public class Elevator extends SubsystemBase {
     Logger.getInstance()
         .recordOutput(
             "Elevator/Acceleration",
-
             accelCalc.calculate(inputs.velocityInchesPerSecondLeft, Timer.getFPGATimestamp()));
 
     Logger.getInstance()
