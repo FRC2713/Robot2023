@@ -610,6 +610,10 @@ public class Robot extends LoggedRobot {
         .y()
         .onTrue(
             new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      Robot.elevator.setManualControl(false);
+                    }),
                 Elevator.Commands.conditionalElevatorHigh(),
                 FourBar.Commands.conditionalFourbarHigh(),
                 new ConditionalCommand(
@@ -621,6 +625,10 @@ public class Robot extends LoggedRobot {
         .b()
         .onTrue(
             new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      Robot.elevator.setManualControl(false);
+                    }),
                 Elevator.Commands.conditionalElevatorMid(),
                 FourBar.Commands.conditionalFourbarMid(),
                 new ConditionalCommand(
@@ -631,6 +639,10 @@ public class Robot extends LoggedRobot {
         .a()
         .onTrue(
             new SequentialCommandGroup(
+                new InstantCommand(
+                    () -> {
+                      Robot.elevator.setManualControl(false);
+                    }),
                 Elevator.Commands.conditionalElevatorLow(),
                 FourBar.Commands.conditionalFourbarLow(),
                 new ConditionalCommand(
@@ -731,6 +743,10 @@ public class Robot extends LoggedRobot {
                     () -> {
                       gamePieceMode = GamePieceMode.CONE;
                     }),
+                new InstantCommand(
+                    () -> {
+                      Robot.elevator.setManualControl(false);
+                    }),
                 Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_SHELF_CONE),
                 new ParallelCommandGroup(
                     Intake.Commands.setTopVelocityRPM(
@@ -765,7 +781,7 @@ public class Robot extends LoggedRobot {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  elevator.manualControl = true;
+                  Robot.elevator.setManualControl(true);
                 }));
 
     operator

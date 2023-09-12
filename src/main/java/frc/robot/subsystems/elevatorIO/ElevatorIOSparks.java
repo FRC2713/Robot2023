@@ -3,7 +3,9 @@ package frc.robot.subsystems.elevatorIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
@@ -11,11 +13,15 @@ import java.util.HashMap;
 
 public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
+  private SimpleMotorFeedforward leftFF, rightFF;
+  private double currentLeftFF;
+  private double currentRightFF;
 
   public ElevatorIOSparks() {
     left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
     right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
-
+    leftFF = Constants.ElevatorConstants.ELEVATOR_GAINS.createWpilibFeedforward();
+    rightFF = Constants.ElevatorConstants.ELEVATOR_GAINS.createWpilibFeedforward();
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
 
@@ -87,11 +93,36 @@ public class ElevatorIOSparks implements ElevatorIO {
     inputs.velocityInchesPerSecondRight = right.getEncoder().getVelocity();
     inputs.tempCelsiusRight = right.getMotorTemperature();
     inputs.currentDrawAmpsRight = right.getOutputCurrent();
+
+    currentLeftFF = leftFF.calculate(inputs.velocityInchesPerSecondLeft);
+    currentRightFF = rightFF.calculate(inputs.velocityInchesPerSecondRight);
   }
 
-  @Override
-  public void setVoltage(double volts) {
-    left.setVoltage(volts);
-    right.setVoltage(volts);
+  public void setPIDFF() {
+    SparkMaxPIDController leftController = left.getPIDController();
+    SparkMaxPIDController rightController = right.getPIDController();
+
+    leftController.setP(Constants.ElevatorConstants.ELEVATOR_GAINS.kP.get());
+    leftController.setI(Constants.ElevatorConstants.ELEVATOR_GAINS.kI.get());
+    leftController.setD(Constants.ElevatorConstants.ELEVATOR_GAINS.kD.get());
+    leftController.setFF(Constants.ElevatorConstants.ELEVATOR_GAINS.kG.get());
+    rightController.setP(Constants.ElevatorConstants.ELEVATOR_GAINS.kP.get());
+    rightController.setI(Constants.ElevatorConstants.ELEVATOR_GAINS.kI.get());
+    rightController.setD(Constants.ElevatorConstants.ELEVATOR_GAINS.kD.get());
+    rightController.setFF(Constants.ElevatorConstants.ELEVATOR_GAINS.kG.get());
+  }
+
+  public void goToSetpoint(double heightInchesRight, double targetHeight) {
+
+    if (shouldApplyFF()) {
+      left.getPIDController()
+          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentLeftFF);
+      right
+          .getPIDController()
+          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentRightFF);
+    } else {
+      left.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
+      right.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
+    }
   }
 }

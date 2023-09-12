@@ -23,5 +23,7 @@ public interface ElevatorIO {
 
   public boolean shouldApplyFF();
 
-  public void setVoltage(double volts);
+  public void goToSetpoint(double heightInchesRight, double targetHeight);
+
+  public void setPIDFF();
 }
