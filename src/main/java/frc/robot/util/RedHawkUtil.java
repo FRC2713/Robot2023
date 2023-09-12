@@ -4,7 +4,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 import com.pathplanner.lib.PathPoint;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.REVLibError;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +17,7 @@ import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
@@ -207,139 +208,157 @@ public final class RedHawkUtil {
     }
   }
 
-  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
-  public static void configureDefaultTrafficSpark(CANSparkMax spark) {
-    // Applied output, faults, sticky faults, isFollower
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
-
-    // velocity, temperature, voltage, current
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);
-
-    // position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);
-
-    // analog sensor voltage, analog sensor velocity, analog sensor position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
-
-    // alt encoder velocity, alt encoder position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
-
-    // duty cycle absolute encoder position, duty cycle absolute encoder angle
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
-
-    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+  public static void configureCANSparkMAXStatusFrames(
+      HashMap<CANSparkMaxLowLevel.PeriodicFrame, Integer> config, CANSparkMax... sparks) {
+    config.forEach(
+        (frame, ms) -> {
+          for (CANSparkMax spark : sparks) {
+            cOk(spark.setPeriodicFramePeriod(frame, ms));
+          }
+        });
   }
 
-  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
-  // Used for sparks that aren't that important and don't need to be broadcasting info very often
-  public static void configureLowTrafficSpark(CANSparkMax spark) {
-    // Applied output, faults, sticky faults, isFollower
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
-
-    // velocity, temperature, voltage, current
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 40);
-
-    // position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
-
-    // analog sensor voltage, analog sensor velocity, analog sensor position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
-
-    // alt encoder velocity, alt encoder position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
-
-    // duty cycle absolute encoder position, duty cycle absolute encoder angle
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
-
-    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
-    configureDefaultTrafficSpark(spark);
+  public static void configurePigeonStatusFrames(
+      Pigeon2 pigeon, HashMap<PigeonIMU_StatusFrame, Integer> config) {
+    config.forEach(
+        (frame, ms) -> {
+          pigeon.setStatusFramePeriod(frame, ms);
+        });
   }
 
-  // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
-  // Used for sparks that are critical to robot functionality
-  public static void configureHighTrafficSpark(CANSparkMax spark) {
-    // Applied output, faults, sticky faults, isFollower
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
+  // // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  // public static void configureDefaultTrafficSpark(CANSparkMax spark) {
+  //   // Applied output, faults, sticky faults, isFollower
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 10);
 
-    // velocity, temperature, voltage, current
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
+  //   // velocity, temperature, voltage, current
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);
 
-    // position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
+  //   // position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);
 
-    // analog sensor voltage, analog sensor velocity, analog sensor position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+  //   // analog sensor voltage, analog sensor velocity, analog sensor position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
-    // alt encoder velocity, alt encoder position
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+  //   // alt encoder velocity, alt encoder position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 20);
 
-    // duty cycle absolute encoder position, duty cycle absolute encoder angle
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+  //   // duty cycle absolute encoder position, duty cycle absolute encoder angle
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 200);
 
-    // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
-    spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
-    configureDefaultTrafficSpark(spark);
-  }
+  //   // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 200);
+  // }
 
-  // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
-  public static void configureDefaultPigeon2(Pigeon2 pigeon) {
-    // 5, 7, 8 don't seem to exist
+  // // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  // // Used for sparks that aren't that important and don't need to be broadcasting info very often
+  // public static void configureLowTrafficSpark(CANSparkMax spark) {
+  //   // Applied output, faults, sticky faults, isFollower
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
 
-    // calibration status, IMU temperature
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 100);
+  //   // velocity, temperature, voltage, current
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 40);
 
-    // biased gyro values (x, y, z)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 100);
+  //   // position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
 
-    // accelerometer derived angles
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 100);
+  //   // analog sensor voltage, analog sensor velocity, analog sensor position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
 
-    // unprocessed magnetometer values (x, y, z)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 20);
+  //   // alt encoder velocity, alt encoder position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
 
-    // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 10);
+  //   // duty cycle absolute encoder position, duty cycle absolute encoder angle
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
 
-    // six degree fused yaw, pitch, roll
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+  //   // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+  //   configureDefaultTrafficSpark(spark);
+  // }
 
-    // six degree fused quaternion
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 100);
+  // // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
+  // // Used for sparks that are critical to robot functionality
+  // public static void configureHighTrafficSpark(CANSparkMax spark) {
+  //   // Applied output, faults, sticky faults, isFollower
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000);
 
-    // accumulated gyro angles
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 20);
-  }
+  //   // velocity, temperature, voltage, current
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
 
-  // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
-  public static void configureOptimizedPigeon2(Pigeon2 pigeon) {
-    // 5, 7, 8 don't seem to exist
+  //   // position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 20);
 
-    // calibration status, IMU temperature
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 10000);
+  //   // analog sensor voltage, analog sensor velocity, analog sensor position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
 
-    // biased gyro values (x, y, z)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 10000);
+  //   // alt encoder velocity, alt encoder position
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
 
-    // accelerometer derived angles
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 10000);
+  //   // duty cycle absolute encoder position, duty cycle absolute encoder angle
+  //   // spark.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
 
-    // unprocessed magnetometer values (x, y, z)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 10000);
+  //   // duty cycle absolute encoder velocity, duty cycle absolute encoder frequency
+  //   spark.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
+  //   configureDefaultTrafficSpark(spark);
+  // }
 
-    // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 10000);
+  // // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
+  // public static void configureDefaultPigeon2(Pigeon2 pigeon) {
+  //   // 5, 7, 8 don't seem to exist
 
-    // six degree fused yaw, pitch, roll
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+  //   // calibration status, IMU temperature
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 100);
 
-    // six degree fused quaternion
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 10000);
+  //   // biased gyro values (x, y, z)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 100);
 
-    // accumulated gyro angles
-    pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 10000);
-  }
+  //   // accelerometer derived angles
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 100);
+
+  //   // unprocessed magnetometer values (x, y, z)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 20);
+
+  //   // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 10);
+
+  //   // six degree fused yaw, pitch, roll
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+
+  //   // six degree fused quaternion
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 100);
+
+  //   // accumulated gyro angles
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 20);
+  // }
+
+  // // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html
+  // public static void configureOptimizedPigeon2(Pigeon2 pigeon) {
+  //   // 5, 7, 8 don't seem to exist
+
+  //   // calibration status, IMU temperature
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 10000);
+
+  //   // biased gyro values (x, y, z)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 10000);
+
+  //   // accelerometer derived angles
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 10000);
+
+  //   // unprocessed magnetometer values (x, y, z)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 10000);
+
+  //   // 9 degree fused yaw, pitch, roll (requires magnetometer calibration)
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 10000);
+
+  //   // six degree fused yaw, pitch, roll
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+
+  //   // six degree fused quaternion
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 10000);
+
+  //   // accumulated gyro angles
+  //   pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 10000);
+  // }
 
   public PathPoint pathPointFromHolonomicPose(Pose2d pose) {
     return pathPointFromHolonomicPose(pose, pose.getRotation());

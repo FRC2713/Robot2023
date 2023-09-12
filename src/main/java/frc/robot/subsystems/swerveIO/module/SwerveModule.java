@@ -3,8 +3,10 @@ package frc.robot.subsystems.swerveIO.module;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.util.LoggableMotor;
 import frc.robot.util.PIDFFController;
 import org.littletonrobotics.junction.Logger;
 
@@ -18,6 +20,8 @@ public class SwerveModule extends SubsystemBase {
 
   SwerveModuleState state;
   public final ModuleInfo information;
+
+  LoggableMotor azimuthMotor, driveMotor;
 
   /**
    * Creates a new SwerveModule object.
@@ -36,6 +40,10 @@ public class SwerveModule extends SubsystemBase {
 
     state = new SwerveModuleState(0, Rotation2d.fromDegrees(inputs.aziEncoderPositionDeg));
     azimuthController.enableContinuousInput(-180, 180);
+
+    azimuthMotor =
+        new LoggableMotor("Swerve " + information.getName() + " Azimuth", DCMotor.getNEO(1));
+    driveMotor = new LoggableMotor("Swerve " + information.getName() + " Drive", DCMotor.getNEO(1));
   }
 
   /**
@@ -133,9 +141,11 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.updateInputs(inputs);
+    azimuthMotor.log(inputs.aziCurrentDrawAmps, inputs.aziOutputVolts);
+    driveMotor.log(inputs.driveCurrentDrawAmps, inputs.driveOutputVolts);
     update();
 
-    io.updateInputs(inputs);
     Logger.getInstance().processInputs("Swerve/" + information.getName(), inputs);
     recordOutput("Azimuth Error", state.angle.getDegrees() - inputs.aziEncoderPositionDeg);
     recordOutput(

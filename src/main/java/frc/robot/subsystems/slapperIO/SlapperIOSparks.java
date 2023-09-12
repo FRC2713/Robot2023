@@ -3,12 +3,10 @@ package frc.robot.subsystems.slapperIO;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.robot.util.RedHawkUtil;
 
 public class SlapperIOSparks implements SlapperIO {
 
@@ -18,10 +16,10 @@ public class SlapperIOSparks implements SlapperIO {
     slapperMotor = new CANSparkMax(Constants.RobotMap.CONE_SLAPPER_MOTOR, MotorType.kBrushless);
     slapperMotor.restoreFactoryDefaults();
 
-    RedHawkUtil.configureLowTrafficSpark(slapperMotor);
+    // RedHawkUtil.configureLowTrafficSpark(slapperMotor);
 
     // analog sensor voltage, analog sensor velocity, analog sensor position
-    slapperMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
+    // slapperMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 50);
 
     slapperMotor.setInverted(true);
 

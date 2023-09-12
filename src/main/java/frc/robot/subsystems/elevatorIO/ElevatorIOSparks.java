@@ -2,10 +2,12 @@ package frc.robot.subsystems.elevatorIO;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
+import java.util.HashMap;
 
 public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
@@ -14,11 +16,23 @@ public class ElevatorIOSparks implements ElevatorIO {
     left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
     right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
 
-    // left.restoreFactoryDefaults();
-    // right.restoreFactoryDefaults();
+    left.restoreFactoryDefaults();
+    right.restoreFactoryDefaults();
 
-    RedHawkUtil.configureHighTrafficSpark(left);
-    RedHawkUtil.configureHighTrafficSpark(right);
+    RedHawkUtil.configureCANSparkMAXStatusFrames(
+        new HashMap<>() {
+          {
+            put(PeriodicFrame.kStatus0, 60);
+            put(PeriodicFrame.kStatus1, 20);
+            put(PeriodicFrame.kStatus2, 20);
+            put(PeriodicFrame.kStatus3, 65535);
+            put(PeriodicFrame.kStatus4, 65535);
+            put(PeriodicFrame.kStatus5, 65535);
+            put(PeriodicFrame.kStatus6, 65535);
+          }
+        },
+        left,
+        right);
 
     left.setIdleMode(CANSparkMax.IdleMode.kBrake);
     right.setIdleMode(CANSparkMax.IdleMode.kBrake);

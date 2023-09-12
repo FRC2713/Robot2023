@@ -2,6 +2,7 @@ package frc.robot.subsystems.intakeIO;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -13,6 +14,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.Robot;
 import frc.robot.Robot.GamePieceMode;
 import frc.robot.subsystems.LightStrip.Pattern;
+import frc.robot.util.LoggableMotor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -30,11 +32,14 @@ public class Intake extends SubsystemBase {
   private Debouncer debouncer = new Debouncer(0.1);
   private LinearFilter analogVoltageFilterRight = LinearFilter.singlePoleIIR(0.04, 0.02);
   private LinearFilter analogVoltageFilterLeft = LinearFilter.singlePoleIIR(0.04, 0.02);
+  private LoggableMotor topRollerMotor, bottomRollerMotor;
 
   public Intake(IntakeIO IO) {
     this.inputs = new IntakeInputsAutoLogged();
     IO.updateInputs(inputs);
     this.IO = IO;
+    topRollerMotor = new LoggableMotor("Intake Top Roller", DCMotor.getNeo550(1));
+    bottomRollerMotor = new LoggableMotor("Intake Bottom Roller", DCMotor.getNeo550(1));
   }
 
   public boolean isAtTarget() {
@@ -70,8 +75,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
-
     IO.updateInputs(inputs);
+    topRollerMotor.log(inputs.topCurrentAmps, inputs.topOutputVoltage);
+    bottomRollerMotor.log(inputs.bottomCurrentAmps, inputs.bottomOutputVoltage);
 
     filteredVoltageCube = analogVoltageFilterRight.calculate(inputs.encoderVoltageRight);
     filteredVoltageCone = analogVoltageFilterLeft.calculate(inputs.encoderVoltageLeft);
