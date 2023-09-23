@@ -72,7 +72,7 @@ public class AutoPath {
     private Autos(String filename) {
       this(
           filename,
-          Constants.DriveConstants.MAX_SWERVE_VEL,
+          Constants.DriveConstants.MAX_SWERVE_VEL_AUTO,
           Constants.DriveConstants.MAX_SWERVE_ACCEL);
     }
 

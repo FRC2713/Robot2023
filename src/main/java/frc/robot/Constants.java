@@ -116,7 +116,7 @@ public final class Constants {
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
-    public static final double RETRACTED_ANGLE_DEGREES = 100;
+    public static final double RETRACTED_ANGLE_DEGREES = 116.5;
     public static final double MAX_VELOCITY = 25;
     public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
@@ -229,7 +229,8 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(14.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(10.0);
+    public static final double MAX_SWERVE_VEL_AUTO = Units.feetToMeters(12.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
     public static final double MAX_ROTATIONAL_SPEED_RAD_PER_SEC = Units.degreesToRadians(275);

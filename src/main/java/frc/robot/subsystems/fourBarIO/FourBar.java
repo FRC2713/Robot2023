@@ -138,6 +138,7 @@ public class FourBar extends SubsystemBase {
           }
           double effort =
               voltageController.calculate(
+                  // absoluteEncoderAdjustedAngle, angleDegreesOne
                   Units.degreesToRadians(inputs.absoluteEncoderAdjustedAngle),
                   Units.degreesToRadians(targetDegs));
 
