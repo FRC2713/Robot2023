@@ -78,7 +78,7 @@ public final class Constants {
   @UtilityClass
   public static class ElevatorConstants {
     public static final PIDFFGains ELEVATOR_GAINS =
-        PIDFFGains.builder("Elevator Controller").kP(0.75).kD(0.0).kG(0.85).build();
+        PIDFFGains.builder("Elevator Controller").kP(0.75 / 3).kD(0.0).kG(0.85 / 3).build();
     public static final double CARRIAGE_MASS_KG = Units.lbsToKilograms(12.0);
     public static final double ELEVATOR_DRUM_RADIUS_METERS = Units.inchesToMeters(1.0);
     public static final double ELEVATOR_MIN_HEIGHT_METERS = Units.inchesToMeters(0.0);
@@ -325,9 +325,9 @@ public final class Constants {
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12).tolerance(0.75).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12 / 5).tolerance(0.75).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
-          PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.15).kV(2).build();
+          PIDFFGains.builder("BackRight/Default Driving").kP(1.0 / 5).kS(0.15).kV(2).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
           PIDFFGains.builder("Trajectory Controller X-Axis").kP(7).kD(0.0).build();
