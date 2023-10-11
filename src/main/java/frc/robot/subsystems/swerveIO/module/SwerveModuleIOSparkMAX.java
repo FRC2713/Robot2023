@@ -159,12 +159,12 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
         aziSetpointDeg,
         ControlType.kPosition,
         0,
-        aziFF.calculate(inputs.aziEncoderVelocityDegPerSecond));
+        aziFF.calculate(aziSetpointDeg));
     driveController.setReference(
         driveSetpointMPS,
         ControlType.kVelocity,
         0,
-        driveFF.calculate(inputs.driveEncoderVelocityMetresPerSecond));
+        driveFF.calculate(driveSetpointMPS));
   }
 
   @Override
