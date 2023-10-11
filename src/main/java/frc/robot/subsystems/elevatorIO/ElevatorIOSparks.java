@@ -94,8 +94,6 @@ public class ElevatorIOSparks implements ElevatorIO {
     inputs.tempCelsiusRight = right.getMotorTemperature();
     inputs.currentDrawAmpsRight = right.getOutputCurrent();
 
-    currentLeftFF = leftFF.calculate(inputs.velocityInchesPerSecondLeft);
-    currentRightFF = rightFF.calculate(inputs.velocityInchesPerSecondRight);
   }
 
   public void setPIDFF() {
@@ -113,6 +111,8 @@ public class ElevatorIOSparks implements ElevatorIO {
   }
 
   public void goToSetpoint(double heightInchesRight, double targetHeight) {
+    currentLeftFF = leftFF.calculate(targetHeight);
+    currentRightFF = rightFF.calculate(targetHeight);
 
     if (shouldApplyFF()) {
       left.getPIDController()
