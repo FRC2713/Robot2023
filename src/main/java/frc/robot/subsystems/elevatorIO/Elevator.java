@@ -44,6 +44,7 @@ public class Elevator extends SubsystemBase {
     leftMotor = new LoggableMotor("Elevator Left", DCMotor.getNEO(1));
     rightMotor = new LoggableMotor("Elevator Right", DCMotor.getNEO(1));
     accelCalc = new AccelerationCalc(5);
+    IO.setPIDFF();
   }
 
   public void setTargetHeight(double targetHeightInches) {
