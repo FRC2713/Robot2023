@@ -94,11 +94,12 @@ public class Elevator extends SubsystemBase {
     // (inputs.heightInchesLeft + inputs.heightInchesRight) / 2, targetHeight); left encoder
     // returns 0 for a cycle sometimes
     inputs.heightInchesRight, targetHeight);*/
+    double ffVolts = feedforward.calculate(targetHeight);
     if (inManualControl) {
-      IO.goToSetpoint(
-          inputs.heightInchesRight, inputs.heightInchesRight - Robot.operator.getLeftY());
+      IO.updatePID(
+          inputs.heightInchesRight, inputs.heightInchesRight - Robot.operator.getLeftY(), ffVolts);
     } else {
-      IO.goToSetpoint(inputs.heightInchesRight, targetHeight);
+      IO.updatePID(inputs.heightInchesRight, targetHeight, ffVolts);
     }
 
     // double ffEffort = feedforward.calculate(0);

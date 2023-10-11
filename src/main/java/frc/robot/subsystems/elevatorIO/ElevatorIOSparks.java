@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.util.RedHawkUtil;
@@ -13,15 +12,10 @@ import java.util.HashMap;
 
 public class ElevatorIOSparks implements ElevatorIO {
   private CANSparkMax left, right;
-  private SimpleMotorFeedforward leftFF, rightFF;
-  private double currentLeftFF;
-  private double currentRightFF;
 
   public ElevatorIOSparks() {
     left = new CANSparkMax(Constants.RobotMap.ELEVATOR_LEFT_CANID, MotorType.kBrushless);
     right = new CANSparkMax(Constants.RobotMap.ELEVATOR_RIGHT_CANID, MotorType.kBrushless);
-    leftFF = Constants.ElevatorConstants.ELEVATOR_GAINS.createWpilibFeedforward();
-    rightFF = Constants.ElevatorConstants.ELEVATOR_GAINS.createWpilibFeedforward();
     left.restoreFactoryDefaults();
     right.restoreFactoryDefaults();
 
@@ -110,19 +104,18 @@ public class ElevatorIOSparks implements ElevatorIO {
     rightController.setFF(Constants.ElevatorConstants.ELEVATOR_GAINS.kG.get());
   }
 
-  public void goToSetpoint(double heightInchesRight, double targetHeight) {
-    currentLeftFF = leftFF.calculate(targetHeight);
-    currentRightFF = rightFF.calculate(targetHeight);
-
+  @Override
+  public void updatePID(double heightInchesRight, double setpoint, double ffVolts) {
     if (shouldApplyFF()) {
       left.getPIDController()
-          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentLeftFF);
+          .setReference(setpoint, CANSparkMax.ControlType.kPosition, 0, ffVolts);
       right
           .getPIDController()
-          .setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0, currentRightFF);
+          .setReference(setpoint, CANSparkMax.ControlType.kPosition, 0, ffVolts);
     } else {
-      left.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
-      right.getPIDController().setReference(targetHeight, CANSparkMax.ControlType.kPosition, 0);
+      left.getPIDController().setReference(setpoint, CANSparkMax.ControlType.kPosition, 0);
+      right.getPIDController().setReference(setpoint, CANSparkMax.ControlType.kPosition, 0);
     }
   }
+  
 }

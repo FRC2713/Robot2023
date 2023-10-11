@@ -1,7 +1,6 @@
 package frc.robot.subsystems.elevatorIO;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -13,13 +12,11 @@ import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOSim implements ElevatorIO {
   private final ProfiledPIDController elevatorController;
-  private final ElevatorFeedforward feedforward;
 
   public ElevatorIOSim() {
     this.elevatorController =
         Constants.ElevatorConstants.ELEVATOR_GAINS.createProfiledPIDController(
             new Constraints(100, 200));
-    this.feedforward = Constants.ElevatorConstants.ELEVATOR_GAINS.createElevatorFeedforward();
   }
 
   private final AngledElevatorSim sim =
@@ -75,14 +72,12 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void goToSetpoint(double heightInchesRight, double targetHeight) {
+  public void updatePID(double heightInchesRight, double setpoint, double ffVolts) {
 
-    double targetVoltage = elevatorController.calculate(heightInchesRight, targetHeight);
+    double targetVoltage = elevatorController.calculate(heightInchesRight, setpoint);
 
     if (shouldApplyFF()) {
-      targetVoltage +=
-          feedforward.calculate(
-              elevatorController.getSetpoint().position, elevatorController.getSetpoint().velocity);
+      targetVoltage += ffVolts;
     }
 
     targetVoltage = MathUtil.clamp(targetVoltage, -12, 12);

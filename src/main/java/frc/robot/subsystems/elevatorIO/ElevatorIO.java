@@ -22,11 +22,11 @@ public interface ElevatorIO {
   public void resetEncoders();
 
   public boolean shouldApplyFF();
-  
+
+  public void setPIDFF();
+
   /***
    * Must be called in periodic for FeedForward to properly calculate
    */
-  public void goToSetpoint(double heightInchesRight, double targetHeight);
-
-  public void setPIDFF();
+  public void updatePID(double heightInchesRight, double setpoint, double ffVolts);
 }
