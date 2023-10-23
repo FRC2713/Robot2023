@@ -120,7 +120,7 @@ public final class Constants {
     public static final double MAX_VELOCITY = 25;
     public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
-    public static final double GEARING = 5 * 5 * 2.5;
+    public static final double GEARING = 5 * 5 * (48.0 / 22.0);
     public static final double FOUR_BAR_ANGLE_CONVERSION = 1.0 / GEARING * 360;
     public static final double FOUR_BAR_VELOCITY_CONVERSION_FACTOR = FOUR_BAR_ANGLE_CONVERSION / 60;
     public static final int FOUR_BAR_BASE_CURRENT = 5;
@@ -159,6 +159,7 @@ public final class Constants {
     public static final double GEARING = 48;
     public static final double LENGTH_METRES = Units.inchesToMeters(36);
     public static final PIDFFGains GAINS = PIDFFGains.builder("Slapper Gains").kP(0.5).build();
+    public static final double DEMO_GAINS = 0.1;
 
     // Degrees as measured on Unit Circle
     public static final double MIN_ANGLE_DEG = Constants.SlapperConstants.FULL_SEND_DEG;
@@ -229,7 +230,7 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(10.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(14.0);
     public static final double MAX_SWERVE_VEL_AUTO = Units.feetToMeters(12.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
