@@ -116,7 +116,7 @@ public final class Constants {
     public static final double MAX_ANGLE_DEGREES = -10;
     public static final double EXTENDED_ANGLE_DEGREES = 45;
     public static final double IDLE_ANGLE_DEGREES = 90;
-    public static final double RETRACTED_ANGLE_DEGREES = 116.5;
+    public static final double RETRACTED_ANGLE_DEGREES = 108.2;
     public static final double MAX_VELOCITY = 25;
     public static final double MAX_ACCELERATION = 75;
     public static final double MASS_KG = Units.lbsToKilograms(7.7);
@@ -224,12 +224,12 @@ public final class Constants {
     }
 
     public static final double K_JOYSTICK_TURN_DEADZONE = 0.04;
-    public static final double WHEEL_DIAMETER = 4.02267; // 3.85;
+    public static final double WHEEL_DIAMETER = 3.9; // 4.02267; // 3.85;
     public static final double GEAR_RATIO = 6.12;
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(10.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(6.0);
     public static final double MAX_SWERVE_VEL_AUTO = Units.feetToMeters(12.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
@@ -326,9 +326,9 @@ public final class Constants {
     @UtilityClass
     public static final class Gains {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
-          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.08).tolerance(0.75).build();
+          PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12).tolerance(0.75).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
-          PIDFFGains.builder("BackRight/Default Driving").kP(1.0).kS(0.225).kV(2.33).build();
+          PIDFFGains.builder("BackRight/Default Driving").kP(1).kD(0).kS(0.225).kV(2.33).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
           PIDFFGains.builder("Trajectory Controller X-Axis").kP(7).kD(0.0).build();
@@ -360,8 +360,8 @@ public final class Constants {
 
     public static final SuperstructureConfig INTAKE_TIPPED_CONE =
         SuperstructureConfig.builder()
-            .elevatorPosition(0)
-            .fourBarPosition(-22)
+            .elevatorPosition(1.5)
+            .fourBarPosition(-28)
             .topRPM(1250)
             .bottomRPM(-1250)
             .build();
