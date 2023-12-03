@@ -36,7 +36,7 @@ import frc.robot.commands.OTF.GoClosestGrid;
 import frc.robot.commands.OTF.GoHumanPlayer;
 import frc.robot.commands.OnBridgeUntilMovement;
 import frc.robot.commands.PIDOnBridge;
-import frc.robot.commands.fullRoutines.ConeCubeConeOver;
+import frc.robot.commands.fullRoutines.ChoreoTestAuto;
 import frc.robot.commands.fullRoutines.FastThreeCubeOver;
 import frc.robot.commands.fullRoutines.MobilityBridge;
 import frc.robot.commands.fullRoutines.MobilityBridgePathing;
@@ -75,6 +75,7 @@ import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.subsystems.visionIO.VisionIOSim;
 import frc.robot.subsystems.visionIO.VisionLimelight;
 import frc.robot.util.AutoPath;
+import frc.robot.util.ChoreoAutoPaths;
 import frc.robot.util.DebugMode;
 import frc.robot.util.MechanismManager;
 import frc.robot.util.MotionHandler.MotionMode;
@@ -927,6 +928,12 @@ public class Robot extends LoggedRobot {
     }
     swerveDrive.seed();
 
+    // The static variables in this file will only be loaded from disk once the class is referenced
+    // for the first time. We reference it here (with a function that does nothing) in order to
+    // force the code to load from the file on disabled init, rather than when the command runs and
+    // resets the odometry.
+    ChoreoAutoPaths.load();
+
     Robot.motionMode = MotionMode.LOCKDOWN;
 
     vision.setCurrentSnapshotMode(SnapshotMode.OFF);
@@ -949,7 +956,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     checkAlliance();
-    motionMode = MotionMode.TRAJECTORY;
+    motionMode = MotionMode.CHOREO;
     autoCommand = autoChooser.get();
 
     if (autoCommand != null) {
@@ -1000,7 +1007,7 @@ public class Robot extends LoggedRobot {
 
   public void buildAutoChooser() {
     SwerveSubsystem.allianceFlipper = DriverStation.getAlliance() == Alliance.Red ? -1 : 1;
-    autoChooser.addDefaultOption("ConeCubeConeOver", new ConeCubeConeOver());
+    autoChooser.addDefaultOption("Choreo test", new ChoreoTestAuto());
     autoChooser.addOption("ThreeCubeOver", new ThreeCubeOver());
     // autoChooser.addOption("SlapConeCubeConeOver", new SlapConeCubeConeOver());
     autoChooser.addOption("FastThreeCubeOver", new FastThreeCubeOver());
@@ -1020,6 +1027,7 @@ public class Robot extends LoggedRobot {
     autoChooser.addOption("OneConeOneCubeUnder", new OneConeOneCubeUnder());
     autoChooser.addOption("OneConeOneCubeUnderHigh", new OneConeOneCubeUnderHigh());
     autoChooser.addOption("SimpleConeMiddle", new SimpleCone());
+    autoChooser.addOption("Choreo test", new ChoreoTestAuto());
     autoChooser.addOption(
         "FiveToBridge",
         new SequentialCommandGroup(

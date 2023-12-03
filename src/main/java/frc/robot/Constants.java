@@ -229,7 +229,7 @@ public final class Constants {
     public static final double DIST_PER_PULSE =
         (1.0 / GEAR_RATIO) * Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
     // 1;
-    public static final double MAX_SWERVE_VEL = Units.feetToMeters(6.0);
+    public static final double MAX_SWERVE_VEL = Units.feetToMeters(15.0);
     public static final double MAX_SWERVE_VEL_AUTO = Units.feetToMeters(12.0);
     public static final double MAX_SWERVE_AZI = Math.PI;
     public static final double MAX_SWERVE_ACCEL = Units.feetToMeters(5);
@@ -328,16 +328,16 @@ public final class Constants {
       public static final PIDFFGains K_DEFAULT_AZIMUTH_GAINS =
           PIDFFGains.builder("BackRight/Default Azimuth").kP(0.12).tolerance(0.75).build();
       public static final PIDFFGains K_DEFAULT_DRIVING_GAINS =
-          PIDFFGains.builder("BackRight/Default Driving").kP(1).kD(0).kS(0.225).kV(2.33).build();
+          PIDFFGains.builder("BackRight/Default Driving").kP(10).kD(0).kS(0.225).kV(2.33).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_X =
-          PIDFFGains.builder("Trajectory Controller X-Axis").kP(7).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller X-Axis").kP(30).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_Y =
-          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(7).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Y-Axis").kP(30).kD(0.0).build();
 
       public static final PIDFFGains K_TRAJECTORY_CONTROLLER_GAINS_ROTATION =
-          PIDFFGains.builder("Trajectory Controller Rotation").kP(2.5).kD(0.0).build();
+          PIDFFGains.builder("Trajectory Controller Rotation").kP(30).kD(0.0).build();
     }
 
     public static final PIDFFGains K_FRONT_LEFT_AZIMUTH_GAINS =

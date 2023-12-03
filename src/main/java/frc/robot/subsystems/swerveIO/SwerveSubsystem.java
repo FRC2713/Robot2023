@@ -129,7 +129,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     Logger.getInstance().recordOutput("Reset odometry to ", pose);
     odometry.resetPosition(
-        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        Rotation2d.fromDegrees(
+            Robot.isReal() ? inputs.gyroYawPosition : pose.getRotation().getDegrees()),
         new SwerveModulePosition[] {
           frontLeft.getPosition(),
           frontRight.getPosition(),
@@ -139,7 +140,8 @@ public class SwerveSubsystem extends SubsystemBase {
         pose);
 
     poseEstimator.resetPosition(
-        Rotation2d.fromDegrees(inputs.gyroYawPosition),
+        Rotation2d.fromDegrees(
+            Robot.isReal() ? inputs.gyroYawPosition : pose.getRotation().getDegrees()),
         new SwerveModulePosition[] {
           this.frontLeft.getPosition(),
           this.frontRight.getPosition(),
@@ -331,6 +333,9 @@ public class SwerveSubsystem extends SubsystemBase {
         break;
       case TRAJECTORY:
         setModuleStates(MotionHandler.driveTrajectory());
+        break;
+      case CHOREO:
+        setModuleStates(MotionHandler.drive6328());
         break;
       default:
         break;

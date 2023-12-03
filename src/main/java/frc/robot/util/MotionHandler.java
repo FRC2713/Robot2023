@@ -10,6 +10,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerveIO.SwerveSubsystem;
+import lib.mechadv.CustomTrajectoryController;
+import org.littletonrobotics.junction.Logger;
 
 public class MotionHandler {
 
@@ -17,6 +19,7 @@ public class MotionHandler {
     FULL_DRIVE,
     HEADING_CONTROLLER,
     TRAJECTORY,
+    CHOREO,
     LOCKDOWN,
     NULL
   }
@@ -110,5 +113,16 @@ public class MotionHandler {
         };
 
     return swerveModuleStates;
+  }
+
+  public static SwerveModuleState[] drive6328() {
+    var x =
+        DriveConstants.KINEMATICS.toSwerveModuleStates(
+            CustomTrajectoryController.getInstance().update());
+
+    Logger.getInstance().recordOutput("Saturated wheel speeds", x);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(x, DriveConstants.MAX_SWERVE_VEL);
+    return x;
   }
 }
