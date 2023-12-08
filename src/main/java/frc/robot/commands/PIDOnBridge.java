@@ -32,7 +32,7 @@ public class PIDOnBridge extends SequentialCommandGroup {
       if (Math.signum(prevError) != Math.signum(currentError)) {
         speed *= .9;
       }
-      var out = limiter.calculate(speed);
+      double out = limiter.calculate(speed);
       if (currentError > tolerance) {
         prevError = currentError;
         return -out;

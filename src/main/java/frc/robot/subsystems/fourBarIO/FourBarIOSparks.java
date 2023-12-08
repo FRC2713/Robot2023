@@ -104,7 +104,7 @@ public class FourBarIOSparks implements FourBarIO {
   }
 
   public void reseed(double absoluteEncoderVolts) {
-    var trueAngle = absoluteEncoderVolts - offset;
+    double trueAngle = absoluteEncoderVolts - offset;
     fourBarOne.getEncoder().setPosition(trueAngle);
   }
 

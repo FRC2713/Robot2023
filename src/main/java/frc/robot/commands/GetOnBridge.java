@@ -47,7 +47,7 @@ public class GetOnBridge extends SequentialCommandGroup {
         //     .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 5),
         new RunCommand(
                 () -> {
-                  var value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);
+                  double value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);
                   Logger.getInstance().recordOutput("Bridge value", value);
                   Robot.motionMode = MotionMode.NULL;
                   Robot.swerveDrive.setModuleStates(
@@ -61,7 +61,7 @@ public class GetOnBridge extends SequentialCommandGroup {
             .until(() -> Robot.swerveDrive.inputs.gyroRollPosition >= 1),
         new RunCommand(
                 () -> {
-                  var value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);
+                  double value = filter.calculate(Robot.swerveDrive.inputs.gyroRollPosition);
                   Logger.getInstance().recordOutput("Bridge value", value);
 
                   Robot.motionMode = MotionMode.NULL;

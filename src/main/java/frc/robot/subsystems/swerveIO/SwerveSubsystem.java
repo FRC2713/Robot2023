@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -235,6 +236,12 @@ public class SwerveSubsystem extends SubsystemBase {
     backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void setChassisSpeed(ChassisSpeeds c) {
+    SwerveModuleState[] desaturatedSwerve = (DriveConstants.KINEMATICS.toSwerveModuleStates(c));
+    SwerveDriveKinematics.desaturateWheelSpeeds(desaturatedSwerve, allianceFlipper);
+    setModuleStates(desaturatedSwerve);
+  }
+
   public boolean gyroPitchHasChanged() {
     return inputs.gyroPitchPosition == inputs.previousgyroPitchPosition;
   }
@@ -321,16 +328,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
     switch (Robot.motionMode) {
       case FULL_DRIVE:
-        setModuleStates(MotionHandler.driveFullControl());
+        setChassisSpeed(MotionHandler.driveFullControl());
         break;
       case HEADING_CONTROLLER:
-        setModuleStates(MotionHandler.driveHeadingController());
+        setChassisSpeed(MotionHandler.driveHeadingController());
         break;
       case LOCKDOWN:
         setModuleStates(MotionHandler.lockdown());
+        // chassisSpeedsState = null;
         break;
       case TRAJECTORY:
-        setModuleStates(MotionHandler.driveTrajectory());
+        setChassisSpeed(MotionHandler.driveTrajectory());
         break;
       default:
         break;

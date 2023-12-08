@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -142,8 +143,8 @@ public class FourBar extends SubsystemBase {
                   Units.degreesToRadians(inputs.absoluteEncoderAdjustedAngle),
                   Units.degreesToRadians(targetDegs));
 
-          var goal = voltageController.getGoal();
-          var setpoint = voltageController.getSetpoint();
+          TrapezoidProfile.State goal = voltageController.getGoal();
+          TrapezoidProfile.State setpoint = voltageController.getSetpoint();
 
           Logger.getInstance()
               .recordOutput("4Bar/Goal/Position", Units.radiansToDegrees(goal.position));

@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.subsystems.visionIO.Vision.SnapshotMode;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers.LimelightResults;
 
 public class VisionLimelight implements VisionIO {
   String name;
@@ -70,7 +71,7 @@ public class VisionLimelight implements VisionIO {
     inputs.pipeline = getValueLong("pipeline");
     inputs.stream = getValueLong("stream");
     inputs.crop = getValueDoubleArray("crop");
-    var results = LimelightHelpers.getLatestResults(this.name);
+    LimelightResults results = LimelightHelpers.getLatestResults(this.name);
     if (results != null && results.targetingResults != null && results.targetingResults.valid) {
       inputs.numTargets = results.targetingResults.targets_Fiducials.length;
     }

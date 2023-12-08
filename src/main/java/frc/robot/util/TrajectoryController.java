@@ -80,8 +80,8 @@ public class TrajectoryController {
             });
     Logger.getInstance().recordOutput("Trajectory/timer", timer.get());
     if (!isFinished()) {
-      final var loopTime = 0.02;
-      var speeds = controller.calculate(Robot.swerveDrive.getUsablePose(), targetState);
+      final double loopTime = 0.02;
+      ChassisSpeeds speeds = controller.calculate(Robot.swerveDrive.getUsablePose(), targetState);
 
       Pose2d robotPoseVel =
           new Pose2d(
