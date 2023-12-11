@@ -238,7 +238,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setChassisSpeed(ChassisSpeeds c) {
     SwerveModuleState[] desaturatedSwerve = (DriveConstants.KINEMATICS.toSwerveModuleStates(c));
-    SwerveDriveKinematics.desaturateWheelSpeeds(desaturatedSwerve, allianceFlipper);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desaturatedSwerve, Constants.DriveConstants.MAX_SWERVE_VEL);
     setModuleStates(desaturatedSwerve);
   }
 
@@ -322,7 +323,6 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    updateOdometry();
     filteredRollVal = filteredRoll.calculate(inputs.gyroRollPosition);
     Logger.getInstance().recordOutput("Swerve/Filtered roll", filteredRollVal);
 
@@ -341,8 +341,11 @@ public class SwerveSubsystem extends SubsystemBase {
         setChassisSpeed(MotionHandler.driveTrajectory());
         break;
       default:
+        setChassisSpeed(new ChassisSpeeds());
         break;
     }
+
+    updateOdometry();
 
     SwerveModuleState[] measuredModuleStates =
         new SwerveModuleState[] {
