@@ -147,7 +147,7 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
-    if (isSimulation()) {
+    if (isReal()) {
       File sda1 = new File(Constants.Logging.sda1Dir);
       File sda2 = new File(Constants.Logging.sda2Dir);
 
@@ -418,53 +418,20 @@ public class Robot extends LoggedRobot {
     //                                              Intake.Commands.setBottomVelocityRPM(0)),
     //                                      () -> intake.hasGamepiece()),
     //                              FourBar.Commands.retract()));
-
     driver
-        .rightTrigger(0.25)
+        .leftTrigger()
         .onTrue(
-            new SequentialCommandGroup(
-                new InstantCommand(
-                    () -> {
-                      gamePieceMode = GamePieceMode.CONE;
-                    }),
-                Elevator.Commands.setToHeightAndWait(SuperstructureConstants.INTAKE_TIPPED_CONE),
-                new ParallelCommandGroup(
-                    Intake.Commands.setTopVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getTopRPM()),
-                    Intake.Commands.setBottomVelocityRPM(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getBottomRPM()),
-                    FourBar.Commands.setAngleDegAndWait(
-                        SuperstructureConstants.INTAKE_TIPPED_CONE.getFourBarPosition()),
-                    LightStrip.Commands.setColorPattern(Pattern.Yellow)),
-                new WaitUntilCommand(() -> intake.hasGamepiece()),
-                FourBar.Commands.retract(),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> RumbleManager.getInstance().setDriver(1, 0.02))
-                            .repeatedly(),
-                        LightStrip.Commands.blinkAnyPattern(Pattern.DarkGreen))
-                    .until(() -> fourBar.isAtTarget()),
-                new ConditionalCommand(
-                    LightStrip.Commands.setColorPattern(Pattern.DarkGreen),
-                    new SequentialCommandGroup(
-                        LightStrip.Commands.blinkAnyPattern(Pattern.Red),
-                        new WaitCommand(2.0),
-                        LightStrip.Commands.defaultColorPattern()),
-                    () -> intake.hasGamepiece())))
-        .onFalse(
-            new SequentialCommandGroup(
-                Elevator.Commands.elevatorCurrentHeight(),
-                new ConditionalCommand(
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getTopRPM()),
-                        Intake.Commands.setBottomVelocityRPM(
-                            SuperstructureConstants.HOLD_CONE.getBottomRPM())),
-                    new ParallelCommandGroup(
-                        Intake.Commands.setTopVelocityRPM(0),
-                        Intake.Commands.setBottomVelocityRPM(0)),
-                    () -> intake.hasGamepiece()),
-                FourBar.Commands.setAngleDegAndWait(
-                    Constants.FourBarConstants.IDLE_ANGLE_DEGREES)));
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
+                }));
+    driver
+        .rightTrigger()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  motionMode = MotionMode.FULL_DRIVE;
+                }));
 
     driver
         .rightBumper()

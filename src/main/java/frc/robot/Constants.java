@@ -42,8 +42,7 @@ public final class Constants {
 
   @UtilityClass
   public static final class Logging {
-    // public static final String sda1Dir = "/media/sda1";
-    public static final String sda1Dir = "logs";
+    public static final String sda1Dir = "/media/sda1";
     public static final String sda2Dir = "/media/sda2";
   }
 
