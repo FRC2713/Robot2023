@@ -84,6 +84,8 @@ import frc.robot.util.RumbleManager;
 import frc.robot.util.SwerveHeadingController;
 import frc.robot.util.TrajectoryController;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -145,12 +147,17 @@ public class Robot extends LoggedRobot {
     Logger.getInstance().recordMetadata("GitDate", GVersion.GIT_DATE);
     Logger.getInstance().recordMetadata("GitBranch", GVersion.GIT_BRANCH);
     Logger.getInstance().recordMetadata("BuildDate", GVersion.BUILD_DATE);
-    if (isReal()) {
+    if (isSimulation()) {
       File sda1 = new File(Constants.Logging.sda1Dir);
       File sda2 = new File(Constants.Logging.sda2Dir);
 
+      Date date = new Date();
+
+      SimpleDateFormat sdf = new SimpleDateFormat("/MM/dd");
+
       if (sda1.exists() && sda1.isDirectory()) {
-        Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir));
+        Logger.getInstance()
+            .addDataReceiver(new WPILOGWriter(Constants.Logging.sda1Dir + sdf.format(date)));
         Logger.getInstance().recordOutput("isLoggingToUsb", true);
       } else {
         RedHawkUtil.ErrHandler.getInstance()
@@ -160,7 +167,8 @@ public class Robot extends LoggedRobot {
                     + ", trying "
                     + Constants.Logging.sda2Dir);
         if (sda2.exists() && sda2.isDirectory()) {
-          Logger.getInstance().addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir));
+          Logger.getInstance()
+              .addDataReceiver(new WPILOGWriter(Constants.Logging.sda2Dir + sdf.format(date)));
           Logger.getInstance().recordOutput("isLoggingToUsb", true);
         } else {
           RedHawkUtil.ErrHandler.getInstance()
