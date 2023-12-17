@@ -6,7 +6,10 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -370,6 +373,22 @@ public class SwerveSubsystem extends SubsystemBase {
               getEstimatedPose().getX(),
               getEstimatedPose().getY(),
               getEstimatedPose().getRotation().getDegrees()
+            });
+    Pose3d simPose3d = new Pose3d(getRegularPose());
+    Quaternion simQuaternion3d =
+        new Rotation3d(0.0, 0.0, getRegularPose().getRotation().getRadians()).getQuaternion();
+
+    Logger.getInstance()
+        .recordOutput(
+            "Swerve/Odometry Pose3d",
+            new double[] {
+              simPose3d.getX(),
+              simPose3d.getY(),
+              simPose3d.getZ(),
+              simQuaternion3d.getW(),
+              simQuaternion3d.getX(),
+              simQuaternion3d.getY(),
+              simQuaternion3d.getZ()
             });
     Logger.getInstance().recordOutput("Swerve/MotionMode", Robot.motionMode.name());
 

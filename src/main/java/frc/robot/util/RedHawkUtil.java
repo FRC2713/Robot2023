@@ -226,6 +226,11 @@ public final class RedHawkUtil {
         });
   }
 
+  public static double lerp(double outMin, double outMax, double inMin, double inMax, double in) {
+    return Math.min(
+        outMax, Math.max(outMin, ((in - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin));
+  }
+
   // // https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
   // public static void configureDefaultTrafficSpark(CANSparkMax spark) {
   //   // Applied output, faults, sticky faults, isFollower
